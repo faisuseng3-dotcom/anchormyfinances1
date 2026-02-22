@@ -52,6 +52,9 @@ import Dashboard from './pages/Dashboard';
 import PurchaseSimulator from './pages/PurchaseSimulator';
 import WhatIf from './pages/WhatIf';
 import Loans from './pages/Loans';
+import Optimize from './pages/Optimize';
+import Settings from './pages/Settings';
+import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
@@ -60,9 +63,12 @@ export const PAGES = {
     "PurchaseSimulator": PurchaseSimulator,
     "WhatIf": WhatIf,
     "Loans": Loans,
+    "Optimize": Optimize,
+    "Settings": Settings,
 }
 
 export const pagesConfig = {
     mainPage: "Onboarding",
     Pages: PAGES,
+    Layout: __Layout,
 };
