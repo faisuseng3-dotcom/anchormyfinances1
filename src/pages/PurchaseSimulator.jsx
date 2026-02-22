@@ -4,9 +4,10 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ShoppingBag, Clock, CheckCircle, XCircle, TrendingDown, AlertTriangle, Target, Wallet, Loader2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, Clock, CheckCircle, XCircle, TrendingDown, AlertTriangle, Target, Wallet, Loader2, Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import PriceComparison from '@/components/purchase/PriceComparison';
 
 export default function PurchaseSimulator() {
   const queryClient = useQueryClient();
@@ -14,6 +15,8 @@ export default function PurchaseSimulator() {
   const [purchaseAmount, setPurchaseAmount] = useState('');
   const [analysis, setAnalysis] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
+  const [priceData, setPriceData] = useState(null);
+  const [showPriceComparison, setShowPriceComparison] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ['financialProfile'],
@@ -101,6 +104,32 @@ export default function PurchaseSimulator() {
   };
 
   const waitingPurchases = (profile?.plannedPurchases || []).filter(p => p.status === 'waiting');
+  const priceWatches = profile?.priceWatches || [];
+  const isWatching = priceData && priceWatches.some(w => w.productName === priceData.productName);
+
+  const handleAddToWatchlist = async () => {
+    if (!priceData) return;
+
+    const lowestPrice = priceData.stores?.length > 0 
+      ? Math.min(...priceData.stores.map(s => s.price))
+      : priceData.estimatedPrice;
+
+    if (isWatching) {
+      // Remove from watchlist
+      const newWatches = priceWatches.filter(w => w.productName !== priceData.productName);
+      await updateProfile.mutateAsync({ priceWatches: newWatches });
+    } else {
+      // Add to watchlist
+      const newWatch = {
+        productName: priceData.productName,
+        currentLowestPrice: lowestPrice,
+        addedDate: new Date().toISOString()
+      };
+      await updateProfile.mutateAsync({ 
+        priceWatches: [...priceWatches, newWatch] 
+      });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-8">
@@ -130,7 +159,7 @@ export default function PurchaseSimulator() {
           </div>
           
           <Input
-            placeholder="t.ex. TV, Möbler, Semester"
+            placeholder="t.ex. iPhone 15, Samsung TV 55 tum, AirPods Pro"
             value={purchaseName}
             onChange={(e) => setPurchaseName(e.target.value)}
             className="h-12 rounded-xl"
@@ -139,7 +168,7 @@ export default function PurchaseSimulator() {
           <div className="relative">
             <Input
               type="text"
-              placeholder="Belopp"
+              placeholder="Belopp (valfritt)"
               value={formatNumber(parseNumber(purchaseAmount))}
               onChange={(e) => setPurchaseAmount(e.target.value)}
               className="h-12 rounded-xl pr-12"
@@ -149,13 +178,19 @@ export default function PurchaseSimulator() {
 
           <Button
             onClick={analyzePurchase}
-            disabled={!purchaseName || !purchaseAmount || analyzing}
+            disabled={!purchaseName || analyzing}
             className="w-full h-12 rounded-xl bg-purple-600 hover:bg-purple-700"
           >
             {analyzing ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <>
+                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                Söker priser...
+              </>
             ) : (
-              'Analysera köpet'
+              <>
+                <Search className="w-5 h-5 mr-2" />
+                Jämför priser & analysera
+              </>
             )}
           </Button>
         </div>
@@ -277,6 +312,20 @@ export default function PurchaseSimulator() {
         )}
       </AnimatePresence>
 
+      {/* Price Comparison Modal */}
+      <AnimatePresence>
+        {showPriceComparison && priceData && (
+          <PriceComparison
+            productName={priceData.productName}
+            prices={priceData.stores || []}
+            economicImpact={analysis}
+            onClose={() => setShowPriceComparison(false)}
+            onAddToWatchlist={handleAddToWatchlist}
+            isWatching={isWatching}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Waiting list */}
       {waitingPurchases.length > 0 && !analysis && (
         <div className="px-6 mt-6">
@@ -299,6 +348,33 @@ export default function PurchaseSimulator() {
                   </div>
                 </div>
                 <p className="font-semibold text-slate-900">{formatNumber(purchase.amount)} kr</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Price Watches */}
+      {priceWatches.length > 0 && !analysis && (
+        <div className="px-6 mt-6">
+          <h3 className="text-lg font-semibold text-slate-900 mb-3">Prisbevakning</h3>
+          <div className="space-y-3">
+            {priceWatches.map((watch, i) => (
+              <div
+                key={i}
+                className="p-4 bg-white rounded-xl border border-slate-100 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                    <ShoppingBag className="w-5 h-5 text-amber-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-slate-900">{watch.productName}</p>
+                    <p className="text-sm text-slate-500">
+                      Lägsta: {formatNumber(watch.currentLowestPrice)} kr
+                    </p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
