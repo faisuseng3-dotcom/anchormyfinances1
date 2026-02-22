@@ -44,46 +44,108 @@ export default function PurchaseSimulator() {
   };
 
   const analyzePurchase = async () => {
-    if (!purchaseName || !purchaseAmount || !profile) return;
+    if (!purchaseName || !profile) return;
 
     setAnalyzing(true);
-    const amount = parseNumber(purchaseAmount);
     
-    // Calculate impact
-    const totalSubscriptions = (profile.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
-    const totalLoanPayments = (profile.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
-    const totalFixedCosts = profile.housingCost + totalSubscriptions + totalLoanPayments;
-    const monthlyMargin = profile.income - totalFixedCosts;
+    try {
+      // First, try to find price comparisons
+      const priceResponse = await base44.integrations.Core.InvokeLLM({
+        prompt: `Du är en prisjämförelseassistent för svenska marknaden. Användaren söker efter: "${purchaseName}"
 
-    const bufferImpact = Math.round((amount / profile.buffer) * 100);
-    const savingsImpact = profile.savingsGoal > 0 ? Math.round((amount / profile.savingsGoal) * 100) : 0;
-    const monthsDelayed = profile.savingsGoal > 0 && monthlyMargin > 0 ? Math.round(amount / (monthlyMargin * 0.3)) : 0;
-    
-    let recommendation = 'buy';
-    let riskLevel = 'low';
+Hitta VERKLIGA, AKTUELLA priser från svenska butiker. Om du inte kan hitta exakta priser, uppskatta realistiska priser baserat på liknande produkter.
 
-    if (bufferImpact > 50) {
-      recommendation = 'reject';
-      riskLevel = 'high';
-    } else if (bufferImpact > 25 || amount > monthlyMargin) {
-      recommendation = 'wait';
-      riskLevel = 'medium';
+Svara i JSON-format med:
+{
+  "productName": "Fullständigt produktnamn",
+  "estimatedPrice": pris i kr (om du inte hittar exakta priser),
+  "stores": [
+    {
+      "name": "Butiksnamn (t.ex. Elgiganten, NetOnNet, MediaMarkt)",
+      "price": pris i kr,
+      "shipping": "fraktkostnad eller 'Fri frakt'",
+      "deliveryDays": antal dagar,
+      "url": "https://butik.se/produkt"
     }
+  ]
+}
 
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 1000));
+Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-handlare.`,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            productName: { type: "string" },
+            estimatedPrice: { type: "number" },
+            stores: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  price: { type: "number" },
+                  shipping: { type: "string" },
+                  deliveryDays: { type: "number" },
+                  url: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      });
 
-    setAnalysis({
-      name: purchaseName,
-      amount,
-      bufferImpact,
-      savingsImpact,
-      monthsDelayed,
-      remainingBuffer: profile.buffer - amount,
-      monthlyMargin,
-      recommendation,
-      riskLevel
-    });
+      const amount = priceResponse.estimatedPrice || parseNumber(purchaseAmount) || 
+                     (priceResponse.stores?.length > 0 ? Math.min(...priceResponse.stores.map(s => s.price)) : 0);
+
+      if (amount === 0) {
+        setAnalyzing(false);
+        return;
+      }
+
+      // Calculate economic impact
+      const totalSubscriptions = (profile.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
+      const totalLoanPayments = (profile.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
+      const totalFixedCosts = profile.housingCost + totalSubscriptions + totalLoanPayments;
+      const monthlyMargin = profile.income - totalFixedCosts;
+
+      const bufferImpact = profile.buffer > 0 ? Math.round((amount / profile.buffer) * 100) : 100;
+      const savingsImpact = profile.savingsGoal > 0 ? Math.round((amount / profile.savingsGoal) * 100) : 0;
+      const monthsDelayed = profile.savingsGoal > 0 && monthlyMargin > 0 ? Math.round(amount / (monthlyMargin * 0.3)) : 0;
+      
+      let recommendation = 'buy';
+      let riskLevel = 'low';
+
+      if (bufferImpact > 50) {
+        recommendation = 'reject';
+        riskLevel = 'high';
+      } else if (bufferImpact > 25 || amount > monthlyMargin) {
+        recommendation = 'wait';
+        riskLevel = 'medium';
+      }
+
+      const analysisData = {
+        name: priceResponse.productName || purchaseName,
+        amount,
+        bufferImpact,
+        savingsImpact,
+        monthsDelayed,
+        remainingBuffer: profile.buffer - amount,
+        monthlyMargin,
+        recommendation,
+        riskLevel
+      };
+
+      setAnalysis(analysisData);
+      setPriceData(priceResponse);
+
+      // If we have stores, show price comparison
+      if (priceResponse.stores?.length > 0) {
+        setShowPriceComparison(true);
+      }
+    } catch (error) {
+      console.error('Price analysis error:', error);
+    }
+    
     setAnalyzing(false);
   };
 
