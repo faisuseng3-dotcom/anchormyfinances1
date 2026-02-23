@@ -177,7 +177,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
               <Button
                 onClick={handleRegister}
                 disabled={!name || !amount || !category || analyzing}
-                className="w-full h-12 rounded-xl bg-emerald-500 hover:bg-emerald-600"
+                className="w-full h-14 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-lg font-semibold shadow-lg mt-6"
               >
                 {analyzing ? (
                   <>
