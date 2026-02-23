@@ -4,8 +4,9 @@ import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain } from 'lucide-react';
+import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import HealthScore from '@/components/dashboard/HealthScore';
 import QuickStats from '@/components/dashboard/QuickStats';
 import AIInsightCard from '@/components/dashboard/AIInsightCard';
@@ -15,10 +16,12 @@ import RiskSimulator from '@/components/dashboard/RiskSimulator';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [insights, setInsights] = useState([]);
   const [healthScore, setHealthScore] = useState(0);
   const [healthLabel, setHealthLabel] = useState('');
   const [mentalLoad, setMentalLoad] = useState({ score: 0, factors: [] });
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['financialProfile'],
@@ -222,12 +225,47 @@ export default function Dashboard() {
         <QuickStats profile={profile} />
 
         {/* Quick Actions */}
+        <div className="grid grid-cols-2 gap-3">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowExpenseModal(true)}
+            className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 text-white shadow-lg"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center">
+                <Plus className="w-6 h-6" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold">Registrera köp</p>
+                <p className="text-xs text-white/80">Lägg till utgift</p>
+              </div>
+            </div>
+          </motion.button>
+
+          <Link to={createPageUrl('Expenses')}>
+            <motion.div
+              whileTap={{ scale: 0.95 }}
+              className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm h-full"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
+                  <ShoppingBag className="w-6 h-6 text-purple-600" />
+                </div>
+                <div className="text-left">
+                  <p className="font-semibold text-slate-900">Se utgifter</p>
+                  <p className="text-xs text-slate-500">Översikt</p>
+                </div>
+              </div>
+            </motion.div>
+          </Link>
+        </div>
+
         <div className="grid grid-cols-4 gap-2">
           {[
-            { icon: ShoppingBag, label: 'Köp', page: 'PurchaseSimulator', color: 'bg-purple-100 text-purple-600' },
             { icon: Zap, label: 'What If', page: 'WhatIf', color: 'bg-amber-100 text-amber-600' },
             { icon: Landmark, label: 'Lån', page: 'Loans', color: 'bg-blue-100 text-blue-600' },
             { icon: TrendingUp, label: 'Optimera', page: 'Optimize', color: 'bg-emerald-100 text-emerald-600' },
+            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'bg-purple-100 text-purple-600' },
           ].map((action) => {
             const Icon = action.icon;
             return (
@@ -270,6 +308,17 @@ export default function Dashboard() {
         {/* Risk Simulator */}
         <RiskSimulator profile={profile} />
       </div>
+
+      {/* Quick Expense Modal */}
+      <QuickExpenseModal
+        isOpen={showExpenseModal}
+        onClose={() => setShowExpenseModal(false)}
+        profile={profile}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+          setShowExpenseModal(false);
+        }}
+      />
     </div>
   );
 }

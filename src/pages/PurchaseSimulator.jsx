@@ -8,6 +8,7 @@ import { ArrowLeft, ShoppingBag, Clock, CheckCircle, XCircle, TrendingDown, Aler
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import PriceComparison from '@/components/purchase/PriceComparison';
+import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 
 export default function PurchaseSimulator() {
   const queryClient = useQueryClient();
@@ -17,6 +18,7 @@ export default function PurchaseSimulator() {
   const [analyzing, setAnalyzing] = useState(false);
   const [priceData, setPriceData] = useState(null);
   const [showPriceComparison, setShowPriceComparison] = useState(false);
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
 
   const { data: profile } = useQuery({
     queryKey: ['financialProfile'],
@@ -158,6 +160,10 @@ Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-ha
         status: 'waiting'
       }];
       await updateProfile.mutateAsync({ plannedPurchases });
+    } else if (decision === 'buy') {
+      // Show expense modal to register the purchase
+      setShowExpenseModal(true);
+      return; // Don't reset yet
     }
 
     base44.analytics.track({
@@ -453,6 +459,25 @@ Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-ha
           </div>
         </div>
       )}
+
+      {/* Quick Expense Modal */}
+      <QuickExpenseModal
+        isOpen={showExpenseModal}
+        onClose={() => {
+          setShowExpenseModal(false);
+          setAnalysis(null);
+          setPurchaseName('');
+          setPurchaseAmount('');
+          setPriceData(null);
+          setShowPriceComparison(false);
+        }}
+        profile={profile}
+        prefilledName={analysis?.name || ''}
+        prefilledAmount={analysis?.amount?.toString() || ''}
+        onSuccess={() => {
+          queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+        }}
+      />
     </div>
   );
 }

@@ -110,9 +110,9 @@ export default function Expenses() {
           <Button
             onClick={() => setShowAddForm(true)}
             size="icon"
-            className="rounded-full bg-emerald-500 hover:bg-emerald-600"
+            className="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-lg"
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-6 h-6" />
           </Button>
         </div>
 
