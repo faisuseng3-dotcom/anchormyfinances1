@@ -115,7 +115,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
         animate={{ y: 0 }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full bg-white rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto"
+        className="w-full bg-white rounded-t-3xl p-6 pb-24 max-h-[90vh] overflow-y-auto"
       >
         {!aiInsight ? (
           <>
