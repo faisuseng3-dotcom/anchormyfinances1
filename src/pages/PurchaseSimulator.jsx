@@ -159,10 +159,21 @@ Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-ha
       }];
       await updateProfile.mutateAsync({ plannedPurchases });
     }
+
+    base44.analytics.track({
+      eventName: 'purchase_decision_made',
+      properties: {
+        decision,
+        amount: analysis.amount,
+        risk_level: analysis.riskLevel
+      }
+    });
     
     setAnalysis(null);
     setPurchaseName('');
     setPurchaseAmount('');
+    setPriceData(null);
+    setShowPriceComparison(false);
   };
 
   const waitingPurchases = (profile?.plannedPurchases || []).filter(p => p.status === 'waiting');

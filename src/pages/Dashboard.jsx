@@ -10,6 +10,8 @@ import HealthScore from '@/components/dashboard/HealthScore';
 import QuickStats from '@/components/dashboard/QuickStats';
 import AIInsightCard from '@/components/dashboard/AIInsightCard';
 import MentalLoadIndex from '@/components/dashboard/MentalLoadIndex';
+import WeeklySummary from '@/components/dashboard/WeeklySummary';
+import RiskSimulator from '@/components/dashboard/RiskSimulator';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -31,6 +33,13 @@ export default function Dashboard() {
       navigate(createPageUrl('Onboarding'));
     }
   }, [profile, navigate]);
+
+  useEffect(() => {
+    // Track dashboard view
+    base44.analytics.track({
+      eventName: 'dashboard_viewed'
+    });
+  }, []);
 
   useEffect(() => {
     if (profile) {
@@ -254,6 +263,12 @@ export default function Dashboard() {
 
         {/* Mental Load */}
         <MentalLoadIndex {...mentalLoad} />
+
+        {/* Weekly Summary */}
+        <WeeklySummary profile={profile} />
+
+        {/* Risk Simulator */}
+        <RiskSimulator profile={profile} />
       </div>
     </div>
   );

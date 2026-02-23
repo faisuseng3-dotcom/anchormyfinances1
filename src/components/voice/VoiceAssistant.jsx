@@ -76,6 +76,10 @@ export default function VoiceAssistant({ isOpen, onClose }) {
       setTranscript('');
       setIsListening(true);
       recognitionRef.current.start();
+      
+      base44.analytics.track({
+        eventName: 'voice_assistant_started'
+      });
     }
   };
 
@@ -141,6 +145,13 @@ Ge ditt svar:`;
 
       setMessages(prev => [...prev, assistantMessage]);
       setIsProcessing(false);
+
+      base44.analytics.track({
+        eventName: 'voice_question_asked',
+        properties: {
+          question_length: text.length
+        }
+      });
 
       // Speak the response
       speakText(response);

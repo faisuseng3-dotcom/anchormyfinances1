@@ -47,24 +47,26 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
-import PurchaseSimulator from './pages/PurchaseSimulator';
-import WhatIf from './pages/WhatIf';
 import Loans from './pages/Loans';
+import Onboarding from './pages/Onboarding';
 import Optimize from './pages/Optimize';
+import PurchaseSimulator from './pages/PurchaseSimulator';
 import Settings from './pages/Settings';
+import WhatIf from './pages/WhatIf';
+import Expenses from './pages/Expenses';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Onboarding": Onboarding,
     "Dashboard": Dashboard,
-    "PurchaseSimulator": PurchaseSimulator,
-    "WhatIf": WhatIf,
     "Loans": Loans,
+    "Onboarding": Onboarding,
     "Optimize": Optimize,
+    "PurchaseSimulator": PurchaseSimulator,
     "Settings": Settings,
+    "WhatIf": WhatIf,
+    "Expenses": Expenses,
 }
 
 export const pagesConfig = {

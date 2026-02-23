@@ -8,7 +8,7 @@ import VoiceAssistant from '@/components/voice/VoiceAssistant';
 const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
   { icon: ShoppingBag, label: 'Köp', page: 'PurchaseSimulator' },
-  { icon: TrendingUp, label: 'Optimera', page: 'Optimize' },
+  { icon: TrendingUp, label: 'Utgifter', page: 'Expenses' },
   { icon: Settings, label: 'Inställningar', page: 'Settings' },
 ];
 
