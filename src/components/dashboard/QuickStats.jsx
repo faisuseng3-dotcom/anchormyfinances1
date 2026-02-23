@@ -1,6 +1,7 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, Wallet, PiggyBank, Target, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Progress } from "@/components/ui/progress";
 
 const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
@@ -34,7 +35,9 @@ export default function QuickStats({ profile }) {
       icon: Target,
       color: 'bg-purple-50 text-purple-600',
       iconColor: 'text-purple-500',
-      subtitle: profile.savingsGoalName
+      subtitle: profile.savingsGoalName,
+      showProgress: profile.savingsGoal > 0,
+      progressValue: savingsProgress
     },
     {
       label: 'Fasta kostnader',
@@ -62,6 +65,14 @@ export default function QuickStats({ profile }) {
             <p className="text-lg font-semibold mt-1">{stat.value}</p>
             {stat.subtitle && (
               <p className="text-xs text-slate-500 mt-1 truncate">{stat.subtitle}</p>
+            )}
+            {stat.showProgress && (
+              <div className="mt-2">
+                <Progress value={stat.progressValue} className="h-1.5" />
+                <p className="text-xs text-slate-500 mt-1">
+                  {formatNumber(profile.buffer)} / {formatNumber(profile.savingsGoal)} kr
+                </p>
+              </div>
             )}
           </motion.div>
         );
