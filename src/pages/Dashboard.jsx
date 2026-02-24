@@ -196,18 +196,25 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-24">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="px-6 pt-8 pb-4">
         <div className="flex items-center justify-between">
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+          >
             <p className="text-slate-500 text-sm">Välkommen tillbaka</p>
-            <h1 className="text-2xl font-bold text-slate-900">ANCHOR</h1>
-          </div>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              ANCHOR
+            </h1>
+          </motion.div>
           <Link to={createPageUrl('Settings')}>
-            <Button variant="ghost" size="icon" className="rounded-xl">
-              <Settings className="w-5 h-5 text-slate-600" />
-            </Button>
+            <motion.div whileTap={{ scale: 0.9 }}>
+              <Button variant="ghost" size="icon" className="rounded-xl bg-white/5 hover:bg-white/10 border border-white/10">
+                <Settings className="w-5 h-5 text-slate-400" />
+              </Button>
+            </motion.div>
           </Link>
         </div>
       </div>
@@ -228,16 +235,18 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 gap-3">
           <motion.button
             whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
             onClick={() => setShowExpenseModal(true)}
-            className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl p-4 text-white shadow-lg"
+            className="glass-effect rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20 relative overflow-hidden"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-lg bg-white/20 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-emerald-600/20" />
+            <div className="relative flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg">
                 <Plus className="w-6 h-6" />
               </div>
               <div className="text-left">
-                <p className="font-semibold">Registrera köp</p>
-                <p className="text-xs text-white/80">Lägg till utgift</p>
+                <p className="font-semibold text-white">Registrera köp</p>
+                <p className="text-xs text-slate-400">Lägg till utgift</p>
               </div>
             </div>
           </motion.button>
@@ -245,15 +254,17 @@ export default function Dashboard() {
           <Link to={createPageUrl('Expenses')}>
             <motion.div
               whileTap={{ scale: 0.95 }}
-              className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm h-full"
+              whileHover={{ scale: 1.02 }}
+              className="glass-effect rounded-2xl p-5 shadow-lg h-full relative overflow-hidden"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <ShoppingBag className="w-6 h-6 text-purple-600" />
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/10" />
+              <div className="relative flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
+                  <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-left">
-                  <p className="font-semibold text-slate-900">Se utgifter</p>
-                  <p className="text-xs text-slate-500">Översikt</p>
+                  <p className="font-semibold text-white">Se utgifter</p>
+                  <p className="text-xs text-slate-400">Översikt</p>
                 </div>
               </div>
             </motion.div>
@@ -262,22 +273,26 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-4 gap-2">
           {[
-            { icon: Zap, label: 'What If', page: 'WhatIf', color: 'bg-amber-100 text-amber-600' },
-            { icon: Landmark, label: 'Lån', page: 'Loans', color: 'bg-blue-100 text-blue-600' },
-            { icon: TrendingUp, label: 'Optimera', page: 'Optimize', color: 'bg-emerald-100 text-emerald-600' },
-            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'bg-purple-100 text-purple-600' },
-          ].map((action) => {
+            { icon: Zap, label: 'What If', page: 'WhatIf', color: 'from-amber-500 to-orange-600' },
+            { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-blue-500 to-cyan-600' },
+            { icon: TrendingUp, label: 'Optimera', page: 'Optimize', color: 'from-emerald-500 to-green-600' },
+            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-purple-500 to-pink-600' },
+          ].map((action, i) => {
             const Icon = action.icon;
             return (
               <Link key={action.page} to={createPageUrl(action.page)}>
                 <motion.div
-                  whileTap={{ scale: 0.95 }}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white border border-slate-100 shadow-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  whileTap={{ scale: 0.9 }}
+                  whileHover={{ scale: 1.05 }}
+                  className="flex flex-col items-center gap-2 p-3 rounded-xl glass-effect"
                 >
-                  <div className={`w-10 h-10 rounded-lg ${action.color} flex items-center justify-center`}>
-                    <Icon className="w-5 h-5" />
+                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg`}>
+                    <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-xs text-slate-600">{action.label}</span>
+                  <span className="text-xs text-slate-300">{action.label}</span>
                 </motion.div>
               </Link>
             );
@@ -286,7 +301,10 @@ export default function Dashboard() {
 
         {/* AI Insights */}
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">AI-insikter</h2>
+          <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-indigo-400" />
+            AI-insikter
+          </h2>
           <div className="space-y-3">
             {insights.map((insight, i) => (
               <AIInsightCard
