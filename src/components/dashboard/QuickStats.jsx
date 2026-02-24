@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Wallet, PiggyBank, Target, AlertTriangle } from 'lucide-react';
+import { TrendingUp, TrendingDown, Wallet, PiggyBank, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Progress } from "@/components/ui/progress";
 
@@ -19,22 +19,22 @@ export default function QuickStats({ profile }) {
       label: 'Månadens marginal',
       value: `${formatNumber(monthlyMargin)} kr`,
       icon: monthlyMargin >= 0 ? TrendingUp : TrendingDown,
-      color: monthlyMargin >= 0 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600',
-      iconColor: monthlyMargin >= 0 ? 'text-emerald-500' : 'text-rose-500'
+      iconColor: monthlyMargin >= 0 ? 'text-emerald-400' : 'text-rose-400',
+      gradient: monthlyMargin >= 0 ? 'from-emerald-500 to-green-600' : 'from-rose-500 to-red-600'
     },
     {
       label: 'Din buffert',
       value: `${formatNumber(profile.buffer)} kr`,
       icon: Wallet,
-      color: 'bg-blue-50 text-blue-600',
-      iconColor: 'text-blue-500'
+      iconColor: 'text-blue-400',
+      gradient: 'from-blue-500 to-cyan-600'
     },
     {
       label: 'Sparmål',
       value: profile.savingsGoal > 0 ? `${savingsProgress}%` : 'Ej satt',
       icon: Target,
-      color: 'bg-purple-50 text-purple-600',
-      iconColor: 'text-purple-500',
+      iconColor: 'text-purple-400',
+      gradient: 'from-purple-500 to-pink-600',
       subtitle: profile.savingsGoalName,
       showProgress: profile.savingsGoal > 0,
       progressValue: savingsProgress
@@ -43,8 +43,8 @@ export default function QuickStats({ profile }) {
       label: 'Fasta kostnader',
       value: `${formatNumber(totalFixedCosts)} kr`,
       icon: PiggyBank,
-      color: 'bg-amber-50 text-amber-600',
-      iconColor: 'text-amber-500'
+      iconColor: 'text-amber-400',
+      gradient: 'from-amber-500 to-orange-600'
     }
   ];
 
@@ -58,22 +58,41 @@ export default function QuickStats({ profile }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className={`p-4 rounded-xl ${stat.color}`}
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            className="glass-effect rounded-xl p-4 shadow-lg relative overflow-hidden"
           >
-            <Icon className={`w-5 h-5 ${stat.iconColor} mb-2`} />
-            <p className="text-xs text-slate-500">{stat.label}</p>
-            <p className="text-lg font-semibold mt-1">{stat.value}</p>
-            {stat.subtitle && (
-              <p className="text-xs text-slate-500 mt-1 truncate">{stat.subtitle}</p>
-            )}
-            {stat.showProgress && (
-              <div className="mt-2">
-                <Progress value={stat.progressValue} className="h-1.5" />
-                <p className="text-xs text-slate-500 mt-1">
-                  {formatNumber(profile.buffer)} / {formatNumber(profile.savingsGoal)} kr
-                </p>
+            <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${stat.gradient} opacity-10 rounded-full -mr-8 -mt-8`} />
+            
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-slate-400">{stat.label}</span>
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${stat.gradient} opacity-20 flex items-center justify-center`}>
+                  <Icon className={`w-4 h-4 ${stat.iconColor}`} />
+                </div>
               </div>
-            )}
+              <div className="flex items-baseline gap-2">
+                <motion.span 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 + 0.2 }}
+                  className="text-2xl font-bold text-white"
+                >
+                  {stat.value}
+                </motion.span>
+              </div>
+              {stat.subtitle && (
+                <p className="text-xs text-slate-500 mt-1 truncate">{stat.subtitle}</p>
+              )}
+              {stat.showProgress && (
+                <div className="mt-2">
+                  <Progress value={stat.progressValue} className="h-1.5 bg-white/10" />
+                  <p className="text-xs text-slate-500 mt-1">
+                    {formatNumber(profile.buffer)} / {formatNumber(profile.savingsGoal)} kr
+                  </p>
+                </div>
+              )}
+            </div>
           </motion.div>
         );
       })}
