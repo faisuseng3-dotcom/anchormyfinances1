@@ -43,7 +43,8 @@ export default function AIInsightCard({ type = 'warning', title, description, im
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.1 }}
       whileHover={{ scale: 1.02, x: 5 }}
-      className="glass-effect rounded-xl p-4 border border-white/10 relative overflow-hidden"
+      whileTap={{ scale: 0.98 }}
+      className="glass-effect rounded-xl p-4 border border-white/10 relative overflow-hidden cursor-pointer"
     >
       <div className={`absolute inset-0 ${config.bg}`} />
       

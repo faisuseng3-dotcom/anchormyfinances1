@@ -60,8 +60,8 @@ export default function QuickStats({ profile }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
-            className="glass-effect rounded-xl p-4 shadow-lg relative overflow-hidden"
+            whileHover={{ scale: 1.02, y: -2 }}
+            className="glass-effect rounded-xl p-4 shadow-lg hover:shadow-2xl transition-shadow relative overflow-hidden cursor-pointer"
           >
             <div className={`absolute top-0 right-0 w-20 h-20 bg-gradient-to-br ${stat.gradient} opacity-10 rounded-full -mr-8 -mt-8`} />
             
