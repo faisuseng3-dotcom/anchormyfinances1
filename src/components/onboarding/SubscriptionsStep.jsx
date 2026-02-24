@@ -58,19 +58,19 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
           return (
             <div
               key={i}
-              className="flex items-center justify-between p-4 bg-white rounded-xl border border-slate-100 shadow-sm"
+              className="flex items-center justify-between p-4 dark-card"
             >
               <div className="flex items-center gap-3">
                 <div className={`w-10 h-10 rounded-lg ${cat.color} flex items-center justify-center`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-900">{sub.name}</p>
-                  <p className="text-sm text-slate-500">{cat.label}</p>
+                  <p className="font-medium text-white">{sub.name}</p>
+                  <p className="text-sm text-slate-400">{cat.label}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="font-semibold text-slate-900">{sub.amount} kr</span>
+                <span className="font-semibold text-white">{sub.amount} kr</span>
                 <button
                   onClick={() => removeSubscription(i)}
                   className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
@@ -84,7 +84,7 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
 
         {/* Add new form */}
         {showForm ? (
-          <div className="p-4 bg-slate-50 rounded-xl space-y-4">
+          <div className="p-4 dark-card rounded-xl space-y-4">
             <Input
               placeholder="Namn (t.ex. Netflix, Gym)"
               value={newSub.name}
@@ -131,7 +131,7 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
         ) : (
           <button
             onClick={() => setShowForm(true)}
-            className="w-full p-4 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-colors"
+            className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:border-emerald-500 hover:text-emerald-400 transition-colors"
           >
             <Plus className="w-5 h-5" />
             Lägg till kostnad

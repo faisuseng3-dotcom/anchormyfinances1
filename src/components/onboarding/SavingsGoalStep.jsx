@@ -39,7 +39,7 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
       <div className="space-y-6">
         {/* Suggestions */}
         <div>
-          <Label className="text-slate-600 text-sm flex items-center gap-2 mb-3">
+          <Label className="text-slate-300 text-sm flex items-center gap-2 mb-3">
             <Sparkles className="w-4 h-4 text-amber-500" />
             Populära sparmål
           </Label>
@@ -50,12 +50,12 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
                 onClick={() => selectSuggestion(s)}
                 className={`p-3 rounded-xl text-left border transition-all ${
                   data.savingsGoalName === s.name
-                    ? 'border-emerald-500 bg-emerald-50'
-                    : 'border-slate-200 hover:border-emerald-300'
+                    ? 'border-emerald-500 bg-emerald-500/10'
+                    : 'border-white/10 hover:border-emerald-500/30 dark-card'
                 }`}
               >
-                <p className="font-medium text-sm text-slate-900">{s.name}</p>
-                <p className="text-xs text-slate-500">{formatNumber(s.amount)} kr</p>
+                <p className="font-medium text-sm text-white">{s.name}</p>
+                <p className="text-xs text-slate-400">{formatNumber(s.amount)} kr</p>
               </button>
             ))}
           </div>
@@ -68,12 +68,12 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
               <div className="w-full border-t border-slate-200"></div>
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-gradient-to-b from-slate-50 to-white px-2 text-slate-500">eller eget mål</span>
+              <span className="bg-[#0B0F1A] px-2 text-slate-400">eller eget mål</span>
             </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-slate-700 flex items-center gap-2">
+            <Label className="text-slate-300 flex items-center gap-2">
               <Target className="w-4 h-4 text-emerald-500" />
               Namn på sparmål
             </Label>

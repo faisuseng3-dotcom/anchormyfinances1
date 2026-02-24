@@ -7,7 +7,7 @@ export default function OnboardingStep({ children, title, subtitle, step, totalS
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen bg-gradient-to-b from-slate-50 to-white px-6 py-8"
+      className="min-h-screen px-6 py-8"
     >
       <div className="max-w-md mx-auto">
         {/* Progress */}
@@ -24,8 +24,8 @@ export default function OnboardingStep({ children, title, subtitle, step, totalS
 
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl font-semibold text-slate-900 mb-2">{title}</h1>
-          {subtitle && <p className="text-slate-500 text-sm leading-relaxed">{subtitle}</p>}
+          <h1 className="text-2xl font-semibold text-white mb-2">{title}</h1>
+          {subtitle && <p className="text-slate-400 text-sm leading-relaxed">{subtitle}</p>}
         </div>
 
         {/* Content */}

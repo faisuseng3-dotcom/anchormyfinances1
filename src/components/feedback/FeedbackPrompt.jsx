@@ -41,7 +41,7 @@ export default function FeedbackPrompt({ isOpen, onClose, question, options, con
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           onClick={(e) => e.stopPropagation()}
-          className="bg-white rounded-2xl p-6 max-w-sm w-full shadow-xl"
+          className="glass-effect rounded-2xl p-6 max-w-sm w-full shadow-xl"
         >
           {!submitted ? (
             <>
@@ -59,15 +59,15 @@ export default function FeedbackPrompt({ isOpen, onClose, question, options, con
                 </Button>
               </div>
 
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">{question}</h3>
-              <p className="text-sm text-slate-500 mb-4">Din feedback hjälper oss förbättra appen</p>
+              <h3 className="text-lg font-semibold text-white mb-2">{question}</h3>
+              <p className="text-sm text-slate-400 mb-4">Din feedback hjälper oss förbättra appen</p>
 
               <div className="space-y-2">
                 {options.map((option, i) => (
                   <button
                     key={i}
                     onClick={() => handleResponse(option)}
-                    className="w-full p-3 rounded-xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50 transition-all text-left font-medium text-slate-900"
+                    className="w-full p-3 rounded-xl border-2 border-white/10 hover:border-purple-500 hover:bg-purple-500/10 transition-all text-left font-medium text-white"
                   >
                     {option}
                   </button>
@@ -85,7 +85,7 @@ export default function FeedbackPrompt({ isOpen, onClose, question, options, con
                   ✓
                 </motion.div>
               </div>
-              <p className="font-semibold text-slate-900">Tack för din feedback!</p>
+              <p className="font-semibold text-white">Tack för din feedback!</p>
             </div>
           )}
         </motion.div>

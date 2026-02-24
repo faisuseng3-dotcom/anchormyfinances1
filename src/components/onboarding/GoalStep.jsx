@@ -57,8 +57,8 @@ export default function GoalStep({ data, onChange, onNext, onBack }) {
               onClick={() => selectGoal(goal.id)}
               className={`w-full p-4 rounded-xl text-left transition-all border-2 ${
                 isSelected
-                  ? 'border-emerald-500 bg-emerald-50'
-                  : 'border-slate-100 bg-white hover:border-slate-200'
+                  ? 'border-emerald-500 bg-emerald-500/10'
+                  : 'border-white/10 dark-card hover:border-emerald-500/30'
               }`}
             >
               <div className="flex items-start gap-4">
@@ -67,14 +67,14 @@ export default function GoalStep({ data, onChange, onNext, onBack }) {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-slate-900">{goal.title}</h3>
+                    <h3 className="font-semibold text-white">{goal.title}</h3>
                     {isSelected && (
                       <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
                         <Check className="w-4 h-4 text-white" />
                       </div>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 mt-1">{goal.description}</p>
+                  <p className="text-sm text-slate-400 mt-1">{goal.description}</p>
                 </div>
               </div>
             </button>

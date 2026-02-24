@@ -54,7 +54,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
         {(data.loans || []).map((loan, i) => (
           <div
             key={i}
-            className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm"
+            className="p-4 dark-card"
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
@@ -62,8 +62,8 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
                   <Landmark className="w-5 h-5 text-amber-600" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-900">{loan.name}</p>
-                  <p className="text-sm text-slate-500">{loan.interestRate}% ränta</p>
+                  <p className="font-medium text-white">{loan.name}</p>
+                  <p className="text-sm text-slate-400">{loan.interestRate}% ränta</p>
                 </div>
               </div>
               <button
@@ -75,12 +75,12 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
             </div>
             <div className="flex justify-between text-sm">
               <div>
-                <p className="text-slate-500">Totalt</p>
-                <p className="font-semibold text-slate-900">{formatNumber(loan.totalAmount)} kr</p>
+                <p className="text-slate-400">Totalt</p>
+                <p className="font-semibold text-white">{formatNumber(loan.totalAmount)} kr</p>
               </div>
               <div className="text-right">
-                <p className="text-slate-500">Månadskostnad</p>
-                <p className="font-semibold text-slate-900">{formatNumber(loan.monthlyPayment)} kr</p>
+                <p className="text-slate-400">Månadskostnad</p>
+                <p className="font-semibold text-white">{formatNumber(loan.monthlyPayment)} kr</p>
               </div>
             </div>
           </div>
@@ -88,9 +88,9 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
 
         {/* Add new form */}
         {showForm ? (
-          <div className="p-4 bg-slate-50 rounded-xl space-y-4">
+          <div className="p-4 dark-card rounded-xl space-y-4">
             <div>
-              <Label className="text-slate-600 text-sm">Namn på lån</Label>
+              <Label className="text-slate-300 text-sm">Namn på lån</Label>
               <Input
                 placeholder="t.ex. Billån, CSN, Privatlån"
                 value={newLoan.name}
@@ -100,7 +100,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-slate-600 text-sm">Totalt belopp</Label>
+                <Label className="text-slate-300 text-sm">Totalt belopp</Label>
                 <Input
                   type="text"
                   placeholder="100 000"
@@ -110,7 +110,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
                 />
               </div>
               <div>
-                <Label className="text-slate-600 text-sm">Ränta %</Label>
+                <Label className="text-slate-300 text-sm">Ränta %</Label>
                 <Input
                   type="number"
                   step="0.1"
@@ -122,7 +122,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
               </div>
             </div>
             <div>
-              <Label className="text-slate-600 text-sm">Månadskostnad</Label>
+              <Label className="text-slate-300 text-sm">Månadskostnad</Label>
               <Input
                 type="text"
                 placeholder="2 500"
@@ -150,7 +150,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
         ) : (
           <button
             onClick={() => setShowForm(true)}
-            className="w-full p-4 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center gap-2 text-slate-500 hover:border-emerald-500 hover:text-emerald-600 transition-colors"
+            className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:border-emerald-500 hover:text-emerald-400 transition-colors"
           >
             <Plus className="w-5 h-5" />
             Lägg till lån

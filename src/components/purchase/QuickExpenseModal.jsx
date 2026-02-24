@@ -115,12 +115,12 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
         animate={{ y: 0 }}
         transition={{ type: 'spring', damping: 30, stiffness: 300 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full bg-white rounded-t-3xl p-6 pb-24 max-h-[90vh] overflow-y-auto"
+        className="w-full glass-effect rounded-t-3xl p-6 pb-24 max-h-[90vh] overflow-y-auto"
       >
         {!aiInsight ? (
           <>
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-slate-900">Registrera köp</h3>
+              <h3 className="text-xl font-bold text-white">Registrera köp</h3>
               <Button
                 variant="ghost"
                 size="icon"
@@ -133,7 +133,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
 
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-slate-600 mb-2 block">Vad köpte du?</label>
+                <label className="text-sm text-slate-300 mb-2 block">Vad köpte du?</label>
                 <Input
                   placeholder="t.ex. Lunch på ICA"
                   value={name}
@@ -144,7 +144,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
               </div>
 
               <div>
-                <label className="text-sm text-slate-600 mb-2 block">Belopp</label>
+                <label className="text-sm text-slate-300 mb-2 block">Belopp</label>
                 <div className="relative">
                   <Input
                     type="text"
@@ -159,7 +159,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
               </div>
 
               <div>
-                <label className="text-sm text-slate-600 mb-2 block">Kategori</label>
+                <label className="text-sm text-slate-300 mb-2 block">Kategori</label>
                 <Select value={category} onValueChange={setCategory} disabled={analyzing}>
                   <SelectTrigger className="h-12 rounded-xl">
                     <SelectValue placeholder="Välj kategori" />

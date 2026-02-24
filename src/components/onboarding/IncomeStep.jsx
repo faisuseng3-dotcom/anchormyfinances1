@@ -25,7 +25,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
     >
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label className="text-slate-700 flex items-center gap-2">
+          <Label className="text-slate-300 flex items-center gap-2">
             <Wallet className="w-4 h-4 text-emerald-500" />
             Månatlig nettoinkomst
           </Label>
@@ -42,7 +42,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-slate-700 flex items-center gap-2">
+          <Label className="text-slate-300 flex items-center gap-2">
             <Home className="w-4 h-4 text-emerald-500" />
             Boendekostnad per månad
           </Label>
@@ -59,7 +59,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
         </div>
 
         <div className="space-y-2">
-          <Label className="text-slate-700 flex items-center gap-2">
+          <Label className="text-slate-300 flex items-center gap-2">
             <PiggyBank className="w-4 h-4 text-emerald-500" />
             Nuvarande buffert / sparande
           </Label>
