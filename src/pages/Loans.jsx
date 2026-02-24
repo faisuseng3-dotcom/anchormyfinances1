@@ -60,7 +60,7 @@ export default function Loans() {
   const sortedLoans = [...loans].sort((a, b) => b.interestRate - a.interestRate);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-8">
+    <div className="min-h-screen pb-8">
       {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center gap-4 mb-6">
@@ -70,8 +70,8 @@ export default function Loans() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Lånintelligens</h1>
-            <p className="text-sm text-slate-500">Optimera dina lån</p>
+            <h1 className="text-xl font-bold text-white">Lånintelligens</h1>
+            <p className="text-sm text-slate-400">Optimera dina lån</p>
           </div>
         </div>
 

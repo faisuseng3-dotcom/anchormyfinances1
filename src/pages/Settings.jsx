@@ -126,7 +126,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-24">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
@@ -136,7 +136,7 @@ export default function Settings() {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             </Link>
-            <h1 className="text-xl font-bold text-slate-900">Inställningar</h1>
+            <h1 className="text-xl font-bold text-white">Inställningar</h1>
           </div>
           <Button
             onClick={handleSave}
@@ -150,8 +150,8 @@ export default function Settings() {
 
         <div className="space-y-6">
           {/* Basic info */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-100">
-            <h3 className="font-semibold text-slate-900 mb-4">Grundläggande</h3>
+          <div className="dark-card p-5">
+            <h3 className="font-semibold text-white mb-4">Grundläggande</h3>
             
             <div className="space-y-4">
               <div className="space-y-2">
@@ -232,9 +232,9 @@ export default function Settings() {
           </div>
 
           {/* Subscriptions */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-100">
+          <div className="dark-card p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Abonnemang</h3>
+              <h3 className="font-semibold text-white">Abonnemang</h3>
               <Button
                 size="sm"
                 variant="outline"
@@ -253,13 +253,13 @@ export default function Settings() {
                   className="flex items-center justify-between p-3 bg-slate-50 rounded-xl"
                 >
                   <div>
-                    <p className="font-medium text-slate-900">{sub.name}</p>
-                    <p className="text-sm text-slate-500">
+                    <p className="font-medium text-white">{sub.name}</p>
+                    <p className="text-sm text-slate-400">
                       {categories.find(c => c.id === sub.category)?.label || 'Övrigt'}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="font-medium text-slate-900">{sub.amount} kr</span>
+                    <span className="font-medium text-white">{sub.amount} kr</span>
                     <button
                       onClick={() => removeSubscription(i)}
                       className="p-1 hover:bg-slate-200 rounded-lg"
@@ -321,9 +321,9 @@ export default function Settings() {
           </div>
 
           {/* Loans */}
-          <div className="bg-white rounded-2xl p-5 border border-slate-100">
+          <div className="dark-card p-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-900">Lån</h3>
+              <h3 className="font-semibold text-white">Lån</h3>
               <Button
                 size="sm"
                 variant="outline"
@@ -342,15 +342,15 @@ export default function Settings() {
                   className="flex items-center justify-between p-3 bg-slate-50 rounded-xl"
                 >
                   <div>
-                    <p className="font-medium text-slate-900">{loan.name}</p>
-                    <p className="text-sm text-slate-500">
+                    <p className="font-medium text-white">{loan.name}</p>
+                    <p className="text-sm text-slate-400">
                       {loan.interestRate}% ränta
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-right">
-                      <p className="font-medium text-slate-900">{formatNumber(loan.totalAmount)} kr</p>
-                      <p className="text-xs text-slate-500">{formatNumber(loan.monthlyPayment)} kr/mån</p>
+                      <p className="font-medium text-white">{formatNumber(loan.totalAmount)} kr</p>
+                      <p className="text-xs text-slate-400">{formatNumber(loan.monthlyPayment)} kr/mån</p>
                     </div>
                     <button
                       onClick={() => removeLoan(i)}

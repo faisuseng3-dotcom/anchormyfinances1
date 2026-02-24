@@ -211,7 +211,7 @@ Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-ha
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-8">
+    <div className="min-h-screen pb-8">
       {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center gap-4 mb-6">
@@ -221,19 +221,19 @@ Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-ha
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Köpsimulator</h1>
-            <p className="text-sm text-slate-500">Analysera köpets påverkan</p>
+            <h1 className="text-xl font-bold text-white">Köpsimulator</h1>
+            <p className="text-sm text-slate-400">Analysera köpets påverkan</p>
           </div>
         </div>
 
         {/* Input */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm space-y-4">
+        <div className="dark-card p-5 space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center">
               <ShoppingBag className="w-6 h-6 text-purple-600" />
             </div>
             <div className="flex-1">
-              <p className="text-sm text-slate-500">Vad vill du köpa?</p>
+              <p className="text-sm text-slate-400">Vad vill du köpa?</p>
             </div>
           </div>
           
@@ -288,8 +288,8 @@ Lägg till minst 3-5 butiker. Använd verkliga svenska elektronikkedjor och e-ha
             <div className="grid grid-cols-2 gap-3">
               <div className="p-4 bg-white rounded-xl border border-slate-100">
                 <Wallet className="w-5 h-5 text-blue-500 mb-2" />
-                <p className="text-xs text-slate-500">Buffert-påverkan</p>
-                <p className={`text-lg font-semibold ${analysis.bufferImpact > 30 ? 'text-rose-600' : 'text-slate-900'}`}>
+                <p className="text-xs text-slate-400">Buffert-påverkan</p>
+                <p className={`text-lg font-semibold ${analysis.bufferImpact > 30 ? 'text-rose-400' : 'text-white'}`}>
                   -{analysis.bufferImpact}%
                 </p>
                 <p className="text-xs text-slate-400 mt-1">

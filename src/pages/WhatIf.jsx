@@ -95,7 +95,7 @@ export default function WhatIf() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-8">
+    <div className="min-h-screen pb-8">
       {/* Header */}
       <div className="px-6 pt-8 pb-6">
         <div className="flex items-center gap-4 mb-6">
@@ -105,8 +105,8 @@ export default function WhatIf() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">What If?</h1>
-            <p className="text-sm text-slate-500">Simulera framtidsscenarier</p>
+            <h1 className="text-xl font-bold text-white">What If?</h1>
+            <p className="text-sm text-slate-400">Simulera framtidsscenarier</p>
           </div>
         </div>
 

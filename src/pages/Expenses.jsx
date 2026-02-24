@@ -94,7 +94,7 @@ export default function Expenses() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white pb-24">
+    <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="px-6 pt-8 pb-4">
         <div className="flex items-center gap-4 mb-6">
@@ -104,8 +104,8 @@ export default function Expenses() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-slate-900">Utgifter</h1>
-            <p className="text-sm text-slate-500">Registrera dina köp</p>
+            <h1 className="text-xl font-bold text-white">Utgifter</h1>
+            <p className="text-sm text-slate-400">Registrera dina köp</p>
           </div>
           <Button
             onClick={() => setShowAddForm(true)}
@@ -117,11 +117,11 @@ export default function Expenses() {
         </div>
 
         {/* Total this month */}
-        <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-5 text-white">
-          <p className="text-slate-300 text-sm">Total denna månad</p>
-          <p className="text-3xl font-bold mt-1">{formatNumber(totalSpent)} kr</p>
+        <div className="glass-effect rounded-2xl p-5 text-white shadow-xl">
+          <p className="text-slate-400 text-sm">Total denna månad</p>
+          <p className="text-4xl font-bold mt-1 tracking-tight">{formatNumber(totalSpent)} kr</p>
           {topCategory && (
-            <p className="text-slate-300 text-sm mt-3">
+            <p className="text-slate-400 text-sm mt-3">
               Du spenderar mest på <span className="font-semibold text-white">{categories.find(c => c.id === topCategory[0])?.label}</span>
             </p>
           )}
@@ -131,7 +131,7 @@ export default function Expenses() {
       {/* Category Insights */}
       {sortedCategories.length > 0 && (
         <div className="px-6 mb-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">Topp 3 kategorier</h2>
+          <h2 className="text-lg font-semibold text-white mb-3">Topp 3 kategorier</h2>
           <div className="space-y-3">
             {sortedCategories.map(([catId, total], index) => {
               const cat = categories.find(c => c.id === catId);
@@ -144,16 +144,16 @@ export default function Expenses() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl p-4 border border-slate-100"
+                  className="dark-card p-4"
                 >
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-lg ${cat?.color} flex items-center justify-center`}>
                         <Icon className="w-5 h-5" />
                       </div>
-                      <span className="font-medium text-slate-900">{cat?.label}</span>
+                      <span className="font-medium text-white">{cat?.label}</span>
                     </div>
-                    <span className="font-bold text-slate-900">{formatNumber(total)} kr</span>
+                    <span className="font-bold text-white">{formatNumber(total)} kr</span>
                   </div>
                   <Progress value={percentage} className="h-2" />
                   <p className="text-xs text-slate-500 mt-1">{percentage}% av totala utgifter</p>
@@ -166,7 +166,7 @@ export default function Expenses() {
 
       {/* Recent Expenses */}
       <div className="px-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-3">Senaste köp</h2>
+        <h2 className="text-lg font-semibold text-white mb-3">Senaste köp</h2>
         <div className="space-y-2">
           {expenses.slice(-10).reverse().map((expense, i) => {
             const cat = categories.find(c => c.id === expense.category);
@@ -177,18 +177,18 @@ export default function Expenses() {
                 key={i}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-white rounded-xl p-4 border border-slate-100 flex items-center justify-between"
+                className="dark-card p-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-10 h-10 rounded-lg ${cat?.color} flex items-center justify-center`}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">{expense.name}</p>
-                    <p className="text-xs text-slate-500">{expense.date}</p>
+                    <p className="font-medium text-white">{expense.name}</p>
+                    <p className="text-xs text-slate-400">{expense.date}</p>
                   </div>
                 </div>
-                <p className="font-semibold text-slate-900">{formatNumber(expense.amount)} kr</p>
+                <p className="font-semibold text-white">{formatNumber(expense.amount)} kr</p>
               </motion.div>
             );
           })}
@@ -207,9 +207,9 @@ export default function Expenses() {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full bg-white rounded-t-3xl p-6"
+            className="w-full glass-effect rounded-t-3xl p-6 pb-24"
           >
-            <h3 className="text-xl font-bold text-slate-900 mb-4">Lägg till utgift</h3>
+            <h3 className="text-xl font-bold text-white mb-4">Lägg till utgift</h3>
             
             <div className="space-y-4">
               <Input
