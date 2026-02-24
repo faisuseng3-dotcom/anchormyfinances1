@@ -1,5 +1,26 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, useSpring, useTransform } from 'framer-motion';
+
+function AnimatedScore({ score, className, glow }) {
+  const spring = useSpring(0, { duration: 2000, bounce: 0 });
+  const display = useTransform(spring, (current) => Math.round(current));
+
+  useEffect(() => {
+    spring.set(score);
+  }, [spring, score]);
+
+  return (
+    <motion.span
+      className={className}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.3, type: "spring" }}
+      style={{ textShadow: `0 0 20px ${glow}` }}
+    >
+      {display}
+    </motion.span>
+  );
+}
 
 export default function HealthScore({ score, label }) {
   const getColor = () => {
@@ -50,17 +71,11 @@ export default function HealthScore({ score, label }) {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <motion.span
+            <AnimatedScore
+              score={score}
               className={`text-4xl font-bold ${colors.text}`}
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, type: "spring" }}
-              style={{
-                textShadow: `0 0 20px ${colors.glow}`
-              }}
-            >
-              {score}
-            </motion.span>
+              glow={colors.glow}
+            />
           </div>
         </div>
         <div>

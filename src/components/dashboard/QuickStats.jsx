@@ -2,6 +2,7 @@ import React from 'react';
 import { TrendingUp, TrendingDown, Wallet, PiggyBank, Target } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Progress } from "@/components/ui/progress";
+import { AnimatedCurrency, AnimatedNumber } from "@/components/ui/animated-number";
 
 const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
@@ -72,14 +73,41 @@ export default function QuickStats({ profile }) {
                 </div>
               </div>
               <div className="flex items-baseline gap-2">
-                <motion.span 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 + 0.2 }}
-                  className="text-2xl font-bold text-white"
-                >
-                  {stat.value}
-                </motion.span>
+                {stat.label.includes('Sparmål') && profile.savingsGoal === 0 ? (
+                  <motion.span 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 + 0.2 }}
+                    className="text-2xl font-bold text-white"
+                  >
+                    Ej satt
+                  </motion.span>
+                ) : stat.label.includes('Sparmål') ? (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 + 0.2 }}
+                    className="text-2xl font-bold text-white"
+                  >
+                    <AnimatedNumber value={savingsProgress} duration={1.5} />%
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 + 0.2 }}
+                    className="text-2xl font-bold text-white tracking-tight"
+                  >
+                    <AnimatedCurrency 
+                      value={
+                        stat.label.includes('marginal') ? monthlyMargin :
+                        stat.label.includes('buffert') ? profile.buffer :
+                        totalFixedCosts
+                      } 
+                      duration={1.5}
+                    />
+                  </motion.div>
+                )}
               </div>
               {stat.subtitle && (
                 <p className="text-xs text-slate-500 mt-1 truncate">{stat.subtitle}</p>

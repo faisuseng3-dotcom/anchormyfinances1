@@ -172,8 +172,24 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center">
-        <div className="w-10 h-10 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="space-y-4 w-full max-w-md px-6">
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+            className="h-32 glass-effect rounded-2xl"
+          />
+          <div className="grid grid-cols-2 gap-3">
+            {[1,2,3,4].map((i) => (
+              <motion.div
+                key={i}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1 }}
+                className="h-24 glass-effect rounded-xl"
+              />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
