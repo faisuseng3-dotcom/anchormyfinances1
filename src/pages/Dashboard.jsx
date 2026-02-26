@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus } from 'lucide-react';
+import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import HealthScore from '@/components/dashboard/HealthScore';
@@ -320,8 +320,8 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-4 gap-2">
           {[
-            { icon: Zap, label: 'What If', page: 'WhatIf', color: 'from-amber-500 to-orange-600' },
-            { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-blue-500 to-cyan-600' },
+            { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
+            { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
             { icon: TrendingUp, label: 'Optimera', page: 'Optimize', color: 'from-emerald-500 to-green-600' },
             { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-purple-500 to-pink-600' },
           ].map((action, i) => {

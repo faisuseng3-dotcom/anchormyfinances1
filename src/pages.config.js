@@ -55,6 +55,7 @@ import Optimize from './pages/Optimize';
 import PurchaseSimulator from './pages/PurchaseSimulator';
 import Settings from './pages/Settings';
 import WhatIf from './pages/WhatIf';
+import TravelPlanner from './pages/TravelPlanner';
 import __Layout from './Layout.jsx';
 
 
@@ -67,6 +68,7 @@ export const PAGES = {
     "PurchaseSimulator": PurchaseSimulator,
     "Settings": Settings,
     "WhatIf": WhatIf,
+    "TravelPlanner": TravelPlanner,
 }
 
 export const pagesConfig = {
