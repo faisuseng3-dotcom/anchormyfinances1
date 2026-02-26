@@ -13,6 +13,8 @@ import AIInsightCard from '@/components/dashboard/AIInsightCard';
 import MentalLoadIndex from '@/components/dashboard/MentalLoadIndex';
 import WeeklySummary from '@/components/dashboard/WeeklySummary';
 import RiskSimulator from '@/components/dashboard/RiskSimulator';
+import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
+import { AnimatePresence } from 'framer-motion';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -36,6 +38,18 @@ export default function Dashboard() {
       navigate(createPageUrl('Onboarding'));
     }
   }, [profile, navigate]);
+
+  // Show first-time welcome message with mini-analysis
+  const [showWelcome, setShowWelcome] = useState(false);
+  useEffect(() => {
+    if (profile && profile.onboardingCompleted) {
+      const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+      if (!hasSeenWelcome) {
+        setShowWelcome(true);
+        localStorage.setItem('hasSeenWelcome', 'true');
+      }
+    }
+  }, [profile]);
 
   useEffect(() => {
     // Track dashboard view
@@ -353,6 +367,16 @@ export default function Dashboard() {
           setShowExpenseModal(false);
         }}
       />
+
+      {/* Welcome Analysis */}
+      <AnimatePresence>
+        {showWelcome && (
+          <WelcomeAnalysis 
+            profile={profile} 
+            onClose={() => setShowWelcome(false)} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

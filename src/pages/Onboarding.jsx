@@ -3,20 +3,20 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { AnimatePresence } from 'framer-motion';
-import IncomeStep from '@/components/onboarding/IncomeStep';
-import SubscriptionsStep from '@/components/onboarding/SubscriptionsStep';
-import LoansStep from '@/components/onboarding/LoansStep';
-import SavingsGoalStep from '@/components/onboarding/SavingsGoalStep';
-import GoalStep from '@/components/onboarding/GoalStep';
+import WelcomeStep from '@/components/onboarding/WelcomeStep';
+import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
+import QuickDataStep from '@/components/onboarding/QuickDataStep';
 
 export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
+    userGoal: '', // control, save, improve, plan
     income: 0,
     housingCost: 0,
     buffer: 0,
+    totalLoans: 0,
     subscriptions: [],
     loans: [],
     savingsGoal: 0,
@@ -48,39 +48,22 @@ export default function Onboarding() {
   };
 
   const steps = [
-    <IncomeStep
-      key="income"
-      data={data}
-      onChange={setData}
+    <WelcomeStep
+      key="welcome"
       onNext={() => setStep(1)}
     />,
-    <SubscriptionsStep
-      key="subscriptions"
-      data={data}
-      onChange={setData}
-      onNext={() => setStep(2)}
-      onBack={() => setStep(0)}
-    />,
-    <LoansStep
-      key="loans"
-      data={data}
-      onChange={setData}
-      onNext={() => setStep(3)}
-      onBack={() => setStep(1)}
-    />,
-    <SavingsGoalStep
-      key="savings"
-      data={data}
-      onChange={setData}
-      onNext={() => setStep(4)}
-      onBack={() => setStep(2)}
-    />,
-    <GoalStep
+    <QuickGoalStep
       key="goal"
       data={data}
       onChange={setData}
+      onNext={() => setStep(2)}
+    />,
+    <QuickDataStep
+      key="data"
+      data={data}
+      onChange={setData}
       onNext={handleComplete}
-      onBack={() => setStep(3)}
+      onBack={() => setStep(1)}
     />
   ];
 
