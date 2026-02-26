@@ -7,12 +7,9 @@ import { motion } from 'framer-motion';
 import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
-import HealthScore from '@/components/dashboard/HealthScore';
-import QuickStats from '@/components/dashboard/QuickStats';
-import AIInsightCard from '@/components/dashboard/AIInsightCard';
-import MentalLoadIndex from '@/components/dashboard/MentalLoadIndex';
-import WeeklySummary from '@/components/dashboard/WeeklySummary';
-import RiskSimulator from '@/components/dashboard/RiskSimulator';
+import HeroCards from '@/components/dashboard/HeroCards';
+import InsightsSection from '@/components/dashboard/InsightsSection';
+import ForecastChart from '@/components/dashboard/ForecastChart';
 import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
 import { AnimatePresence } from 'framer-motion';
 import ModeSelector from '@/components/modes/ModeSelector';
@@ -273,12 +270,16 @@ export default function Dashboard() {
       </div>
 
       <div className="px-6 space-y-6">
-        {/* Mode-specific Dashboard */}
-        {currentMode === 'basic' && <BasicDashboard profile={profile} />}
-        {currentMode === 'smart' && <SmartDashboard profile={profile} />}
-        {currentMode === 'pro' && <ProDashboard profile={profile} />}
+        {/* Hero Cards */}
+        <HeroCards profile={profile} />
 
-        {/* Quick Actions - Show in all modes */}
+        {/* Forecast Chart */}
+        <ForecastChart profile={profile} />
+
+        {/* Insights, Risks & Actions */}
+        <InsightsSection insights={insights} profile={profile} />
+
+        {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -318,12 +319,47 @@ export default function Dashboard() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        {/* Pro Tools with AI Glow */}
+        <Link to={createPageUrl('ProTools')}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            whileTap={{ scale: 0.98 }}
+            whileHover={{ scale: 1.01 }}
+            className="relative overflow-hidden rounded-2xl p-6 cursor-pointer group"
+            style={{
+              background: 'rgba(139, 92, 246, 0.1)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              boxShadow: '0 0 40px rgba(139, 92, 246, 0.2)'
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/50">
+                <TrendingUp className="w-7 h-7 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-white mb-1">Pro Tools</h3>
+                <p className="text-xs text-slate-400">15 avancerade verktyg för din ekonomi</p>
+              </div>
+              <motion.div
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <Brain className="w-6 h-6 text-purple-400" />
+              </motion.div>
+            </div>
+          </motion.div>
+        </Link>
+
+        {/* Other Actions */}
+        <div className="grid grid-cols-3 gap-2">
           {[
             { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
             { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
-            { icon: TrendingUp, label: 'Pro Tools', page: 'ProTools', color: 'from-purple-500 to-pink-600' },
-            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600' },
+            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600', isPro: true },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
@@ -331,15 +367,22 @@ export default function Dashboard() {
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: 0.45 + i * 0.05 }}
                   whileTap={{ scale: 0.9 }}
                   whileHover={{ scale: 1.05 }}
-                  className="flex flex-col items-center gap-2 p-3 rounded-xl glass-effect"
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl glass-effect relative"
                 >
-                  <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg`}>
-                    <Icon className="w-5 h-5 text-white" />
+                  {action.isPro && (
+                    <div className="absolute top-2 right-2">
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                        <span className="text-[8px] font-bold text-white">PRO</span>
+                      </div>
+                    </div>
+                  )}
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg`}>
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <span className="text-xs text-slate-300">{action.label}</span>
+                  <span className="text-xs text-slate-300 font-medium">{action.label}</span>
                 </motion.div>
               </Link>
             );
