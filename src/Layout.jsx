@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { Home, ShoppingBag, TrendingUp, Settings, Mic } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
+import ProfileSwitcher from '@/components/ProfileSwitcher';
 
 const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
@@ -21,6 +22,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0a0e1a]">
+      <ProfileSwitcher />
       <style>{`
         :root {
           /* Primary Colors */
