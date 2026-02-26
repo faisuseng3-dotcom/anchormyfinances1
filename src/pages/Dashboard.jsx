@@ -15,6 +15,11 @@ import WeeklySummary from '@/components/dashboard/WeeklySummary';
 import RiskSimulator from '@/components/dashboard/RiskSimulator';
 import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
 import { AnimatePresence } from 'framer-motion';
+import ModeSelector from '@/components/modes/ModeSelector';
+import BasicDashboard from '@/components/modes/BasicDashboard';
+import SmartDashboard from '@/components/modes/SmartDashboard';
+import ProDashboard from '@/components/modes/ProDashboard';
+import { Layers } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -24,6 +29,8 @@ export default function Dashboard() {
   const [healthLabel, setHealthLabel] = useState('');
   const [mentalLoad, setMentalLoad] = useState({ score: 0, factors: [] });
   const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [showModeSelector, setShowModeSelector] = useState(false);
+  const currentMode = profile?.mode || 'basic';
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['financialProfile'],
@@ -184,6 +191,12 @@ export default function Dashboard() {
     setMentalLoad({ score, factors });
   };
 
+  const handleModeChange = async (newMode) => {
+    await base44.entities.FinancialProfile.update(profile.id, { mode: newMode });
+    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    setShowModeSelector(false);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -239,29 +252,33 @@ export default function Dashboard() {
               ANCHOR
             </h1>
           </motion.div>
-          <Link to={createPageUrl('Settings')}>
-            <motion.div whileTap={{ scale: 0.9 }}>
-              <Button variant="ghost" size="icon" className="rounded-xl bg-white/5 hover:bg-white/10 border border-white/10">
-                <Settings className="w-5 h-5 text-slate-400" />
-              </Button>
-            </motion.div>
-          </Link>
+          <div className="flex items-center gap-2">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => setShowModeSelector(true)}
+              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2"
+            >
+              <Layers className="w-4 h-4 text-slate-400" />
+              <span className="text-sm text-slate-300 capitalize">{currentMode}</span>
+            </motion.button>
+            <Link to={createPageUrl('Settings')}>
+              <motion.div whileTap={{ scale: 0.9 }}>
+                <Button variant="ghost" size="icon" className="rounded-xl bg-white/5 hover:bg-white/10 border border-white/10">
+                  <Settings className="w-5 h-5 text-slate-400" />
+                </Button>
+              </motion.div>
+            </Link>
+          </div>
         </div>
       </div>
 
       <div className="px-6 space-y-6">
-        {/* Health Score */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <HealthScore score={healthScore} label={healthLabel} />
-        </motion.div>
+        {/* Mode-specific Dashboard */}
+        {currentMode === 'basic' && <BasicDashboard profile={profile} />}
+        {currentMode === 'smart' && <SmartDashboard profile={profile} />}
+        {currentMode === 'pro' && <ProDashboard profile={profile} />}
 
-        {/* Quick Stats */}
-        <QuickStats profile={profile} />
-
-        {/* Quick Actions */}
+        {/* Quick Actions - Show in all modes */}
         <div className="grid grid-cols-2 gap-3">
           <motion.button
             whileTap={{ scale: 0.95 }}
@@ -328,33 +345,6 @@ export default function Dashboard() {
             );
           })}
         </div>
-
-        {/* AI Insights */}
-        <div>
-          <h2 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-            <Brain className="w-5 h-5 text-indigo-400" />
-            AI-insikter
-          </h2>
-          <div className="space-y-3">
-            {insights.map((insight, i) => (
-              <AIInsightCard
-                key={i}
-                index={i}
-                {...insight}
-                onAction={insight.action ? () => {} : undefined}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Mental Load */}
-        <MentalLoadIndex {...mentalLoad} />
-
-        {/* Weekly Summary */}
-        <WeeklySummary profile={profile} />
-
-        {/* Risk Simulator */}
-        <RiskSimulator profile={profile} />
       </div>
 
       {/* Quick Expense Modal */}
@@ -374,6 +364,17 @@ export default function Dashboard() {
           <WelcomeAnalysis 
             profile={profile} 
             onClose={() => setShowWelcome(false)} 
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mode Selector */}
+      <AnimatePresence>
+        {showModeSelector && (
+          <ModeSelector 
+            currentMode={currentMode}
+            onSelectMode={handleModeChange}
+            onClose={() => setShowModeSelector(false)} 
           />
         )}
       </AnimatePresence>

@@ -35,11 +35,13 @@ export default function Onboarding() {
     if (profiles.length > 0) {
       await base44.entities.FinancialProfile.update(profiles[0].id, {
         ...data,
+        mode: 'basic', // All users start in Basic Mode
         onboardingCompleted: true
       });
     } else {
       await base44.entities.FinancialProfile.create({
         ...data,
+        mode: 'basic', // All users start in Basic Mode
         onboardingCompleted: true
       });
     }
