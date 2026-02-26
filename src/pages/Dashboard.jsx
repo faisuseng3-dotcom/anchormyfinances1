@@ -30,7 +30,7 @@ export default function Dashboard() {
   const [mentalLoad, setMentalLoad] = useState({ score: 0, factors: [] });
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showModeSelector, setShowModeSelector] = useState(false);
-  const currentMode = profile?.mode || 'basic';
+  const [showWelcome, setShowWelcome] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['financialProfile'],
@@ -46,8 +46,8 @@ export default function Dashboard() {
     }
   }, [profile, navigate]);
 
-  // Show first-time welcome message with mini-analysis
-  const [showWelcome, setShowWelcome] = useState(false);
+  const currentMode = profile?.mode || 'basic';
+
   useEffect(() => {
     if (profile && profile.onboardingCompleted) {
       const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
