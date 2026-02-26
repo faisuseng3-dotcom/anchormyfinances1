@@ -54,8 +54,9 @@ import Onboarding from './pages/Onboarding';
 import Optimize from './pages/Optimize';
 import PurchaseSimulator from './pages/PurchaseSimulator';
 import Settings from './pages/Settings';
-import WhatIf from './pages/WhatIf';
 import TravelPlanner from './pages/TravelPlanner';
+import WhatIf from './pages/WhatIf';
+import ProTools from './pages/ProTools';
 import __Layout from './Layout.jsx';
 
 
@@ -67,8 +68,9 @@ export const PAGES = {
     "Optimize": Optimize,
     "PurchaseSimulator": PurchaseSimulator,
     "Settings": Settings,
-    "WhatIf": WhatIf,
     "TravelPlanner": TravelPlanner,
+    "WhatIf": WhatIf,
+    "ProTools": ProTools,
 }
 
 export const pagesConfig = {

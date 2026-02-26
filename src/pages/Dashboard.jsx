@@ -322,8 +322,8 @@ export default function Dashboard() {
           {[
             { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
             { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
-            { icon: TrendingUp, label: 'Optimera', page: 'Optimize', color: 'from-emerald-500 to-green-600' },
-            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-purple-500 to-pink-600' },
+            { icon: TrendingUp, label: 'Pro Tools', page: 'ProTools', color: 'from-purple-500 to-pink-600' },
+            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600' },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
