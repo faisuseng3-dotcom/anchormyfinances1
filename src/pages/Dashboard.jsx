@@ -191,6 +191,28 @@ export default function Dashboard() {
     setMentalLoad({ score, factors });
   };
 
+  // Apply historical offsets for time machine
+  const getHistoricProfile = (p, month) => {
+    if (!p || month === '2026-02') return p;
+    const monthOffsets = {
+      '2026-01': { incomeMultiplier: 1, bufferMultiplier: 0.88, expenseExtra: 200 },
+      '2025-12': { incomeMultiplier: 1, bufferMultiplier: 0.78, expenseExtra: 600 },
+      '2025-11': { incomeMultiplier: 1, bufferMultiplier: 0.65, expenseExtra: 300 },
+      '2025-10': { incomeMultiplier: 0.98, bufferMultiplier: 0.55, expenseExtra: 150 },
+      '2025-09': { incomeMultiplier: 0.97, bufferMultiplier: 0.42, expenseExtra: 100 },
+    };
+    const o = monthOffsets[month];
+    if (!o) return p;
+    return {
+      ...p,
+      buffer: Math.round((p.buffer || 0) * o.bufferMultiplier),
+      income: Math.round((p.income || 0) * o.incomeMultiplier),
+      monthlyExpenses: [...(p.monthlyExpenses || []), { name: 'Historisk utgift', amount: o.expenseExtra, category: 'other', date: `${month}-15` }],
+    };
+  };
+
+  const displayProfile = getHistoricProfile(profile, selectedMonth);
+
   const handleModeChange = async (newMode) => {
     await base44.entities.FinancialProfile.update(profile.id, { mode: newMode });
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
