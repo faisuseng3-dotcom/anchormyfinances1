@@ -24,6 +24,7 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0a0e1a]">
       <ProfileSwitcher />
+      <ImpulseTrigger />
       <style>{`
         :root {
           /* Primary Colors */
