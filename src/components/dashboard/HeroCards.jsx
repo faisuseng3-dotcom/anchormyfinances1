@@ -77,7 +77,7 @@ export default function HeroCards({ profile }) {
   const CLICKABLE = { margin: 'margin', buffer: 'buffer', fixed: 'fixed' };
 
   return (
-    <>
+    <div>
     <div className="grid grid-cols-2 gap-3">
       {cards.map((card, i) => {
         const Icon = card.icon;
