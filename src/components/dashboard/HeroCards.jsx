@@ -74,10 +74,14 @@ export default function HeroCards({ profile }) {
     }
   ];
 
+  const CLICKABLE = { margin: 'margin', buffer: 'buffer', fixed: 'fixed' };
+
   return (
+    <>
     <div className="grid grid-cols-2 gap-3">
       {cards.map((card, i) => {
         const Icon = card.icon;
+        const isClickable = !!CLICKABLE[card.id];
         
         return (
           <motion.div
@@ -86,7 +90,8 @@ export default function HeroCards({ profile }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, type: "spring", stiffness: 100 }}
             whileTap={{ scale: 0.97 }}
-            className="relative overflow-hidden rounded-2xl p-5 cursor-pointer group"
+            onClick={isClickable ? () => setOpenModal(CLICKABLE[card.id]) : undefined}
+            className={`relative overflow-hidden rounded-2xl p-5 group ${isClickable ? 'cursor-pointer' : ''}`}
             style={{
               background: 'rgba(17, 24, 39, 0.4)',
               backdropFilter: 'blur(20px)',
