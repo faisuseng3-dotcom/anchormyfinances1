@@ -55,7 +55,7 @@ export default function HeroCards({ profile }) {
       color: 'purple',
       gradient: 'from-purple-500/20 via-pink-500/10 to-transparent',
       isEmpty: profile.savingsGoal === 0,
-      emptyText: '+ Sätt mål',
+      showAspiration: profile.savingsGoal === 0,
       showProgress: profile.savingsGoal > 0,
       progressValue: savingsProgress,
       subtitle: profile.savingsGoalName
