@@ -5,6 +5,7 @@ import { Home, ShoppingBag, TrendingUp, Settings, Mic } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
+import ImpulseTrigger from '@/components/ImpulseTrigger';
 
 const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
