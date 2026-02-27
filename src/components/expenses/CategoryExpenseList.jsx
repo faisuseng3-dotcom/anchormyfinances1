@@ -26,11 +26,25 @@ function isRecurring(name) {
 
 const HAPPY_LABELS = { star: 'Värt det', neutral: 'Okej', skip: 'Onödigt' };
 
-export default function CategoryExpenseList({ expenses, subscriptions = [] }) {
+export default function CategoryExpenseList({ expenses, subscriptions = [], autoOpenCategory, onAutoOpenHandled }) {
   const [expandedCats, setExpandedCats] = useState({});
   const [hubItem, setHubItem] = useState(null);
   const [feelings, setFeelings] = useState({});
   const [sparkle, setSparkle] = useState(null);
+
+  // When donut category is clicked, open its hub with the first item
+  React.useEffect(() => {
+    if (!autoOpenCategory) return;
+    const allItems = [
+      ...expenses.map(e => ({ ...e, isSubscription: isRecurring(e.name) })),
+      ...(subscriptions || []).map(s => ({ ...s, date: new Date().toISOString().split('T')[0], isSubscription: true }))
+    ];
+    const catItems = allItems.filter(i => (i.category || 'other') === autoOpenCategory);
+    if (catItems.length > 0) {
+      setHubItem({ ...catItems[0], category: autoOpenCategory });
+    }
+    if (onAutoOpenHandled) onAutoOpenHandled();
+  }, [autoOpenCategory]);
 
   // Combine expenses + subscriptions into a unified list
   const allItems = [
