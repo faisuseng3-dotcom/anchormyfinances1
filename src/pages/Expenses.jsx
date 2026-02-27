@@ -50,13 +50,20 @@ export default function Expenses() {
   });
 
   const expenses = profile?.monthlyExpenses || [];
+  const subscriptions = profile?.subscriptions || [];
 
+  // Merge expenses + subscriptions into categoryTotals for full picture
   const categoryTotals = {};
   expenses.forEach(exp => {
-    categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
+    const cat = exp.category || 'other';
+    categoryTotals[cat] = (categoryTotals[cat] || 0) + exp.amount;
+  });
+  subscriptions.forEach(sub => {
+    const cat = sub.category || 'other';
+    categoryTotals[cat] = (categoryTotals[cat] || 0) + sub.amount;
   });
 
-  const totalSpent = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+  const totalSpent = Object.values(categoryTotals).reduce((s, v) => s + v, 0);
 
   // Budget = 30% of income as a rough spending budget
   const budget = profile ? Math.round((profile.income - (profile.housingCost || 0)) * 0.6) : 0;
