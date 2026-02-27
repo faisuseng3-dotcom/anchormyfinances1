@@ -55,12 +55,21 @@ export default function PurchaseSimulator() {
       </div>
 
       <div className="px-6 space-y-6">
+        {/* Universal analyzer always visible at top */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">🔗 Länk- & Bildanalys</p>
+          <PurchaseAnalyzer profile={profile} />
+        </motion.div>
+
+        <div className="border-t border-white/10 pt-4">
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Eller välj kategori</p>
+        </div>
+
         {!selectedCategory ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h3 className="text-lg font-semibold text-white mb-4">Välj kategori</h3>
             <CategorySelector 
               selected={selectedCategory}
               onSelect={setSelectedCategory}
