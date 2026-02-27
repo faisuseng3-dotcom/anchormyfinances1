@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Car, TrendingDown, AlertTriangle, Zap } from 'lucide-react';
+import { Car, TrendingDown, AlertTriangle, Zap, Link2, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,28 @@ export default function VehicleAnalysis({ mode, profile }) {
   const [vehicle, setVehicle] = useState({ name: '', price: '', months: '60' });
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const [urlLoading, setUrlLoading] = useState(false);
+
+  const handleUrlAutofill = async () => {
+    if (!urlInput) return;
+    setUrlLoading(true);
+    const res = await base44.integrations.Core.InvokeLLM({
+      prompt: `Läs av denna bilannons-URL och extrahera fordonsdata: ${urlInput}. Returnera JSON med: model (string), price (number i kr), mileage (number i mil), fuel (string: bensin/diesel/el/hybrid).`,
+      add_context_from_internet: true,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          model: { type: 'string' },
+          price: { type: 'number' },
+          mileage: { type: 'number' },
+          fuel: { type: 'string' }
+        }
+      }
+    });
+    if (res.model) setVehicle(v => ({ ...v, name: res.model, price: String(res.price || v.price) }));
+    setUrlLoading(false);
+  };
 
   const handleAnalyze = async () => {
     setLoading(true);
