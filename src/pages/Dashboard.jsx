@@ -264,7 +264,7 @@ export default function Dashboard() {
     <div className="min-h-screen pb-24">
       {/* Header */}
       <div className="px-6 pt-8 pb-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
