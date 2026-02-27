@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ShoppingBag } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import CategorySelector from '@/components/purchase/CategorySelector';
+import PurchaseAnalyzer from '@/components/purchase/PurchaseAnalyzer';
 import VehicleAnalysis from '@/components/purchase/categories/VehicleAnalysis';
 import HousingAnalysis from '@/components/purchase/categories/HousingAnalysis';
 import ElectronicsAnalysis from '@/components/purchase/categories/ElectronicsAnalysis';
