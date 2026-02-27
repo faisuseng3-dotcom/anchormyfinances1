@@ -63,21 +63,42 @@ export default function MarginModal({ isOpen, onClose, profile }) {
               </button>
             </div>
 
-            {/* Waterfall Chart */}
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={chartData} barSize={44}>
-                <XAxis dataKey="name" tick={{ fill: 'rgba(148,163,184,0.7)', fontSize: 11 }} axisLine={false} tickLine={false} />
-                <YAxis hide />
-                <Tooltip
-                  contentStyle={{ background: 'rgba(10,14,26,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 12 }}
-                  formatter={(v) => [`${fmt(Math.abs(v))} kr`, '']}
-                />
-                <Bar dataKey="value" radius={[8, 8, 0, 0]}>
-                  {chartData.map((entry, i) => <Cell key={i} fill={entry.color} fillOpacity={entry.value < 0 ? 0.8 : 1} />)}
-                  <LabelList dataKey="value" position="top" formatter={(v) => `${fmt(Math.abs(v))}`} style={{ fill: 'rgba(148,163,184,0.6)', fontSize: 10 }} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {/* Waterfall Bar */}
+            <div className="mb-5">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-slate-500 font-medium">Inkomst: {fmt(income)} kr</span>
+                <span className="text-xs text-green-400 font-semibold">Marginal: {fmt(margin)} kr ({Math.round((margin/income)*100)}%)</span>
+              </div>
+              <div className="flex h-10 rounded-xl overflow-hidden shadow-lg" style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.5)' }}>
+                {segments.map((seg, i) => (
+                  <motion.div
+                    key={seg.label}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${seg.pct}%` }}
+                    transition={{ duration: 1, delay: i * 0.15, ease: 'easeOut' }}
+                    className="h-full flex items-center justify-center relative overflow-hidden"
+                    style={{
+                      background: seg.color,
+                      boxShadow: i === segments.length - 1 ? `0 0 20px ${seg.color}88` : 'none',
+                      minWidth: seg.pct > 3 ? undefined : 0,
+                    }}
+                    title={`${seg.label}: ${fmt(seg.value)} kr`}
+                  >
+                    {seg.pct > 8 && (
+                      <span className="text-xs font-bold text-white/90 drop-shadow">{Math.round(seg.pct)}%</span>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+              <div className="flex gap-4 mt-2 flex-wrap">
+                {segments.map(seg => (
+                  <div key={seg.label} className="flex items-center gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-sm" style={{ background: seg.color }} />
+                    <span className="text-xs text-slate-400">{seg.label}: <span className={`font-semibold ${seg.textColor}`}>{fmt(seg.value)} kr</span></span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* Breakdown rows */}
             <div className="mt-4 space-y-2">
