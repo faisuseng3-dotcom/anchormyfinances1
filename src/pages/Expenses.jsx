@@ -129,7 +129,7 @@ export default function Expenses() {
 
       <div className="px-6 space-y-5">
         {/* Donut Chart */}
-        <SpendingDonut categoryTotals={categoryTotals} totalSpent={totalSpent} />
+        <SpendingDonut categoryTotals={categoryTotals} totalSpent={totalSpent} onCategoryClick={handleDonutClick} />
 
         {/* Categorized Transactions */}
         <div>
