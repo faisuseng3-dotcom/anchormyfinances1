@@ -292,11 +292,19 @@ export default function Dashboard() {
             </Link>
           </div>
         </div>
+
+        {/* Time Machine */}
+        <TimeMachine selectedMonth={selectedMonth} onSelectMonth={setSelectedMonth} />
+      </div>
+
+      {/* Live Pulse */}
+      <div className="px-6 mb-2 mt-3">
+        <LivePulse />
       </div>
 
       <div className="px-6 space-y-6">
         {/* Hero Cards */}
-        <HeroCards profile={profile} />
+        <HeroCards profile={displayProfile} />
 
         {/* Forecast Chart */}
         <ForecastChart profile={profile} />
