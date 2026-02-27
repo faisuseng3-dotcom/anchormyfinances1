@@ -307,10 +307,10 @@ export default function Dashboard() {
         <HeroCards profile={displayProfile} />
 
         {/* Forecast Chart */}
-        <ForecastChart profile={profile} />
+        <ForecastChart profile={displayProfile} />
 
         {/* Insights, Risks & Actions */}
-        <InsightsSection insights={insights} profile={profile} />
+        <InsightsSection insights={insights} profile={displayProfile} />
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-3">
