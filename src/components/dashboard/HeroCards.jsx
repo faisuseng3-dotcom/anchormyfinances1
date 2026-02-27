@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TrendingUp, Shield, Target, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Progress } from "@/components/ui/progress";
 import { AnimatedCurrency, AnimatedNumber } from "@/components/ui/animated-number";
+import MarginModal from './MarginModal';
+import BufferModal from './BufferModal';
+import FixedCostsModal from './FixedCostsModal';
 
 const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
 };
 
 export default function HeroCards({ profile }) {
+  const [openModal, setOpenModal] = useState(null);
   const totalSubscriptions = (profile.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
   const totalLoanPayments = (profile.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
   const totalFixedCosts = profile.housingCost + totalSubscriptions + totalLoanPayments;
