@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import FeedbackPrompt from '@/components/feedback/FeedbackPrompt';
 import HeroSpendingCard from '@/components/expenses/HeroSpendingCard';
 import SpendingDonut from '@/components/expenses/SpendingDonut';
-import TransactionList from '@/components/expenses/TransactionList';
+import CategoryExpenseList from '@/components/expenses/CategoryExpenseList';
 
 const categories = [
   { id: 'food', label: 'Mat & Dryck' },
