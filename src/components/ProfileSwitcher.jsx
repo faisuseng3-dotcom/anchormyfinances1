@@ -85,7 +85,7 @@ export default function ProfileSwitcher() {
               housingCost: profileData.housingCost,
               subscriptions: profileData.subscriptions,
               loans: profileData.loans,
-              monthlyExpenses: [] // Reset expenses
+              monthlyExpenses: profileData.monthlyExpenses || []
             });
 
             // Invalidate queries to refresh UI
