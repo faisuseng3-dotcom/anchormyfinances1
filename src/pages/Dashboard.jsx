@@ -17,6 +17,8 @@ import BasicDashboard from '@/components/modes/BasicDashboard';
 import SmartDashboard from '@/components/modes/SmartDashboard';
 import ProDashboard from '@/components/modes/ProDashboard';
 import { Layers } from 'lucide-react';
+import TimeMachine from '@/components/dashboard/TimeMachine';
+import LivePulse from '@/components/dashboard/LivePulse';
 
 export default function Dashboard() {
   const navigate = useNavigate();
