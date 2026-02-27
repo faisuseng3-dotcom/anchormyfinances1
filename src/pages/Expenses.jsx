@@ -115,10 +115,10 @@ export default function Expenses() {
         {/* Donut Chart */}
         <SpendingDonut categoryTotals={categoryTotals} totalSpent={totalSpent} />
 
-        {/* Transactions */}
+        {/* Categorized Transactions */}
         <div>
-          <p className="text-sm font-semibold text-white mb-3">Senaste köp</p>
-          <TransactionList expenses={expenses} />
+          <p className="text-sm font-semibold text-white mb-3">Utgifter per kategori</p>
+          <CategoryExpenseList expenses={expenses} subscriptions={profile?.subscriptions} />
         </div>
       </div>
 
