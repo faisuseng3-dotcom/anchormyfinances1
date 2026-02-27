@@ -124,6 +124,26 @@ Ge strategisk rekommendation.`;
           Fordonsinformation
         </h3>
         <div className="space-y-4">
+          {/* URL autofill */}
+          <div>
+            <Label>Klistra in annons-URL (Blocket, Riddermark, etc.)</Label>
+            <div className="flex gap-2 mt-1">
+              <div className="relative flex-1">
+                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Input
+                  value={urlInput}
+                  onChange={(e) => setUrlInput(e.target.value)}
+                  placeholder="https://blocket.se/..."
+                  className="pl-9"
+                />
+              </div>
+              <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm" className="bg-indigo-600 hover:bg-indigo-700 flex-shrink-0">
+                {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
+              </Button>
+            </div>
+            {urlLoading && <p className="text-xs text-indigo-400 mt-1 animate-pulse">AI läser av annonsen...</p>}
+          </div>
+          <div className="border-t border-white/10 pt-3" />
           <div>
             <Label>Fordonsmodell</Label>
             <Input
