@@ -134,7 +134,7 @@ export default function Expenses() {
         {/* Categorized Transactions */}
         <div>
           <p className="text-sm font-semibold text-white mb-3">Utgifter per kategori</p>
-          <CategoryExpenseList expenses={expenses} subscriptions={profile?.subscriptions} />
+          <CategoryExpenseList expenses={expenses} subscriptions={profile?.subscriptions} autoOpenCategory={autoOpenCategory} onAutoOpenHandled={() => setAutoOpenCategory(null)} />
         </div>
       </div>
 
