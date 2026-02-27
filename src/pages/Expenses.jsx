@@ -30,6 +30,15 @@ export default function Expenses() {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [autoOpenCategory, setAutoOpenCategory] = useState(null);
+
+  const handleDonutClick = (catId) => {
+    setAutoOpenCategory(catId);
+    setTimeout(() => {
+      const el = document.getElementById(`cat-${catId}`);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
+  };
 
   const { data: profile } = useQuery({
     queryKey: ['financialProfile'],
