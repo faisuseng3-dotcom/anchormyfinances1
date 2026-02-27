@@ -2,9 +2,8 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, TrendingUp, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from 'recharts';
 
-const fmt = (v) => v ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
+const fmt = (v) => v ? Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
 
 export default function MarginModal({ isOpen, onClose, profile }) {
   if (!isOpen || !profile) return null;
@@ -13,13 +12,13 @@ export default function MarginModal({ isOpen, onClose, profile }) {
   const totalLoans = (profile.loans || []).reduce((s, x) => s + x.monthlyPayment, 0);
   const totalFixed = (profile.housingCost || 0) + totalSubs + totalLoans;
   const totalVariable = (profile.monthlyExpenses || []).reduce((s, x) => s + x.amount, 0);
-  const margin = (profile.income || 0) - totalFixed - totalVariable;
+  const income = profile.income || 0;
+  const margin = Math.max(0, income - totalFixed - totalVariable);
 
-  const chartData = [
-    { name: 'Inkomst', value: profile.income || 0, color: '#10B981' },
-    { name: 'Fasta', value: -totalFixed, color: '#EF4444' },
-    { name: 'Rörliga', value: -totalVariable, color: '#F59E0B' },
-    { name: 'Marginal', value: Math.max(0, margin), color: '#6366F1' },
+  const segments = [
+    { label: 'Fasta', value: totalFixed, pct: income > 0 ? (totalFixed / income) * 100 : 0, color: '#7F1D1D', textColor: 'text-red-300' },
+    { label: 'Rörliga', value: totalVariable, pct: income > 0 ? (totalVariable / income) * 100 : 0, color: '#D97706', textColor: 'text-amber-300' },
+    { label: 'Marginal', value: margin, pct: income > 0 ? (margin / income) * 100 : 0, color: '#22C55E', textColor: 'text-green-400' },
   ];
 
   return (
