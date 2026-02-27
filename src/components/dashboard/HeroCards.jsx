@@ -213,5 +213,10 @@ export default function HeroCards({ profile }) {
         );
       })}
     </div>
+
+    <MarginModal isOpen={openModal === 'margin'} onClose={() => setOpenModal(null)} profile={profile} />
+    <BufferModal isOpen={openModal === 'buffer'} onClose={() => setOpenModal(null)} profile={profile} />
+    <FixedCostsModal isOpen={openModal === 'fixed'} onClose={() => setOpenModal(null)} profile={profile} />
+    </>
   );
 }
