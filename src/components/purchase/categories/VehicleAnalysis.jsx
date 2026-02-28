@@ -1,14 +1,52 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Car, TrendingDown, AlertTriangle, Zap, Link2, Loader2 } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Car, Link2, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
+import VehicleCFOReport from './VehicleCFOReport';
 
-const formatNumber = (value) => {
-  return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
-};
+const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+// Real-time local calculations (no AI needed)
+function calcLocal(price, months, interestRate = 0.07) {
+  const p = parseFloat(price) || 0;
+  const m = parseInt(months) || 60;
+  const monthlyRate = interestRate / 12;
+  const monthlyPayment = m > 0
+    ? (p * monthlyRate * Math.pow(1 + monthlyRate, m)) / (Math.pow(1 + monthlyRate, m) - 1)
+    : 0;
+  const totalPaid = monthlyPayment * m;
+  const totalInterest = totalPaid - p;
+  // Compare to 36 months
+  const m36Rate = interestRate / 12;
+  const mp36 = (p * m36Rate * Math.pow(1 + m36Rate, 36)) / (Math.pow(1 + m36Rate, 36) - 1);
+  const interestExtra = totalInterest - (mp36 * 36 - p);
+  // Depreciation: ~15% year 1, 12% subsequent
+  const years = m / 12;
+  const depreciationPct = Math.min(0.65, 0.15 + (years - 1) * 0.12);
+  const residualValue = p * (1 - depreciationPct);
+  const depreciation = p - residualValue;
+  // Opportunity cost: 7% annual on full price for duration
+  const opportunityCost = p * (Math.pow(1.07, years) - 1);
+  // Insurance + fuel + service estimate
+  const monthlyRunning = p > 300000 ? 3200 : p > 150000 ? 2100 : 1400;
+
+  return {
+    monthlyPayment: Math.round(monthlyPayment),
+    totalPaid: Math.round(totalPaid),
+    totalInterest: Math.round(totalInterest),
+    interestExtra: Math.round(Math.max(0, interestExtra)),
+    residualValue: Math.round(residualValue),
+    depreciation: Math.round(depreciation),
+    opportunityCost: Math.round(opportunityCost),
+    monthlyRunning,
+    totalMonthlyCost: Math.round(monthlyPayment + monthlyRunning),
+    lifetimeCost: Math.round(totalPaid + monthlyRunning * m),
+    lunchEquivalent: Math.round(totalInterest / 130), // avg lunch 130 kr
+  };
+}
 
 export default function VehicleAnalysis({ mode, profile }) {
   const [vehicle, setVehicle] = useState({ name: '', price: '', months: '60' });
@@ -16,12 +54,25 @@ export default function VehicleAnalysis({ mode, profile }) {
   const [loading, setLoading] = useState(false);
   const [urlInput, setUrlInput] = useState('');
   const [urlLoading, setUrlLoading] = useState(false);
+  const [liveCalc, setLiveCalc] = useState(null);
+
+  const margin = (profile?.income || 30000) - (profile?.housingCost || 10000) -
+    ((profile?.subscriptions || []).reduce((s, x) => s + x.amount, 0));
+
+  // Recalculate in real-time whenever price/months change
+  useEffect(() => {
+    if (vehicle.price && parseInt(vehicle.price) > 0) {
+      setLiveCalc(calcLocal(vehicle.price, vehicle.months));
+    } else {
+      setLiveCalc(null);
+    }
+  }, [vehicle.price, vehicle.months]);
 
   const handleUrlAutofill = async () => {
     if (!urlInput) return;
     setUrlLoading(true);
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Läs av denna bilannons-URL och extrahera fordonsdata: ${urlInput}. Returnera JSON med: model (string), price (number i kr), mileage (number i mil), fuel (string: bensin/diesel/el/hybrid).`,
+      prompt: `Läs av denna bilannons-URL och extrahera fordonsdata: ${urlInput}. Returnera JSON med: model (string), price (number i kr), mileage (number), fuel (string).`,
       add_context_from_internet: true,
       response_json_schema: {
         type: 'object',
@@ -39,291 +90,179 @@ export default function VehicleAnalysis({ mode, profile }) {
 
   const handleAnalyze = async () => {
     setLoading(true);
+    const local = calcLocal(vehicle.price, vehicle.months);
+    const months = parseInt(vehicle.months);
+    const price = parseFloat(vehicle.price);
 
-    if (mode === 'basic') {
-      const monthlyPayment = parseInt(vehicle.price) / parseInt(vehicle.months);
-      setAnalysis({
-        type: 'basic',
-        monthlyPayment,
-        canAfford: monthlyPayment < (profile.income * 0.2)
-      });
-      setLoading(false);
-      return;
-    }
+    const aiPrompt = `Du är en CFO-assistent som analyserar ett fordonsköp för en privatperson.
 
-    const prompt = mode === 'smart' 
-      ? `Analysera fordonskostnaden för ${vehicle.name} till ${vehicle.price} kr.
+Bil: ${vehicle.name || 'okänd modell'}
+Inköpspris: ${fmt(price)} kr
+Avbetalningstid: ${months} månader
+Beräknad månadskostnad (lån): ${fmt(local.monthlyPayment)} kr
+Total ränta: ${fmt(local.totalInterest)} kr
+Användarens månadsmarginal: ${fmt(margin)} kr
+Bilens månadsandel av marginalen: ${Math.round((local.totalMonthlyCost / margin) * 100)}%
 
-Beräkna Total Cost of Ownership (TCO):
-- Månadskostnad: Pris/${vehicle.months} månader
-- Försäkring: Snitt för fordon i denna prisklass
-- Bränsle/El: Uppskattad kostnad per månad
-- Service: Årlig service
-- Skatt: CO2-baserad fordonsskatt
+Ge:
+1. cfo_score: 1-10 (heltal). 10 = perfekt ekonomisk beslut, 1 = ekonomisk katastrof.
+2. cfo_verdict: "Köp tryggt" | "Köp varsamt" | "Vänta" | "Undvik"
+3. cfo_recommendation: 2-3 meningar, anpassad till avbetalningstiden. SVENSKA. Om >60 mån: varningstext.
+4. contextual_story: En mening som förklarar vad totalkostnaden "motsvarar" (t.ex. resor, luncher, aktier). SVENSKA. Kreativt!
+5. risk_level: "low" | "medium" | "high"
+6. better_alternative: En kort beskrivning av ett billigare alternativ. SVENSKA.
+7. opportunity_investment: Vad ${fmt(local.totalInterest)} kr i ränta hade blivit på börsen. SVENSKA.
 
-Ge totala månadskostnaden och jämför med billigare alternativ.`
-      : `Strategisk fordonsanalys för ${vehicle.name} till ${vehicle.price} kr.
+Svara ENDAST med JSON.`;
 
-Beräkna:
-1. Värdeminskning efter 36 månader (restvärde)
-2. Alternativkostnad: Om ${vehicle.price} kr tas från sparande med 7% årlig avkastning
-3. Stress-test: Vad händer om ekonomin försämras?
-4. Totala livstidskostnaden (5 år)
-5. ROI-analys om fordonet behövs för arbete
-
-Ge strategisk rekommendation.`;
-
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        add_context_from_internet: mode === 'smart',
-        response_json_schema: mode === 'smart' ? {
-          type: 'object',
-          properties: {
-            monthly_payment: { type: 'number' },
-            insurance: { type: 'number' },
-            fuel: { type: 'number' },
-            service: { type: 'number' },
-            tax: { type: 'number' },
-            total_monthly: { type: 'number' },
-            cheaper_alternative: { type: 'string' },
-            savings: { type: 'number' }
-          }
-        } : {
-          type: 'object',
-          properties: {
-            depreciation_36m: { type: 'number' },
-            residual_value: { type: 'number' },
-            opportunity_cost: { type: 'number' },
-            lifetime_cost_5y: { type: 'number' },
-            roi_if_work: { type: 'string' },
-            risk_level: { type: 'string' },
-            recommendation: { type: 'string' },
-            is_safe: { type: 'boolean' }
-          }
+    const ai = await base44.integrations.Core.InvokeLLM({
+      prompt: aiPrompt,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          cfo_score: { type: 'number' },
+          cfo_verdict: { type: 'string' },
+          cfo_recommendation: { type: 'string' },
+          contextual_story: { type: 'string' },
+          risk_level: { type: 'string' },
+          better_alternative: { type: 'string' },
+          opportunity_investment: { type: 'string' },
         }
-      });
+      }
+    });
 
-      setAnalysis({ type: mode, ...result });
-    } catch (error) {
-      console.error('Failed to analyze:', error);
-    }
-
+    setAnalysis({ ...local, ...ai, price, months, vehicleName: vehicle.name, margin });
     setLoading(false);
   };
 
+  const months = parseInt(vehicle.months) || 60;
+  const btnRisk = liveCalc
+    ? (liveCalc.totalMonthlyCost / margin) > 0.3 ? 'high' : (liveCalc.totalMonthlyCost / margin) > 0.2 ? 'mid' : 'low'
+    : 'low';
+
+  const btnClass = btnRisk === 'high'
+    ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:opacity-90'
+    : btnRisk === 'mid'
+    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90'
+    : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:opacity-90';
+
   return (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="dark-card p-6 rounded-2xl"
-      >
-        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-          <Car className="w-5 h-5 text-blue-400" />
-          Fordonsinformation
+    <div className="space-y-5">
+      {/* Input Card */}
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-5 space-y-4"
+        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h3 className="font-semibold text-white flex items-center gap-2">
+          <Car className="w-5 h-5 text-blue-400" /> Fordonsinformation
         </h3>
-        <div className="space-y-4">
-          {/* URL autofill */}
-          <div>
-            <Label>Klistra in annons-URL (Blocket, Riddermark, etc.)</Label>
-            <div className="flex gap-2 mt-1">
-              <div className="relative flex-1">
-                <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                <Input
-                  value={urlInput}
-                  onChange={(e) => setUrlInput(e.target.value)}
-                  placeholder="https://blocket.se/..."
-                  className="pl-9"
-                />
-              </div>
-              <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm" className="bg-indigo-600 hover:bg-indigo-700 flex-shrink-0">
-                {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
-              </Button>
+
+        {/* URL */}
+        <div>
+          <Label className="text-xs text-slate-400">Annons-URL (Blocket, Riddermark…)</Label>
+          <div className="flex gap-2 mt-1">
+            <div className="relative flex-1">
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
+                placeholder="https://blocket.se/…" className="pl-9 h-10 text-sm" />
             </div>
-            {urlLoading && <p className="text-xs text-indigo-400 mt-1 animate-pulse">AI läser av annonsen...</p>}
-          </div>
-          <div className="border-t border-white/10 pt-3" />
-          <div>
-            <Label>Fordonsmodell</Label>
-            <Input
-              value={vehicle.name}
-              onChange={(e) => setVehicle({ ...vehicle, name: e.target.value })}
-              placeholder="t.ex. Tesla Model 3, Volvo XC60"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label>Inköpspris (kr)</Label>
-            <Input
-              type="number"
-              value={vehicle.price}
-              onChange={(e) => setVehicle({ ...vehicle, price: e.target.value })}
-              placeholder="500000"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label>Avbetalningstid (månader)</Label>
-            <Input
-              type="number"
-              value={vehicle.months}
-              onChange={(e) => setVehicle({ ...vehicle, months: e.target.value })}
-              placeholder="60"
-              className="mt-1"
-            />
+            <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
+              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
+            </Button>
           </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label className="text-xs text-slate-400">Modell</Label>
+            <Input value={vehicle.name}
+              onChange={e => setVehicle({ ...vehicle, name: e.target.value })}
+              placeholder="Volvo XC60…" className="mt-1 h-10 text-sm" />
+          </div>
+          <div>
+            <Label className="text-xs text-slate-400">Pris (kr)</Label>
+            <Input type="number" value={vehicle.price}
+              onChange={e => setVehicle({ ...vehicle, price: e.target.value })}
+              placeholder="450 000" className="mt-1 h-10 text-sm" />
+          </div>
+        </div>
+
+        {/* Months slider */}
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <Label className="text-xs text-slate-400">Avbetalningstid</Label>
+            <span className="text-sm font-bold text-white">{months} månader</span>
+          </div>
+          <input type="range" min="12" max="96" step="12"
+            value={months}
+            onChange={e => setVehicle({ ...vehicle, months: e.target.value })}
+            className="w-full accent-indigo-500 cursor-pointer"
+            style={{ height: '4px' }}
+          />
+          <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+            {[12,24,36,48,60,72,84,96].map(m => <span key={m}>{m}</span>)}
+          </div>
+        </div>
+
+        {/* Live preview while typing */}
+        <AnimatePresence>
+          {liveCalc && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
+              style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)' }}>
+              <div>
+                <p className="text-[10px] text-slate-500">Månadskostnad</p>
+                <p className="text-sm font-bold text-blue-400">{fmt(liveCalc.totalMonthlyCost)} kr</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-500">Total ränta</p>
+                <p className="text-sm font-bold text-amber-400">{fmt(liveCalc.totalInterest)} kr</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-500">Av marginalen</p>
+                <p className={`text-sm font-bold ${liveCalc.totalMonthlyCost/margin > 0.3 ? 'text-rose-400' : liveCalc.totalMonthlyCost/margin > 0.2 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  {Math.round((liveCalc.totalMonthlyCost / margin) * 100)}%
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 60-month warning */}
+        {months >= 60 && liveCalc && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            className="rounded-xl p-3 flex gap-2 items-start text-xs"
+            style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
+            <span className="text-amber-400 text-base flex-shrink-0">⏳</span>
+            <p className="text-amber-200">
+              <strong>Lång avbetalning ({months} mån):</strong> Sänker månadskostnaden men ökar totalkostnaden med{' '}
+              <strong>{fmt(liveCalc.interestExtra)} kr</strong> jämfört med 36 månader.{' '}
+              Är du bekväm med att äga skulden längre än garantin?
+            </p>
+          </motion.div>
+        )}
       </motion.div>
 
-      <Button
-        onClick={handleAnalyze}
+      <Button onClick={handleAnalyze}
         disabled={!vehicle.name || !vehicle.price || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700"
-      >
+        className={`w-full h-12 rounded-xl font-bold text-white ${btnClass}`}>
         {loading ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-            Analyserar TCO...
-          </>
+          <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Bygger CFO-rapport…</>
         ) : (
-          <>Analysera fordon</>
+          btnRisk === 'high'
+            ? '⚠️ Analysera (Hög risk – >30% av marginalen)'
+            : '🚗 Generera CFO Impact Report'
         )}
       </Button>
 
-      {analysis && (
-        <>
-          {analysis.type === 'basic' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-6 rounded-2xl border-2 ${
-                analysis.canAfford
-                  ? 'border-emerald-500 bg-emerald-500/10'
-                  : 'border-rose-500 bg-rose-500/10'
-              }`}
-            >
-              <h3 className="font-bold text-white text-xl mb-2">
-                {formatNumber(Math.round(analysis.monthlyPayment))} kr/mån
-              </h3>
-              <p className={`text-sm font-medium ${analysis.canAfford ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {analysis.canAfford ? '✓ Du har råd' : '⚠️ Du har inte råd'}
-              </p>
-            </motion.div>
-          )}
-
-          {analysis.type === 'smart' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="dark-card p-6 rounded-2xl">
-                <h3 className="font-semibold text-white mb-4">Total Cost of Ownership</h3>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Månadskostnad (avbetalning):</span>
-                    <span className="text-white font-medium">{formatNumber(analysis.monthly_payment)} kr</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Försäkring:</span>
-                    <span className="text-white font-medium">{formatNumber(analysis.insurance)} kr</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Bränsle/El:</span>
-                    <span className="text-white font-medium">{formatNumber(analysis.fuel)} kr</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Service:</span>
-                    <span className="text-white font-medium">{formatNumber(analysis.service)} kr</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">Skatt:</span>
-                    <span className="text-white font-medium">{formatNumber(analysis.tax)} kr</span>
-                  </div>
-                  <div className="pt-3 border-t border-white/10 flex justify-between">
-                    <span className="text-white font-semibold">Total månadskostnad:</span>
-                    <span className="text-indigo-400 font-bold text-lg">{formatNumber(analysis.total_monthly)} kr</span>
-                  </div>
-                </div>
-              </div>
-
-              {analysis.cheaper_alternative && (
-                <div className="p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-                  <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-                    <TrendingDown className="w-5 h-5 text-emerald-400" />
-                    Billigare alternativ
-                  </h4>
-                  <p className="text-sm text-slate-300 mb-2">{analysis.cheaper_alternative}</p>
-                  <p className="text-emerald-400 font-medium">
-                    💰 Spara {formatNumber(analysis.savings)} kr/mån
-                  </p>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {analysis.type === 'pro' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="dark-card p-6 rounded-2xl">
-                <h3 className="font-semibold text-white mb-4">Strategisk Analys</h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Värdeminskning (36 mån)</p>
-                    <p className="text-2xl font-bold text-rose-400">-{formatNumber(analysis.depreciation_36m)} kr</p>
-                    <p className="text-xs text-slate-500">Restvärde: {formatNumber(analysis.residual_value)} kr</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Alternativkostnad (förlorad avkastning)</p>
-                    <p className="text-2xl font-bold text-amber-400">{formatNumber(analysis.opportunity_cost)} kr</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Livstidskostnad (5 år)</p>
-                    <p className="text-2xl font-bold text-white">{formatNumber(analysis.lifetime_cost_5y)} kr</p>
-                  </div>
-                  {analysis.roi_if_work && (
-                    <div className="pt-3 border-t border-white/10">
-                      <p className="text-sm text-slate-400 mb-1">ROI-analys</p>
-                      <p className="text-sm text-slate-300">{analysis.roi_if_work}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className={`p-5 rounded-xl border ${
-                analysis.is_safe
-                  ? 'border-emerald-500/30 bg-emerald-500/10'
-                  : 'border-rose-500/30 bg-rose-500/10'
-              }`}>
-                <div className="flex items-start gap-3">
-                  {analysis.is_safe ? (
-                    <Zap className="w-6 h-6 text-emerald-400 flex-shrink-0" />
-                  ) : (
-                    <AlertTriangle className="w-6 h-6 text-rose-400 flex-shrink-0" />
-                  )}
-                  <div>
-                    <h4 className="font-semibold text-white mb-1">CFO-rekommendation</h4>
-                    <p className="text-sm text-slate-300 mb-2">{analysis.recommendation}</p>
-                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                      analysis.risk_level === 'low' 
-                        ? 'bg-emerald-500/20 text-emerald-400' 
-                        : analysis.risk_level === 'medium'
-                        ? 'bg-amber-500/20 text-amber-400'
-                        : 'bg-rose-500/20 text-rose-400'
-                    }`}>
-                      Risk: {analysis.risk_level}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </>
-      )}
+      <AnimatePresence>
+        {analysis && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <VehicleCFOReport analysis={analysis} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
