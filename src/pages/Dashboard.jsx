@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane } from 'lucide-react';
+import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane, GitBranch, Calculator } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import HeroCards from '@/components/dashboard/HeroCards';
