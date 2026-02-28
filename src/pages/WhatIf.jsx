@@ -6,12 +6,13 @@ import { createPageUrl } from '@/utils';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import WhatIfEngine from '@/components/whatif/WhatIfEngine';
-import TaxOracle from '@/components/whatif/TaxOracle';
+import PrecisionWizard from '@/components/whatif/PrecisionWizard';
+import PrecisionTaxResult from '@/components/whatif/PrecisionTaxResult';
 
 export default function WhatIf() {
   const [incomeChange, setIncomeChange] = useState(0);
   const [sickDays, setSickDays] = useState(0);
-  const [simulatedNet, setSimulatedNet] = useState(null);
+  const [wizardData, setWizardData] = useState(null); // null = show wizard
 
   const { data: profile } = useQuery({
     queryKey: ['financialProfile'],
@@ -21,10 +22,9 @@ export default function WhatIf() {
     }
   });
 
-  const handleWhatIfChange = ({ incomeChange: ic, sickDays: sd, simulatedNet: sn }) => {
+  const handleWhatIfChange = ({ incomeChange: ic, sickDays: sd }) => {
     if (ic !== undefined) setIncomeChange(ic);
     if (sd !== undefined) setSickDays(sd);
-    if (sn !== undefined) setSimulatedNet(sn);
   };
 
   return (
@@ -50,7 +50,15 @@ export default function WhatIf() {
             onChange={handleWhatIfChange}
           />
 
-          <TaxOracle simulatedNet={simulatedNet ?? profile?.income} />
+          {/* Precision Tax Oracle */}
+          {wizardData ? (
+            <PrecisionTaxResult
+              wizardData={wizardData}
+              onReset={() => setWizardData(null)}
+            />
+          ) : (
+            <PrecisionWizard onComplete={setWizardData} />
+          )}
         </div>
       </div>
     </div>
