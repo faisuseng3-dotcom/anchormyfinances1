@@ -388,7 +388,7 @@ export default function Dashboard() {
         </Link>
 
         {/* Other Actions */}
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-5 gap-2">
           {[
             { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
             { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
