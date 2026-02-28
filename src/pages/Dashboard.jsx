@@ -393,6 +393,8 @@ export default function Dashboard() {
             { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
             { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
             { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600', isPro: true },
+            { icon: GitBranch, label: 'What-If', page: 'WhatIf', color: 'from-indigo-500 to-violet-600' },
+            { icon: Calculator, label: 'Skatt', page: 'WhatIf', color: 'from-rose-500 to-pink-600' },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
