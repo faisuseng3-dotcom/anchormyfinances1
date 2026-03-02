@@ -2,6 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle, AlertTriangle, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
 export default function InsightsSection({ insights, profile }) {
   const successInsights = insights.filter(i => i.type === 'success');
