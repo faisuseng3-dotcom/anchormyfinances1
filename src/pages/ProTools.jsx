@@ -128,7 +128,8 @@ export default function ProTools() {
                   transition={{ delay: i * 0.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedCategory(cat.id)}
-                  className="p-5 rounded-2xl dark-card hover:border-white/20 border border-white/10"
+                  className={`p-5 rounded-2xl dark-card hover:border-white/20 border ${cat.highlight ? 'border-violet-500/40' : 'border-white/10'}`}
+                  style={cat.highlight ? { background: 'rgba(139,92,246,0.08)' } : {}}
                 >
                   <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-3`}>
                     <Icon className="w-6 h-6 text-white" />
