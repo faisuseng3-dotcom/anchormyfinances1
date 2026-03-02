@@ -12,7 +12,9 @@ export default function Onboarding() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
-    userGoal: '', // control, save, improve, plan
+    userGoal: '',
+    userGoals: [],
+    primaryGoal: '',
     income: 0,
     housingCost: 0,
     buffer: 0,
