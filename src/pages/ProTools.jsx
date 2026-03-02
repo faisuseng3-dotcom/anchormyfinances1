@@ -99,7 +99,7 @@ export default function ProTools() {
       case 'family_finances': return <FamilyFinances profile={profile} />;
       case 'inheritance_checker': return <InheritanceChecker profile={profile} />;
       case 'legacy_planner': return <LegacyPlanner profile={profile} />;
-      case 'agent_hub': return <AgentHub profile={profile} />;
+      case 'agent_hub': return <ModeGate feature="agent_hub" mode={profile?.mode || 'basic'}><AgentHub profile={profile} /></ModeGate>;
       default: return null;
     }
   };
