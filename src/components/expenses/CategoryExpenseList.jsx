@@ -63,11 +63,16 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
 
   const toggleCat = (cat) => setExpandedCats(prev => ({ ...prev, [cat]: !prev[cat] }));
 
-  const handleFeel = (key, feeling) => {
+  const handleFeel = (key, feeling, itemName) => {
     setFeelings(prev => ({ ...prev, [key]: feeling }));
     if (feeling === 'star') {
       setSparkle(key);
       setTimeout(() => setSparkle(null), 1200);
+      toast.success(`Uppfattat! Jag prioriterar ${itemName || 'detta köp'} i din framtida budget.`);
+    } else if (feeling === 'neutral') {
+      toast('Noterat – jag håller koll på den här posten.', { icon: '😐' });
+    } else if (feeling === 'skip') {
+      toast('Markerat som onödigt – jag föreslår alternativ nästa gång.', { icon: '💸' });
     }
   };
 
