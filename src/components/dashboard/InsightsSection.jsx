@@ -5,7 +5,14 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
+const ACTION_ROUTES = {
+  'Se kostnadsförslag': 'Settings',
+  'Skapa sparplan': 'Settings',
+  'Analysera lån': 'Loans',
+};
+
 export default function InsightsSection({ insights, profile }) {
+  const navigate = useNavigate();
   const successInsights = insights.filter(i => i.type === 'success');
   const warningInsights = insights.filter(i => i.type === 'warning' || i.type === 'danger');
 
@@ -105,6 +112,10 @@ export default function InsightsSection({ insights, profile }) {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => {
+                    const page = ACTION_ROUTES[insight.action];
+                    if (page) navigate(createPageUrl(page));
+                  }}
                   className="rounded-full bg-white/5 border-white/10 hover:bg-white/10 hover:border-indigo-500/50 text-white text-xs"
                 >
                   {insight.action || 'Åtgärda'}
