@@ -86,7 +86,7 @@ export default function ProTools() {
     switch(selectedFeature) {
       case 'decision_engine': return <DecisionEngine profile={profile} />;
       case 'shadow_inflation': return <ShadowInflation profile={profile} />;
-      case 'opportunity_scanner': return <OpportunityScanner profile={profile} />;
+      case 'opportunity_scanner': return <ModeGate feature="opportunity_scanner" mode={profile?.mode || 'basic'}><OpportunityScanner profile={profile} /></ModeGate>;
       case 'resilience': return <ResilienceScore profile={profile} />;
       case 'buffer_pulse': return <BufferPulse profile={profile} />;
       case 'crisis_assistant': return <CrisisAssistant profile={profile} />;
