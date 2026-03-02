@@ -6,6 +6,7 @@ import { AnimatePresence } from 'framer-motion';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
+import PersonaStep from '@/components/onboarding/PersonaStep';
 
 export default function Onboarding() {
   const navigate = useNavigate();
