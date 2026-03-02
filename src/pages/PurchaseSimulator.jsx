@@ -12,6 +12,7 @@ import VehicleAnalysis from '@/components/purchase/categories/VehicleAnalysis';
 import HousingAnalysis from '@/components/purchase/categories/HousingAnalysis';
 import ElectronicsAnalysis from '@/components/purchase/categories/ElectronicsAnalysis';
 import EventAnalysis from '@/components/purchase/categories/EventAnalysis';
+import ModeGate from '@/components/ModeGate';
 
 export default function PurchaseSimulator() {
   const [selectedCategory, setSelectedCategory] = useState(null);
