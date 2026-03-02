@@ -67,8 +67,15 @@ export default function Onboarding() {
       key="data"
       data={data}
       onChange={setData}
-      onNext={handleComplete}
+      onNext={() => setStep(3)}
       onBack={() => setStep(1)}
+    />,
+    <PersonaStep
+      key="persona"
+      data={data}
+      onChange={setData}
+      onNext={handleComplete}
+      onBack={() => setStep(2)}
     />
   ];
 
