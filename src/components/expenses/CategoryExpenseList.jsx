@@ -177,9 +177,9 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
                                 </motion.span>
                               ) : (
                                 <>
-                                  <button onClick={() => handleFeel(key, 'star')} className="text-sm hover:scale-125 transition-transform" title="Värt det">⭐</button>
-                                  <button onClick={() => handleFeel(key, 'neutral')} className="text-sm hover:scale-125 transition-transform" title="Okej">😐</button>
-                                  <button onClick={() => handleFeel(key, 'skip')} className="text-sm hover:scale-125 transition-transform" title="Onödigt">💸</button>
+                                  <button onClick={() => handleFeel(key, 'star', item.name)} className="text-sm hover:scale-125 transition-transform" title="Värt det">⭐</button>
+                                  <button onClick={() => handleFeel(key, 'neutral', item.name)} className="text-sm hover:scale-125 transition-transform" title="Okej">😐</button>
+                                  <button onClick={() => handleFeel(key, 'skip', item.name)} className="text-sm hover:scale-125 transition-transform" title="Onödigt">💸</button>
                                 </>
                               )}
                             </div>
