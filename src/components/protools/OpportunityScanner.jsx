@@ -1,106 +1,222 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Target, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Coins, Loader2, ChevronRight, Sparkles } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { base44 } from '@/api/base44Client';
 
-const formatNumber = (value) => {
-  return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
-};
+const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-export default function OpportunityScanner({ profile }) {
-  const [scanResult, setScanResult] = useState(null);
-
-  useEffect(() => {
-    // Trigger: Balance over 10,000 kr
-    if (profile?.buffer < 10000) {
-      setScanResult({ 
-        triggered: false,
-        message: 'Öka din buffert till minst 10 000 kr för att aktivera räntejägaren'
-      });
-      return;
-    }
-
-    // User's current rate (assume 0.5% if not specified)
-    const userRate = 0.5;
-    const marketBest = 4.2; // Market best rate in 2026
-    const balance = profile.buffer;
-
-    // Calculate yearly gain difference
-    const userGain = balance * (userRate / 100);
-    const marketGain = balance * (marketBest / 100);
-    const missedGain = marketGain - userGain;
-
-    setScanResult({
-      triggered: true,
-      userRate,
-      marketBest,
-      balance,
-      userGain: Math.round(userGain),
-      marketGain: Math.round(marketGain),
-      missedGain: Math.round(missedGain)
-    });
-  }, [profile]);
-
-  if (!scanResult) return null;
-
-  if (!scanResult.triggered) {
-    return (
-      <div className="dark-card p-6 rounded-2xl">
-        <p className="text-slate-400 text-sm">{scanResult.message}</p>
-      </div>
-    );
-  }
-
+function GoldCoin({ delay = 0 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
-    >
-      <div className="dark-card p-6 rounded-2xl">
-        <div className="flex items-center gap-3 mb-4">
-          <Target className="w-6 h-6 text-blue-400" />
-          <h3 className="font-semibold text-white">Räntejägaren</h3>
+      initial={{ opacity: 0, y: -20, scale: 0.5 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, type: 'spring', stiffness: 300 }}
+      className="text-2xl">🪙</motion.div>
+  );
+}
+
+export default function OpportunityScanner({ profile }) {
+  const [scanning, setScanning] = useState(false);
+  const [opportunities, setOpportunities] = useState(null);
+  const [claimed, setClaimed] = useState({});
+  const [totalFound, setTotalFound] = useState(0);
+
+  const subs = profile?.subscriptions || [];
+  const buffer = profile?.buffer || 0;
+  const savingsGoalName = profile?.savingsGoalName || 'sparpoolen';
+  const income = profile?.income || 30000;
+  const totalFixed = (profile?.housingCost || 0) + (subs.reduce((s, x) => s + x.amount, 0));
+  const margin = income - totalFixed;
+
+  // Auto-generate proactive local opportunities
+  const localOpportunities = [];
+
+  // Buffer interest opportunity
+  if (buffer >= 5000) {
+    const currentRate = 0.5;
+    const marketRate = 4.2;
+    const yearlyMissed = Math.round(buffer * (marketRate - currentRate) / 100);
+    if (yearlyMissed > 500) {
+      localOpportunities.push({
+        id: 'buffer_rate',
+        icon: '🏦',
+        title: 'Bättre sparkonto',
+        description: `Din buffert på ${fmt(buffer)} kr ger ~0.5% ränta. Marknadsbäst är 4.2%.`,
+        monthly_saving: Math.round(yearlyMissed / 12),
+        yearly_saving: yearlyMissed,
+        action: `Flytta bufferten till ett högräntekonto`,
+        tip: `Dessa ${fmt(Math.round(yearlyMissed / 12))} kr/mån kan gå direkt till "${savingsGoalName}"`,
+      });
+    }
+  }
+
+  // Subscription optimization
+  subs.forEach(sub => {
+    if (sub.amount > 200 && sub.category === 'streaming') {
+      localOpportunities.push({
+        id: `sub_${sub.name}`,
+        icon: '📱',
+        title: `Optimera ${sub.name}`,
+        description: `${sub.name} kostar ${fmt(sub.amount)} kr/mån. Delar du med någon?`,
+        monthly_saving: Math.round(sub.amount * 0.4),
+        yearly_saving: Math.round(sub.amount * 0.4 * 12),
+        action: 'Dela prenumerationen',
+        tip: `Du kan spara upp till ${fmt(Math.round(sub.amount * 0.4))} kr/mån`,
+      });
+    }
+  });
+
+  // Low margin alert
+  if (margin < income * 0.15) {
+    localOpportunities.push({
+      id: 'margin_boost',
+      icon: '⚡',
+      title: 'Marginal-booster',
+      description: `Din marginal är ${Math.round((margin / income) * 100)}% av inkomsten. 20%+ är målet.`,
+      monthly_saving: Math.round(income * 0.2 - margin),
+      yearly_saving: Math.round((income * 0.2 - margin) * 12),
+      action: 'Analysera fasta kostnader',
+      tip: 'Varje krona du frigör kan automatiseras till sparande',
+    });
+  }
+
+  const handleDeepScan = async () => {
+    setScanning(true);
+    const ai = await base44.integrations.Core.InvokeLLM({
+      prompt: `Du är en ekonomisk skattjägare för en privatperson i Sverige 2026. Hitta "gratispengar".
+
+Abonnemang: ${subs.map(s => `${s.name}: ${s.amount} kr/mån (${s.category})`).join(', ') || 'inga'}
+Inkomst: ${fmt(income)} kr/mån
+Marginal: ${fmt(margin)} kr/mån
+Buffert: ${fmt(buffer)} kr
+Sparmål: "${savingsGoalName}"
+
+Hitta max 3 konkreta möjligheter att spara pengar. Varje möjlighet ska vara en SPECIFIK åtgärd, inte ett generellt råd. Fokusera på abonnemang, räntor och dolda kostnader.
+
+För varje möjlighet:
+- title: kort titel
+- description: 1 mening om problemet
+- monthly_saving: uppskattad besparing kr/mån
+- action: konkret nästa steg (max 10 ord)
+- tip: hur besparingen kopplas till sparmålet
+
+Svara ENDAST med JSON.`,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          opportunities: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                title: { type: 'string' },
+                description: { type: 'string' },
+                monthly_saving: { type: 'number' },
+                action: { type: 'string' },
+                tip: { type: 'string' },
+              }
+            }
+          },
+          total_monthly: { type: 'number' },
+        }
+      }
+    });
+
+    const combined = [
+      ...localOpportunities,
+      ...(ai.opportunities || []).map((o, i) => ({ ...o, id: `ai_${i}`, icon: '🤖' }))
+    ];
+    setOpportunities(combined);
+    setTotalFound(combined.reduce((s, o) => s + (o.monthly_saving || 0), 0));
+    setScanning(false);
+  };
+
+  // Auto-show local on mount
+  useEffect(() => {
+    if (localOpportunities.length > 0) {
+      setOpportunities(localOpportunities);
+      setTotalFound(localOpportunities.reduce((s, o) => s + (o.monthly_saving || 0), 0));
+    }
+  }, []);
+
+  const handleClaim = (id) => {
+    setClaimed(c => ({ ...c, [id]: true }));
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Header + scan */}
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Coins className="w-5 h-5 text-amber-400" />
+            <h3 className="font-semibold text-white">Möjlighets-Radarn</h3>
+          </div>
+          {totalFound > 0 && (
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}
+              className="px-3 py-1 rounded-full text-xs font-black text-amber-900"
+              style={{ background: 'linear-gradient(135deg, #FCD34D, #F59E0B)' }}>
+              🪙 {fmt(totalFound)} kr/mån hittat!
+            </motion.div>
+          )}
         </div>
 
-        <div className="space-y-4">
-          <div>
-            <p className="text-xs text-slate-400 mb-1">Ditt sparkonto</p>
-            <p className="text-2xl font-bold text-white">{formatNumber(scanResult.balance)} kr</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 rounded-xl bg-white/5">
-              <p className="text-xs text-slate-400 mb-1">Din ränta</p>
-              <p className="text-lg font-bold text-rose-400">{scanResult.userRate}%</p>
-              <p className="text-xs text-slate-500 mt-1">
-                {formatNumber(scanResult.userGain)} kr/år
-              </p>
-            </div>
-            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
-              <p className="text-xs text-slate-400 mb-1">Marknadens bästa</p>
-              <p className="text-lg font-bold text-emerald-400">{scanResult.marketBest}%</p>
-              <p className="text-xs text-slate-500 mt-1">
-                {formatNumber(scanResult.marketGain)} kr/år
-              </p>
-            </div>
-          </div>
-        </div>
+        <Button onClick={handleDeepScan} disabled={scanning}
+          className="w-full h-11 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 font-bold text-white hover:opacity-90">
+          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Jagar gratispengar…</> : <><Sparkles className="w-4 h-4 mr-2" />Starta djupskanning</>}
+        </Button>
       </div>
 
-      <div className="p-5 rounded-xl border border-amber-500/30 bg-amber-500/10">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="w-6 h-6 text-amber-400 flex-shrink-0" />
-          <div>
-            <h4 className="font-semibold text-white mb-1">Du förlorar pengar!</h4>
-            <p className="text-sm text-slate-300 mb-3">
-              Du missar {formatNumber(scanResult.missedGain)} kr per år med nuvarande sparkonto.
-            </p>
-            <button className="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium">
-              Jämför sparkonton
-            </button>
+      {/* Opportunities list */}
+      <AnimatePresence>
+        {opportunities && opportunities.length > 0 && (
+          <div className="space-y-3">
+            {opportunities.map((opp, i) => (
+              <motion.div key={opp.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={`rounded-2xl p-4 transition-all ${claimed[opp.id] ? 'opacity-50' : ''}`}
+                style={{ background: 'rgba(17,24,39,0.6)', border: claimed[opp.id] ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(251,191,36,0.25)' }}>
+                <div className="flex items-start gap-3">
+                  <div className="flex flex-col items-center gap-1">
+                    <span className="text-xl">{opp.icon || '🪙'}</span>
+                    {!claimed[opp.id] && <GoldCoin delay={i * 0.1 + 0.3} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <p className="text-sm font-bold text-white">{opp.title}</p>
+                      <span className="text-amber-400 font-black text-sm flex-shrink-0">+{fmt(opp.monthly_saving)} kr/mån</span>
+                    </div>
+                    <p className="text-xs text-slate-400 mb-2">{opp.description}</p>
+                    {opp.tip && <p className="text-xs text-emerald-300 mb-3">"{ opp.tip}"</p>}
+                    {!claimed[opp.id] ? (
+                      <button onClick={() => handleClaim(opp.id)}
+                        className="flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors">
+                        {opp.action} <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    ) : (
+                      <p className="text-xs text-emerald-400 font-bold">✓ Flytte till {savingsGoalName}!</p>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Total summary */}
+            {totalFound > 0 && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
+                className="rounded-2xl p-4 text-center"
+                style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.12), rgba(245,158,11,0.06))', border: '1px solid rgba(251,191,36,0.3)' }}>
+                <p className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-1">Om du agerar på allt</p>
+                <p className="text-3xl font-black text-amber-400">{fmt(totalFound * 12)} kr</p>
+                <p className="text-xs text-slate-400 mt-1">extra per år till "{savingsGoalName}"</p>
+              </motion.div>
+            )}
           </div>
-        </div>
-      </div>
-    </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

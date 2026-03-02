@@ -1,111 +1,201 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, Loader2 } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { base44 } from '@/api/base44Client';
 
-const formatNumber = (value) => {
-  return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
-};
+const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-export default function ShadowInflation({ profile }) {
-  const [inflationData, setInflationData] = useState(null);
+// Proactive lifestyle items based on profile
+const LIFESTYLE_ITEMS = [
+  { name: 'Kaffe ute (daglig kopp)', monthlyBase: 800, inflationPct: 12 },
+  { name: 'Netflix', monthlyBase: 169, inflationPct: 18 },
+  { name: 'Bensin / drivmedel', monthlyBase: 1200, inflationPct: 9 },
+  { name: 'Matvaror (hushåll)', monthlyBase: 3500, inflationPct: 14 },
+  { name: 'Gym-kort', monthlyBase: 450, inflationPct: 7 },
+];
 
-  useEffect(() => {
-    if (!profile?.monthlyExpenses) return;
-
-    // Filter food expenses
-    const foodExpenses = (profile.monthlyExpenses || []).filter(e => 
-      e.category === 'Livsmedel' || e.category === 'food'
-    );
-
-    // Separate by year
-    const feb2025 = foodExpenses.filter(e => {
-      const date = new Date(e.date);
-      return date.getFullYear() === 2025 && date.getMonth() === 1;
-    });
-
-    const feb2026 = foodExpenses.filter(e => {
-      const date = new Date(e.date);
-      return date.getFullYear() === 2026 && date.getMonth() === 1;
-    });
-
-    if (feb2025.length === 0 || feb2026.length === 0) {
-      setInflationData({ error: 'Ingen data för februari 2025 eller 2026' });
-      return;
-    }
-
-    const avg2025 = feb2025.reduce((sum, e) => sum + e.amount, 0) / feb2025.length;
-    const avg2026 = feb2026.reduce((sum, e) => sum + e.amount, 0) / feb2026.length;
-    const change = ((avg2026 - avg2025) / avg2025) * 100;
-
-    setInflationData({
-      avg2025: Math.round(avg2025),
-      avg2026: Math.round(avg2026),
-      change: change.toFixed(1),
-      isIncrease: change > 0
-    });
-  }, [profile]);
-
-  if (!inflationData) {
-    return (
-      <div className="dark-card p-6 rounded-2xl">
-        <p className="text-slate-400 text-sm">Laddar inflationsdata...</p>
-      </div>
-    );
-  }
-
-  if (inflationData.error) {
-    return (
-      <div className="dark-card p-6 rounded-2xl">
-        <p className="text-slate-400 text-sm">{inflationData.error}</p>
-      </div>
-    );
-  }
+function XrayCost({ item, onClose }) {
+  const yearlyNow = item.price * 12;
+  const insurance = item.price > 5000 ? item.price * 0.015 * 24 : 0;
+  const apps = item.price > 3000 ? 1200 : 0;
+  const accessories = item.price > 2000 ? 800 : 0;
+  const totalLifetime = yearlyNow + insurance + apps + accessories;
+  const residual = item.price * 0.45; // avg electronics 2yr residual
+  const netCost = totalLifetime - residual;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-4"
-    >
-      <div className="dark-card p-6 rounded-2xl">
-        <h3 className="font-semibold text-white mb-4">Din Personliga Inflation</h3>
-        <p className="text-sm text-slate-400 mb-6">Livsmedel: Februari 2025 vs 2026</p>
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div>
-            <p className="text-xs text-slate-500 mb-1">Feb 2025 (snitt)</p>
-            <p className="text-xl font-bold text-white">{formatNumber(inflationData.avg2025)} kr</p>
-          </div>
-          <div>
-            <p className="text-xs text-slate-500 mb-1">Feb 2026 (snitt)</p>
-            <p className="text-xl font-bold text-white">{formatNumber(inflationData.avg2026)} kr</p>
-          </div>
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+      className="rounded-xl p-4 mt-3 space-y-3"
+      style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+      <div className="flex justify-between items-start">
+        <p className="text-xs font-bold text-rose-400 uppercase tracking-wider">🔬 Röntgen: {item.name}</p>
+        <button onClick={onClose} className="text-slate-500 text-xs hover:text-white">✕</button>
+      </div>
+      <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="flex justify-between"><span className="text-slate-500">Inköpspris</span><span className="text-white font-medium">{fmt(item.price)} kr</span></div>
+        {insurance > 0 && <div className="flex justify-between"><span className="text-slate-500">Försäkring 2 år</span><span className="text-rose-300 font-medium">{fmt(insurance)} kr</span></div>}
+        {apps > 0 && <div className="flex justify-between"><span className="text-slate-500">Appar & tjänster</span><span className="text-rose-300 font-medium">{fmt(apps)} kr</span></div>}
+        {accessories > 0 && <div className="flex justify-between"><span className="text-slate-500">Tillbehör</span><span className="text-rose-300 font-medium">{fmt(accessories)} kr</span></div>}
+        <div className="flex justify-between col-span-2 pt-1 border-t border-white/10">
+          <span className="text-slate-400 font-bold">Totalkostnad 24 mån</span>
+          <span className="text-rose-400 font-black">{fmt(totalLifetime)} kr</span>
         </div>
-
-        <div className={`p-4 rounded-xl ${
-          inflationData.isIncrease 
-            ? 'bg-rose-500/10 border border-rose-500/30' 
-            : 'bg-emerald-500/10 border border-emerald-500/30'
-        }`}>
-          <div className="flex items-center gap-2 mb-2">
-            {inflationData.isIncrease ? (
-              <TrendingUp className="w-5 h-5 text-rose-400" />
-            ) : (
-              <TrendingDown className="w-5 h-5 text-emerald-400" />
-            )}
-            <span className={`font-bold text-lg ${
-              inflationData.isIncrease ? 'text-rose-400' : 'text-emerald-400'
-            }`}>
-              {inflationData.isIncrease ? '+' : ''}{inflationData.change}%
-            </span>
-          </div>
-          <p className="text-sm text-slate-300">
-            {inflationData.isIncrease 
-              ? 'Dina livsmedelskostnader har ökat' 
-              : 'Du har lyckats sänka dina livsmedelskostnader'}
-          </p>
+        <div className="flex justify-between col-span-2">
+          <span className="text-slate-500">Restvärde</span><span className="text-emerald-400">-{fmt(residual)} kr</span>
+        </div>
+        <div className="flex justify-between col-span-2 border-t border-white/10 pt-1">
+          <span className="text-white font-bold">Nettokostnad</span>
+          <span className="text-2xl font-black text-rose-400">{fmt(netCost)} kr</span>
         </div>
       </div>
     </motion.div>
+  );
+}
+
+export default function ShadowInflation({ profile }) {
+  const [xrayItem, setXrayItem] = useState({ name: '', price: '' });
+  const [xrayResult, setXrayResult] = useState(null);
+  const [scanning, setScanning] = useState(false);
+  const [aiInflation, setAiInflation] = useState(null);
+
+  const income = profile?.income || 30000;
+  const subs = profile?.subscriptions || [];
+
+  // Calculate proactive lifestyle inflation
+  const lifestyleItems = LIFESTYLE_ITEMS.map(item => {
+    // Override with actual subscription data if available
+    const matchingSub = subs.find(s => item.name.toLowerCase().includes(s.name?.toLowerCase()?.split(' ')[0] || ''));
+    const base = matchingSub ? matchingSub.amount : item.monthlyBase;
+    const nowCost = base;
+    const yearAgoCost = Math.round(base / (1 + item.inflationPct / 100));
+    const monthlyIncrease = nowCost - yearAgoCost;
+    return { ...item, nowCost, yearAgoCost, monthlyIncrease, yearlyExtra: monthlyIncrease * 12 };
+  });
+  const totalYearlyLoss = lifestyleItems.reduce((s, i) => s + i.yearlyExtra, 0);
+  const incomeEquivalentDays = Math.round(totalYearlyLoss / (income / 30));
+
+  const handleXray = () => {
+    const price = parseFloat(xrayItem.price);
+    if (!price || !xrayItem.name) return;
+    setXrayResult({ name: xrayItem.name, price });
+  };
+
+  const handleAiScan = async () => {
+    setScanning(true);
+    const ai = await base44.integrations.Core.InvokeLLM({
+      prompt: `Du är en prisanalytiker i Sverige 2026. Analysera hur dessa livsstilskostnader har förändrats sen 2025:
+Abonnemang: ${subs.map(s => `${s.name}: ${s.amount} kr`).join(', ') || 'inga registrerade'}
+Inkomst: ${fmt(income)} kr/mån
+
+Ge för max 3 kategorier:
+- category: kategorinamn
+- pct_increase: procentökning sen förra året
+- kr_yearly: extra kronor per år
+- smart_swap: ett kortare alternativ/byte som sparar pengar
+Svara ENDAST med JSON.`,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          items: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                category: { type: 'string' },
+                pct_increase: { type: 'number' },
+                kr_yearly: { type: 'number' },
+                smart_swap: { type: 'string' },
+              }
+            }
+          }
+        }
+      }
+    });
+    setAiInflation(ai.items || []);
+    setScanning(false);
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Proactive lifestyle inflation */}
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="flex items-center gap-2 mb-4">
+          <Eye className="w-5 h-5 text-rose-400" />
+          <h3 className="font-semibold text-white">Din Dolda Prislapp</h3>
+        </div>
+        <p className="text-xs text-slate-500 mb-4">Vad din livsstil kostar <em>mer</em> än för ett år sedan</p>
+
+        <div className="space-y-3">
+          {lifestyleItems.map((item, i) => (
+            <div key={i} className="flex items-center justify-between">
+              <div className="flex-1">
+                <p className="text-xs text-slate-300">{item.name}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <div className="h-1 bg-white/5 rounded-full flex-1 overflow-hidden">
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${Math.min(100, item.inflationPct * 5)}%` }}
+                      transition={{ delay: i * 0.1, duration: 0.8 }}
+                      className="h-full bg-gradient-to-r from-amber-500 to-rose-500 rounded-full" />
+                  </div>
+                  <span className="text-[10px] text-amber-400 font-bold flex-shrink-0">+{item.inflationPct}%</span>
+                </div>
+              </div>
+              <div className="text-right ml-4">
+                <p className="text-xs font-bold text-rose-400">+{fmt(item.yearlyExtra)} kr/år</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-4 pt-4 border-t border-white/10 flex justify-between items-center">
+          <p className="text-xs text-slate-400">Totalt extra per år</p>
+          <div className="text-right">
+            <p className="text-xl font-black text-rose-400">{fmt(totalYearlyLoss)} kr</p>
+            <p className="text-[10px] text-slate-500">= {incomeEquivalentDays} dagslöner</p>
+          </div>
+        </div>
+
+        <Button onClick={handleAiScan} disabled={scanning}
+          className="w-full mt-4 h-10 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-sm font-bold text-white hover:opacity-90">
+          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Skannar dina priser…</> : '🔍 Djup AI-inflationsskanning'}
+        </Button>
+      </div>
+
+      {/* AI scan results */}
+      <AnimatePresence>
+        {aiInflation && aiInflation.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
+            {aiInflation.map((item, i) => (
+              <div key={i} className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' }}>
+                <div className="flex justify-between items-start mb-2">
+                  <p className="text-sm font-semibold text-white">{item.category}</p>
+                  <span className="text-rose-400 font-black text-sm">+{item.pct_increase}%</span>
+                </div>
+                <p className="text-xs text-slate-400 mb-2">Extra kostnad: <span className="text-rose-300 font-bold">{fmt(item.kr_yearly)} kr/år</span></p>
+                <p className="text-xs text-emerald-300">💡 {item.smart_swap}</p>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* X-ray tool */}
+      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">🔬 Röntgen-knappen – Köp-Scanner</p>
+        <p className="text-xs text-slate-500">Klistra in ett köp för att se den <em>verkliga</em> totalkostnaden över 24 månader.</p>
+        <div className="grid grid-cols-2 gap-2">
+          <Input value={xrayItem.name} onChange={e => setXrayItem(x => ({ ...x, name: e.target.value }))}
+            placeholder="iPhone 16 Pro" className="h-10 text-sm" />
+          <Input type="number" value={xrayItem.price} onChange={e => setXrayItem(x => ({ ...x, price: e.target.value }))}
+            placeholder="Pris (kr)" className="h-10 text-sm" />
+        </div>
+        <Button onClick={handleXray} disabled={!xrayItem.name || !xrayItem.price}
+          className="w-full h-10 rounded-xl bg-gradient-to-r from-slate-600 to-slate-700 text-sm font-bold text-white hover:opacity-90">
+          Röntga köpet
+        </Button>
+        {xrayResult && <XrayCost item={xrayResult} onClose={() => setXrayResult(null)} />}
+      </div>
+    </div>
   );
 }
