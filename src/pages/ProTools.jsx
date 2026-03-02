@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Zap, Shield, Brain, TrendingUp, Users } from 'lucide-react';
+import { ArrowLeft, Zap, Shield, Brain, TrendingUp, Users, Bot } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import DecisionEngine from '@/components/protools/DecisionEngine';
 import ShadowInflation from '@/components/protools/ShadowInflation';
