@@ -38,61 +38,48 @@ export default function PurchaseSimulator() {
   return (
     <div className="min-h-screen pb-24">
       <ModeGate feature="purchase_simulator" mode={currentMode}>
-        {/* Header */}
         <div className="px-6 pt-8 pb-6">
-        <Link to={createPageUrl('Dashboard')}>
-          <Button variant="ghost" size="icon" className="mb-4 rounded-xl bg-white/5 hover:bg-white/10">
-            <ArrowLeft className="w-5 h-5 text-slate-400" />
-          </Button>
-        </Link>
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-            <ShoppingBag className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">Köpanalysator</h1>
-            <p className="text-sm text-slate-400 capitalize">{currentMode} Mode</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-6 space-y-6">
-        {/* Universal analyzer always visible at top */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">🔗 Länk- & Bildanalys</p>
-          <PurchaseAnalyzer profile={profile} />
-        </motion.div>
-
-        <div className="border-t border-white/10 pt-4">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Eller välj kategori</p>
-        </div>
-
-        {!selectedCategory ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <CategorySelector 
-              selected={selectedCategory}
-              onSelect={setSelectedCategory}
-            />
-          </motion.div>
-        ) : (
-          <>
-            <Button
-              variant="ghost"
-              onClick={() => setSelectedCategory(null)}
-              className="text-slate-400 hover:text-white"
-            >
-              ← Byt kategori
+          <Link to={createPageUrl('Dashboard')}>
+            <Button variant="ghost" size="icon" className="mb-4 rounded-xl bg-white/5 hover:bg-white/10">
+              <ArrowLeft className="w-5 h-5 text-slate-400" />
             </Button>
+          </Link>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+              <ShoppingBag className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-white">Köpanalysator</h1>
+              <p className="text-sm text-slate-400 capitalize">{currentMode} Mode</p>
+            </div>
+          </div>
+        </div>
 
-            {selectedCategory === 'vehicle' && <VehicleAnalysis mode={currentMode} profile={profile} />}
-            {selectedCategory === 'housing' && <HousingAnalysis mode={currentMode} profile={profile} />}
-            {selectedCategory === 'electronics' && <ElectronicsAnalysis mode={currentMode} profile={profile} />}
-            {selectedCategory === 'event' && <EventAnalysis mode={currentMode} profile={profile} />}
-          </>
-        )}
+        <div className="px-6 space-y-6">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">🔗 Länk- & Bildanalys</p>
+            <PurchaseAnalyzer profile={profile} />
+          </motion.div>
+
+          <div className="border-t border-white/10 pt-4">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Eller välj kategori</p>
+          </div>
+
+          {!selectedCategory ? (
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
+            </motion.div>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={() => setSelectedCategory(null)} className="text-slate-400 hover:text-white">
+                ← Byt kategori
+              </Button>
+              {selectedCategory === 'vehicle' && <VehicleAnalysis mode={currentMode} profile={profile} />}
+              {selectedCategory === 'housing' && <HousingAnalysis mode={currentMode} profile={profile} />}
+              {selectedCategory === 'electronics' && <ElectronicsAnalysis mode={currentMode} profile={profile} />}
+              {selectedCategory === 'event' && <EventAnalysis mode={currentMode} profile={profile} />}
+            </>
+          )}
         </div>
       </ModeGate>
     </div>
