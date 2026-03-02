@@ -25,6 +25,14 @@ import AgentHub from '@/components/protools/AgentHub';
 
 const categories = [
   {
+    id: 'agents',
+    name: 'Ledningsgruppen',
+    icon: Bot,
+    color: 'from-violet-500 to-purple-700',
+    features: ['agent_hub'],
+    highlight: true,
+  },
+  {
     id: 'decision',
     name: 'Beslutsmotorn',
     icon: Brain,
