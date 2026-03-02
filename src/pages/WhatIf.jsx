@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import WhatIfEngine from '@/components/whatif/WhatIfEngine';
 import PrecisionWizard from '@/components/whatif/PrecisionWizard';
 import PrecisionTaxResult from '@/components/whatif/PrecisionTaxResult';
+import ModeGate from '@/components/ModeGate';
 
 export default function WhatIf() {
   const [incomeChange, setIncomeChange] = useState(0);
