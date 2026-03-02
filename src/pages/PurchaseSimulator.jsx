@@ -37,8 +37,9 @@ export default function PurchaseSimulator() {
 
   return (
     <div className="min-h-screen pb-24">
-      {/* Header */}
-      <div className="px-6 pt-8 pb-6">
+      <ModeGate feature="purchase_simulator" mode={currentMode}>
+        {/* Header */}
+        <div className="px-6 pt-8 pb-6">
         <Link to={createPageUrl('Dashboard')}>
           <Button variant="ghost" size="icon" className="mb-4 rounded-xl bg-white/5 hover:bg-white/10">
             <ArrowLeft className="w-5 h-5 text-slate-400" />
