@@ -1,276 +1,304 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Laptop, Clock, TrendingDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Laptop, Link2, Loader2, TrendingDown, Clock, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
 
-const formatNumber = (value) => {
-  return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
-};
+const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 export default function ElectronicsAnalysis({ mode, profile }) {
-  const [device, setDevice] = useState({ name: '', price: '', usage: '' });
+  const [device, setDevice] = useState({ name: '', price: '', usage: '', usageYears: '2' });
+  const [urlInput, setUrlInput] = useState('');
+  const [urlLoading, setUrlLoading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [liveCalc, setLiveCalc] = useState(null);
+
+  const income = profile?.income || 30000;
+  const buffer = profile?.buffer || 0;
+  const savingsGoalName = profile?.savingsGoalName || 'sparmålet';
+  const savingsGoal = profile?.savingsGoal || 0;
+  const totalFixed = (profile?.housingCost || 0) + ((profile?.subscriptions || []).reduce((s, x) => s + x.amount, 0));
+  const margin = income - totalFixed;
+
+  useEffect(() => {
+    const price = parseFloat(device.price) || 0;
+    const years = parseFloat(device.usageYears) || 2;
+    if (!price) { setLiveCalc(null); return; }
+
+    // Cost per day
+    const days = years * 365;
+    const costPerDay = price / days;
+    const costPerMonth = price / (years * 12);
+
+    // Depreciation: electronics lose ~40% yr1, ~20% yr2
+    const residualValue = price * (years <= 1 ? 0.6 : years <= 2 ? 0.4 : 0.25);
+    const totalDepreciation = price - residualValue;
+
+    // Savings goal impact
+    const savingsPct = savingsGoal > 0 ? (price / savingsGoal) * 100 : 0;
+    const bufferPct = buffer > 0 ? (price / buffer) * 100 : 0;
+    const monthsToSave = margin > 0 ? price / (margin * 0.2) : 99;
+
+    setLiveCalc({ costPerDay, costPerMonth, residualValue, totalDepreciation, savingsPct, bufferPct, monthsToSave, days });
+  }, [device.price, device.usageYears, buffer, savingsGoal, margin]);
+
+  const handleUrlAutofill = async () => {
+    if (!urlInput) return;
+    setUrlLoading(true);
+    const res = await base44.integrations.Core.InvokeLLM({
+      prompt: `Läs av denna elektronik-URL (Webhallen, Elgiganten, Amazon, etc.) och extrahera produktdata: ${urlInput}. Returnera JSON med: name (produktnamn + modell), price (pris i kr), specs (kort specifikationssummering som sträng).`,
+      add_context_from_internet: true,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          price: { type: 'number' },
+          specs: { type: 'string' }
+        }
+      }
+    });
+    setDevice(d => ({
+      ...d,
+      name: res.name || d.name,
+      price: res.price ? String(res.price) : d.price,
+    }));
+    setUrlLoading(false);
+  };
 
   const handleAnalyze = async () => {
     setLoading(true);
 
-    if (mode === 'basic') {
-      const canAfford = parseInt(device.price) <= profile.buffer;
-      setAnalysis({
-        type: 'basic',
-        price: parseInt(device.price),
-        canAfford
-      });
-      setLoading(false);
-      return;
-    }
+    const ai = await base44.integrations.Core.InvokeLLM({
+      prompt: `Du är en elektronik-CFO och anti-impulsköps-coach för en privatperson.
 
-    const prompt = mode === 'smart'
-      ? `Analysera elektronikköpet ${device.name} för ${device.price} kr.
+Produkt: ${device.name}
+Pris: ${fmt(device.price)} kr
+Användning: ${device.usage || 'ej angiven'}
+Planerad användningstid: ${device.usageYears} år
+Kostnad per dag: ${liveCalc ? fmt(liveCalc.costPerDay) + ' kr' : 'okänd'}
+Kostnad per månad: ${liveCalc ? fmt(liveCalc.costPerMonth) + ' kr' : 'okänd'}
+Användarens inkomst: ${fmt(income)} kr/mån
+Sparmål "${savingsGoalName}": ${fmt(savingsGoal)} kr (köpet = ${Math.round(liveCalc?.savingsPct || 0)}% av målet)
+Buffert: ${fmt(buffer)} kr
 
-Beräkna:
-1. Produktens ålder på marknaden (release-datum)
-2. Rekommendera refurbished om produkten är >9 månader gammal
-3. Nästa modell release (om tillgänglig info)
-4. Pris-per-prestanda jämfört med alternativ
-5. Bästa köptidpunkt
+Ge:
+1. cfo_verdict: "Smart investering" | "Köp med eftertanke" | "Vänta" | "Skippa"
+2. cfo_score: 1-10
+3. need_analysis: En konkret analys om behovet är äkta eller ett impulsköp. SVENSKA.
+4. depreciation_pct: Uppskattad värdeminskning i % efter 1 år för denna typ av produkt (t.ex. 40 för smartphones)
+5. alternative: Konkret billigare alternativ (refurbished / annan modell). SVENSKA.
+6. cost_per_use_story: Kreativ beskrivning av "kostnaden per dag" (t.ex. "Som en kopp kaffe varje dag"). SVENSKA.
+7. goal_trade_off: Vad sparmålet hade blivit om pengarna investerades istället. SVENSKA. 
+8. upgrade_cycle: Hur länge bör man vänta innan detta köp är rimligt (månader)?
+9. best_time_to_buy: Tips om när priset brukar sjunka (rea, release-cykler). SVENSKA.
 
-Ge konkret råd om timing och alternativ.`
-      : `ROI-analys för ${device.name} till ${device.price} kr.
-
-Användning: ${device.usage}
-
-Beräkna:
-1. Om frilansare/student: Hur många timmar per vecka sparar produkten?
-2. Timvärde baserat på uppskattad inkomst
-3. Månatligt värde i sparad tid
-4. ROI (Return on Investment) - Hur snabbt tjänar produkten in sig?
-5. Break-even tidpunkt
-6. Produktivitetsvärde över 3 år
-
-Ge strategisk bedömning om detta är en investering eller bara en kostnad.`;
-
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        add_context_from_internet: true,
-        response_json_schema: mode === 'smart' ? {
-          type: 'object',
-          properties: {
-            product_age_months: { type: 'number' },
-            recommend_refurbished: { type: 'boolean' },
-            refurbished_price: { type: 'number' },
-            next_model_date: { type: 'string' },
-            best_timing: { type: 'string' },
-            alternative: { type: 'string' }
-          }
-        } : {
-          type: 'object',
-          properties: {
-            hours_saved_weekly: { type: 'number' },
-            hourly_value: { type: 'number' },
-            monthly_value: { type: 'number' },
-            roi_months: { type: 'number' },
-            value_3y: { type: 'number' },
-            is_investment: { type: 'boolean' },
-            recommendation: { type: 'string' }
-          }
+Svara ENDAST med JSON.`,
+      add_context_from_internet: true,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          cfo_verdict: { type: 'string' },
+          cfo_score: { type: 'number' },
+          need_analysis: { type: 'string' },
+          depreciation_pct: { type: 'number' },
+          alternative: { type: 'string' },
+          cost_per_use_story: { type: 'string' },
+          goal_trade_off: { type: 'string' },
+          upgrade_cycle: { type: 'number' },
+          best_time_to_buy: { type: 'string' },
         }
-      });
+      }
+    });
 
-      setAnalysis({ type: mode, ...result });
-    } catch (error) {
-      console.error('Failed to analyze:', error);
-    }
-
+    setAnalysis({ ...liveCalc, ...ai, price: parseFloat(device.price), device });
     setLoading(false);
   };
 
+  const VERDICT_COLOR = {
+    'Smart investering': '#10B981',
+    'Köp med eftertanke': '#6366F1',
+    'Vänta': '#F59E0B',
+    'Skippa': '#EF4444',
+  };
+
   return (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="dark-card p-6 rounded-2xl"
-      >
-        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-          <Laptop className="w-5 h-5 text-purple-400" />
-          Elektronikköp
+    <div className="space-y-5">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-5 space-y-4"
+        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h3 className="font-semibold text-white flex items-center gap-2">
+          <Laptop className="w-5 h-5 text-purple-400" /> Elektronikköp
         </h3>
-        <div className="space-y-4">
-          <div>
-            <Label>Produkt</Label>
-            <Input
-              value={device.name}
-              onChange={(e) => setDevice({ ...device, name: e.target.value })}
-              placeholder="t.ex. MacBook Pro M3, iPhone 15 Pro"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label>Pris (kr)</Label>
-            <Input
-              type="number"
-              value={device.price}
-              onChange={(e) => setDevice({ ...device, price: e.target.value })}
-              placeholder="25000"
-              className="mt-1"
-            />
-          </div>
-          {mode === 'pro' && (
-            <div>
-              <Label>Användningsområde</Label>
-              <Input
-                value={device.usage}
-                onChange={(e) => setDevice({ ...device, usage: e.target.value })}
-                placeholder="t.ex. Frilans webbutveckling, Studier"
-                className="mt-1"
-              />
+
+        {/* URL */}
+        <div>
+          <Label className="text-xs text-slate-400">URL (Webhallen, Elgiganten, Amazon…)</Label>
+          <div className="flex gap-2 mt-1">
+            <div className="relative flex-1">
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
+                placeholder="https://webhallen.com/…" className="pl-9 h-10 text-sm" />
             </div>
-          )}
+            <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
+              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
+            </Button>
+          </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2">
+            <Label className="text-xs text-slate-400">Produkt</Label>
+            <Input value={device.name} onChange={e => setDevice(d => ({ ...d, name: e.target.value }))}
+              placeholder="iPhone 16 Pro, MacBook Air M3…" className="mt-1 h-10 text-sm" />
+          </div>
+          <div>
+            <Label className="text-xs text-slate-400">Pris (kr)</Label>
+            <Input type="number" value={device.price} onChange={e => setDevice(d => ({ ...d, price: e.target.value }))}
+              placeholder="14 000" className="mt-1 h-10 text-sm" />
+          </div>
+          <div>
+            <Label className="text-xs text-slate-400">Planerad användning (år)</Label>
+            <Input type="number" min="1" max="10" value={device.usageYears} onChange={e => setDevice(d => ({ ...d, usageYears: e.target.value }))}
+              placeholder="2" className="mt-1 h-10 text-sm" />
+          </div>
+          <div className="col-span-2">
+            <Label className="text-xs text-slate-400">Vad ska du använda den till?</Label>
+            <Input value={device.usage} onChange={e => setDevice(d => ({ ...d, usage: e.target.value }))}
+              placeholder="Frilans, studier, gaming, foto…" className="mt-1 h-10 text-sm" />
+          </div>
+        </div>
+
+        {/* Live calculations */}
+        <AnimatePresence>
+          {liveCalc && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+              className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
+              style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.15)' }}>
+              <div>
+                <p className="text-[10px] text-slate-500">Kostnad/dag</p>
+                <p className="text-sm font-bold text-purple-400">{fmt(liveCalc.costPerDay)} kr</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-500">Kostnad/mån</p>
+                <p className="text-sm font-bold text-purple-400">{fmt(liveCalc.costPerMonth)} kr</p>
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-500">Av sparmål</p>
+                <p className={`text-sm font-bold ${liveCalc.savingsPct > 50 ? 'text-rose-400' : liveCalc.savingsPct > 20 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  {Math.round(liveCalc.savingsPct)}%
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
-      <Button
-        onClick={handleAnalyze}
-        disabled={!device.name || !device.price || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
-      >
-        {loading ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-            Analyserar produkt...
-          </>
-        ) : (
-          <>Analysera elektronik</>
-        )}
+      <Button onClick={handleAnalyze} disabled={!device.name || !device.price || loading}
+        className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:opacity-90 font-bold text-white">
+        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : '💻 Generera Elektronik CFO-rapport'}
       </Button>
 
-      {analysis && (
-        <>
-          {analysis.type === 'basic' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-6 rounded-2xl border-2 ${
-                analysis.canAfford
-                  ? 'border-emerald-500 bg-emerald-500/10'
-                  : 'border-rose-500 bg-rose-500/10'
-              }`}
-            >
-              <h3 className="font-bold text-white text-xl mb-2">
-                {formatNumber(analysis.price)} kr
-              </h3>
-              <p className={`text-sm font-medium ${analysis.canAfford ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {analysis.canAfford ? '✓ Du har råd' : '⚠️ Du har inte råd'}
-              </p>
-            </motion.div>
-          )}
-
-          {analysis.type === 'smart' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="dark-card p-6 rounded-2xl">
-                <div className="flex items-center gap-2 mb-4">
-                  <Clock className="w-5 h-5 text-purple-400" />
-                  <h3 className="font-semibold text-white">Produktanalys</h3>
-                </div>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Produktens ålder</p>
-                    <p className="text-lg font-bold text-white">{analysis.product_age_months} månader</p>
+      <AnimatePresence>
+        {analysis && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            {(() => {
+              const vc = VERDICT_COLOR[analysis.cfo_verdict] || '#6366F1';
+              const depreciationVal = analysis.price * ((analysis.depreciation_pct || 40) / 100);
+              return (
+                <>
+                  {/* Header verdict */}
+                  <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)`, border: `1px solid ${vc}44` }}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-xs text-slate-500 mb-1">{analysis.device.name}</p>
+                        <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
+                        <div className="mt-2 inline-flex px-3 py-1 rounded-full text-sm font-bold"
+                          style={{ background: `${vc}22`, color: vc, border: `1px solid ${vc}44` }}>
+                          {analysis.cfo_verdict}
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
+                        <div className="text-[10px] text-slate-500">CFO SCORE</div>
+                      </div>
+                    </div>
                   </div>
-                  {analysis.next_model_date && (
-                    <div>
-                      <p className="text-sm text-slate-400 mb-1">Nästa modell förväntas</p>
-                      <p className="text-sm text-blue-400">{analysis.next_model_date}</p>
+
+                  {/* Cost per use story */}
+                  <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)' }}>
+                    <p className="text-xs text-slate-500 mb-1">Kostnad per användning ({analysis.device.usageYears} år = {analysis.days} dagar)</p>
+                    <p className="text-3xl font-black text-purple-400">{fmt(analysis.costPerDay)} kr/dag</p>
+                    <p className="text-xs text-slate-400 mt-1 italic">{analysis.cost_per_use_story}</p>
+                  </div>
+
+                  {/* Depreciation */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                      <div className="flex items-start gap-2">
+                        <TrendingDown className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-[10px] text-rose-400 uppercase tracking-wider font-bold">Värdeminskning år 1</p>
+                          <p className="text-xl font-black text-white mt-0.5">-{analysis.depreciation_pct || 40}%</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5">≈ -{fmt(depreciationVal)} kr</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                      <div>
+                        <p className="text-[10px] text-indigo-400 uppercase tracking-wider font-bold">Upgrade-cykeln</p>
+                        <p className="text-xl font-black text-white mt-0.5">{analysis.upgrade_cycle || 24} mån</p>
+                        <p className="text-[10px] text-slate-500 mt-0.5">Vänta tills köpet är rimligt</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Need analysis */}
+                  {analysis.need_analysis && (
+                    <div className="rounded-xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🧠 Behovs-analys</p>
+                      <p className="text-sm text-slate-300 leading-relaxed">{analysis.need_analysis}</p>
                     </div>
                   )}
-                </div>
-              </div>
 
-              {analysis.recommend_refurbished && (
-                <div className="p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-                  <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-                    <TrendingDown className="w-5 h-5 text-emerald-400" />
-                    Rekommendation: Refurbished
-                  </h4>
-                  <p className="text-sm text-slate-300 mb-3">
-                    Produkten är över 9 månader gammal. Överväg renoverad modell.
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-400">Refurbished-pris:</span>
-                    <span className="text-emerald-400 font-bold">{formatNumber(analysis.refurbished_price)} kr</span>
-                  </div>
-                  <p className="text-xs text-emerald-300 mt-2">
-                    💰 Spara {formatNumber(parseInt(device.price) - analysis.refurbished_price)} kr
-                  </p>
-                </div>
-              )}
+                  {/* Goal tradeoff */}
+                  {analysis.goal_trade_off && (
+                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <span className="text-emerald-400">📈</span>
+                      <p className="text-slate-300">{analysis.goal_trade_off}</p>
+                    </div>
+                  )}
 
-              <div className="p-5 rounded-xl dark-card">
-                <h4 className="font-semibold text-white mb-2">Bästa köptidpunkt</h4>
-                <p className="text-sm text-slate-300">{analysis.best_timing}</p>
-              </div>
+                  {/* Alternative */}
+                  {analysis.alternative && (
+                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(17,24,39,0.5)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                      <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-[11px] font-bold text-cyan-400 mb-0.5">Smartare alternativ</p>
+                        <p className="text-slate-300">{analysis.alternative}</p>
+                      </div>
+                    </div>
+                  )}
 
-              {analysis.alternative && (
-                <div className="p-5 rounded-xl border border-purple-500/30 bg-purple-500/10">
-                  <h4 className="font-semibold text-white mb-2">Alternativ</h4>
-                  <p className="text-sm text-slate-300">{analysis.alternative}</p>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {analysis.type === 'pro' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="dark-card p-6 rounded-2xl">
-                <h3 className="font-semibold text-white mb-4">ROI-Analys</h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Sparad tid per vecka</p>
-                    <p className="text-2xl font-bold text-indigo-400">{analysis.hours_saved_weekly} timmar</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Månatligt värde i sparad tid</p>
-                    <p className="text-2xl font-bold text-emerald-400">{formatNumber(analysis.monthly_value)} kr</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Produkten tjänar in sig på</p>
-                    <p className="text-2xl font-bold text-blue-400">{analysis.roi_months} månader</p>
-                  </div>
-                  <div className="pt-3 border-t border-white/10">
-                    <p className="text-sm text-slate-400 mb-1">Totalt värde över 3 år</p>
-                    <p className="text-3xl font-bold text-purple-400">{formatNumber(analysis.value_3y)} kr</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className={`p-5 rounded-xl border ${
-                analysis.is_investment
-                  ? 'border-emerald-500/30 bg-emerald-500/10'
-                  : 'border-amber-500/30 bg-amber-500/10'
-              }`}>
-                <h4 className="font-semibold text-white mb-2">
-                  {analysis.is_investment ? '✓ Detta är en investering' : '⚠️ Detta är en kostnad'}
-                </h4>
-                <p className="text-sm text-slate-300">{analysis.recommendation}</p>
-              </div>
-            </motion.div>
-          )}
-        </>
-      )}
+                  {/* Best time to buy */}
+                  {analysis.best_time_to_buy && (
+                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
+                      <Clock className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-[11px] font-bold text-amber-400 mb-0.5">Bästa köptidpunkt</p>
+                        <p className="text-slate-300">{analysis.best_time_to_buy}</p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              );
+            })()}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

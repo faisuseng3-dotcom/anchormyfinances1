@@ -1,335 +1,275 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { PartyPopper, Calendar, TrendingUp, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { PartyPopper, Link2, Loader2, MapPin, Train, Hotel } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
 
-const formatNumber = (value) => {
-  return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
-};
+const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 export default function EventAnalysis({ mode, profile }) {
-  const [event, setEvent] = useState({ name: '', cost: '', date: '', type: '' });
+  const [event, setEvent] = useState({ name: '', ticketCost: '', city: '', date: '', travelNeeded: false });
+  const [urlInput, setUrlInput] = useState('');
+  const [urlLoading, setUrlLoading] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [liveCalc, setLiveCalc] = useState(null);
+
+  const income = profile?.income || 30000;
+  const buffer = profile?.buffer || 0;
+  const savingsGoal = profile?.savingsGoal || 0;
+  const savingsGoalName = profile?.savingsGoalName || 'sparmålet';
+  const totalFixed = (profile?.housingCost || 0) + ((profile?.subscriptions || []).reduce((s, x) => s + x.amount, 0));
+  const margin = income - totalFixed;
+
+  // Estimate travel costs
+  useEffect(() => {
+    const ticket = parseFloat(event.ticketCost) || 0;
+    if (!ticket) { setLiveCalc(null); return; }
+
+    const travelCost = event.travelNeeded ? 600 : 0; // Train avg
+    const hotelCost = event.travelNeeded ? 1200 : 0;  // 1 night avg
+    const foodCost = event.travelNeeded ? 400 : 150;
+    const totalCost = ticket + travelCost + hotelCost + foodCost;
+    const bufferPct = buffer > 0 ? (totalCost / buffer) * 100 : 0;
+    const savingsPct = savingsGoal > 0 ? (totalCost / savingsGoal) * 100 : 0;
+    const monthsToSave = margin > 0 ? totalCost / (margin * 0.2) : 99;
+
+    setLiveCalc({ ticket, travelCost, hotelCost, foodCost, totalCost, bufferPct, savingsPct, monthsToSave });
+  }, [event.ticketCost, event.travelNeeded, buffer, savingsGoal, margin]);
+
+  const handleUrlAutofill = async () => {
+    if (!urlInput) return;
+    setUrlLoading(true);
+    const res = await base44.integrations.Core.InvokeLLM({
+      prompt: `Läs av denna event-URL (Ticketmaster, Airbnb, booking etc.) och extrahera data: ${urlInput}. Returnera JSON med: name (eventnamn/plats), ticket_cost (pris i kr), city (stad), date (datum som sträng).`,
+      add_context_from_internet: true,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          ticket_cost: { type: 'number' },
+          city: { type: 'string' },
+          date: { type: 'string' }
+        }
+      }
+    });
+    setEvent(e => ({
+      ...e,
+      name: res.name || e.name,
+      ticketCost: res.ticket_cost ? String(res.ticket_cost) : e.ticketCost,
+      city: res.city || e.city,
+      date: res.date || e.date,
+    }));
+    setUrlLoading(false);
+  };
 
   const handleAnalyze = async () => {
     setLoading(true);
 
-    if (mode === 'basic') {
-      const monthsToSave = Math.ceil(parseInt(event.cost) / ((profile.income - profile.housingCost) * 0.2));
-      const canAfford = parseInt(event.cost) <= profile.buffer;
-      setAnalysis({
-        type: 'basic',
-        cost: parseInt(event.cost),
-        monthsToSave,
-        canAfford
-      });
-      setLoading(false);
-      return;
-    }
+    const ai = await base44.integrations.Core.InvokeLLM({
+      prompt: `Du är en upplevelsecoach och finansrådgivare för en privatperson.
 
-    const prompt = mode === 'smart'
-      ? `Säsongsoptimering för ${event.name} (${event.type}) med budget ${event.cost} kr i ${event.date}.
+Event: ${event.name}
+Biljett: ${fmt(event.ticketCost)} kr
+Stad: ${event.city} (resa nödvändig: ${event.travelNeeded ? 'Ja' : 'Nej'})
+Datum: ${event.date}
+Uppskattad totalkostnad: ${fmt(liveCalc?.totalCost)} kr (biljett + resa + hotell + mat)
+Användarens inkomst: ${fmt(income)} kr/mån
+Buffert: ${fmt(buffer)} kr
+Sparmål "${savingsGoalName}": ${fmt(savingsGoal)} kr
+Andel av buffert: ${Math.round(liveCalc?.bufferPct || 0)}%
+Andel av sparmål: ${Math.round(liveCalc?.savingsPct || 0)}%
 
-Beräkna:
-1. Alternativa datum som är billigare (off-season)
-2. Alternativa platser med liknande kvalitet men lägre pris
-3. Vad kan sparas utan att sänka kvaliteten?
-4. Konkreta leverantörsalternativ
+Ge:
+1. cfo_verdict: "Kör på!" | "Planera smart" | "Vänta lite" | "Skippa"
+2. cfo_score: 1-10 (10 = självklart värt det)
+3. value_pulse: En mening om upplevelsevärdet. Känn och kreativ. SVENSKA.
+4. total_real_cost: Uppskattad total kostnad inkl. allt (kr) baserat på stad och eventtyp
+5. travel_breakdown: Om resa: kort breakdown av tåg, hotell, mat. SVENSKA.
+6. goal_impact: En mening om hur detta påverkar sparmålet. SVENSKA.
+7. smart_tip: Ett konkret tips för att göra upplevelsen billigare utan att sänka glädjen. SVENSKA.
+8. mood_match: true/false - Matchar eventet användarens livsstilsmål?
 
-Ge optimeringsförslag som behåller upplevelsen men sänker kostnaden.`
-      : `Recovery Plan för ${event.name} (${event.type}) till ${event.cost} kr.
-
-Nuvarande buffert: ${profile.buffer} kr
-Månatligt sparande: ${Math.round((profile.income - profile.housingCost) * 0.2)} kr
-Sparmål: ${profile.savingsGoal} kr (${profile.savingsGoalName})
-
-Beräkna:
-1. Exakt antal månader att återställa bufferten efter eventet
-2. Påverkan på långsiktiga sparmål
-3. Om återhämtningen tar >18 månader, föreslå 15% budgetminskning
-4. Risk-bedömning för ekonomisk stabilitet post-event
-5. Alternative timeline: Vad händer om eventet skjuts upp 6 månader?
-
-Ge detaljerad recovery plan och strategisk rekommendation.`;
-
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt,
-        add_context_from_internet: mode === 'smart',
-        response_json_schema: mode === 'smart' ? {
-          type: 'object',
-          properties: {
-            alternative_dates: {
-              type: 'array',
-              items: { type: 'string' }
-            },
-            alternative_locations: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  name: { type: 'string' },
-                  savings: { type: 'number' }
-                }
-              }
-            },
-            optimization_tips: {
-              type: 'array',
-              items: { type: 'string' }
-            },
-            total_potential_savings: { type: 'number' }
-          }
-        } : {
-          type: 'object',
-          properties: {
-            recovery_months: { type: 'number' },
-            goal_delay_months: { type: 'number' },
-            suggest_reduction: { type: 'boolean' },
-            reduced_budget: { type: 'number' },
-            risk_assessment: { type: 'string' },
-            alternative_timeline: { type: 'string' },
-            recommendation: { type: 'string' }
-          }
+Svara ENDAST med JSON.`,
+      add_context_from_internet: true,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          cfo_verdict: { type: 'string' },
+          cfo_score: { type: 'number' },
+          value_pulse: { type: 'string' },
+          total_real_cost: { type: 'number' },
+          travel_breakdown: { type: 'string' },
+          goal_impact: { type: 'string' },
+          smart_tip: { type: 'string' },
+          mood_match: { type: 'boolean' },
         }
-      });
+      }
+    });
 
-      setAnalysis({ type: mode, ...result });
-    } catch (error) {
-      console.error('Failed to analyze:', error);
-    }
-
+    setAnalysis({ ...liveCalc, ...ai, event });
     setLoading(false);
   };
 
+  const VERDICT_COLOR = {
+    'Kör på!': '#10B981',
+    'Planera smart': '#6366F1',
+    'Vänta lite': '#F59E0B',
+    'Skippa': '#EF4444',
+  };
+
   return (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="dark-card p-6 rounded-2xl"
-      >
-        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-          <PartyPopper className="w-5 h-5 text-amber-400" />
-          Eventinformation
+    <div className="space-y-5">
+      <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl p-5 space-y-4"
+        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <h3 className="font-semibold text-white flex items-center gap-2">
+          <PartyPopper className="w-5 h-5 text-amber-400" /> Eventinformation
         </h3>
-        <div className="space-y-4">
-          <div>
-            <Label>Typ av event</Label>
-            <Input
-              value={event.type}
-              onChange={(e) => setEvent({ ...event, type: e.target.value })}
-              placeholder="t.ex. Bröllop, 30-årsfest, Studenten"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label>Eventnamn</Label>
-            <Input
-              value={event.name}
-              onChange={(e) => setEvent({ ...event, name: e.target.value })}
-              placeholder="t.ex. Bröllop i skärgården"
-              className="mt-1"
-            />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label>Total kostnad (kr)</Label>
-              <Input
-                type="number"
-                value={event.cost}
-                onChange={(e) => setEvent({ ...event, cost: e.target.value })}
-                placeholder="150000"
-                className="mt-1"
-              />
+
+        {/* URL */}
+        <div>
+          <Label className="text-xs text-slate-400">URL (Ticketmaster, Airbnb, Booking…)</Label>
+          <div className="flex gap-2 mt-1">
+            <div className="relative flex-1">
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
+                placeholder="https://ticketmaster.se/…" className="pl-9 h-10 text-sm" />
             </div>
-            <div>
-              <Label>Datum/Månad</Label>
-              <Input
-                value={event.date}
-                onChange={(e) => setEvent({ ...event, date: e.target.value })}
-                placeholder="Juni 2026"
-                className="mt-1"
-              />
-            </div>
+            <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
+              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
+            </Button>
           </div>
         </div>
+
+        <div>
+          <Label className="text-xs text-slate-400">Eventnamn</Label>
+          <Input value={event.name} onChange={e => setEvent(ev => ({ ...ev, name: e.target.value }))}
+            placeholder="Taylor Swift, Midsommarfest, Berlin-weekend…" className="mt-1 h-10 text-sm" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label className="text-xs text-slate-400">Biljettpris / kostnad (kr)</Label>
+            <Input type="number" value={event.ticketCost} onChange={e => setEvent(ev => ({ ...ev, ticketCost: e.target.value }))}
+              placeholder="1 200" className="mt-1 h-10 text-sm" />
+          </div>
+          <div>
+            <Label className="text-xs text-slate-400">Stad</Label>
+            <Input value={event.city} onChange={e => setEvent(ev => ({ ...ev, city: e.target.value }))}
+              placeholder="Stockholm, Göteborg…" className="mt-1 h-10 text-sm" />
+          </div>
+          <div>
+            <Label className="text-xs text-slate-400">Datum</Label>
+            <Input value={event.date} onChange={e => setEvent(ev => ({ ...ev, date: e.target.value }))}
+              placeholder="15 aug 2026" className="mt-1 h-10 text-sm" />
+          </div>
+        </div>
+
+        {/* Travel toggle */}
+        <button onClick={() => setEvent(ev => ({ ...ev, travelNeeded: !ev.travelNeeded }))}
+          className={`w-full py-3 px-4 rounded-xl flex items-center gap-3 border transition-all text-sm ${event.travelNeeded ? 'border-amber-500 bg-amber-500/10 text-amber-300' : 'border-white/10 text-slate-400 hover:border-white/20'}`}>
+          <Train className="w-4 h-4" />
+          <span>{event.travelNeeded ? '✓ Resa ingår (tåg + hotell beräknas)' : 'Klicka om du behöver resa dit'}</span>
+        </button>
+
+        {/* Live total */}
+        <AnimatePresence>
+          {liveCalc && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+              className="rounded-xl p-3 space-y-2"
+              style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex justify-between"><span className="text-slate-500">Biljett</span><span className="text-white font-medium">{fmt(liveCalc.ticket)} kr</span></div>
+                {liveCalc.travelCost > 0 && <div className="flex justify-between"><span className="text-slate-500">Tåg/transport</span><span className="text-white font-medium">~{fmt(liveCalc.travelCost)} kr</span></div>}
+                {liveCalc.hotelCost > 0 && <div className="flex justify-between"><span className="text-slate-500">Hotell (1 natt)</span><span className="text-white font-medium">~{fmt(liveCalc.hotelCost)} kr</span></div>}
+                <div className="flex justify-between"><span className="text-slate-500">Mat & övrigt</span><span className="text-white font-medium">~{fmt(liveCalc.foodCost)} kr</span></div>
+              </div>
+              <div className="border-t border-white/10 pt-2 flex justify-between items-center">
+                <span className="text-xs text-slate-400 font-semibold">Totalt</span>
+                <span className="text-amber-400 font-bold">{fmt(liveCalc.totalCost)} kr</span>
+              </div>
+              {savingsGoal > 0 && (
+                <p className="text-[10px] text-slate-500">
+                  = {Math.round(liveCalc.savingsPct)}% av ditt sparmål "{savingsGoalName}"
+                </p>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
-      <Button
-        onClick={handleAnalyze}
-        disabled={!event.name || !event.cost || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
-      >
-        {loading ? (
-          <>
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-            Analyserar event...
-          </>
-        ) : (
-          <>Analysera event</>
-        )}
+      <Button onClick={handleAnalyze} disabled={!event.name || !event.ticketCost || loading}
+        className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 font-bold text-white">
+        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyserar upplevelse…</> : '🎉 Generera Value Pulse Rapport'}
       </Button>
 
-      {analysis && (
-        <>
-          {analysis.type === 'basic' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-6 rounded-2xl border-2 ${
-                analysis.canAfford
-                  ? 'border-emerald-500 bg-emerald-500/10'
-                  : 'border-amber-500 bg-amber-500/10'
-              }`}
-            >
-              <h3 className="font-bold text-white text-xl mb-2">
-                {formatNumber(analysis.cost)} kr
-              </h3>
-              {analysis.canAfford ? (
-                <p className="text-sm font-medium text-emerald-400">
-                  ✓ Du har råd från nuvarande buffert
-                </p>
-              ) : (
+      <AnimatePresence>
+        {analysis && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            {(() => {
+              const vc = VERDICT_COLOR[analysis.cfo_verdict] || '#F59E0B';
+              return (
                 <>
-                  <p className="text-sm font-medium text-amber-400 mb-2">
-                    ⚠️ Behöver spara {analysis.monthsToSave} månader
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    Baserat på 20% av disponibel inkomst per månad
-                  </p>
-                </>
-              )}
-            </motion.div>
-          )}
-
-          {analysis.type === 'smart' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              {analysis.total_potential_savings > 0 && (
-                <div className="glass-effect p-6 rounded-2xl text-center">
-                  <p className="text-sm text-slate-400 mb-1">Potentiell besparing</p>
-                  <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
-                    {formatNumber(analysis.total_potential_savings)} kr
-                  </p>
-                </div>
-              )}
-
-              {analysis.alternative_dates?.length > 0 && (
-                <div className="dark-card p-5 rounded-xl">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="w-5 h-5 text-blue-400" />
-                    <h4 className="font-semibold text-white">Billigare datum</h4>
-                  </div>
-                  <ul className="space-y-2">
-                    {analysis.alternative_dates.map((date, i) => (
-                      <li key={i} className="text-sm text-slate-300 flex items-center gap-2">
-                        <span className="text-blue-400">→</span>
-                        {date}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {analysis.alternative_locations?.length > 0 && (
-                <div className="dark-card p-5 rounded-xl">
-                  <h4 className="font-semibold text-white mb-3">Alternativa platser</h4>
-                  <div className="space-y-3">
-                    {analysis.alternative_locations.map((loc, i) => (
-                      <div key={i} className="flex items-center justify-between p-3 rounded-lg bg-white/5">
-                        <span className="text-sm text-slate-300">{loc.name}</span>
-                        <span className="text-emerald-400 font-medium">-{formatNumber(loc.savings)} kr</span>
+                  {/* Verdict */}
+                  <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)`, border: `1px solid ${vc}44` }}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <p className="text-xs text-slate-500 mb-1">{analysis.event.name}</p>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-lg font-black"
+                          style={{ color: vc }}>{analysis.cfo_verdict}</div>
+                        <p className="text-sm text-slate-300 mt-2 leading-relaxed italic">"{analysis.value_pulse}"</p>
                       </div>
-                    ))}
+                      <div className="text-center ml-4">
+                        <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
+                        <div className="text-[10px] text-slate-500">VÄRDE</div>
+                      </div>
+                    </div>
+                    {analysis.mood_match && (
+                      <div className="mt-3 rounded-lg p-2 text-xs bg-emerald-500/10 text-emerald-300">
+                        ✓ Matchar din livsstilsprofil – detta är bra för ditt mående!
+                      </div>
+                    )}
                   </div>
-                </div>
-              )}
 
-              {analysis.optimization_tips?.length > 0 && (
-                <div className="p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
-                  <h4 className="font-semibold text-white mb-3">Optimeringstips</h4>
-                  <ul className="space-y-2">
-                    {analysis.optimization_tips.map((tip, i) => (
-                      <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                        <span className="text-emerald-400 mt-0.5">✓</span>
-                        <span>{tip}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </motion.div>
-          )}
-
-          {analysis.type === 'pro' && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-4"
-            >
-              <div className="dark-card p-6 rounded-2xl">
-                <h3 className="font-semibold text-white mb-4">Recovery Plan</h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-slate-400 mb-1">Återställningstid för buffert</p>
-                    <p className="text-3xl font-bold text-amber-400">{analysis.recovery_months} månader</p>
+                  {/* Total cost breakdown */}
+                  <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">🧾 Totalbilden</p>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-slate-400">Total uppskattad kostnad</span>
+                      <span className="text-xl font-black text-white">{fmt(analysis.total_real_cost || analysis.totalCost)} kr</span>
+                    </div>
+                    {analysis.travel_breakdown && event.travelNeeded && (
+                      <p className="text-xs text-slate-400 mt-1">{analysis.travel_breakdown}</p>
+                    )}
                   </div>
-                  {analysis.goal_delay_months > 0 && (
-                    <div>
-                      <p className="text-sm text-slate-400 mb-1">Fördröjning av sparmål</p>
-                      <p className="text-2xl font-bold text-blue-400">+{analysis.goal_delay_months} månader</p>
+
+                  {/* Goal impact */}
+                  {analysis.goal_impact && (
+                    <div className="rounded-xl p-3 flex gap-2 text-xs"
+                      style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                      <span className="text-indigo-400">🎯</span>
+                      <p className="text-slate-300">{analysis.goal_impact}</p>
                     </div>
                   )}
-                </div>
-              </div>
 
-              {analysis.suggest_reduction && (
-                <div className="p-5 rounded-xl border border-amber-500/30 bg-amber-500/10">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="w-6 h-6 text-amber-400 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-semibold text-white mb-2">
-                        ⚠️ Återhämtning över 18 månader
-                      </h4>
-                      <p className="text-sm text-slate-300 mb-3">
-                        Förslag: Minska budgeten med 15%
-                      </p>
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-white/10">
-                        <span className="text-sm text-slate-400">Justerad budget:</span>
-                        <span className="text-amber-400 font-bold">{formatNumber(analysis.reduced_budget)} kr</span>
-                      </div>
+                  {/* Smart tip */}
+                  {analysis.smart_tip && (
+                    <div className="rounded-xl p-3 flex gap-2 text-xs"
+                      style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <span className="text-emerald-400">💡</span>
+                      <p className="text-slate-300">{analysis.smart_tip}</p>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="dark-card p-5 rounded-xl">
-                <h4 className="font-semibold text-white mb-2">Riskbedömning</h4>
-                <p className="text-sm text-slate-300 mb-4">{analysis.risk_assessment}</p>
-                
-                {analysis.alternative_timeline && (
-                  <div className="pt-3 border-t border-white/10">
-                    <p className="text-xs text-slate-400 mb-2">Alternativ: Skjut upp 6 månader</p>
-                    <p className="text-sm text-blue-300">{analysis.alternative_timeline}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="p-5 rounded-xl border border-indigo-500/30 bg-indigo-500/10">
-                <h4 className="font-semibold text-white mb-2">Strategisk rekommendation</h4>
-                <p className="text-sm text-slate-300">{analysis.recommendation}</p>
-              </div>
-            </motion.div>
-          )}
-        </>
-      )}
+                  )}
+                </>
+              );
+            })()}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
