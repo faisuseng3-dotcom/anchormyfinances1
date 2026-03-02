@@ -22,6 +22,7 @@ import FamilyFinances from '@/components/protools/FamilyFinances';
 import InheritanceChecker from '@/components/protools/InheritanceChecker';
 import LegacyPlanner from '@/components/protools/LegacyPlanner';
 import AgentHub from '@/components/protools/AgentHub';
+import ModeGate from '@/components/ModeGate';
 
 const categories = [
   {
