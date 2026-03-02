@@ -65,6 +65,7 @@ export default function WhatIf() {
           )}
         </div>
       </div>
+      </ModeGate>
     </div>
   );
 }
