@@ -84,7 +84,7 @@ export default function ProTools() {
 
   const renderFeature = () => {
     switch(selectedFeature) {
-      case 'decision_engine': return <DecisionEngine profile={profile} />;
+      case 'decision_engine': return <ModeGate feature="decision_engine" mode={profile?.mode || 'basic'}><DecisionEngine profile={profile} /></ModeGate>;
       case 'shadow_inflation': return <ShadowInflation profile={profile} />;
       case 'opportunity_scanner': return <ModeGate feature="opportunity_scanner" mode={profile?.mode || 'basic'}><OpportunityScanner profile={profile} /></ModeGate>;
       case 'resilience': return <ResilienceScore profile={profile} />;
