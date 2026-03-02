@@ -5,20 +5,14 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-// Semi-circle gauge
 function SafetyGauge({ score }) {
   const clampedScore = Math.max(1, Math.min(10, score || 5));
-  // score 1-10: angle from -180 to 0 degrees
-  const pct = (clampedScore - 1) / 9; // 0..1
-  const angle = -180 + pct * 180; // -180..0 deg
+  const pct = (clampedScore - 1) / 9;
+  const angle = -180 + pct * 180;
   const color = pct > 0.65 ? '#10B981' : pct > 0.4 ? '#F59E0B' : '#EF4444';
   const label = pct > 0.65 ? 'Säkert köp' : pct > 0.4 ? 'Måttlig risk' : 'Ekonomisk fara';
-
-  // SVG gauge arc
   const r = 60, cx = 80, cy = 72;
   const toRad = (d) => (d * Math.PI) / 180;
-  const arcX = cx + r * Math.cos(toRad(angle));
-  const arcY = cy + r * Math.sin(toRad(angle));
 
   const tracks = [
     { start: -180, end: -120, color: '#EF4444' },
@@ -42,13 +36,8 @@ function SafetyGauge({ score }) {
         ))}
         <path d={describeArc(-180, angle)} fill="none"
           stroke={color} strokeWidth="10" strokeOpacity="0.9" strokeLinecap="round" />
-        {/* needle */}
-        <line
-          x1={cx} y1={cy}
-          x2={cx + (r - 10) * Math.cos(toRad(angle))}
-          y2={cy + (r - 10) * Math.sin(toRad(angle))}
-          stroke="white" strokeWidth="2.5" strokeLinecap="round"
-        />
+        <line x1={cx} y1={cy} x2={cx + (r - 10) * Math.cos(toRad(angle))} y2={cy + (r - 10) * Math.sin(toRad(angle))}
+          stroke="white" strokeWidth="2.5" strokeLinecap="round" />
         <circle cx={cx} cy={cy} r="5" fill={color} />
         <text x={cx} y={cy - 20} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">
           {clampedScore.toFixed(1)}
@@ -60,7 +49,6 @@ function SafetyGauge({ score }) {
   );
 }
 
-// Monthly budget pie
 function MonthlyBitePie({ cost, margin }) {
   const pct = Math.min(cost / margin, 1);
   const data = [
@@ -72,7 +60,8 @@ function MonthlyBitePie({ cost, margin }) {
       <div className="relative w-20 h-20">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" cx="50%" cy="50%" innerRadius={28} outerRadius={36} startAngle={90} endAngle={-270} strokeWidth={0}>
+            <Pie data={data} dataKey="value" cx="50%" cy="50%" innerRadius={28} outerRadius={36}
+              startAngle={90} endAngle={-270} strokeWidth={0}>
               {data.map((d, i) => <Cell key={i} fill={d.color} />)}
             </Pie>
           </PieChart>
@@ -95,11 +84,19 @@ const VERDICT_COLOR = {
 
 export default function VehicleCFOReport({ analysis }) {
   const verdictColor = VERDICT_COLOR[analysis.cfo_verdict] || '#6366F1';
-  const isLongLoan = analysis.months >= 60;
-  const marginPct = Math.round((analysis.totalMonthlyCost / analysis.margin) * 100);
+  const isDebtTrap = analysis.months >= 84;
+  const isLongLoan = analysis.months >= 60 && !isDebtTrap;
 
   return (
     <div className="space-y-4">
+
+      {/* Top Summary Bar */}
+      <div className="rounded-2xl p-4 text-center"
+        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <p className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Total månadskostnad</p>
+        <p className="text-3xl font-black text-white">{fmt(analysis.totalMonthlyCost)} kr/mån</p>
+        <p className="text-xs text-slate-500 mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
+      </div>
 
       {/* Header: CFO Score + Verdict */}
       <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${verdictColor}44` }}>
@@ -110,6 +107,9 @@ export default function VehicleCFOReport({ analysis }) {
                 {analysis.vehicleName || 'Fordon'}
               </p>
               <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Insats: {analysis.downPaymentPct}% = {fmt(analysis.downPaymentAmount)} kr · Lån: {fmt(analysis.loanAmount)} kr · {analysis.interestRate}%
+              </p>
               <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold"
                 style={{ background: `${verdictColor}22`, color: verdictColor, border: `1px solid ${verdictColor}44` }}>
                 {analysis.cfo_verdict}
@@ -119,7 +119,6 @@ export default function VehicleCFOReport({ analysis }) {
           </div>
         </div>
 
-        {/* CFO Recommendation – gold/silver border */}
         <div className="px-4 pb-4">
           <div className="rounded-xl p-3 text-sm text-slate-300 leading-relaxed"
             style={{ background: 'rgba(0,0,0,0.3)', border: `1px solid ${analysis.cfo_score >= 7 ? 'rgba(251,191,36,0.4)' : analysis.cfo_score >= 5 ? 'rgba(148,163,184,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
@@ -131,7 +130,53 @@ export default function VehicleCFOReport({ analysis }) {
         </div>
       </div>
 
-      {/* Monthly Bite + Real-time numbers */}
+      {/* Debt Trap Warning */}
+      {isDebtTrap && (
+        <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
+          className="rounded-xl p-4"
+          style={{ background: 'rgba(239,68,68,0.09)', border: '2px solid rgba(239,68,68,0.35)' }}>
+          <p className="text-sm font-bold text-rose-400 mb-1 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4" /> Skuldfällevarning – {analysis.months} månader
+          </p>
+          <p className="text-xs text-rose-200">
+            Lånetiden är längre än bilens beräknade värdebehållning. Du riskerar att ha kvar skulden när du säljer bilen och kan hamna "under vatten" – skulden överstiger bilens marknadsvärde.
+          </p>
+        </motion.div>
+      )}
+
+      {/* Underwater warning */}
+      {analysis.isUnderwater && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          className="rounded-xl p-4"
+          style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)' }}>
+          <p className="text-xs font-bold text-rose-400 mb-1">🌊 Under vatten vid halvtid</p>
+          <p className="text-xs text-rose-200">
+            Vid lånets mitt punkt: skuld <strong>{fmt(analysis.remainingDebt)} kr</strong> vs bilens värde <strong>{fmt(analysis.midResidualValue)} kr</strong>.
+            Om du säljer bilen halvvägs kan du inte betala tillbaka lånet.
+          </p>
+        </motion.div>
+      )}
+
+      {/* Liquidity check */}
+      {analysis.downPaymentAmount > 0 && analysis.currentBuffer > 0 && (
+        <div className="rounded-xl p-4 flex gap-3 items-start"
+          style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+          <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="text-[11px] font-bold text-indigo-400 mb-0.5">Likviditets-check</p>
+            <p className="text-xs text-slate-300">
+              Kontantinsatsen på {fmt(analysis.downPaymentAmount)} kr sänker din trygghet från{' '}
+              <strong className="text-white">{analysis.bufferMonths.toFixed(1)} månader</strong> till{' '}
+              <strong className={analysis.newBufferMonths < 1 ? 'text-rose-300' : analysis.newBufferMonths < 2 ? 'text-amber-300' : 'text-indigo-200'}>
+                {analysis.newBufferMonths.toFixed(1)} månader
+              </strong>.
+              {analysis.newBufferMonths < 1 && ' ⚠️ Kritiskt låg buffert!'}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Monthly bite + numbers */}
       <div className="grid grid-cols-3 gap-3">
         <div className="rounded-2xl p-3 flex flex-col items-center"
           style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
@@ -139,19 +184,19 @@ export default function VehicleCFOReport({ analysis }) {
         </div>
         <div className="rounded-2xl p-3 flex flex-col justify-center"
           style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
-          <p className="text-[10px] text-slate-500 mb-0.5">Månadskostnad</p>
-          <p className="text-base font-black text-white">{fmt(analysis.totalMonthlyCost)}</p>
-          <p className="text-[10px] text-slate-600">kr/mån total</p>
+          <p className="text-[10px] text-slate-500 mb-0.5">Total ränta</p>
+          <p className="text-base font-black text-amber-400">{fmt(analysis.totalInterest)}</p>
+          <p className="text-[10px] text-slate-600">kr att betala extra</p>
         </div>
         <div className="rounded-2xl p-3 flex flex-col justify-center"
           style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <p className="text-[10px] text-slate-500 mb-0.5">Totalpris</p>
           <p className="text-base font-black text-white">{fmt(analysis.totalPaid)}</p>
-          <p className="text-[10px] text-slate-600">kr att betala</p>
+          <p className="text-[10px] text-slate-600">kr inkl. insats</p>
         </div>
       </div>
 
-      {/* 60-month twist */}
+      {/* Long loan twist */}
       {isLongLoan && (
         <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
           className="rounded-xl p-4"
@@ -159,14 +204,13 @@ export default function VehicleCFOReport({ analysis }) {
           <p className="text-xs font-bold text-amber-400 mb-1">⏳ The {analysis.months}-Month Twist</p>
           <p className="text-xs text-amber-200">
             Priset för bekvämlighet: <strong className="text-white">{fmt(analysis.interestExtra)} kr extra</strong> i ränta jämfört med 36 månader.
-            Din månadskostnad sjunker, men skulden hänger kvar längre än garantin.
+            Skulden hänger kvar längre än garantin.
           </p>
         </motion.div>
       )}
 
-      {/* Impact cards */}
+      {/* Depreciation vs Debt */}
       <div className="grid grid-cols-2 gap-3">
-        {/* Depreciation */}
         <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
           <div className="flex items-start gap-2 mb-2">
             <TrendingDown className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
@@ -175,13 +219,9 @@ export default function VehicleCFOReport({ analysis }) {
               <p className="text-xl font-black text-white mt-0.5">-{fmt(analysis.depreciation)} kr</p>
             </div>
           </div>
-          <p className="text-[10px] text-slate-500 leading-relaxed">
-            Pengarna som försvinner när du kör ut från bilhandlaren.
-          </p>
-          <p className="text-[10px] text-slate-400 mt-1">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
+          <p className="text-[10px] text-slate-500 leading-relaxed">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
         </div>
 
-        {/* Opportunity cost */}
         <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
           <div className="flex items-start gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
@@ -190,19 +230,17 @@ export default function VehicleCFOReport({ analysis }) {
               <p className="text-xl font-black text-white mt-0.5">+{fmt(analysis.opportunityCost)} kr</p>
             </div>
           </div>
-          <p className="text-[10px] text-slate-500 leading-relaxed">
-            Vad dessa pengar hade blivit på börsen (7% / år).
-          </p>
+          <p className="text-[10px] text-slate-500 leading-relaxed">Vad kontantinsatsen gett på börsen (7%/år).</p>
         </div>
       </div>
 
-      {/* Trade-off Slider story */}
+      {/* Trade-off */}
       <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
         <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🍽 Trade-off kalkylatorn</p>
         <div className="space-y-2 text-xs text-slate-300">
           <div className="flex justify-between items-center">
             <span>🥗 Luncher ute (130 kr/st)</span>
-            <span className="font-bold text-white">{fmt(analysis.lunchEquivalent)} st/år</span>
+            <span className="font-bold text-white">{fmt(analysis.lunchEquivalent)} st</span>
           </div>
           <div className="h-px bg-white/5" />
           <p className="text-slate-400 leading-relaxed italic">{analysis.contextual_story}</p>
@@ -212,8 +250,11 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Opportunity investment */}
       {analysis.opportunity_investment && (
         <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">📈 Alternativet – Börsen</p>
+          <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">📈 Alternativet – Indexfond</p>
           <p className="text-xs text-slate-300">{analysis.opportunity_investment}</p>
+          <p className="text-sm font-bold text-emerald-400 mt-2">
+            {fmt(analysis.downPaymentAmount)} kr → {fmt(analysis.opportunityFinalValue)} kr
+          </p>
         </div>
       )}
 
