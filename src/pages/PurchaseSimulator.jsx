@@ -93,7 +93,8 @@ export default function PurchaseSimulator() {
             {selectedCategory === 'event' && <EventAnalysis mode={currentMode} profile={profile} />}
           </>
         )}
-      </div>
+        </div>
+      </ModeGate>
     </div>
   );
 }
