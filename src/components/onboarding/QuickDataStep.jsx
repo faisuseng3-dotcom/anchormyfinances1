@@ -11,7 +11,9 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
   };
 
   const parseNumber = (value) => {
-    return parseInt(value.replace(/\s/g, '')) || 0;
+    const cleaned = value.replace(/\s/g, '');
+    if (cleaned === '' || cleaned === '0') return 0;
+    return parseInt(cleaned) || 0;
   };
 
   const isValid = data.income > 0 && data.housingCost >= 0;
