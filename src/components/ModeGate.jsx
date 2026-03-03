@@ -1,37 +1,50 @@
-/**
- * Feature gating based on user mode (basic / smart / pro).
- */
+import React from 'react';
+import { Lock } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 
+/**
+ * Feature access map.
+ * basic  = Budget mode
+ * smart  = Smart mode
+ * pro    = Pro mode
+ */
 const FEATURE_ACCESS = {
-  // Available to all
-  expenses: ['basic', 'smart', 'pro'],
-  budget: ['basic', 'smart', 'pro'],
-  savings: ['basic', 'smart', 'pro'],
+  // All modes
+  expenses:            ['basic', 'smart', 'pro'],
+  budget:              ['basic', 'smart', 'pro'],
+  savings:             ['basic', 'smart', 'pro'],
 
   // Smart+
   opportunity_scanner: ['smart', 'pro'],
-  shadow_inflation: ['smart', 'pro'],
-  tax_simple: ['smart', 'pro'],
+  shadow_inflation:    ['smart', 'pro'],
+  tax_simple:          ['smart', 'pro'],
   subscription_hunter: ['smart', 'pro'],
 
-  // Pro only
-  purchase_simulator: ['pro'],
-  what_if: ['pro'],
-  cfo_report: ['pro'],
-  agent_hub: ['pro'],
-  decision_engine: ['pro'],
-  net_worth: ['pro'],
-  pro_tools_full: ['pro'],
+  // Pro only – technically unavailable at lower modes
+  purchase_simulator:  ['pro'],
+  what_if:             ['pro'],
+  cfo_report:          ['pro'],
+  agent_hub:           ['pro'],
+  decision_engine:     ['pro'],
+  net_worth:           ['pro'],
+  pro_tools_full:      ['pro'],
+  precision_tax:       ['pro'],
+  crisis_assistant:    ['pro'],
+  legacy_planner:      ['pro'],
+  family_finances:     ['pro'],
 };
+
+const MODE_LABELS = { basic: 'Budget', smart: 'Smart', pro: 'Pro' };
 
 export function canAccess(feature, mode = 'basic') {
   const allowed = FEATURE_ACCESS[feature];
-  if (!allowed) return true;
+  if (!allowed) return true; // unknown features are open by default
   return allowed.includes(mode);
 }
 
 export function getModeName(mode) {
-  return { basic: 'Budget', smart: 'Smart', pro: 'Pro' }[mode] || 'Budget';
+  return MODE_LABELS[mode] || 'Budget';
 }
 
 export function getUpgradeMessage(mode) {
@@ -40,29 +53,35 @@ export function getUpgradeMessage(mode) {
   return '';
 }
 
-// React component: wraps children, shows lock if no access
-import React from 'react';
-import { Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-
+/**
+ * ModeGate wraps children and shows a lock screen if the user's mode
+ * doesn't have access to the given feature.
+ */
 export default function ModeGate({ feature, mode, children }) {
-  if (canAccess(feature, mode)) return children;
-  const msg = getUpgradeMessage(mode);
+  if (canAccess(feature, mode)) return <>{children}</>;
+
   const needed = FEATURE_ACCESS[feature]?.[0];
-  const modeLabel = getModeName(needed);
+  const neededLabel = getModeName(needed);
+  const upgradeMsg = getUpgradeMessage(mode);
+
   return (
-    <div className="rounded-2xl p-6 flex flex-col items-center gap-3 text-center"
-      style={{ background: 'rgba(17,24,39,0.5)', border: '1px solid rgba(255,255,255,0.07)' }}>
-      <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">
-        <Lock className="w-6 h-6 text-slate-500" />
+    <div className="min-h-[60vh] flex flex-col items-center justify-center px-6">
+      <div className="rounded-2xl p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full"
+        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center">
+          <Lock className="w-8 h-8 text-slate-500" />
+        </div>
+        <div>
+          <p className="text-lg font-bold text-white mb-1">Kräver {neededLabel}-läge</p>
+          <p className="text-sm text-slate-400 leading-relaxed">{upgradeMsg}</p>
+        </div>
+        <Link
+          to={createPageUrl('Settings')}
+          className="w-full py-3 rounded-xl text-sm font-bold text-white text-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90"
+        >
+          Byt läge i Inställningar →
+        </Link>
       </div>
-      <p className="text-sm font-semibold text-slate-300">Kräver {modeLabel}-läge</p>
-      <p className="text-xs text-slate-500">{msg}</p>
-      <Link to={createPageUrl('Settings')}
-        className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90">
-        Ändra läge
-      </Link>
     </div>
   );
 }
