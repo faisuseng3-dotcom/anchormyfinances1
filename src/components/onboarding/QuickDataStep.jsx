@@ -7,12 +7,13 @@ import OnboardingStep from './OnboardingStep';
 
 export default function QuickDataStep({ data, onChange, onNext, onBack }) {
   const formatNumber = (value) => {
+    if (value === 0 || value === '0') return '0';
     return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
   };
 
   const parseNumber = (value) => {
     const cleaned = value.replace(/\s/g, '');
-    if (cleaned === '' || cleaned === '0') return 0;
+    if (cleaned === '') return 0;
     return parseInt(cleaned) || 0;
   };
 
