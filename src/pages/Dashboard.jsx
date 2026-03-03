@@ -304,6 +304,9 @@ export default function Dashboard() {
       </div>
 
       <div className="px-6 space-y-6">
+        {/* Cash Flow Calendar */}
+        <CashFlowCalendar profile={displayProfile} />
+
         {/* Hero Cards */}
         <HeroCards profile={displayProfile} />
 
