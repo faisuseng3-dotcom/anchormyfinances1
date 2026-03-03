@@ -134,19 +134,7 @@ export default function HeroCards({ profile }) {
             <div className="relative">
               {card.showAspiration ? (
                 <div className="mt-1">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <span className="text-lg">✈️</span>
-                    <span className="text-xs font-semibold text-purple-300 leading-tight">Resa till Madrid</span>
-                  </div>
-                  <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden mt-2">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: '12.5%' }}
-                      transition={{ duration: 1.2, ease: 'easeOut' }}
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                    />
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">2 500 / 20 000 kr</p>
+                  <p className="text-xs text-slate-500 leading-snug">Vad drömmer du om? Skapa ditt första sparmål.</p>
                 </div>
               ) : (
                 <>
