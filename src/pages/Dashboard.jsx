@@ -19,6 +19,7 @@ import ProDashboard from '@/components/modes/ProDashboard';
 import { Layers } from 'lucide-react';
 import TimeMachine from '@/components/dashboard/TimeMachine';
 import LivePulse from '@/components/dashboard/LivePulse';
+import CashFlowCalendar from '@/components/dashboard/CashFlowCalendar';
 
 export default function Dashboard() {
   const navigate = useNavigate();
