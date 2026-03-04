@@ -178,7 +178,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
       customFrequency: customFreq,
       customAmount: parseFloat(customAmount) || 0,
       customAmountType,
-      customTrigger: customTrigger === 'custom_trigger' ? customTriggerText : customTrigger,
+      customTrigger: customTrigger?.id || customTriggerText || null,
       customMonthlyEquiv: customMonthlyEquivalent(),
     } : null;
     onSave({
