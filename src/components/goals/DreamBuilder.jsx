@@ -397,21 +397,32 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
                   {/* AI Trigger */}
                   <div>
-                    <p className="text-xs text-slate-400 mb-2">AI-trigger (valfri)</p>
-                    <div className="space-y-1.5">
-                      {AI_TRIGGERS.map(t => (
-                        <button key={t.id} onClick={() => setCustomTrigger(t.id)}
-                          className={`w-full p-3 rounded-xl text-left text-xs transition-all flex items-center gap-2 ${customTrigger === t.id ? 'ring-1 ring-indigo-500 bg-indigo-600/20' : 'bg-white/4 hover:bg-white/8'}`}>
-                          <span>{t.label}</span>
-                          {customTrigger === t.id && <span className="text-slate-500 ml-auto italic">{t.example}</span>}
-                        </button>
-                      ))}
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs text-slate-400">AI-trigger (valfri)</p>
+                      <button onClick={() => setShowTriggerLib(!showTriggerLib)}
+                        className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300">
+                        <BookOpen className="w-3 h-3" />
+                        {showTriggerLib ? 'Stäng' : 'Öppna bibliotek'}
+                      </button>
                     </div>
-                    {customTrigger === 'custom_trigger' && (
-                      <Input placeholder="Beskriv din trigger…" value={customTriggerText}
-                        onChange={e => setCustomTriggerText(e.target.value)}
-                        className="mt-2 h-10 rounded-xl text-sm" />
+
+                    {customTrigger && !showTriggerLib && (
+                      <div className="p-3 rounded-xl text-xs flex items-center justify-between"
+                        style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)' }}>
+                        <span className="text-white font-medium">{customTrigger.label}</span>
+                        <button onClick={() => setCustomTrigger(null)} className="text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>
+                      </div>
                     )}
+
+                    <AnimatePresence>
+                      {showTriggerLib && (
+                        <TriggerLibrary
+                          activeTrigger={customTrigger?.id}
+                          onSelect={(t) => { setCustomTrigger(t); setShowTriggerLib(false); setCustomAiMsg(null); }}
+                          onClose={() => setShowTriggerLib(false)}
+                        />
+                      )}
+                    </AnimatePresence>
                   </div>
 
                   {/* Get AI feedback */}
