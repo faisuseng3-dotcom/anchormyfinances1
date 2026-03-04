@@ -10,6 +10,23 @@ const STRATEGIES = [
   { id: 'fixed', icon: '💳', title: 'Fast överföring', desc: 'Dra ett fast belopp varje månad.' },
   { id: 'dopamine', icon: '⚡', title: 'Dopamin-spararen', desc: 'Spara varje gång du hoppar över ett impulsinköp.' },
   { id: 'leftover', icon: '🌙', title: 'Rest-spararen', desc: 'Flytta det som är kvar dagen innan lön hit.' },
+  { id: 'custom', icon: '🛠️', title: 'Eget Schema', desc: 'Bygg din egen spar-regel med AI-triggers.' },
+];
+
+const FREQUENCIES = [
+  { id: 'daily', label: 'Varje dag', multiplier: 30.4 },
+  { id: 'weekly', label: 'Varje vecka', multiplier: 4.33 },
+  { id: 'biweekly', label: 'Varannan vecka', multiplier: 2.17 },
+  { id: 'monthly', label: 'Månadsvis', multiplier: 1 },
+  { id: 'per_purchase', label: 'Per köp', multiplier: null },
+];
+
+const AI_TRIGGERS = [
+  { id: 'workout', label: '🏋️ Varje gång jag tränar', example: 'Spara 50 kr per träningspass' },
+  { id: 'no_purchase', label: '🛑 Varje gång jag INTE shoppar', example: 'Spara 100 kr varje dag utan köp' },
+  { id: 'football', label: '⚽ Mitt favoritlag gör mål', example: 'Spara 10 kr per mål' },
+  { id: 'coffee_skip', label: '☕ Hoppar över köpkaffe', example: 'Spara 45 kr per gång' },
+  { id: 'custom_trigger', label: '✍️ Eget trigger…', example: 'Beskriv din egen händelse' },
 ];
 
 function PlantVisual({ progress }) {
