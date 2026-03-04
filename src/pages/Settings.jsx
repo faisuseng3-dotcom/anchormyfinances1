@@ -288,17 +288,41 @@ export default function Settings() {
                       onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })}
                       className="h-10 rounded-lg flex-1"
                     />
+                    <Input
+                      type="number"
+                      min="1"
+                      max="31"
+                      placeholder="Dag (ex 25)"
+                      value={newSub.billingDay}
+                      onChange={(e) => setNewSub({ ...newSub, billingDay: e.target.value })}
+                      className="h-10 rounded-lg w-28"
+                    />
+                  </div>
+                  <div className="flex gap-2">
                     <Select
                       value={newSub.category}
                       onValueChange={(val) => setNewSub({ ...newSub, category: val })}
                     >
-                      <SelectTrigger className="w-32 h-10 rounded-lg">
+                      <SelectTrigger className="h-10 rounded-lg flex-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         {categories.map(c => (
                           <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>
                         ))}
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={newSub.frequency}
+                      onValueChange={(val) => setNewSub({ ...newSub, frequency: val })}
+                    >
+                      <SelectTrigger className="h-10 rounded-lg flex-1">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="monthly">Varje månad</SelectItem>
+                        <SelectItem value="quarterly">Kvartal</SelectItem>
+                        <SelectItem value="yearly">Varje år</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
