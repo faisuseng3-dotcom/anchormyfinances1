@@ -131,6 +131,15 @@ export default function BufferModal({ isOpen, onClose, profile, onDeposit }) {
               </motion.div>
             )}
 
+            {/* Deposit button */}
+            {onDeposit && (
+              <button onClick={onDeposit}
+                className="mt-4 w-full py-3 rounded-xl text-sm font-semibold text-emerald-300 flex items-center justify-center gap-2"
+                style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)' }}>
+                💰 Gör en insättning i bufferten
+              </button>
+            )}
+
             {/* Breakdown */}
             <div className="mt-4 space-y-2">
               {[
