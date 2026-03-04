@@ -16,6 +16,13 @@ const formatNumber = (value) => {
 
 export default function HeroCards({ profile }) {
   const [openModal, setOpenModal] = useState(null);
+  const [showDreamBuilder, setShowDreamBuilder] = useState(false);
+  const queryClient = useQueryClient();
+
+  const handleSaveDream = async (data) => {
+    await base44.entities.FinancialProfile.update(profile.id, data);
+    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+  };
   const totalSubscriptions = (profile.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
   const totalLoanPayments = (profile.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
   const totalFixedCosts = profile.housingCost + totalSubscriptions + totalLoanPayments;
