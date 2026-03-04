@@ -5,6 +5,7 @@ import { X, Loader2, ChevronRight, ChevronLeft, Sparkles, BookOpen } from 'lucid
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TriggerLibrary from './TriggerLibrary';
+import AccountTypeAdvisor from './AccountTypeAdvisor';
 
 const EMOJIS = ['✈️', '🏠', '🚗', '🎓', '💍', '🌴', '🎸', '🏋️', '💻', '🚀', '🌍', '🎯'];
 const STRATEGIES = [
