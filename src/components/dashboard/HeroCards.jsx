@@ -108,6 +108,7 @@ export default function HeroCards({ profile }) {
             whileTap={{ scale: 0.97 }}
             onClick={isClickable ? () => {
               if (card.id === 'savings') setShowDreamBuilder(true);
+              else if (card.id === 'buffer') setOpenModal('buffer');
               else setOpenModal(CLICKABLE[card.id]);
             } : undefined}
             className={`relative overflow-hidden rounded-2xl p-5 group ${isClickable ? 'cursor-pointer' : ''}`}
