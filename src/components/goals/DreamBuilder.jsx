@@ -76,8 +76,52 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
   const [loadingCustomAi, setLoadingCustomAi] = useState(false);
 
   useEffect(() => {
-    if (!isOpen) { setStep(1); setForm({ name: '', emoji: '🎯', amount: '', targetDate: '' }); setAiInsight(null); }
+    if (!isOpen) {
+      setStep(1);
+      setForm({ name: '', emoji: '🎯', amount: '', targetDate: '' });
+      setAiInsight(null);
+      setCustomAiMsg(null);
+      setCustomAmount('');
+      setCustomTrigger('no_purchase');
+      setCustomTriggerText('');
+    }
   }, [isOpen]);
+
+  // Monthly equivalent for custom flow
+  const customMonthlyEquivalent = () => {
+    const amt = customAmountType === 'percent'
+      ? ((parseFloat(customAmount) || 0) / 100) * (profile.income || 0)
+      : parseFloat(customAmount) || 0;
+    const freq = FREQUENCIES.find(f => f.id === customFreq);
+    if (!freq || freq.multiplier === null) return amt * 4; // estimate per_purchase as ~4x/month
+    return Math.round(amt * freq.multiplier);
+  };
+
+  const fetchCustomAi = async () => {
+    setLoadingCustomAi(true);
+    const monthly = customMonthlyEquivalent();
+    const freqLabel = FREQUENCIES.find(f => f.id === customFreq)?.label || customFreq;
+    const triggerLabel = customTrigger === 'custom_trigger' ? customTriggerText : AI_TRIGGERS.find(t => t.id === customTrigger)?.label || '';
+    const res = await base44.integrations.Core.InvokeLLM({
+      prompt: `Du är CFO-Analytikern, en vänlig men ärlig ekonomisk rådgivare.
+Användaren vill skapa ett eget spar-schema för sitt mål "${form.name}".
+
+Detaljer:
+- Frekvens: ${freqLabel}
+- Belopp: ${customAmount} ${customAmountType === 'percent' ? '% av inkomsten' : 'kr'}
+- Månadsekvivalent: ~${monthly} kr/mån
+- AI-trigger: ${triggerLabel}
+- Nuvarande marginal: ${margin} kr/mån
+
+Svara på svenska med 2-3 meningar. Bekräfta om schemat är hållbart, och ge ett smart tips om hur de kan maximera effekten av sin valda trigger. Var entusiastisk men realistisk.`,
+      response_json_schema: {
+        type: 'object',
+        properties: { message: { type: 'string' }, isHealthy: { type: 'boolean' } }
+      }
+    });
+    setCustomAiMsg(res);
+    setLoadingCustomAi(false);
+  };
 
   const monthsUntil = () => {
     if (!form.targetDate) return 0;
