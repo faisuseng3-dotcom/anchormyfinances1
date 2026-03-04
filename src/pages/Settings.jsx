@@ -258,6 +258,8 @@ export default function Settings() {
                     <p className="font-medium text-white">{sub.name}</p>
                     <p className="text-sm text-slate-400">
                       {categories.find(c => c.id === sub.category)?.label || 'Övrigt'}
+                      {sub.billingDay ? ` · dag ${sub.billingDay}` : ''}
+                      {sub.frequency === 'quarterly' ? ' · kvartal' : sub.frequency === 'yearly' ? ' · år' : ''}
                     </p>
                   </div>
                   <div className="flex items-center gap-3">
