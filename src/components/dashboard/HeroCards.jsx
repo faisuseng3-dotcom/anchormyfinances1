@@ -6,6 +6,9 @@ import { AnimatedCurrency, AnimatedNumber } from "@/components/ui/animated-numbe
 import MarginModal from './MarginModal';
 import BufferModal from './BufferModal';
 import FixedCostsModal from './FixedCostsModal';
+import DreamBuilder from '@/components/goals/DreamBuilder';
+import { base44 } from '@/api/base44Client';
+import { useQueryClient } from '@tanstack/react-query';
 
 const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
