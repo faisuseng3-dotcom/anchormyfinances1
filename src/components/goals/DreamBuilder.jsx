@@ -171,11 +171,19 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
   };
 
   const handleFinish = () => {
+    const customConfig = strategy === 'custom' ? {
+      customFrequency: customFreq,
+      customAmount: parseFloat(customAmount) || 0,
+      customAmountType,
+      customTrigger: customTrigger === 'custom_trigger' ? customTriggerText : customTrigger,
+      customMonthlyEquiv: customMonthlyEquivalent(),
+    } : null;
     onSave({
       savingsGoalName: `${form.emoji} ${form.name}`,
       savingsGoal: parseInt(form.amount) || 0,
       savingsTargetDate: form.targetDate,
       savingsStrategy: strategy,
+      ...(customConfig && { savingsCustomConfig: customConfig }),
     });
     onClose();
   };
