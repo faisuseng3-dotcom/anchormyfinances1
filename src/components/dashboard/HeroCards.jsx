@@ -200,8 +200,17 @@ export default function HeroCards({ profile }) {
                     )}
                   </div>
 
-                  {card.subtitle && (
+                  {card.id === 'savings' && profile.savingsGoal > 0 && (
+                    <p className="text-xs text-slate-500 mt-0.5 truncate">
+                      {savingsBalance.toLocaleString('sv-SE')} / {profile.savingsGoal.toLocaleString('sv-SE')} kr
+                    </p>
+                  )}
+
+                  {card.subtitle && card.id !== 'savings' && (
                     <p className="text-xs text-slate-500 mt-1 truncate">{card.subtitle}</p>
+                  )}
+                  {card.id === 'savings' && card.subtitle && profile.savingsGoal > 0 && (
+                    <p className="text-xs text-purple-400 mt-0.5 truncate font-medium">{card.subtitle}</p>
                   )}
 
                   {card.showProgress && (
