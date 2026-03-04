@@ -7,6 +7,9 @@ import MarginModal from './MarginModal';
 import BufferModal from './BufferModal';
 import FixedCostsModal from './FixedCostsModal';
 import DreamBuilder from '@/components/goals/DreamBuilder';
+import DepositHub from '@/components/goals/DepositHub';
+import DepositHistory from '@/components/goals/DepositHistory';
+import AnchorWealthCard from '@/components/goals/AnchorWealthCard';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 
