@@ -20,6 +20,7 @@ const formatNumber = (value) => {
 export default function HeroCards({ profile }) {
   const [openModal, setOpenModal] = useState(null);
   const [showDreamBuilder, setShowDreamBuilder] = useState(false);
+  const [showDepositHub, setShowDepositHub] = useState(null); // 'savings' | 'buffer' | null
   const queryClient = useQueryClient();
 
   const handleSaveDream = async (data) => {
