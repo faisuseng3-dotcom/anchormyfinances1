@@ -57,6 +57,7 @@ import PurchaseSimulator from './pages/PurchaseSimulator';
 import Settings from './pages/Settings';
 import TravelPlanner from './pages/TravelPlanner';
 import WhatIf from './pages/WhatIf';
+import HistoryFeed from './pages/HistoryFeed';
 import __Layout from './Layout.jsx';
 
 
@@ -71,6 +72,7 @@ export const PAGES = {
     "Settings": Settings,
     "TravelPlanner": TravelPlanner,
     "WhatIf": WhatIf,
+    "HistoryFeed": HistoryFeed,
 }
 
 export const pagesConfig = {
