@@ -75,10 +75,12 @@ export default function Settings() {
         subscriptions: [...(prev.subscriptions || []), {
           name: newSub.name,
           amount: parseInt(newSub.amount),
-          category: newSub.category
+          category: newSub.category,
+          billingDay: parseInt(newSub.billingDay) || null,
+          frequency: newSub.frequency,
         }]
       }));
-      setNewSub({ name: '', amount: '', category: 'other' });
+      setNewSub({ name: '', amount: '', category: 'other', billingDay: '', frequency: 'monthly' });
       setShowAddSub(false);
     }
   };
