@@ -315,7 +315,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                 <label className="text-xs text-slate-400 mb-3 block">Välj din spar-stil</label>
                 <div className="space-y-2">
                   {STRATEGIES.map(s => (
-                    <button key={s.id} onClick={() => setStrategy(s.id)}
+                    <button key={s.id} onClick={() => { setStrategy(s.id); setCustomAiMsg(null); }}
                       className={`w-full p-4 rounded-xl text-left transition-all flex items-center gap-3 ${strategy === s.id ? 'ring-2 ring-purple-500' : ''}`}
                       style={{ background: strategy === s.id ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.04)' }}>
                       <span className="text-2xl">{s.icon}</span>
@@ -327,6 +327,99 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   ))}
                 </div>
               </div>
+
+              {/* Custom Flow Builder */}
+              {strategy === 'custom' && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  className="mt-2 p-4 rounded-2xl space-y-4" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                  <p className="text-xs font-semibold text-indigo-300 uppercase tracking-widest">🛠️ Bygg ditt schema</p>
+
+                  {/* Frequency */}
+                  <div>
+                    <p className="text-xs text-slate-400 mb-2">Frekvens</p>
+                    <div className="flex flex-wrap gap-2">
+                      {FREQUENCIES.map(f => (
+                        <button key={f.id} onClick={() => setCustomFreq(f.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${customFreq === f.id ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-300 hover:bg-white/10'}`}>
+                          {f.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Amount type + value */}
+                  <div>
+                    <p className="text-xs text-slate-400 mb-2">Belopp per tillfälle</p>
+                    <div className="flex gap-2 mb-2">
+                      {[{id:'fixed',label:'Fast kr'},{id:'percent',label:'% av lön'}].map(t => (
+                        <button key={t.id} onClick={() => setCustomAmountType(t.id)}
+                          className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${customAmountType === t.id ? 'bg-indigo-600 text-white' : 'bg-white/5 text-slate-300'}`}>
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="relative">
+                      <Input type="number" placeholder={customAmountType === 'percent' ? '5' : '100'}
+                        value={customAmount} onChange={e => { setCustomAmount(e.target.value); setCustomAiMsg(null); }}
+                        className="h-10 rounded-xl pr-10 text-sm" />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">
+                        {customAmountType === 'percent' ? '%' : 'kr'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Real-time simulation */}
+                  {customAmount && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                      className="p-3 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      <p className="text-xs text-slate-400">CFO-simulering</p>
+                      <p className="text-sm font-bold text-emerald-400 mt-0.5">
+                        ≈ {customMonthlyEquivalent().toLocaleString('sv-SE')} kr / månad
+                      </p>
+                      <p className={`text-xs mt-1 ${customMonthlyEquivalent() > margin ? 'text-rose-400' : 'text-emerald-300'}`}>
+                        {customMonthlyEquivalent() > margin
+                          ? `⚠ Överstiger din marginal (${margin.toLocaleString('sv-SE')} kr)`
+                          : `✓ Ryms inom din marginal (${margin.toLocaleString('sv-SE')} kr)`}
+                      </p>
+                    </motion.div>
+                  )}
+
+                  {/* AI Trigger */}
+                  <div>
+                    <p className="text-xs text-slate-400 mb-2">AI-trigger (valfri)</p>
+                    <div className="space-y-1.5">
+                      {AI_TRIGGERS.map(t => (
+                        <button key={t.id} onClick={() => setCustomTrigger(t.id)}
+                          className={`w-full p-3 rounded-xl text-left text-xs transition-all flex items-center gap-2 ${customTrigger === t.id ? 'ring-1 ring-indigo-500 bg-indigo-600/20' : 'bg-white/4 hover:bg-white/8'}`}>
+                          <span>{t.label}</span>
+                          {customTrigger === t.id && <span className="text-slate-500 ml-auto italic">{t.example}</span>}
+                        </button>
+                      ))}
+                    </div>
+                    {customTrigger === 'custom_trigger' && (
+                      <Input placeholder="Beskriv din trigger…" value={customTriggerText}
+                        onChange={e => setCustomTriggerText(e.target.value)}
+                        className="mt-2 h-10 rounded-xl text-sm" />
+                    )}
+                  </div>
+
+                  {/* Get AI feedback */}
+                  {customAmount && (
+                    <button onClick={fetchCustomAi} disabled={loadingCustomAi}
+                      className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center justify-center gap-2">
+                      {loadingCustomAi ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyserar…</> : <><Sparkles className="w-4 h-4" /> Få CFO-feedback</>}
+                    </button>
+                  )}
+
+                  {customAiMsg && (
+                    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                      className="p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)' }}>
+                      <p className="text-xs text-purple-300 font-semibold mb-1">🤖 CFO-Analytikern</p>
+                      <p className="text-xs text-slate-200 leading-relaxed">{customAiMsg.message}</p>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
             </motion.div>
           )}
 
