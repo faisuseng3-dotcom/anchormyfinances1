@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { X, Loader2, ChevronRight, ChevronLeft, Sparkles, Target, Calendar, Zap } from 'lucide-react';
+import { X, Loader2, ChevronRight, ChevronLeft, Sparkles, BookOpen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import TriggerLibrary from './TriggerLibrary';
 
 const EMOJIS = ['✈️', '🏠', '🚗', '🎓', '💍', '🌴', '🎸', '🏋️', '💻', '🚀', '🌍', '🎯'];
 const STRATEGIES = [
