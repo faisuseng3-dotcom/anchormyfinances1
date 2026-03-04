@@ -461,6 +461,18 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   <p className="text-lg font-bold text-emerald-400">{monthlyNeeded().toLocaleString('sv-SE')} kr</p>
                 </div>
               </div>
+
+              {/* Account Type Advisor */}
+              <div className="text-left">
+                <p className="text-xs text-slate-500 mb-2 uppercase tracking-widest font-semibold">CFO-råd: Var ska pengarna ligga?</p>
+                <AccountTypeAdvisor
+                  months={monthsUntil()}
+                  isBuffer={false}
+                  goalName={form.name}
+                  goalAmount={parseInt(form.amount || 0)}
+                />
+              </div>
+
               <p className="text-xs text-slate-500 px-4">
                 Varje gång du sparar växer din planta. Håll den vid liv! 🌿
               </p>
