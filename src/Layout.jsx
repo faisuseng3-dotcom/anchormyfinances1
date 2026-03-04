@@ -1,21 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ShoppingBag, TrendingUp, Settings, Mic, List } from 'lucide-react';
+import { Home, ShoppingBag, TrendingUp, Settings, Mic } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
 import ImpulseTrigger from '@/components/ImpulseTrigger';
-import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
 
-const basicNavItems = [
-  { icon: Home, label: 'Hem', page: 'Dashboard' },
-  { icon: List, label: 'Historik', page: 'HistoryFeed' },
-  { icon: Settings, label: 'Profil', page: 'Settings' },
-];
-
-const fullNavItems = [
+const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
   { icon: ShoppingBag, label: 'Köp', page: 'PurchaseSimulator' },
   { icon: TrendingUp, label: 'Utgifter', page: 'Expenses' },
@@ -25,18 +17,7 @@ const fullNavItems = [
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [voiceOpen, setVoiceOpen] = useState(false);
-
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
-
-  const currentMode = profile?.mode || 'basic';
-  const navItems = currentMode === 'basic' ? basicNavItems : fullNavItems;
-
+  
   // Hide nav on onboarding
   const hideNav = currentPageName === 'Onboarding';
 
