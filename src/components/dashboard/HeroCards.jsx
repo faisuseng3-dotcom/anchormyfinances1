@@ -147,7 +147,7 @@ export default function HeroCards({ profile }) {
             <div className="relative">
               {card.showAspiration ? (
                 <div className="mt-1">
-                  <p className="text-xs text-slate-500 leading-snug">Vad drömmer du om? Skapa ditt första sparmål.</p>
+                  <p className="text-xs text-purple-400 leading-snug font-medium">✨ Tryck för att skapa ditt sparmål</p>
                 </div>
               ) : (
                 <>
