@@ -33,7 +33,7 @@ function BufferCircle({ pct, months }) {
   );
 }
 
-export default function BufferModal({ isOpen, onClose, profile }) {
+export default function BufferModal({ isOpen, onClose, profile, onDeposit }) {
   const [extraSaving, setExtraSaving] = useState(0);
 
   if (!isOpen || !profile) return null;
