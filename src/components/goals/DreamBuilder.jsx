@@ -66,6 +66,14 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
   const [strategy, setStrategy] = useState('fixed');
   const [aiInsight, setAiInsight] = useState(null);
   const [loadingAi, setLoadingAi] = useState(false);
+  // Custom flow state
+  const [customFreq, setCustomFreq] = useState('weekly');
+  const [customAmount, setCustomAmount] = useState('');
+  const [customAmountType, setCustomAmountType] = useState('fixed'); // 'fixed' | 'percent'
+  const [customTrigger, setCustomTrigger] = useState('no_purchase');
+  const [customTriggerText, setCustomTriggerText] = useState('');
+  const [customAiMsg, setCustomAiMsg] = useState(null);
+  const [loadingCustomAi, setLoadingCustomAi] = useState(false);
 
   useEffect(() => {
     if (!isOpen) { setStep(1); setForm({ name: '', emoji: '🎯', amount: '', targetDate: '' }); setAiInsight(null); }
