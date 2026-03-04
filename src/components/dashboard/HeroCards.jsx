@@ -72,7 +72,8 @@ export default function HeroCards({ profile }) {
       showAspiration: profile.savingsGoal === 0,
       showProgress: profile.savingsGoal > 0,
       progressValue: savingsProgress,
-      subtitle: profile.savingsGoalName
+      subtitle: profile.savingsGoalName,
+      currentBalance: profile.savingsCurrentBalance || 0
     },
     {
       id: 'fixed',
