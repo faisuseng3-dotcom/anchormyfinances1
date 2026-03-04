@@ -104,7 +104,7 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
     setLoadingCustomAi(true);
     const monthly = customMonthlyEquivalent();
     const freqLabel = FREQUENCIES.find(f => f.id === customFreq)?.label || customFreq;
-    const triggerLabel = customTrigger === 'custom_trigger' ? customTriggerText : AI_TRIGGERS.find(t => t.id === customTrigger)?.label || '';
+    const triggerLabel = customTrigger?.label || customTriggerText || 'ingen trigger vald';
     const res = await base44.integrations.Core.InvokeLLM({
       prompt: `Du är CFO-Analytikern, en vänlig men ärlig ekonomisk rådgivare.
 Användaren vill skapa ett eget spar-schema för sitt mål "${form.name}".
