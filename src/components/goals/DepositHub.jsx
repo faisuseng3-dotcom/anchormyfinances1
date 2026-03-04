@@ -5,6 +5,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { X, CheckCircle2, Loader2, PiggyBank, Wallet, ArrowDownCircle, CheckSquare, Square } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import AccountTypeAdvisor from './AccountTypeAdvisor';
 
 // Coin rain animation
 function CoinRain({ active }) {
