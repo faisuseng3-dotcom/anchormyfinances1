@@ -48,6 +48,7 @@ export default function WhatIf() {
           </div>
 
           <div className="space-y-4">
+            <AnchorOracle profile={profile} />
             <WhatIfEngine
               profile={profile}
               incomeChange={incomeChange}
