@@ -22,13 +22,7 @@ const FREQUENCIES = [
   { id: 'per_purchase', label: 'Per köp', multiplier: null },
 ];
 
-const AI_TRIGGERS = [
-  { id: 'workout', label: '🏋️ Varje gång jag tränar', example: 'Spara 50 kr per träningspass' },
-  { id: 'no_purchase', label: '🛑 Varje gång jag INTE shoppar', example: 'Spara 100 kr varje dag utan köp' },
-  { id: 'football', label: '⚽ Mitt favoritlag gör mål', example: 'Spara 10 kr per mål' },
-  { id: 'coffee_skip', label: '☕ Hoppar över köpkaffe', example: 'Spara 45 kr per gång' },
-  { id: 'custom_trigger', label: '✍️ Eget trigger…', example: 'Beskriv din egen händelse' },
-];
+
 
 function PlantVisual({ progress }) {
   // 0-100 progress → plant growth
