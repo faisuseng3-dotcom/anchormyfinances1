@@ -9,6 +9,7 @@ import WhatIfEngine from '@/components/whatif/WhatIfEngine';
 import PrecisionWizard from '@/components/whatif/PrecisionWizard';
 import PrecisionTaxResult from '@/components/whatif/PrecisionTaxResult';
 import ModeGate from '@/components/ModeGate';
+import AnchorOracle from '@/components/whatif/AnchorOracle';
 
 export default function WhatIf() {
   const [incomeChange, setIncomeChange] = useState(0);
