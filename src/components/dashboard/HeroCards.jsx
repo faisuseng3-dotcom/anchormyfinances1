@@ -244,9 +244,55 @@ export default function HeroCards({ profile }) {
     </div>
 
     <MarginModal isOpen={openModal === 'margin'} onClose={() => setOpenModal(null)} profile={profile} />
-    <BufferModal isOpen={openModal === 'buffer'} onClose={() => setOpenModal(null)} profile={profile} />
     <FixedCostsModal isOpen={openModal === 'fixed'} onClose={() => setOpenModal(null)} profile={profile} />
+
+    {/* Buffer modal with deposit hub */}
+    <BufferModal isOpen={openModal === 'buffer'} onClose={() => setOpenModal(null)} profile={profile}
+      onDeposit={() => { setOpenModal(null); setShowDepositHub('buffer'); }} />
+
     <DreamBuilder isOpen={showDreamBuilder} onClose={() => setShowDreamBuilder(false)} profile={profile} onSave={handleSaveDream} />
+
+    {/* Anchor wealth card + deposit history below the grid */}
+    {(profile.savingsGoal > 0 || profile.buffer > 0) && (
+      <div className="mt-4 space-y-3">
+        <AnchorWealthCard profile={profile} />
+
+        {/* Deposit buttons */}
+        <div className="grid grid-cols-2 gap-2">
+          {profile.savingsGoal > 0 && (
+            <button onClick={() => setShowDepositHub('savings')}
+              className="py-3 rounded-xl text-sm font-semibold text-emerald-300 flex items-center justify-center gap-2 transition-all hover:opacity-90"
+              style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)' }}>
+              💰 Sätt in i sparmål
+            </button>
+          )}
+          <button onClick={() => setShowDepositHub('buffer')}
+            className="py-3 rounded-xl text-sm font-semibold text-blue-300 flex items-center justify-center gap-2 transition-all hover:opacity-90"
+            style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
+            🛡 Sätt in i buffert
+          </button>
+        </div>
+
+        {/* History */}
+        {profile.savingsGoal > 0 && (
+          <DepositHistory goalName={profile.savingsGoalName} type="savings" />
+        )}
+        <DepositHistory type="buffer" />
+      </div>
+    )}
+
+    <DepositHub
+      isOpen={showDepositHub === 'savings'}
+      onClose={() => setShowDepositHub(null)}
+      profile={profile}
+      type="savings"
+    />
+    <DepositHub
+      isOpen={showDepositHub === 'buffer'}
+      onClose={() => setShowDepositHub(null)}
+      profile={profile}
+      type="buffer"
+    />
     </div>
   );
 }
