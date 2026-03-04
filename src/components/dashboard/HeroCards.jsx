@@ -84,7 +84,7 @@ export default function HeroCards({ profile }) {
     }
   ];
 
-  const CLICKABLE = { margin: 'margin', buffer: 'buffer', fixed: 'fixed' };
+  const CLICKABLE = { margin: 'margin', buffer: 'buffer', fixed: 'fixed', savings: 'savings' };
 
   return (
     <div>
