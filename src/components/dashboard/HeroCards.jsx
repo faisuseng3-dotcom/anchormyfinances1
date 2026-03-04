@@ -90,6 +90,7 @@ export default function HeroCards({ profile }) {
   ];
 
   const CLICKABLE = { margin: 'margin', buffer: 'buffer', fixed: 'fixed', savings: 'savings' };
+  const savingsBalance = profile.savingsCurrentBalance || 0;
 
   return (
     <div>
