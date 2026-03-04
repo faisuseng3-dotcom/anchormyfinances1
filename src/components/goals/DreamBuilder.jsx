@@ -84,8 +84,9 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
       setAiInsight(null);
       setCustomAiMsg(null);
       setCustomAmount('');
-      setCustomTrigger('no_purchase');
+      setCustomTrigger(null);
       setCustomTriggerText('');
+      setShowTriggerLib(false);
     }
   }, [isOpen]);
 
