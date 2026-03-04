@@ -26,7 +26,7 @@ export default function Settings() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(null);
   const [saving, setSaving] = useState(false);
-  const [newSub, setNewSub] = useState({ name: '', amount: '', category: 'other' });
+  const [newSub, setNewSub] = useState({ name: '', amount: '', category: 'other', billingDay: '', frequency: 'monthly' });
   const [showAddSub, setShowAddSub] = useState(false);
   const [newLoan, setNewLoan] = useState({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
   const [showAddLoan, setShowAddLoan] = useState(false);
