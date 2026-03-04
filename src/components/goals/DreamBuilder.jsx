@@ -71,10 +71,11 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
   const [customFreq, setCustomFreq] = useState('weekly');
   const [customAmount, setCustomAmount] = useState('');
   const [customAmountType, setCustomAmountType] = useState('fixed'); // 'fixed' | 'percent'
-  const [customTrigger, setCustomTrigger] = useState('no_purchase');
+  const [customTrigger, setCustomTrigger] = useState(null);
   const [customTriggerText, setCustomTriggerText] = useState('');
   const [customAiMsg, setCustomAiMsg] = useState(null);
   const [loadingCustomAi, setLoadingCustomAi] = useState(false);
+  const [showTriggerLib, setShowTriggerLib] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
