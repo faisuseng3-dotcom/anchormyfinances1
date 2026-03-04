@@ -224,6 +224,17 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                   </p>
                 </div>
 
+                {/* Account Type Advisor */}
+                <div className="text-left">
+                  <p className="text-xs text-slate-500 mb-2 uppercase tracking-widest font-semibold">Var ska pengarna ligga?</p>
+                  <AccountTypeAdvisor
+                    months={type === 'buffer' ? 0 : null}
+                    isBuffer={type === 'buffer'}
+                    goalName={type === 'buffer' ? 'Buffert' : goalName}
+                    goalAmount={parseFloat(amount)}
+                  />
+                </div>
+
                 {/* Verification badge */}
                 <div
                   onClick={!verified ? handleVerify : undefined}
