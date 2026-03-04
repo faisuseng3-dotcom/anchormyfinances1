@@ -25,7 +25,18 @@ const fullNavItems = [
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [voiceOpen, setVoiceOpen] = useState(false);
-  
+
+  const { data: profile } = useQuery({
+    queryKey: ['financialProfile'],
+    queryFn: async () => {
+      const profiles = await base44.entities.FinancialProfile.list();
+      return profiles[0] || null;
+    }
+  });
+
+  const currentMode = profile?.mode || 'basic';
+  const navItems = currentMode === 'basic' ? basicNavItems : fullNavItems;
+
   // Hide nav on onboarding
   const hideNav = currentPageName === 'Onboarding';
 
