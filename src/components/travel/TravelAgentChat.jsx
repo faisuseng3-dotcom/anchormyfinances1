@@ -328,14 +328,14 @@ function ThinkingBubble() {
       <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3">
         <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">Analyserar din resa...</div>
         <div className="flex gap-3">
-          {icons.map((Icon, i) => (
+          {icons.map((IconComp, i) => (
             <motion.div
               key={i}
               animate={{ y: [-4, 0, -4], opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
               className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center"
             >
-              <Icon className="w-4 h-4 text-indigo-400" />
+              <IconComp className="w-4 h-4 text-indigo-400" />
             </motion.div>
           ))}
         </div>
