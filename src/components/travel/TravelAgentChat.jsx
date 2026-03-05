@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { Send, Plane, Loader2, MapPin, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp } from 'lucide-react';
+import { Send, Plane, Loader2, MapPin, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, Building2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
 
