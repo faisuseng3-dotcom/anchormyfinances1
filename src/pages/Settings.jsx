@@ -441,6 +441,9 @@ export default function Settings() {
             </div>
           </div>
 
+          {/* Invite */}
+          <InviteUserSection />
+
           {/* Logout */}
           <Button
             variant="outline"
