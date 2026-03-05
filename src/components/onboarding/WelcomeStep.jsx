@@ -1,9 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Button } from "@/components/ui/button";
-import { TrendingUp, Shield, Zap } from 'lucide-react';
+import { TrendingUp, Shield, Zap, Eye } from 'lucide-react';
+import { setGuestMode } from '@/components/guestStorage';
 
-export default function WelcomeStep({ onNext }) {
+export default function WelcomeStep({ onNext, onGuest }) {
+  const handleGuest = () => {
+    setGuestMode(true);
+    onGuest?.();
+  };
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -90,6 +95,17 @@ export default function WelcomeStep({ onNext }) {
           <p className="text-xs text-slate-500 text-center mt-3">
             Ingen BankID behövs • Inga fasta åtaganden
           </p>
+
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.2 }}
+            onClick={handleGuest}
+            className="w-full mt-4 py-3 rounded-xl text-slate-400 text-sm flex items-center justify-center gap-2 hover:text-slate-300 transition-colors"
+          >
+            <Eye className="w-4 h-4" />
+            Testa utan konto (data sparas temporärt)
+          </motion.button>
         </motion.div>
       </motion.div>
     </motion.div>
