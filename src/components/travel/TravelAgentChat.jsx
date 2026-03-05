@@ -477,10 +477,10 @@ Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren f
       response_json_schema: {
         type: 'object',
         properties: {
-          analysis: { type: 'object' },
-          timeline: { type: 'object' },
-          packages: { type: 'array' },
-          budgetCheck: { type: 'object' },
+          analysis: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'string' }, nights: { type: 'number' }, totalBudget: { type: 'number' }, activityBudget: { type: 'number' }, summary: { type: 'string' } } },
+          timeline: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, event: { type: 'string' }, highlight: { type: 'boolean' } } } } } },
+          packages: { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, tag: { type: 'string' }, accommodation: { type: 'string' }, accommodationCost: { type: 'number' }, activities: { type: 'string' }, activitiesCost: { type: 'number' }, otherCosts: { type: 'number' }, totalCost: { type: 'number' }, margin: { type: 'number' }, aiComment: { type: 'string' } } } },
+          budgetCheck: { type: 'object', properties: { breakdown: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, amount: { type: 'number' } } } }, marginPerDay: { type: 'number' }, verdict: { type: 'string' } } },
           goalName: { type: 'string' },
           goalEndDate: { type: 'string' }
         }
