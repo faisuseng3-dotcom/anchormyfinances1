@@ -7,6 +7,7 @@ import WelcomeStep from '@/components/onboarding/WelcomeStep';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
 import PersonaStep from '@/components/onboarding/PersonaStep';
+import { setGuestMode, saveGuestProfile, loadGuestProfile, isGuestMode } from '@/components/guestStorage';
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -31,24 +32,30 @@ export default function Onboarding() {
 
   const handleComplete = async () => {
     setLoading(true);
-    
-    // Check if profile exists
+
+    // Merge any guest data that was saved locally
+    const guestData = loadGuestProfile();
+    const mergedData = { ...guestData, ...data, mode: data.mode || 'basic', onboardingCompleted: true };
+
+    // Check if profile exists in DB
     const profiles = await base44.entities.FinancialProfile.list();
-    
     if (profiles.length > 0) {
-      await base44.entities.FinancialProfile.update(profiles[0].id, {
-        ...data,
-        mode: data.mode || 'basic',
-        onboardingCompleted: true
-      });
+      await base44.entities.FinancialProfile.update(profiles[0].id, mergedData);
     } else {
-      await base44.entities.FinancialProfile.create({
-        ...data,
-        mode: data.mode || 'basic',
-        onboardingCompleted: true
-      });
+      await base44.entities.FinancialProfile.create(mergedData);
     }
-    
+
+    // Clear guest mode now that data is in DB
+    setGuestMode(false);
+
+    base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: mergedData.mode, was_guest: !!guestData } });
+
+    navigate(createPageUrl('Dashboard'));
+  };
+
+  const handleGuest = () => {
+    // Save initial empty profile to localStorage and go straight to dashboard
+    saveGuestProfile({ ...data, mode: 'basic', onboardingCompleted: true });
     navigate(createPageUrl('Dashboard'));
   };
 
@@ -56,6 +63,7 @@ export default function Onboarding() {
     <WelcomeStep
       key="welcome"
       onNext={() => setStep(1)}
+      onGuest={handleGuest}
     />,
     <QuickGoalStep
       key="goal"
