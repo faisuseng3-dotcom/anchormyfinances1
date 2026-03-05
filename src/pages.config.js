@@ -47,6 +47,7 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import CreateAccount from './pages/CreateAccount';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Loans from './pages/Loans';
@@ -57,11 +58,11 @@ import PurchaseSimulator from './pages/PurchaseSimulator';
 import Settings from './pages/Settings';
 import TravelPlanner from './pages/TravelPlanner';
 import WhatIf from './pages/WhatIf';
-import CreateAccount from './pages/CreateAccount';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "CreateAccount": CreateAccount,
     "Dashboard": Dashboard,
     "Expenses": Expenses,
     "Loans": Loans,
@@ -72,7 +73,6 @@ export const PAGES = {
     "Settings": Settings,
     "TravelPlanner": TravelPlanner,
     "WhatIf": WhatIf,
-    "CreateAccount": CreateAccount,
 }
 
 export const pagesConfig = {
