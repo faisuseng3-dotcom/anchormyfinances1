@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
+import { isGuestMode, loadGuestProfile, saveGuestProfile } from '@/components/guestStorage';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
@@ -36,6 +37,9 @@ export default function Dashboard() {
   const { data: profile, isLoading } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
+      if (isGuestMode()) {
+        return loadGuestProfile() || null;
+      }
       const profiles = await base44.entities.FinancialProfile.list();
       return profiles[0] || null;
     }
