@@ -105,6 +105,11 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
   return (
     <div className="min-h-screen pb-12 px-4 pt-8">
       {/* Header */}
+      {/* Debug strip */}
+      <div className="mb-4 px-3 py-1.5 rounded-lg bg-yellow-400/10 border border-yellow-400/20 text-yellow-300 text-xs font-mono">
+        🛠 Debug: Current Debt = {debugDebt.toLocaleString('sv-SE')} kr ({loans.length} lån i DB)
+      </div>
+
       <div className="flex items-center gap-4 mb-6">
         <Link to={createPageUrl('Dashboard')}>
           <Button variant="ghost" size="icon" className="rounded-xl text-white">
