@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Save, Trash2, Plus, X, Wallet, Home, PiggyBank, Target, LogOut } from 'lucide-react';
+import InviteUserSection from '@/components/settings/InviteUserSection';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
