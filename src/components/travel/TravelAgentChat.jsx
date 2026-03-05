@@ -685,14 +685,14 @@ Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren f
             <AnimatePresence>
               {loading && (
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 flex gap-2 z-10 pointer-events-none">
-                  {[Plane, Hotel, Wallet].map((Icon, i) => (
+                  {[Plane, Hotel, Wallet].map((FloatIcon, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], y: [-4, 0, -4] }}
                       transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
                     >
-                      <Icon className="w-4 h-4 text-indigo-400" />
+                      <FloatIcon className="w-4 h-4 text-indigo-400" />
                     </motion.div>
                   ))}
                 </div>
