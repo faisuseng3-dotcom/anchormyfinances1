@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
 import ImpulseTrigger from '@/components/ImpulseTrigger';
+import GuestBanner from '@/components/GuestBanner';
+import { isGuestMode } from '@/components/guestStorage';
 
 const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
@@ -25,6 +27,7 @@ export default function Layout({ children, currentPageName }) {
     <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0a0e1a]">
       <ProfileSwitcher />
       <ImpulseTrigger />
+      {isGuestMode() && !hideNav && <GuestBanner />}
       <style>{`
         :root {
           /* Primary Colors */
