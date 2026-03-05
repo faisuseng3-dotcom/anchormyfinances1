@@ -308,6 +308,9 @@ export default function Dashboard() {
         <LivePulse />
       </div>
 
+      {/* Debt Alert — visas om användaren har lån */}
+      <DebtAlert profile={displayProfile} />
+
       <div className="px-6 space-y-6">
         {/* Cash Flow Calendar */}
         <CashFlowCalendar profile={displayProfile} />

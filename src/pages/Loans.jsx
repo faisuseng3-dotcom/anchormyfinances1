@@ -36,6 +36,9 @@ export default function Loans() {
     refetchInterval: 5000
   });
 
+  // Debug strip (dev only)
+  const debugDebt = (profile?.loans || []).reduce((s, l) => s + (l.totalAmount || 0), 0);
+
   const loans = profile?.loans || [];
   const totalDebt = loans.reduce((sum, l) => sum + (l.totalAmount || 0), 0);
   const totalMonthly = loans.reduce((sum, l) => sum + (l.monthlyPayment || 0), 0);
