@@ -133,8 +133,22 @@ Exempel på bra svar:
 
 Ge ditt svar:`;
 
+      // Detect loan registration intent
+      const loanMatch = text.match(/(?:lån|skuld|kredit)[^0-9]*(\d[\d\s]*)\s*kr/i);
+      if (loanMatch) {
+        const amount = parseInt(loanMatch[1].replace(/\s/g, ''));
+        if (amount > 0 && profile?.id) {
+          const existingLoans = profile?.loans || [];
+          const newLoan = { name: 'Mitt lån', totalAmount: amount, interestRate: 10, monthlyPayment: Math.round(amount / 48) };
+          await base44.entities.FinancialProfile.update(profile.id, {
+            loans: [...existingLoans, newLoan]
+          });
+          localStorage.setItem('user_debt', amount);
+        }
+      }
+
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: contextPrompt
+        prompt: contextPrompt + (loanMatch ? '\n\nOBS: AI:n har precis sparat detta lån i profilen. Bekräfta det i svaret och hänvisa till Lånintelligens-sidan.' : '')
       });
 
       const assistantMessage = {

@@ -20,8 +20,20 @@ export default function Loans() {
     queryKey: ['financialProfile'],
     queryFn: async () => {
       const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
+      const dbProfile = profiles[0] || null;
+      // Fallback: merge localStorage debt if DB has no loans
+      if (dbProfile && (!dbProfile.loans || dbProfile.loans.length === 0)) {
+        const localDebt = localStorage.getItem('user_debt');
+        if (localDebt) {
+          const amount = parseInt(localDebt) || 0;
+          if (amount > 0) {
+            dbProfile.loans = [{ name: 'Mitt lån', totalAmount: amount, interestRate: 10, monthlyPayment: Math.round(amount / 48) }];
+          }
+        }
+      }
+      return dbProfile;
+    },
+    refetchInterval: 5000
   });
 
   const loans = profile?.loans || [];

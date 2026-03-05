@@ -21,6 +21,7 @@ import { Layers } from 'lucide-react';
 import TimeMachine from '@/components/dashboard/TimeMachine';
 import LivePulse from '@/components/dashboard/LivePulse';
 import CashFlowCalendar from '@/components/dashboard/CashFlowCalendar';
+import DebtAlert from '@/components/dashboard/DebtAlert';
 
 export default function Dashboard() {
   const navigate = useNavigate();
