@@ -382,6 +382,8 @@ export default function Dashboard() {
               </div>
             </motion.div>
           </Link>
+
+          {/* Temp: remove the extra grid col to avoid layout break on mobile */}
         </div>
 
         {/* Pro Tools with AI Glow */}
