@@ -191,7 +191,10 @@ export default function Layout({ children, currentPageName }) {
         }
       `}</style>
       
-      <main className={!hideNav ? 'pb-20' : ''}>
+      <main
+        className={!hideNav ? 'overflow-y-auto' : ''}
+        style={!hideNav ? { paddingBottom: 'max(5rem, calc(env(safe-area-inset-bottom) + 5rem))' } : {}}
+      >
         {children}
       </main>
 
