@@ -33,6 +33,7 @@ export default function Dashboard() {
   const [mentalLoad, setMentalLoad] = useState({ score: 0, factors: [] });
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showModeSelector, setShowModeSelector] = useState(false);
+  const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('2026-02');
 
