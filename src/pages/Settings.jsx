@@ -93,27 +93,29 @@ export default function Settings() {
     }));
   };
 
-  const addLoan = () => {
+  const addLoan = async () => {
     if (newLoan.name && newLoan.totalAmount) {
-      setFormData(prev => ({
-        ...prev,
-        loans: [...(prev.loans || []), {
-          name: newLoan.name,
-          totalAmount: parseNumber(newLoan.totalAmount),
-          interestRate: parseFloat(newLoan.interestRate) || 0,
-          monthlyPayment: parseNumber(newLoan.monthlyPayment)
-        }]
-      }));
+      const updatedLoans = [...(formData.loans || []), {
+        name: newLoan.name,
+        totalAmount: parseNumber(newLoan.totalAmount),
+        interestRate: parseFloat(newLoan.interestRate) || 0,
+        monthlyPayment: parseNumber(newLoan.monthlyPayment)
+      }];
+      const updated = { ...formData, loans: updatedLoans };
+      setFormData(updated);
       setNewLoan({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
       setShowAddLoan(false);
+      // Save immediately to DB so Loans page picks it up instantly
+      await base44.entities.FinancialProfile.update(profile.id, { loans: updatedLoans });
+      queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
     }
   };
 
-  const removeLoan = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      loans: prev.loans.filter((_, i) => i !== index)
-    }));
+  const removeLoan = async (index) => {
+    const updatedLoans = formData.loans.filter((_, i) => i !== index);
+    setFormData(prev => ({ ...prev, loans: updatedLoans }));
+    await base44.entities.FinancialProfile.update(profile.id, { loans: updatedLoans });
+    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
   };
 
   const handleLogout = () => {

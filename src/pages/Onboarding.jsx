@@ -37,6 +37,16 @@ export default function Onboarding() {
     const guestData = loadGuestProfile();
     const mergedData = { ...guestData, ...data, mode: data.mode || 'basic', onboardingCompleted: true };
 
+    // Convert totalLoans number → loans array entry if user entered a total but no detailed loans
+    if (mergedData.totalLoans > 0 && (!mergedData.loans || mergedData.loans.length === 0)) {
+      mergedData.loans = [{
+        name: 'Mitt lån',
+        totalAmount: mergedData.totalLoans,
+        interestRate: 10,
+        monthlyPayment: Math.round(mergedData.totalLoans / 48)
+      }];
+    }
+
     // Check if profile exists in DB
     const profiles = await base44.entities.FinancialProfile.list();
     if (profiles.length > 0) {

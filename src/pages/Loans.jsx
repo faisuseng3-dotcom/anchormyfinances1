@@ -20,24 +20,9 @@ export default function Loans() {
     queryKey: ['financialProfile'],
     queryFn: async () => {
       const profiles = await base44.entities.FinancialProfile.list();
-      const dbProfile = profiles[0] || null;
-      // Fallback: merge localStorage debt if DB has no loans
-      if (dbProfile && (!dbProfile.loans || dbProfile.loans.length === 0)) {
-        const localDebt = localStorage.getItem('user_debt');
-        if (localDebt) {
-          const amount = parseInt(localDebt) || 0;
-          if (amount > 0) {
-            dbProfile.loans = [{ name: 'Mitt lån', totalAmount: amount, interestRate: 10, monthlyPayment: Math.round(amount / 48) }];
-          }
-        }
-      }
-      return dbProfile;
-    },
-    refetchInterval: 5000
+      return profiles[0] || null;
+    }
   });
-
-  // Debug strip (dev only)
-  const debugDebt = (profile?.loans || []).reduce((s, l) => s + (l.totalAmount || 0), 0);
 
   const loans = profile?.loans || [];
   const totalDebt = loans.reduce((sum, l) => sum + (l.totalAmount || 0), 0);
@@ -104,12 +89,6 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
 
   return (
     <div className="min-h-screen pb-12 px-4 pt-8">
-      {/* Header */}
-      {/* Debug strip */}
-      <div className="mb-4 px-3 py-1.5 rounded-lg bg-yellow-400/10 border border-yellow-400/20 text-yellow-300 text-xs font-mono">
-        🛠 Debug: Current Debt = {debugDebt.toLocaleString('sv-SE')} kr ({loans.length} lån i DB)
-      </div>
-
       <div className="flex items-center gap-4 mb-6">
         <Link to={createPageUrl('Dashboard')}>
           <Button variant="ghost" size="icon" className="rounded-xl text-white">
