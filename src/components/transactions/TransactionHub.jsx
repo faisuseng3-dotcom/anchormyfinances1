@@ -1,0 +1,389 @@
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { X, Plus, Minus, ArrowLeftRight, History, TrendingUp, PiggyBank, Zap, ChevronRight, Check } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
+
+const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');
+
+const QUICK_AMOUNTS = [100, 200, 500, 1000, 2000, 5000];
+
+const INCOME_LABELS = ['Lön', 'Swish', 'Present', 'Frilans', 'Bidrag', 'Övrigt'];
+
+function AICoachBubble({ amount, onAccept, onDismiss }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8 }}
+      className="rounded-2xl border border-indigo-500/40 bg-indigo-900/50 p-4 mb-4"
+    >
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-indigo-400" />
+        </div>
+        <div className="flex-1">
+          <p className="text-indigo-200 text-sm font-semibold mb-1">Beteende-AI 🧠</p>
+          <p className="text-slate-300 text-xs leading-relaxed">
+            Okej, jag ser att du tar <span className="text-white font-bold">{fmt(amount)} kr</span> från sparkontot. Är detta för ett nödvändigt köp, eller kan vi vänta till löning?
+          </p>
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={onAccept}
+              className="flex-1 py-2 rounded-xl bg-indigo-500/30 hover:bg-indigo-500/40 text-indigo-200 text-xs font-medium"
+            >
+              Det är nödvändigt ✓
+            </button>
+            <button
+              onClick={onDismiss}
+              className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 text-xs font-medium"
+            >
+              Vänta till löning
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function SwipeTransfer({ profile, onTransfer }) {
+  const [direction, setDirection] = useState('to_savings'); // to_savings | to_spending
+  const [amount, setAmount] = useState(500);
+  const [showAI, setShowAI] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+
+  const availableFromSavings = profile?.buffer || 0;
+
+  const handleSwipe = () => {
+    if (direction === 'to_spending') {
+      setShowAI(true);
+    } else {
+      doTransfer();
+    }
+  };
+
+  const doTransfer = () => {
+    setShowAI(false);
+    onTransfer(direction, amount);
+    setConfirmed(true);
+    setTimeout(() => setConfirmed(false), 2000);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Direction selector */}
+      <div className="flex rounded-xl overflow-hidden border border-white/10">
+        <button
+          onClick={() => setDirection('to_savings')}
+          className={`flex-1 py-3 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${direction === 'to_savings' ? 'bg-emerald-500/30 text-emerald-300' : 'text-slate-400'}`}
+        >
+          <PiggyBank className="w-3.5 h-3.5" /> → Spara
+        </button>
+        <button
+          onClick={() => setDirection('to_spending')}
+          className={`flex-1 py-3 text-xs font-semibold transition-all flex items-center justify-center gap-1.5 ${direction === 'to_spending' ? 'bg-amber-500/30 text-amber-300' : 'text-slate-400'}`}
+        >
+          <TrendingUp className="w-3.5 h-3.5" /> → Spendera
+        </button>
+      </div>
+
+      {/* Visual balance */}
+      <div className="flex items-center gap-3">
+        <div className={`flex-1 rounded-xl p-3 text-center border ${direction === 'to_savings' ? 'border-emerald-500/30 bg-emerald-500/10' : 'border-white/10 bg-white/5'}`}>
+          <p className="text-xs text-slate-400">Tillgängligt</p>
+          <p className="text-white font-bold text-sm">{fmt((profile?.income || 0) - (profile?.housingCost || 0))} kr</p>
+        </div>
+        <ArrowLeftRight className="w-4 h-4 text-slate-500 flex-shrink-0" />
+        <div className={`flex-1 rounded-xl p-3 text-center border ${direction === 'to_spending' ? 'border-amber-500/30 bg-amber-500/10' : 'border-white/10 bg-white/5'}`}>
+          <p className="text-xs text-slate-400">Sparkonto</p>
+          <p className="text-white font-bold text-sm">{fmt(availableFromSavings)} kr</p>
+        </div>
+      </div>
+
+      {/* Quick amounts */}
+      <div className="grid grid-cols-3 gap-2">
+        {QUICK_AMOUNTS.map(a => (
+          <button
+            key={a}
+            onClick={() => setAmount(a)}
+            className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${amount === a ? 'bg-indigo-500 text-white' : 'bg-white/8 text-slate-300 hover:bg-white/12'}`}
+          >
+            {fmt(a)} kr
+          </button>
+        ))}
+      </div>
+
+      {/* Custom input */}
+      <div className="relative">
+        <input
+          type="number"
+          value={amount}
+          onChange={e => setAmount(parseInt(e.target.value) || 0)}
+          className="w-full h-12 rounded-xl bg-white/8 border border-white/10 text-white text-center text-lg font-bold focus:outline-none focus:border-indigo-500/70"
+          placeholder="Eget belopp"
+        />
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+      </div>
+
+      {/* AI Coach */}
+      <AnimatePresence>
+        {showAI && (
+          <AICoachBubble amount={amount} onAccept={doTransfer} onDismiss={() => setShowAI(false)} />
+        )}
+      </AnimatePresence>
+
+      {/* Swipe/confirm button */}
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={handleSwipe}
+        disabled={amount <= 0 || confirmed}
+        className={`w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all ${
+          confirmed
+            ? 'bg-emerald-500/20 text-emerald-300'
+            : direction === 'to_savings'
+              ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30'
+              : 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/30'
+        }`}
+      >
+        {confirmed ? (
+          <><Check className="w-4 h-4" /> Klart!</>
+        ) : direction === 'to_savings' ? (
+          <><PiggyBank className="w-4 h-4" /> Flytta {fmt(amount)} kr till sparande</>
+        ) : (
+          <><TrendingUp className="w-4 h-4" /> Ta ut {fmt(amount)} kr från sparande</>
+        )}
+      </motion.button>
+    </div>
+  );
+}
+
+function AddIncomeTab({ onSave }) {
+  const [amount, setAmount] = useState(0);
+  const [label, setLabel] = useState('Lön');
+  const [customLabel, setCustomLabel] = useState('');
+  const [done, setDone] = useState(false);
+
+  const handleSave = () => {
+    if (amount <= 0) return;
+    onSave({ type: 'income', amount, label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label });
+    setDone(true);
+    setTimeout(() => { setDone(false); setAmount(0); }, 2000);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-3 gap-2">
+        {INCOME_LABELS.map(l => (
+          <button
+            key={l}
+            onClick={() => setLabel(l)}
+            className={`py-2.5 rounded-xl text-xs font-semibold transition-all ${label === l ? 'bg-emerald-500 text-white' : 'bg-white/8 text-slate-300 hover:bg-white/12'}`}
+          >
+            {l}
+          </button>
+        ))}
+      </div>
+      {label === 'Övrigt' && (
+        <input
+          value={customLabel}
+          onChange={e => setCustomLabel(e.target.value)}
+          placeholder="Vad är det för?"
+          className="w-full h-11 rounded-xl bg-white/8 border border-white/10 text-white px-4 text-sm focus:outline-none focus:border-emerald-500/70"
+        />
+      )}
+
+      <div className="grid grid-cols-3 gap-2">
+        {QUICK_AMOUNTS.map(a => (
+          <button
+            key={a}
+            onClick={() => setAmount(a)}
+            className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${amount === a ? 'bg-emerald-500 text-white' : 'bg-white/8 text-slate-300 hover:bg-white/12'}`}
+          >
+            {fmt(a)} kr
+          </button>
+        ))}
+      </div>
+      <div className="relative">
+        <input
+          type="number"
+          value={amount || ''}
+          onChange={e => setAmount(parseInt(e.target.value) || 0)}
+          className="w-full h-12 rounded-xl bg-white/8 border border-white/10 text-white text-center text-lg font-bold focus:outline-none focus:border-emerald-500/70"
+          placeholder="Belopp"
+        />
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+      </div>
+
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={handleSave}
+        disabled={amount <= 0 || done}
+        className={`w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 ${done ? 'bg-emerald-500/20 text-emerald-300' : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30'}`}
+      >
+        {done ? <><Check className="w-4 h-4" /> Registrerat!</> : <><Plus className="w-4 h-4" /> Registrera +{fmt(amount)} kr</>}
+      </motion.button>
+    </div>
+  );
+}
+
+function HistoryTab() {
+  const { data: transactions = [] } = useQuery({
+    queryKey: ['transactions'],
+    queryFn: () => base44.entities.Transaction.list('-created_date', 30)
+  });
+
+  const typeConfig = {
+    income: { icon: '💰', color: 'text-emerald-400', sign: '+' },
+    expense: { icon: '💸', color: 'text-rose-400', sign: '-' },
+    savings_deposit: { icon: '🐷', color: 'text-blue-400', sign: '+' },
+    savings_withdrawal: { icon: '↩️', color: 'text-amber-400', sign: '-' },
+    transfer_to_savings: { icon: '→🐷', color: 'text-emerald-400', sign: '' },
+    transfer_to_spending: { icon: '🐷→', color: 'text-amber-400', sign: '' },
+  };
+
+  if (transactions.length === 0) {
+    return (
+      <div className="text-center py-12 text-slate-500 text-sm">
+        Inga händelser ännu. Börja registrera transaktioner!
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2">
+      {transactions.map((tx, i) => {
+        const cfg = typeConfig[tx.type] || { icon: '💳', color: 'text-slate-400', sign: '' };
+        return (
+          <motion.div
+            key={tx.id}
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.04 }}
+            className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/8"
+          >
+            <span className="text-lg">{cfg.icon}</span>
+            <div className="flex-1 min-w-0">
+              <p className="text-white text-sm font-medium truncate">{tx.label}</p>
+              <p className="text-slate-500 text-xs">
+                {new Date(tx.created_date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+              </p>
+            </div>
+            <p className={`text-sm font-bold ${cfg.color}`}>
+              {cfg.sign}{fmt(tx.amount)} kr
+            </p>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
+export default function TransactionHub({ isOpen, onClose, profile }) {
+  const [tab, setTab] = useState('income');
+  const queryClient = useQueryClient();
+
+  const saveTransaction = async (txData) => {
+    await base44.entities.Transaction.create(txData);
+    queryClient.invalidateQueries({ queryKey: ['transactions'] });
+    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+  };
+
+  const handleTransfer = async (direction, amount) => {
+    const profileId = profile?.id;
+    if (!profileId) return;
+
+    if (direction === 'to_savings') {
+      await base44.entities.FinancialProfile.update(profileId, {
+        buffer: (profile.buffer || 0) + amount
+      });
+      await saveTransaction({ type: 'transfer_to_savings', amount, label: `Sparade ${fmt(amount)} kr` });
+    } else {
+      const newBuffer = Math.max(0, (profile.buffer || 0) - amount);
+      await base44.entities.FinancialProfile.update(profileId, { buffer: newBuffer });
+      await saveTransaction({ type: 'transfer_to_spending', amount, label: `Tog ut ${fmt(amount)} kr från sparande` });
+    }
+    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+  };
+
+  const TABS = [
+    { id: 'income', label: 'Inkomst', icon: Plus },
+    { id: 'transfer', label: 'Flytta', icon: ArrowLeftRight },
+    { id: 'history', label: 'Historik', icon: History },
+  ];
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+          />
+          <motion.div
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl overflow-hidden"
+            style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.1)', maxHeight: '90vh' }}
+          >
+            {/* Handle */}
+            <div className="flex justify-center pt-3 pb-1">
+              <div className="w-10 h-1 rounded-full bg-white/20" />
+            </div>
+
+            <div className="px-5 pb-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 2rem)' }}>
+              {/* Header */}
+              <div className="flex items-center justify-between mb-5 pt-2">
+                <h2 className="text-white font-bold text-lg">Hantera Pengar</h2>
+                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <X className="w-4 h-4 text-slate-400" />
+                </button>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex rounded-xl overflow-hidden border border-white/10 mb-5">
+                {TABS.map(t => {
+                  const Icon = t.icon;
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => setTab(t.id)}
+                      className={`flex-1 py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${tab === t.id ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-300'}`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      {t.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Content */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {tab === 'income' && (
+                    <AddIncomeTab onSave={saveTransaction} />
+                  )}
+                  {tab === 'transfer' && (
+                    <SwipeTransfer profile={profile} onTransfer={handleTransfer} />
+                  )}
+                  {tab === 'history' && <HistoryTab />}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
