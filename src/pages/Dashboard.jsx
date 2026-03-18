@@ -346,6 +346,24 @@ export default function Dashboard() {
             </div>
           </motion.button>
 
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.02 }}
+            onClick={() => setShowTransactionHub(true)}
+            className="glass-effect rounded-2xl p-5 text-white shadow-lg shadow-indigo-500/20 relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20" />
+            <div className="relative flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg">
+                <Zap className="w-6 h-6" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-white">Hantera pengar</p>
+                <p className="text-xs text-slate-400">In · Ut · Flytta</p>
+              </div>
+            </div>
+          </motion.button>
+
           <Link to={createPageUrl('Expenses')}>
             <motion.div
               whileTap={{ scale: 0.95 }}
