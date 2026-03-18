@@ -7,7 +7,8 @@ export default function OnboardingStep({ children, title, subtitle, step, totalS
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
-      className="min-h-screen px-6 py-8"
+      className="min-h-screen px-6 pt-8 pb-12 overflow-y-auto"
+      style={{ paddingBottom: 'max(3rem, calc(env(safe-area-inset-bottom) + 2rem))' }}
     >
       <div className="max-w-md mx-auto">
         {/* Progress */}
