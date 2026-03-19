@@ -130,7 +130,8 @@ function AddIncomeTab({ onSave }) {
 function HistoryTab() {
   const { data: transactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 30)
+    queryFn: () => base44.entities.Transaction.list('-created_date', 30),
+    staleTime: 0,
   });
 
   const typeConfig = {
