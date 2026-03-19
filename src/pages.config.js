@@ -63,6 +63,7 @@ import ResellScanner from './pages/ResellScanner';
 import Pulse from './pages/Pulse';
 import Landing from './pages/Landing';
 import FinancialHistory from './pages/FinancialHistory';
+import SecurityInfo from './pages/SecurityInfo';
 import __Layout from './Layout.jsx';
 
 
@@ -83,6 +84,7 @@ export const PAGES = {
     "Pulse": Pulse,
     "Landing": Landing,
     "FinancialHistory": FinancialHistory,
+    "SecurityInfo": SecurityInfo,
 }
 
 export const pagesConfig = {
