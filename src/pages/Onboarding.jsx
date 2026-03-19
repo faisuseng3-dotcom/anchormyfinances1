@@ -108,7 +108,7 @@ export default function Onboarding() {
             />
           </div>
           <div className="flex justify-between px-6 pt-2 pb-1">
-            <span className="text-xs text-slate-500">Steg {currentProgress} av {totalSteps}</span>
+            <span className="text-xs text-slate-500">Steg {step + 1} av {totalSteps}</span>
             <span className="text-xs text-slate-500">{progressPercent}%</span>
           </div>
         </div>
