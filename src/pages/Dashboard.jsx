@@ -241,14 +241,16 @@ export default function Dashboard() {
         category: tx.category || 'other',
       }));
 
+    const hasData = monthTransactions.length > 0;
     return {
       ...profile,
       // Fixed costs (subscriptions, loans, housing) are always recurring — keep from profile
       // Variable: override monthlyExpenses with actual transactions for that month
       monthlyExpenses: monthExpenses,
-      // Income: if no transactions recorded, show 0 for that month
+      // For historic empty months, show 0 buffer (not current balance)
+      buffer: hasData ? profile.buffer : 0,
       _monthIncome: monthIncome,
-      _hasData: monthTransactions.length > 0,
+      _hasData: hasData,
     };
   }, [profile, isHistoricMonth, monthTransactions, selectedMonth]);
 
