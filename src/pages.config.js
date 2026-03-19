@@ -74,6 +74,7 @@ export const PAGES = {
     "Settings": Settings,
     "TravelPlanner": TravelPlanner,
     "WhatIf": WhatIf,
+    "TransactionHistory": TransactionHistory,
 }
 
 export const pagesConfig = {
