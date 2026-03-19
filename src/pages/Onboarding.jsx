@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import WelcomeStep from '@/components/onboarding/WelcomeStep';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
