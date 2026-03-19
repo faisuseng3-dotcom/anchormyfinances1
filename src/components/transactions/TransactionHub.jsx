@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import TheSwipe from './TheSwipe';
+import { useState } from 'react';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');
 
@@ -38,6 +39,20 @@ function AddIncomeTab({ onSave }) {
     // Haptic feedback
     if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
     await onSave({ type: 'income', amount, label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label });
+    
+    // Award XP for income registration
+    try {
+      const profiles = await base44.entities.FinancialProfile.list();
+      if (profiles[0]) {
+        const currentXP = profiles[0].totalXP || 0;
+        await base44.entities.FinancialProfile.update(profiles[0].id, {
+          totalXP: currentXP + 15
+        });
+      }
+    } catch (e) {
+      console.error('XP award failed:', e);
+    }
+
     triggerParticles();
     setDone(true);
     setSaving(false);
