@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { X, Plus, Minus, ArrowLeftRight, History, TrendingUp, PiggyBank, Zap, ChevronRight, Check } from 'lucide-react';
+import { X, Plus, ArrowLeftRight, History } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
+import TheSwipe from './TheSwipe';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');
 
