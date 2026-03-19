@@ -20,6 +20,8 @@ import GuiltFreeWindow from '@/components/pulse/GuiltFreeWindow';
 import WhatIfSimulator from '@/components/pulse/WhatIfSimulator';
 import PulseStatusBar from '@/components/pulse/PulseStatusBar';
 import DangerZoneList from '@/components/pulse/DangerZoneList';
+import FutureTimeline from '@/components/pulse/FutureTimeline';
+import { useState, useMemo } from 'react';
 
 export default function Pulse() {
   const [whatIfAmount, setWhatIfAmount] = useState(0);
@@ -138,6 +140,14 @@ export default function Pulse() {
       </div>
 
       <div className="px-4 space-y-4">
+        {/* Future Timeline - framåtblickande */}
+        <div className="rounded-2xl p-4 border border-white/8" style={{ background: 'rgba(31,41,55,0.6)' }}>
+          <div className="mb-3">
+            <p className="text-xs text-slate-500 font-semibold mb-3">KOMMANDE UTGIFTER</p>
+          </div>
+          <FutureTimeline profile={profile} />
+        </div>
+
         {/* Timeline */}
         <div className="rounded-2xl p-4 border border-white/8" style={{ background: 'rgba(31,41,55,0.6)' }}>
           <PulseTimeline events={eventsWithBalance} today={new Date()} whatIfAmount={whatIfAmount} />
