@@ -60,7 +60,7 @@ export default function Onboarding() {
 
     base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: mergedData.mode, was_guest: !!guestData } });
 
-    navigate(createPageUrl('Dashboard'));
+    navigate(createPageUrl('Pulse'));
   };
 
   const handleGuest = () => {

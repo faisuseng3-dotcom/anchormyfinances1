@@ -61,6 +61,7 @@ import WhatIf from './pages/WhatIf';
 import TransactionHistory from './pages/TransactionHistory';
 import ResellScanner from './pages/ResellScanner';
 import Pulse from './pages/Pulse';
+import Landing from './pages/Landing';
 import __Layout from './Layout.jsx';
 
 
