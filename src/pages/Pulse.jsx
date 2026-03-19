@@ -10,6 +10,7 @@ import {
   getGuiltFreeAmount,
   getDangerEvents,
   getNextDangerEvent,
+  getSafeToSpend,
   formatNumber,
 } from '@/components/pulse/pulseEngine';
 
@@ -42,6 +43,8 @@ export default function Pulse() {
   }, [profile, whatIfAmount]);
 
   const incomeDay = 25;
+
+  const safeToSpend = useMemo(() => getSafeToSpend(profile, currentBalance), [profile, currentBalance]);
 
   const { expenses, events, eventsWithBalance, guiltFree, nextCritical, dangerEvents } = useMemo(() => {
     if (!profile) return { expenses: [], events: [], eventsWithBalance: [], guiltFree: 0, nextCritical: null, dangerEvents: [] };
@@ -108,7 +111,7 @@ export default function Pulse() {
             )}
           </div>
 
-          {/* Saldo display */}
+          {/* Saldo + Safe-to-Spend */}
           <div className="mt-4 flex items-baseline gap-2">
             <span className="text-4xl font-black text-white">{formatNumber(currentBalance)}</span>
             <span className="text-slate-400">kr</span>
@@ -117,6 +120,20 @@ export default function Pulse() {
           {whatIfAmount > 0 && (
             <p className="text-xs text-amber-400 mt-0.5">⚡ What-if aktiv: saldo justerat med -{formatNumber(whatIfAmount)} kr</p>
           )}
+          {/* Safe-to-Spend */}
+          <div className="mt-3 p-3 rounded-xl flex items-center justify-between"
+            style={{ background: safeToSpend > 0 ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)', border: `1px solid ${safeToSpend > 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
+            <div>
+              <p className="text-xs text-slate-400">Safe-to-Spend</p>
+              <p className={`text-xl font-black ${safeToSpend > 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                {formatNumber(safeToSpend)} kr
+              </p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-slate-500">Kvar efter fasta</p>
+              <p className="text-xs text-slate-500">utgifter denna månad</p>
+            </div>
+          </div>
         </motion.div>
       </div>
 
