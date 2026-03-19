@@ -132,6 +132,18 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
                 className="h-12 rounded-lg mt-1"
               />
             </div>
+            <div>
+              <Label className="text-slate-300 text-sm">Förfallodag (1–31)</Label>
+              <Input
+                type="number"
+                placeholder="t.ex. 25"
+                min="1"
+                max="31"
+                value={newLoan.billingDay}
+                onChange={(e) => setNewLoan({ ...newLoan, billingDay: e.target.value })}
+                className="h-12 rounded-lg mt-1"
+              />
+            </div>
             <div className="flex gap-2">
               <Button
                 variant="outline"

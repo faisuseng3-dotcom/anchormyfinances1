@@ -99,6 +99,15 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
               onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })}
               className="h-12 rounded-lg"
             />
+            <Input
+              type="number"
+              placeholder="Förfallodag (1–31), t.ex. 27"
+              min="1"
+              max="31"
+              value={newSub.billingDay}
+              onChange={(e) => setNewSub({ ...newSub, billingDay: e.target.value })}
+              className="h-12 rounded-lg"
+            />
             <div className="flex flex-wrap gap-2">
               {categories.map(cat => (
                 <Badge
