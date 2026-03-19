@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Coins, Loader2, ChevronRight, Sparkles } from 'lucide-react';
+import { Coins, Loader2, ChevronRight, Sparkles, CheckCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
+import { useQueryClient } from '@tanstack/react-query';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -20,7 +21,9 @@ export default function OpportunityScanner({ profile }) {
   const [scanning, setScanning] = useState(false);
   const [opportunities, setOpportunities] = useState(null);
   const [claimed, setClaimed] = useState({});
+  const [pendingClaim, setPendingClaim] = useState(null);
   const [totalFound, setTotalFound] = useState(0);
+  const queryClient = useQueryClient();
 
   const subs = profile?.subscriptions || [];
   const buffer = profile?.buffer || 0;
@@ -140,8 +143,24 @@ Svara ENDAST med JSON.`,
     }
   }, []);
 
-  const handleClaim = (id) => {
-    setClaimed(c => ({ ...c, [id]: true }));
+  const handleClaimConfirm = async (opp) => {
+    // Move savings amount from expenses to savings in profile
+    if (profile?.id && opp.monthly_saving > 0) {
+      const newSavingsBalance = (profile.savingsCurrentBalance || 0) + opp.monthly_saving;
+      await base44.entities.FinancialProfile.update(profile.id, {
+        savingsCurrentBalance: newSavingsBalance,
+      });
+      // Log as transaction
+      await base44.entities.Transaction.create({
+        type: 'savings_deposit',
+        amount: opp.monthly_saving,
+        label: `Vinst: ${opp.title}`,
+        category: 'savings',
+      });
+      queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    }
+    setClaimed(c => ({ ...c, [opp.id]: true }));
+    setPendingClaim(null);
   };
 
   return (
@@ -192,12 +211,26 @@ Svara ENDAST med JSON.`,
                     <p className="text-xs text-slate-400 mb-2">{opp.description}</p>
                     {opp.tip && <p className="text-xs text-emerald-300 mb-3">"{ opp.tip}"</p>}
                     {!claimed[opp.id] ? (
-                      <button onClick={() => handleClaim(opp.id)}
-                        className="flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors">
-                        {opp.action} <ChevronRight className="w-3.5 h-3.5" />
-                      </button>
+                      pendingClaim === opp.id ? (
+                        <div className="space-y-2">
+                          <p className="text-xs text-amber-300">Bekräfta: {opp.monthly_saving > 0 ? `+${fmt(opp.monthly_saving)} kr läggs till i "${savingsGoalName}"` : 'Åtgärd genomförd?'}</p>
+                          <div className="flex gap-2">
+                            <button onClick={() => handleClaimConfirm(opp)}
+                              className="flex items-center gap-1 text-xs font-bold text-emerald-400 px-2 py-1 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 transition-colors">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Ja, klar!
+                            </button>
+                            <button onClick={() => setPendingClaim(null)}
+                              className="text-xs text-slate-500 hover:text-slate-400 transition-colors">Avbryt</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button onClick={() => setPendingClaim(opp.id)}
+                          className="flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors">
+                          {opp.action} <ChevronRight className="w-3.5 h-3.5" />
+                        </button>
+                      )
                     ) : (
-                      <p className="text-xs text-emerald-400 font-bold">✓ Flytte till {savingsGoalName}!</p>
+                      <p className="text-xs text-emerald-400 font-bold">✓ +{fmt(opp.monthly_saving)} kr till {savingsGoalName}!</p>
                     )}
                   </div>
                 </div>
