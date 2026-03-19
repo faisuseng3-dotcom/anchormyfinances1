@@ -150,14 +150,18 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
     if (!profileId) return;
 
     if (direction === 'to_savings') {
-      await base44.entities.FinancialProfile.update(profileId, {
-        buffer: (profile.buffer || 0) + amount
-      });
-      await saveTransaction({ type: 'transfer_to_savings', amount, label: `Sparade ${fmt(amount)} kr` });
+      const newSavings = (profile.savingsCurrentBalance || 0) + amount;
+      await base44.entities.FinancialProfile.update(profileId, { savingsCurrentBalance: newSavings });
+      await saveTransaction({ type: 'transfer_to_savings', amount, label: `Överföring till Spar: +${fmt(amount)} kr` });
     } else {
-      const newBuffer = Math.max(0, (profile.buffer || 0) - amount);
-      await base44.entities.FinancialProfile.update(profileId, { buffer: newBuffer });
-      await saveTransaction({ type: 'transfer_to_spending', amount, label: `Tog ut ${fmt(amount)} kr från sparande` });
+      // to_spending: dra från savings, lägg till i tillgängligt (via buffer som proxy)
+      const newSavings = Math.max(0, (profile.savingsCurrentBalance || 0) - amount);
+      const newBuffer = (profile.buffer || 0) + amount;
+      await base44.entities.FinancialProfile.update(profileId, {
+        savingsCurrentBalance: newSavings,
+        buffer: newBuffer,
+      });
+      await saveTransaction({ type: 'transfer_to_spending', amount, label: `Överföring från Spar: +${fmt(amount)} kr` });
     }
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
   };
