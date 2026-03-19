@@ -90,15 +90,13 @@ export default function Onboarding() {
     );
   }
 
-  // Progress bar only shown during steps 1-3 (not welcome, not loading)
   const totalSteps = 3;
-  const currentProgress = step > 0 ? step : 0;
-  const progressPercent = Math.round((currentProgress / totalSteps) * 100);
+  const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #07090f 0%, #0d1321 50%, #0b1120 100%)' }}>
       {/* Progress bar */}
-      {step > 0 && (
+      {(
         <div className="fixed top-0 left-0 right-0 z-50">
           <div className="h-1 bg-white/10 w-full">
             <motion.div
