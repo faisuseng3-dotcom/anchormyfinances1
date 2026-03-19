@@ -3,9 +3,13 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
+const now = new Date();
+const monthNames = ['Jan','Feb','Mar','Apr','Maj','Jun','Jul','Aug','Sep','Okt','Nov','Dec'];
+const currentMonthYear = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
 const TICKERS = [
   'Marknadsränta uppdaterad: 4.1%',
-  'Inflationstakt (Feb 2026): 2.3%',
+  `Inflationstakt (${currentMonthYear}): 2.3%`,
   'Reporänta: 2.75% — oförändrad',
   'OMXS30: +0.4% idag',
   'USD/SEK: 10.42 — stabilt',
