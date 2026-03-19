@@ -246,7 +246,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
 }
 
 // Swipeable card carousel
-function DiscoveryCarousel({ packages, selectedPkg, onSelect, destination }) {
+function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destination }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const destKey = Object.keys(DEST_IMAGES).find(k => destination?.toLowerCase().includes(k)) || 'default';
   const destImage = DEST_IMAGES[destKey];
