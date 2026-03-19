@@ -88,14 +88,41 @@ function AddIncomeTab({ onSave }) {
         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
       </div>
 
-      <motion.button
-        whileTap={{ scale: 0.97 }}
-        onClick={handleSave}
-        disabled={amount <= 0 || done}
-        className={`w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 ${done ? 'bg-emerald-500/20 text-emerald-300' : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30'}`}
-      >
-        {done ? <><Check className="w-4 h-4" /> Registrerat!</> : <><Plus className="w-4 h-4" /> Registrera +{fmt(amount)} kr</>}
-      </motion.button>
+      <div className="relative">
+        {/* Flying particles */}
+        <AnimatePresence>
+          {particles.map(p => (
+            <motion.div
+              key={p.id}
+              initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+              animate={{ opacity: 0, x: p.x, y: p.y, scale: 0.3 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              className="absolute left-1/2 top-0 pointer-events-none text-emerald-400 font-bold text-sm"
+              style={{ zIndex: 10 }}
+            >
+              +{fmt(amount)} kr
+            </motion.div>
+          ))}
+        </AnimatePresence>
+
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={handleSave}
+          disabled={amount <= 0 || done || saving}
+          className={`w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 ${done ? 'bg-emerald-500/20 text-emerald-300' : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30'}`}
+        >
+          {saving ? (
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}>
+              <Plus className="w-4 h-4" />
+            </motion.div>
+          ) : done ? (
+            <><Check className="w-4 h-4" /> Pengarna registrerade!</>
+          ) : (
+            <><Plus className="w-4 h-4" /> Registrera +{fmt(amount)} kr</>
+          )}
+        </motion.button>
+      </div>
     </div>
   );
 }
