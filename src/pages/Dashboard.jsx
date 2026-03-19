@@ -5,7 +5,10 @@ import { isGuestMode, loadGuestProfile, saveGuestProfile } from '@/components/gu
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane, GitBranch, Calculator, ScanLine, BarChart2 } from 'lucide-react';
+import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane, GitBranch, Calculator, ScanLine, BarChart2, Flame } from 'lucide-react';
+import SafeToSpendWidget from '@/components/dashboard/SafeToSpendWidget';
+import StreakHeader from '@/components/dashboard/StreakHeader';
+import { useGamification, calculateLevel, checkAndUnlockBadges } from '@/hooks/useGamification';
 import { Button } from "@/components/ui/button";
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import HeroCards from '@/components/dashboard/HeroCards';
@@ -46,9 +49,16 @@ export default function Dashboard() {
         return loadGuestProfile() || null;
       }
       const profiles = await base44.entities.FinancialProfile.list();
+      if (profiles.length > 0) {
+        // Check for badge unlocks on every load
+        checkAndUnlockBadges(profiles[0]);
+      }
       return profiles[0] || null;
     }
   });
+
+  // Initialize gamification (streak tracking)
+  useGamification(profile);
 
   // Fetch transactions for the selected month only
   const { data: monthTransactions = [] } = useQuery({
@@ -304,7 +314,16 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
-      <div className="px-6 pt-8 pb-4">
+      <div className="px-6 pt-6 pb-4">
+        {/* Streak & Level */}
+        {profile && (
+          <StreakHeader 
+            streak={profile.dailyLoginStreak || 0} 
+            level={calculateLevel(profile.totalXP || 0)}
+            totalXP={profile.totalXP || 0}
+          />
+        )}
+
         <div className="flex items-center justify-between mb-4">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -338,8 +357,13 @@ export default function Dashboard() {
         <TimeMachine selectedMonth={selectedMonth} onSelectMonth={setSelectedMonth} />
       </div>
 
+      {/* Safe-to-Spend Widget */}
+      <div className="px-6 mb-4 mt-4">
+        <SafeToSpendWidget profile={displayProfile} />
+      </div>
+
       {/* Live Pulse */}
-      <div className="px-6 mb-2 mt-3">
+      <div className="px-6 mb-2">
         <LivePulse />
       </div>
 
