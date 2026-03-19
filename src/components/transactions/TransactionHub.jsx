@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { X, Plus, ArrowLeftRight, History } from 'lucide-react';
+import { X, Plus, ArrowLeftRight, History, Check, PiggyBank, TrendingUp, Zap } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
