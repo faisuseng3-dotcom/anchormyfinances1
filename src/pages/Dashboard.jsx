@@ -327,7 +327,7 @@ export default function Dashboard() {
         <InsightsSection insights={insights} profile={displayProfile} />
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3 auto-rows-auto">
           <motion.button
             whileTap={{ scale: 0.95 }}
             whileHover={{ scale: 1.02 }}
