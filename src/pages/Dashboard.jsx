@@ -35,7 +35,9 @@ export default function Dashboard() {
   const [showModeSelector, setShowModeSelector] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState('2026-02');
+  const nowDate = new Date();
+  const currentMonthKey = `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, '0')}`;
+  const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ['financialProfile'],

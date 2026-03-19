@@ -2,16 +2,23 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react';
 
-const MONTHS = [
-  { key: '2025-09', label: 'Sep', year: '2025' },
-  { key: '2025-10', label: 'Okt', year: '2025' },
-  { key: '2025-11', label: 'Nov', year: '2025' },
-  { key: '2025-12', label: 'Dec', year: '2025' },
-  { key: '2026-01', label: 'Jan', year: '2026' },
-  { key: '2026-02', label: 'Feb', year: '2026' },
-];
+const SW_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec'];
 
-const CURRENT = '2026-02';
+function generateMonths(count = 6) {
+  const now = new Date();
+  const months = [];
+  for (let i = count - 1; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    months.push({ key: `${year}-${month}`, label: SW_MONTHS[d.getMonth()], year: String(year) });
+  }
+  return months;
+}
+
+const MONTHS = generateMonths(6);
+const now = new Date();
+const CURRENT = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
 export default function TimeMachine({ selectedMonth, onSelectMonth }) {
   const scrollRef = useRef(null);
