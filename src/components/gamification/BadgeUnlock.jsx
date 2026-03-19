@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -36,7 +36,7 @@ const BADGE_CONFIGS = {
 };
 
 export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
-  React.useEffect(() => {
+  useEffect(() => {
     if (isVisible && badgeId) {
       // Trigger confetti
       confetti({
