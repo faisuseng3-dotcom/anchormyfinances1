@@ -511,12 +511,17 @@ Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren f
     setLatestBudgetCheck(result.budgetCheck);
     setLatestDestination(result.analysis?.destination || '');
 
-    setMessages(prev => [...prev,
+    const newMsgs = [
       { role: 'assistant', type: 'analysis', content: result.analysis?.summary || '', analysis: result.analysis },
       { role: 'assistant', type: 'timeline', timeline: result.timeline },
       { role: 'assistant', type: 'packages', packages: result.packages, goalName: result.goalName, goalEndDate: result.goalEndDate, destination: result.analysis?.destination },
       { role: 'assistant', type: 'budgetcheck', budgetCheck: result.budgetCheck }
-    ]);
+    ];
+    setMessages(prev => {
+      const updated = [...prev, ...newMsgs];
+      saveToCache({ messages: updated });
+      return updated;
+    });
 
     setLoading(false);
   };
