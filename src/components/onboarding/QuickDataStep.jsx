@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Wallet, Home, PiggyBank, CreditCard, ChevronRight } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
+import DayPicker from './DayPicker';
 
 export default function QuickDataStep({ data, onChange, onNext, onBack }) {
   const formatNumber = (value) => {
@@ -49,7 +50,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
         <div className="space-y-2">
           <Label className="text-slate-300 flex items-center gap-2 text-sm">
             <Home className="w-4 h-4 text-indigo-400" />
-            Ungefärliga fasta kostnader per månad
+            Hyra / Boende
           </Label>
           <div className="relative">
             <Input
@@ -61,7 +62,14 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
           </div>
-          <p className="text-xs text-slate-500">Hyra/boende, el, försäkringar, abonnemang etc.</p>
+          {data.housingCost > 0 && (
+            <DayPicker
+              value={data.housingDueDay || 27}
+              onChange={(d) => onChange({ ...data, housingDueDay: d })}
+              label="Vilken dag i månaden betalas hyran?"
+              hint="Standard: 27:e – ändra om du vet exakt datum"
+            />
+          )}
         </div>
 
         {/* Optional: Savings */}
