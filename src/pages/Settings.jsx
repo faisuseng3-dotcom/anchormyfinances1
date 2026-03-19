@@ -286,24 +286,19 @@ export default function Settings() {
                     onChange={(e) => setNewSub({ ...newSub, name: e.target.value })}
                     className="h-10 rounded-lg"
                   />
-                  <div className="flex gap-2">
-                    <Input
-                      type="number"
-                      placeholder="Belopp"
-                      value={newSub.amount}
-                      onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })}
-                      className="h-10 rounded-lg flex-1"
-                    />
-                    <Input
-                      type="number"
-                      min="1"
-                      max="31"
-                      placeholder="Dag (ex 25)"
-                      value={newSub.billingDay}
-                      onChange={(e) => setNewSub({ ...newSub, billingDay: e.target.value })}
-                      className="h-10 rounded-lg w-28"
-                    />
-                  </div>
+                  <Input
+                    type="number"
+                    placeholder="Belopp"
+                    value={newSub.amount}
+                    onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })}
+                    className="h-10 rounded-lg"
+                  />
+                  <DayPicker
+                    value={parseInt(newSub.billingDay) || 15}
+                    onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })}
+                    label="Vilken dag dras pengarna?"
+                    hint="Standard: 15:e – ändra om du vet exakt"
+                  />
                   <div className="flex gap-2">
                     <Select
                       value={newSub.category}
