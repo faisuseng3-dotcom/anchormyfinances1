@@ -448,7 +448,9 @@ Svara med JSON:
       "otherCosts": 500,
       "totalCost": 5300,
       "margin": 1700,
-      "aiComment": "Energi, folkliv och sena kvällar – perfekt för den äventyrslystne!"
+      "aiComment": "Energi, folkliv och sena kvällar – perfekt för den äventyrslystne!",
+      "bookingUrl": "https://www.booking.com/searchresults.html?ss=Copenhagen",
+      "provider": "Booking.com"
     },
     {
       "id": "chill",
@@ -461,7 +463,9 @@ Svara med JSON:
       "otherCosts": 300,
       "totalCost": 6000,
       "margin": 1000,
-      "aiComment": "Museum, bra kaffe och smarta kulturval – den balanserade resenären!"
+      "aiComment": "Museum, bra kaffe och smarta kulturval – den balanserade resenären!",
+      "bookingUrl": "https://www.hotels.com/search/copenhagen",
+      "provider": "Hotels.com"
     },
     {
       "id": "ninja",
@@ -474,7 +478,9 @@ Svara med JSON:
       "otherCosts": 300,
       "totalCost": 5000,
       "margin": 2000,
-      "aiComment": "Kvalitet över kvantitet – en lyxmiddag och de bästa upplevelserna!"
+      "aiComment": "Kvalitet över kvantitet – en lyxmiddag och de bästa upplevelserna!",
+      "bookingUrl": "https://www.skyscanner.se/hotels/denmark/copenhagen",
+      "provider": "Skyscanner"
     }
   ],
   "budgetCheck": {
