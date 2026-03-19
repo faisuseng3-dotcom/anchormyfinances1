@@ -1,8 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { Send, Plane, Loader2, MapPin, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, Building2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Plane, Loader2, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, ExternalLink } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
+import BookingModal from './BookingModal';
+
+const CACHE_KEY = 'anchor_travel_cache';
+const CACHE_TTL = 24 * 60 * 60 * 1000; // 24h
+
+function saveToCache(data) {
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+}
+
+function loadFromCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) { localStorage.removeItem(CACHE_KEY); return null; }
+    return data;
+  } catch { return null; }
+}
 
 const formatNumber = (v) => (v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
