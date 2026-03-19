@@ -147,7 +147,7 @@ export default function Landing() {
           </motion.button>
 
           <p className="text-center text-xs text-slate-500">
-            Ingen BankID behövs &nbsp;•&nbsp; Inga fasta åtaganden
+            Ingen BankID behövs &nbsp;•&nbsp; Gratis &nbsp;•&nbsp; Tar &lt;2 min
           </p>
         </motion.div>
       </section>
@@ -181,18 +181,7 @@ export default function Landing() {
           </motion.div>
         ))}
 
-        {/* Already have account */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className="text-center text-xs text-slate-600 pt-2"
-        >
-          Har du redan ett konto?{' '}
-          <button onClick={handleCTA} className="text-indigo-400 underline underline-offset-2">
-            Logga in
-          </button>
-        </motion.p>
+
       </section>
     </div>
   );
