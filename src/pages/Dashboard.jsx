@@ -512,7 +512,7 @@ export default function Dashboard() {
       <TransactionHub
         isOpen={showTransactionHub}
         onClose={() => setShowTransactionHub(false)}
-        profile={profile}
+        profile={displayProfile}
       />
 
       {/* Welcome Analysis */}
