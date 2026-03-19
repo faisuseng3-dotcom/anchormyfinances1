@@ -653,6 +653,7 @@ Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren f
             packages={msg.packages || []}
             selectedPkg={selectedPkg}
             onSelect={setSelectedPkg}
+            onBook={setBookingPkg}
             destination={msg.destination || latestDestination}
           />
           <AnimatePresence>
