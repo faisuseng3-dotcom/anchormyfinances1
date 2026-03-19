@@ -467,6 +467,7 @@ export default function Dashboard() {
             { icon: GitBranch, label: 'What-If', page: 'WhatIf', color: 'from-indigo-500 to-violet-600' },
             { icon: Calculator, label: 'Skatt', page: 'WhatIf', color: 'from-rose-500 to-pink-600' },
             { icon: ScanLine, label: 'Resell', page: 'ResellScanner', color: 'from-cyan-500 to-blue-600' },
+            { icon: BarChart2, label: 'Historik', page: 'FinancialHistory', color: 'from-violet-500 to-purple-600' },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
