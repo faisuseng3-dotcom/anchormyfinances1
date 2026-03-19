@@ -5,7 +5,7 @@ import { isGuestMode, loadGuestProfile, saveGuestProfile } from '@/components/gu
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane, GitBranch, Calculator, ScanLine } from 'lucide-react';
+import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane, GitBranch, Calculator, ScanLine, BarChart2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import HeroCards from '@/components/dashboard/HeroCards';
