@@ -102,14 +102,17 @@ function BudgetDonut({ accommodationCost, activitiesCost, otherCosts, totalCost 
 }
 
 // Individual Discovery Card
-function DiscoveryCard({ pkg, destImage, selected, onSelect, index }) {
+function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
   const theme = VIBE_THEMES[pkg.tag] || VIBE_THEMES.balance;
-  const [expanded, setExpanded] = useState(false);
 
   const handleChoose = (e) => {
     e.stopPropagation();
-    setExpanded(true);
     onSelect(pkg);
+  };
+
+  const handleBook = (e) => {
+    e.stopPropagation();
+    onBook(pkg);
   };
 
   return (
