@@ -203,7 +203,7 @@ export default function Dashboard() {
 
   // Apply historical offsets for time machine
   const getHistoricProfile = (p, month) => {
-    if (!p || month === '2026-02') return p;
+    if (!p || month === currentMonthKey) return p;
     const monthOffsets = {
       '2026-01': { incomeMultiplier: 1, bufferMultiplier: 0.88, expenseExtra: 200 },
       '2025-12': { incomeMultiplier: 1, bufferMultiplier: 0.78, expenseExtra: 600 },
