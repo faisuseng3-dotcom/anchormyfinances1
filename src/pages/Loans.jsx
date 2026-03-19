@@ -134,35 +134,52 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
           </div>
 
           {/* Ränte-Blödningen */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-            className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-rose-900/60 to-red-950/60 border border-rose-500/30"
-          >
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
-                <Droplets className="w-5 h-5 text-rose-400" />
+          {totalInterestMonthly > 0 ? (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-rose-900/60 to-red-950/60 border border-rose-500/30"
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                  <Droplets className="w-5 h-5 text-rose-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white text-sm">Ränte-Blödningen</h3>
+                  <p className="text-rose-300 text-xs">Pengar du ger bort till banken varje månad</p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-white text-sm">Ränte-Blödningen</h3>
-                <p className="text-rose-300 text-xs">Pengar du ger bort till banken varje månad</p>
+              <div className="bg-rose-500/10 rounded-xl p-4 mb-3">
+                <p className="text-3xl font-bold text-rose-300">{fmt(totalInterestMonthly)} kr/mån</p>
+                <p className="text-rose-400 text-xs mt-1">= {fmt(totalInterestYearly)} kr per år i ren ränta</p>
               </div>
-            </div>
-            <div className="bg-rose-500/10 rounded-xl p-4 mb-3">
-              <p className="text-3xl font-bold text-rose-300">{fmt(totalInterestMonthly)} kr/mån</p>
-              <p className="text-rose-400 text-xs mt-1">= {fmt(totalInterestYearly)} kr per år i ren ränta</p>
-            </div>
-            <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min((totalInterestMonthly / totalMonthly) * 100, 100)}%` }}
-                transition={{ duration: 1.2, ease: 'easeOut' }}
-                className="h-full bg-gradient-to-r from-rose-500 to-red-400 rounded-full"
-              />
-            </div>
-            <p className="text-rose-400/70 text-xs mt-2">
-              {Math.round((totalInterestMonthly / totalMonthly) * 100)}% av din månadsbetalning är ren ränta – resten amorterar.
-            </p>
-          </motion.div>
+              <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min((totalInterestMonthly / totalMonthly) * 100, 100)}%` }}
+                  transition={{ duration: 1.2, ease: 'easeOut' }}
+                  className="h-full bg-gradient-to-r from-rose-500 to-red-400 rounded-full"
+                />
+              </div>
+              <p className="text-rose-400/70 text-xs mt-2">
+                {Math.round((totalInterestMonthly / totalMonthly) * 100)}% av din månadsbetalning är ren ränta – resten amorterar.
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-emerald-900/40 to-green-950/40 border border-emerald-500/30"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-white text-sm">Inga räntekostnader 🎉</h3>
+                  <p className="text-emerald-300 text-xs">100% av din betalning minskar skulden – inget går till ränta.</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
           {/* Loans list */}
           <h3 className="text-sm uppercase tracking-widest text-slate-400 mb-3 font-medium">Dina lån</h3>
