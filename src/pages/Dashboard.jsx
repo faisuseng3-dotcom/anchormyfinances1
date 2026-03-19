@@ -383,7 +383,6 @@ export default function Dashboard() {
             </motion.div>
           </Link>
 
-          {/* Temp: remove the extra grid col to avoid layout break on mobile */}
         </div>
 
         {/* Pro Tools with AI Glow */}
@@ -468,6 +467,13 @@ export default function Dashboard() {
           queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
           setShowExpenseModal(false);
         }}
+      />
+
+      {/* Transaction Hub */}
+      <TransactionHub
+        isOpen={showTransactionHub}
+        onClose={() => setShowTransactionHub(false)}
+        profile={profile}
       />
 
       {/* Welcome Analysis */}
