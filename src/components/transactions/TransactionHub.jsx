@@ -5,7 +5,6 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import TheSwipe from './TheSwipe';
-import { useState } from 'react';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');
 
