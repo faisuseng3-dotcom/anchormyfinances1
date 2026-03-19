@@ -230,7 +230,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
                     <AddIncomeTab onSave={saveTransaction} />
                   )}
                   {tab === 'transfer' && (
-                    <SwipeTransfer profile={profile} onTransfer={handleTransfer} />
+                    <TheSwipe profile={profile} onTransfer={handleTransfer} />
                   )}
                   {tab === 'history' && <HistoryTab />}
                 </motion.div>
