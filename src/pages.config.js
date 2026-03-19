@@ -58,6 +58,7 @@ import PurchaseSimulator from './pages/PurchaseSimulator';
 import Settings from './pages/Settings';
 import TravelPlanner from './pages/TravelPlanner';
 import WhatIf from './pages/WhatIf';
+import TransactionHistory from './pages/TransactionHistory';
 import __Layout from './Layout.jsx';
 
 
