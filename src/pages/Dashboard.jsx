@@ -160,14 +160,17 @@ export default function Dashboard() {
     }
 
     if ((p.loans || []).length >= 2) {
-      const totalInterest = (p.loans || []).reduce((sum, l) => sum + (l.totalAmount * (l.interestRate / 100)), 0);
-      newInsights.push({
-        type: 'warning',
-        title: 'Flera lån upptäckta',
-        description: 'Du kan potentiellt spara pengar genom att samla dina lån.',
-        impact: `Årlig räntekostnad: ${Math.round(totalInterest).toLocaleString()} kr`,
-        action: 'Analysera lån'
-      });
+      const loansWithInterest = (p.loans || []).filter(l => (l.interestRate || 0) > 0);
+      if (loansWithInterest.length >= 1) {
+        const totalInterest = loansWithInterest.reduce((sum, l) => sum + (l.totalAmount * (l.interestRate / 100)), 0);
+        newInsights.push({
+          type: 'warning',
+          title: 'Flera lån med ränta',
+          description: 'Du kan potentiellt spara pengar genom att samla dina lån.',
+          impact: `Årlig räntekostnad: ${Math.round(totalInterest).toLocaleString()} kr`,
+          action: 'Analysera lån'
+        });
+      }
     }
 
     if (newInsights.length === 0) {
