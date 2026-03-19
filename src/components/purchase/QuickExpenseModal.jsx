@@ -193,6 +193,19 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                 </Select>
               </div>
 
+              {/* Safe-to-Spend varning */}
+              {exceedsSafe && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-3 rounded-xl text-xs leading-relaxed"
+                  style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)' }}
+                >
+                  ⚠️ <strong className="text-amber-300">Kommande räkningar:</strong>
+                  <span className="text-amber-400"> Du har {safeToSpend.toLocaleString('sv-SE')} kr kvar att spendera säkert denna månad. Det här köpet överstiger den gränsen.</span>
+                </motion.div>
+              )}
+
               <Button
                 onClick={handleRegister}
                 disabled={!name || !amount || !category || analyzing}
