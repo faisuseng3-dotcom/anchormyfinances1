@@ -217,27 +217,37 @@ export default function Dashboard() {
     setMentalLoad({ score, factors });
   };
 
-  // Apply historical offsets for time machine
-  const getHistoricProfile = (p, month) => {
-    if (!p || month === currentMonthKey) return p;
-    const monthOffsets = {
-      '2026-01': { incomeMultiplier: 1, bufferMultiplier: 0.88, expenseExtra: 200 },
-      '2025-12': { incomeMultiplier: 1, bufferMultiplier: 0.78, expenseExtra: 600 },
-      '2025-11': { incomeMultiplier: 1, bufferMultiplier: 0.65, expenseExtra: 300 },
-      '2025-10': { incomeMultiplier: 0.98, bufferMultiplier: 0.55, expenseExtra: 150 },
-      '2025-09': { incomeMultiplier: 0.97, bufferMultiplier: 0.42, expenseExtra: 100 },
-    };
-    const o = monthOffsets[month];
-    if (!o) return p;
-    return {
-      ...p,
-      buffer: Math.round((p.buffer || 0) * o.bufferMultiplier),
-      income: Math.round((p.income || 0) * o.incomeMultiplier),
-      monthlyExpenses: [...(p.monthlyExpenses || []), { name: 'Historisk utgift', amount: o.expenseExtra, category: 'other', date: `${month}-15` }],
-    };
-  };
+  // Build display profile from real transaction data for the selected month
+  const isHistoricMonth = selectedMonth !== currentMonthKey;
 
-  const displayProfile = getHistoricProfile(profile, selectedMonth);
+  const displayProfile = React.useMemo(() => {
+    if (!profile) return null;
+    if (!isHistoricMonth) return profile;
+
+    // For historic months: use fixed costs from profile (recurring), but variable expenses from actual transactions
+    const monthIncome = monthTransactions
+      .filter(tx => tx.type === 'income')
+      .reduce((sum, tx) => sum + (tx.amount || 0), 0);
+
+    const monthExpenses = monthTransactions
+      .filter(tx => tx.type === 'expense')
+      .map(tx => ({
+        name: tx.label || tx.vendor || 'Utgift',
+        amount: Math.abs(tx.amount || 0),
+        date: tx.created_date?.split('T')[0],
+        category: tx.category || 'other',
+      }));
+
+    return {
+      ...profile,
+      // Fixed costs (subscriptions, loans, housing) are always recurring — keep from profile
+      // Variable: override monthlyExpenses with actual transactions for that month
+      monthlyExpenses: monthExpenses,
+      // Income: if no transactions recorded, show 0 for that month
+      _monthIncome: monthIncome,
+      _hasData: monthTransactions.length > 0,
+    };
+  }, [profile, isHistoricMonth, monthTransactions, selectedMonth]);
 
   const handleModeChange = async (newMode) => {
     await base44.entities.FinancialProfile.update(profile.id, { mode: newMode });
