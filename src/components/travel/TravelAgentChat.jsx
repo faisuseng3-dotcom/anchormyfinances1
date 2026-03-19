@@ -212,22 +212,34 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
           {theme.emoji} {pkg.aiComment}
         </div>
 
-        {/* CTA */}
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={handleChoose}
-          className={`w-full h-10 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-            selected
-              ? `bg-gradient-to-r ${theme.gradient} text-white shadow-lg`
-              : 'bg-white/8 hover:bg-white/15 text-white border border-white/10'
-          }`}
-        >
-          {selected ? (
-            <><CheckCircle className="w-3.5 h-3.5" />Vald plan ✓</>
-          ) : (
-            <>Välj denna plan <Plane className="w-3.5 h-3.5" /></>
+        {/* CTA row */}
+        <div className="flex gap-2">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={handleChoose}
+            className={`flex-1 h-10 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+              selected
+                ? `bg-gradient-to-r ${theme.gradient} text-white shadow-lg`
+                : 'bg-white/8 hover:bg-white/15 text-white border border-white/10'
+            }`}
+          >
+            {selected ? (
+              <><CheckCircle className="w-3.5 h-3.5" />Vald ✓</>
+            ) : (
+              <>Välj plan <Plane className="w-3.5 h-3.5" /></>
+            )}
+          </motion.button>
+          {pkg.bookingUrl && (
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleBook}
+              className="h-10 px-3 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-300 text-xs font-bold flex items-center gap-1.5 flex-shrink-0"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              Boka
+            </motion.button>
           )}
-        </motion.button>
+        </div>
       </div>
     </motion.div>
   );
