@@ -7,30 +7,21 @@ const valuePoints = [
   {
     icon: Lock,
     color: 'from-indigo-500 to-purple-600',
-    glow: 'shadow-indigo-500/30',
     title: 'Permanent minne',
     description: 'Din ekonomi raderas aldrig. Se din utveckling över månader och år.',
   },
   {
     icon: Bot,
     color: 'from-emerald-500 to-teal-600',
-    glow: 'shadow-emerald-500/30',
     title: 'Personliga AI-Botar',
     description: 'Dina botar lär känna ditt beteende och ger bättre råd ju längre du använder appen.',
   },
   {
     icon: Smartphone,
     color: 'from-blue-500 to-cyan-600',
-    glow: 'shadow-blue-500/30',
     title: 'Multi-enhet',
     description: 'Börja på datorn, fortsätt i mobilen. Din data är alltid synkad.',
   },
-];
-
-const bullets = [
-  'Se vad du kan spara varje månad',
-  'Få full kontroll över dina pengar',
-  'Planera din ekonomiska framtid',
 ];
 
 export default function Landing() {
@@ -50,14 +41,34 @@ export default function Landing() {
           style={{ background: 'radial-gradient(circle, #10b981 0%, transparent 70%)' }} />
       </div>
 
+      {/* Flow indicator */}
+      <div className="relative z-10 flex justify-center pt-8 pb-2">
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold">1</div>
+            <span className="text-slate-300 font-medium">Skapa konto</span>
+          </div>
+          <div className="w-8 h-px bg-white/20" />
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-slate-500 text-[10px] font-bold">2</div>
+            <span>Dina mål</span>
+          </div>
+          <div className="w-8 h-px bg-white/20" />
+          <div className="flex items-center gap-1.5">
+            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-slate-500 text-[10px] font-bold">3</div>
+            <span>Din ekonomi</span>
+          </div>
+        </div>
+      </div>
+
       {/* ── HERO ── */}
-      <section className="relative z-10 flex flex-col items-center px-6 pt-16 pb-12 text-center">
+      <section className="relative z-10 flex flex-col items-center px-6 pt-8 pb-10 text-center">
         {/* Logo pill */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-slate-400"
+          className="mb-6 flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-slate-400"
         >
           <span className="text-base">⚓</span>
           <span className="font-semibold tracking-wider text-white">ANCHOR</span>
@@ -69,32 +80,26 @@ export default function Landing() {
           transition={{ delay: 0.1, duration: 0.6 }}
           className="text-4xl font-black text-white leading-tight mb-4 max-w-xs"
         >
-          Ta kontroll över din ekonomi och se din{' '}
+          Ta kontroll över din ekonomi – se din{' '}
           <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
             framtid i klartext
           </span>
         </motion.h1>
 
-        {/* Bullet list */}
-        <motion.ul
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.25, duration: 0.5 }}
-          className="space-y-2 mb-8 text-left w-full max-w-xs"
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="text-slate-400 text-sm mb-8 max-w-xs"
         >
-          {bullets.map((b) => (
-            <li key={b} className="flex items-center gap-2.5 text-slate-300 text-sm">
-              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
-              {b}
-            </li>
-          ))}
-        </motion.ul>
+          Skapa ett gratis konto på 60 sekunder – appen fylls direkt med dina siffror och AI-analyser.
+        </motion.p>
 
         {/* CTA */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.5 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
           className="w-full max-w-xs space-y-3"
         >
           <motion.button
@@ -107,7 +112,6 @@ export default function Landing() {
               boxShadow: '0 8px 32px rgba(99,102,241,0.4)',
             }}
           >
-            {/* shimmer */}
             <motion.div
               animate={{ x: ['-100%', '200%'] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
@@ -115,7 +119,7 @@ export default function Landing() {
               style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)', width: '50%' }}
             />
             <span className="relative flex items-center justify-center gap-2">
-              Kom igång – tar 60 sekunder
+              Skapa konto gratis
               <ChevronRight className="w-4 h-4" />
             </span>
           </motion.button>
@@ -137,7 +141,7 @@ export default function Landing() {
           Varför ANCHOR?
         </motion.h2>
 
-        {valuePoints.map(({ icon: Icon, color, glow, title, description }, i) => (
+        {valuePoints.map(({ icon: Icon, color, title, description }, i) => (
           <motion.div
             key={title}
             initial={{ opacity: 0, x: -20 }}
@@ -145,7 +149,7 @@ export default function Landing() {
             transition={{ delay: 0.55 + i * 0.1, duration: 0.5 }}
             className="flex items-start gap-4 p-4 rounded-2xl border border-white/8 bg-white/4"
           >
-            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shrink-0 shadow-lg ${glow}`}>
+            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shrink-0 shadow-lg`}>
               <Icon className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -155,17 +159,18 @@ export default function Landing() {
           </motion.div>
         ))}
 
-        {/* Secondary CTA */}
-        <motion.button
+        {/* Already have account */}
+        <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.85 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={handleCTA}
-          className="w-full mt-4 h-12 rounded-2xl font-semibold text-white text-sm border border-indigo-500/50 bg-indigo-500/10 hover:bg-indigo-500/20 transition-colors"
+          transition={{ delay: 0.9 }}
+          className="text-center text-xs text-slate-600 pt-2"
         >
-          Skapa konto gratis
-        </motion.button>
+          Har du redan ett konto?{' '}
+          <button onClick={handleCTA} className="text-indigo-400 underline underline-offset-2">
+            Logga in
+          </button>
+        </motion.p>
       </section>
     </div>
   );
