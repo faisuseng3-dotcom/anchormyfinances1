@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Trash2, Plus, X, Wallet, Home, PiggyBank, Target, LogOut } from 'lucide-react';
+import { ArrowLeft, Save, Trash2, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield } from 'lucide-react';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
@@ -438,6 +438,22 @@ export default function Settings() {
               )}
             </div>
           </div>
+
+          {/* Security & Data */}
+          <Link to={createPageUrl('SecurityInfo')}>
+            <div className="dark-card p-5 flex items-center justify-between cursor-pointer hover:border-emerald-500/30 transition-colors">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <p className="font-semibold text-white">Säkerhet & Data</p>
+                  <p className="text-xs text-slate-400">Hur vi skyddar din information</p>
+                </div>
+              </div>
+              <ArrowLeft className="w-4 h-4 text-slate-500 rotate-180" />
+            </div>
+          </Link>
 
           {/* Invite */}
           <InviteUserSection />
