@@ -16,7 +16,7 @@ const categories = [
 ];
 
 export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
-  const [newSub, setNewSub] = useState({ name: '', amount: '', category: 'other' });
+  const [newSub, setNewSub] = useState({ name: '', amount: '', category: 'other', billingDay: '' });
   const [showForm, setShowForm] = useState(false);
 
   const addSubscription = () => {

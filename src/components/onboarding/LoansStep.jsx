@@ -6,7 +6,7 @@ import { Plus, X, Landmark, Percent, CreditCard } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
 
 export default function LoansStep({ data, onChange, onNext, onBack }) {
-  const [newLoan, setNewLoan] = useState({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
+  const [newLoan, setNewLoan] = useState({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '', billingDay: '' });
   const [showForm, setShowForm] = useState(false);
 
   const formatNumber = (value) => {
