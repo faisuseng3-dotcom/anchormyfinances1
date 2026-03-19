@@ -183,50 +183,55 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
   const [tab, setTab] = useState('income');
   const queryClient = useQueryClient();
 
+  // Always fetch fresh profile to avoid stale data bugs during consecutive operations
+  const getFreshProfile = async () => {
+    const profiles = await base44.entities.FinancialProfile.list();
+    return profiles[0] || null;
+  };
+
+  const invalidateAll = () => {
+    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    queryClient.invalidateQueries({ queryKey: ['transactions'] });
+    queryClient.invalidateQueries({ queryKey: ['pulse'] });
+  };
+
   const saveTransaction = async (txData) => {
     await base44.entities.Transaction.create(txData);
 
-    // Atomically update the buffer balance on the profile
-    if (profile?.id) {
-      if (txData.type === 'income') {
-        await base44.entities.FinancialProfile.update(profile.id, {
-          buffer: (profile.buffer || 0) + txData.amount,
-        });
-      } else if (txData.type === 'expense') {
-        await base44.entities.FinancialProfile.update(profile.id, {
-          buffer: Math.max(0, (profile.buffer || 0) - txData.amount),
+    if (txData.type === 'income' || txData.type === 'expense') {
+      // Always read fresh data before updating balance
+      const fresh = await getFreshProfile();
+      if (fresh?.id) {
+        const delta = txData.type === 'income' ? txData.amount : -txData.amount;
+        await base44.entities.FinancialProfile.update(fresh.id, {
+          buffer: Math.max(0, (fresh.buffer || 0) + delta),
         });
       }
     }
 
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
-    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    invalidateAll();
   };
 
   const handleTransfer = async (direction, amount) => {
-    const profileId = profile?.id;
-    if (!profileId) return;
+    // Always read fresh data before transferring to avoid stale balance bugs
+    const fresh = await getFreshProfile();
+    if (!fresh?.id) return;
 
     if (direction === 'to_savings') {
-      const newSavings = (profile.savingsCurrentBalance || 0) + amount;
-      const newBuffer = Math.max(0, (profile.buffer || 0) - amount);
-      await base44.entities.FinancialProfile.update(profileId, {
-        savingsCurrentBalance: newSavings,
-        buffer: newBuffer,
+      await base44.entities.FinancialProfile.update(fresh.id, {
+        savingsCurrentBalance: (fresh.savingsCurrentBalance || 0) + amount,
+        buffer: Math.max(0, (fresh.buffer || 0) - amount),
       });
-      await saveTransaction({ type: 'transfer_to_savings', amount, label: `Överföring till Spar: +${fmt(amount)} kr` });
+      await base44.entities.Transaction.create({ type: 'transfer_to_savings', amount, label: `Överföring till Spar: +${fmt(amount)} kr` });
     } else {
-      const newSavings = Math.max(0, (profile.savingsCurrentBalance || 0) - amount);
-      const newBuffer = (profile.buffer || 0) + amount;
-      await base44.entities.FinancialProfile.update(profileId, {
-        savingsCurrentBalance: newSavings,
-        buffer: newBuffer,
+      await base44.entities.FinancialProfile.update(fresh.id, {
+        savingsCurrentBalance: Math.max(0, (fresh.savingsCurrentBalance || 0) - amount),
+        buffer: (fresh.buffer || 0) + amount,
       });
-      await saveTransaction({ type: 'transfer_to_spending', amount, label: `Överföring från Spar: +${fmt(amount)} kr` });
+      await base44.entities.Transaction.create({ type: 'transfer_to_spending', amount, label: `Överföring från Spar: +${fmt(amount)} kr` });
     }
-    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
-    queryClient.invalidateQueries({ queryKey: ['pulse'] });
+
+    invalidateAll();
   };
 
   const TABS = [
