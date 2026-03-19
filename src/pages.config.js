@@ -80,6 +80,7 @@ export const PAGES = {
     "TransactionHistory": TransactionHistory,
     "ResellScanner": ResellScanner,
     "Pulse": Pulse,
+    "Landing": Landing,
 }
 
 export const pagesConfig = {
