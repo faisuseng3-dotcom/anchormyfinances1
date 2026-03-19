@@ -82,6 +82,7 @@ export const PAGES = {
     "ResellScanner": ResellScanner,
     "Pulse": Pulse,
     "Landing": Landing,
+    "FinancialHistory": FinancialHistory,
 }
 
 export const pagesConfig = {
