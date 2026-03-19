@@ -141,6 +141,20 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
 
   const saveTransaction = async (txData) => {
     await base44.entities.Transaction.create(txData);
+
+    // Atomically update the buffer balance on the profile
+    if (profile?.id) {
+      if (txData.type === 'income') {
+        await base44.entities.FinancialProfile.update(profile.id, {
+          buffer: (profile.buffer || 0) + txData.amount,
+        });
+      } else if (txData.type === 'expense') {
+        await base44.entities.FinancialProfile.update(profile.id, {
+          buffer: Math.max(0, (profile.buffer || 0) - txData.amount),
+        });
+      }
+    }
+
     queryClient.invalidateQueries({ queryKey: ['transactions'] });
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
   };
