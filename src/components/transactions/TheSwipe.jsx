@@ -66,7 +66,9 @@ function CircleVisual({ direction, amount, onDragToSpending, onDragToSavings, pr
   const [dragTarget, setDragTarget] = useState(null); // 'spending' | 'savings'
 
   const savingsBalance = profile?.savingsCurrentBalance || 0;
-  const availableBalance = profile?.buffer || 0;
+  const availableBalance = (profile?.income || 0) - (profile?.housingCost || 0) -
+    (profile?.subscriptions || []).reduce((s, x) => s + x.amount, 0) -
+    (profile?.loans || []).reduce((s, x) => s + x.monthlyPayment, 0);
 
   return (
     <div className="relative flex items-center justify-between px-2 py-4 select-none">
