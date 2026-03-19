@@ -53,7 +53,7 @@ export default function LivePulse() {
       const profiles = await base44.entities.FinancialProfile.list();
       return profiles[0] || null;
     },
-    staleTime: 60000,
+    staleTime: 0,
   });
 
   useEffect(() => {
