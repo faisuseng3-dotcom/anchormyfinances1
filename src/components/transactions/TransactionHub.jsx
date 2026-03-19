@@ -225,6 +225,8 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
       await saveTransaction({ type: 'transfer_to_spending', amount, label: `Överföring från Spar: +${fmt(amount)} kr` });
     }
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    queryClient.invalidateQueries({ queryKey: ['transactions'] });
+    queryClient.invalidateQueries({ queryKey: ['pulse'] });
   };
 
   const TABS = [
