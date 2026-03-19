@@ -23,6 +23,7 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile,
   const [category, setCategory] = useState('');
   const [analyzing, setAnalyzing] = useState(false);
   const [aiInsight, setAiInsight] = useState(null);
+  const [suggestedCategory, setSuggestedCategory] = useState('');
 
   // Safe-to-Spend beräkning
   const safeToSpend = (() => {
@@ -158,7 +159,13 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                 <Input
                   placeholder="t.ex. Lunch på ICA"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setName(val);
+                    if (val.length > 2) {
+                      setSuggestedCategory(suggestCategory(val));
+                    }
+                  }}
                   className="h-12 rounded-xl"
                   disabled={analyzing}
                 />
@@ -179,9 +186,30 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                 </div>
               </div>
 
+              {/* Smart category suggestion */}
+              {suggestedCategory && suggestedCategory !== category && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-2 rounded-lg text-xs text-emerald-300 flex items-center gap-2"
+                  style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)' }}
+                >
+                  💡 Förslag: {categories.find(c => c.id === suggestedCategory)?.label}
+                  <button
+                    onClick={() => {
+                      setCategory(suggestedCategory);
+                      setSuggestedCategory('');
+                    }}
+                    className="ml-auto underline font-semibold"
+                  >
+                    Använd
+                  </button>
+                </motion.div>
+              )}
+
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">Kategori</label>
-                <Select value={category} onValueChange={setCategory} disabled={analyzing}>
+                <Select value={category} onValueChange={(val) => { setCategory(val); setSuggestedCategory(''); }} disabled={analyzing}>
                   <SelectTrigger className="h-12 rounded-xl">
                     <SelectValue placeholder="Välj kategori" />
                   </SelectTrigger>
