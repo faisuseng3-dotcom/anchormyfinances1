@@ -187,6 +187,10 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
             {sortedLoans.map((loan, i) => {
               const monthlyInterest = (loan.totalAmount || 0) * ((loan.interestRate || 0) / 100 / 12);
               const pizzas = Math.round(monthlyInterest / 120);
+              const isZeroInterest = (loan.interestRate || 0) === 0;
+              // Högst prio = första lånet med ränta > 0, annars ingen
+              const highestInterestLoan = sortedLoans.find(l => (l.interestRate || 0) > 0);
+              const isHighestPrio = highestInterestLoan && loan.name === highestInterestLoan.name && (loan.interestRate || 0) > 0;
               return (
                 <motion.div
                   key={i}
@@ -198,22 +202,31 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
                   <div className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${i === 0 ? 'bg-rose-500/20 text-rose-400' : 'bg-white/10 text-slate-300'}`}>
+                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${isHighestPrio ? 'bg-rose-500/20 text-rose-400' : 'bg-white/10 text-slate-300'}`}>
                           {i + 1}
                         </div>
                         <div>
                           <p className="font-semibold text-white">{loan.name}</p>
-                          <p className="text-xs text-slate-400">{loan.interestRate || '?'}% ränta · {fmt(loan.totalAmount)} kr kvar</p>
+                          <p className="text-xs text-slate-400">{loan.interestRate || 0}% ränta · {fmt(loan.totalAmount)} kr kvar</p>
                         </div>
                       </div>
-                      {i === 0 && <span className="text-xs bg-rose-500/20 text-rose-400 px-2 py-1 rounded-full">Högst prio</span>}
+                      {isHighestPrio && <span className="text-xs bg-rose-500/20 text-rose-400 px-2 py-1 rounded-full">Högst prio</span>}
+                      {isZeroInterest && <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">Räntefritt ✓</span>}
                     </div>
 
-                    <div className="bg-rose-500/10 rounded-xl px-4 py-3 mb-3 text-sm">
-                      <span className="text-rose-300 font-medium">{fmt(monthlyInterest)} kr</span>
-                      <span className="text-rose-400/80"> i ränta / mån</span>
-                      {pizzas > 0 && <span className="text-slate-400"> · {pizzas} 🍕 du ger bort varje månad</span>}
-                    </div>
+                    {isZeroInterest ? (
+                      <div className="bg-emerald-500/10 rounded-xl px-4 py-3 mb-3 text-sm border border-emerald-500/20">
+                        <p className="text-emerald-300 font-medium mb-1">Du spelar smart! 🧠</p>
+                        <p className="text-slate-400 text-xs leading-relaxed">Eftersom det här lånet är gratis (0% ränta) lönar det sig faktiskt att betala av det långsamt och istället lägga extra pengar på ditt sparkonto där du får ränta.</p>
+                        <p className="text-emerald-400 text-xs mt-2 font-medium">100% av din betalning minskar skulden – inget försvinner i ränta.</p>
+                      </div>
+                    ) : (
+                      <div className="bg-rose-500/10 rounded-xl px-4 py-3 mb-3 text-sm">
+                        <span className="text-rose-300 font-medium">{fmt(monthlyInterest)} kr</span>
+                        <span className="text-rose-400/80"> i ränta / mån</span>
+                        {pizzas > 0 && <span className="text-slate-400"> · {pizzas} 🍕 du ger bort varje månad</span>}
+                      </div>
+                    )}
 
                     {/* Action buttons */}
                     <div className="flex gap-2">
