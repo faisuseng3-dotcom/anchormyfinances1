@@ -21,7 +21,6 @@ import WhatIfSimulator from '@/components/pulse/WhatIfSimulator';
 import PulseStatusBar from '@/components/pulse/PulseStatusBar';
 import DangerZoneList from '@/components/pulse/DangerZoneList';
 import FutureTimeline from '@/components/pulse/FutureTimeline';
-import { useState, useMemo } from 'react';
 
 export default function Pulse() {
   const [whatIfAmount, setWhatIfAmount] = useState(0);
