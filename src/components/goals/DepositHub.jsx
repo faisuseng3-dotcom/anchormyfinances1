@@ -40,6 +40,27 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
   const queryClient = useQueryClient();
 
   const goalName = profile?.savingsGoalName || 'Sparmål';
+
+  // Streak: count consecutive days with deposits from localStorage
+  const streak = (() => {
+    try {
+      const raw = localStorage.getItem('anchor_deposit_dates');
+      const dates = raw ? JSON.parse(raw) : [];
+      const today = new Date().toISOString().split('T')[0];
+      if (!dates.includes(today)) {
+        dates.push(today);
+        localStorage.setItem('anchor_deposit_dates', JSON.stringify(dates.slice(-30)));
+      }
+      let count = 0;
+      let check = new Date();
+      for (let i = 0; i < 30; i++) {
+        const d = check.toISOString().split('T')[0];
+        if (dates.includes(d)) { count++; check.setDate(check.getDate() - 1); }
+        else break;
+      }
+      return count;
+    } catch { return 0; }
+  });
   const margin = (() => {
     const fixed = (profile?.housingCost || 0) +
       (profile?.subscriptions || []).reduce((s, x) => s + x.amount, 0) +
@@ -222,6 +243,37 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                   <p className="text-slate-400 text-sm mt-1">
                     {type === 'buffer' ? 'tillagd i bufferten' : `tillagd i ${goalName}`}
                   </p>
+                  {/* Progress towards goal */}
+                  {type === 'savings' && profile?.savingsGoal > 0 && (() => {
+                    const newBalance = (profile.savingsCurrentBalance || 0) + parseFloat(amount);
+                    const pct = Math.min(100, Math.round((newBalance / profile.savingsGoal) * 100));
+                    return (
+                      <div className="mt-3">
+                        <p className="text-xs text-slate-400 mb-1">{goalName}: {pct}% klart</p>
+                        <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                          <motion.div
+                            initial={{ width: `${Math.max(0, pct - 10)}%` }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 1, ease: 'easeOut', delay: 0.3 }}
+                            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"
+                          />
+                        </div>
+                        {pct >= 100 && <p className="text-emerald-400 font-bold text-sm mt-2">🏆 Mål uppnått!</p>}
+                      </div>
+                    );
+                  })()}
+                  {/* Streak */}
+                  {streak() >= 7 && (
+                    <motion.div
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.5 }}
+                      className="mt-3 p-2.5 rounded-xl text-center"
+                      style={{ background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.3)' }}
+                    >
+                      <p className="text-amber-300 font-bold text-sm">🔥 {streak()} dagars streak! High-five!</p>
+                    </motion.div>
+                  )}
                 </div>
 
                 {/* Account Type Advisor */}
