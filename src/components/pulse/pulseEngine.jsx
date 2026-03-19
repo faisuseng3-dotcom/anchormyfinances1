@@ -139,3 +139,25 @@ export function getNextDangerEvent(eventsWithBalance) {
 export function formatNumber(v) {
   return (v || 0).toLocaleString('sv-SE');
 }
+
+// Safe-to-Spend: saldo minus återstående fasta kostnader denna månad
+export function getSafeToSpend(profile, currentBalance) {
+  if (!profile || currentBalance == null) return 0;
+  const todayDay = new Date().getDate();
+  const DUE_DAYS = [8, 12, 15, 18, 22, 27];
+  let remainingFixed = 0;
+
+  const housingDay = profile.housingDueDay || 27;
+  if (housingDay > todayDay) remainingFixed += (profile.housingCost || 0);
+
+  (profile.loans || []).forEach((loan, i) => {
+    if ((5 + i) > todayDay) remainingFixed += (loan.monthlyPayment || 0);
+  });
+
+  (profile.subscriptions || []).forEach((sub, i) => {
+    const dueDay = sub.billingDay || DUE_DAYS[i % DUE_DAYS.length];
+    if (dueDay > todayDay) remainingFixed += (sub.amount || 0);
+  });
+
+  return Math.max(0, Math.round(currentBalance - remainingFixed - 500));
+}

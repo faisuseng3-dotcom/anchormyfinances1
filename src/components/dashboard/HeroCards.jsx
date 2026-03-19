@@ -33,7 +33,7 @@ export default function HeroCards({ profile }) {
   const monthlyMargin = profile.income - totalFixedCosts;
   
   const bufferProgress = totalFixedCosts > 0 ? Math.min(100, (profile.buffer / (totalFixedCosts * 3)) * 100) : 0;
-  const savingsProgress = profile.savingsGoal > 0 ? Math.round((profile.buffer / profile.savingsGoal) * 100) : 0;
+  const savingsProgress = profile.savingsGoal > 0 ? Math.min(100, Math.round(((profile.savingsCurrentBalance || 0) / profile.savingsGoal) * 100)) : 0;
   const fixedCostsPercent = profile.income > 0 ? Math.round((totalFixedCosts / profile.income) * 100) : 0;
 
   const cards = [
