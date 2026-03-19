@@ -338,6 +338,16 @@ export default function Dashboard() {
         <LivePulse />
       </div>
 
+      {/* Empty state for historic months with no data */}
+      {isHistoricMonth && !displayProfile?._hasData && (
+        <div className="px-6 mb-4">
+          <div className="rounded-2xl border border-white/10 bg-white/4 p-4 text-center">
+            <p className="text-slate-400 text-sm">Ingen data registrerad för denna månad</p>
+            <p className="text-slate-600 text-xs mt-1">Fasta kostnader visas fortfarande baserat på din profil</p>
+          </div>
+        </div>
+      )}
+
       {/* Debt Alert — visas om användaren har lån */}
       <DebtAlert profile={displayProfile} />
 
