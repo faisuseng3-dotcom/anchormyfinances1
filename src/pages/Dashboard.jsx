@@ -50,6 +50,22 @@ export default function Dashboard() {
     }
   });
 
+  // Fetch transactions for the selected month only
+  const { data: monthTransactions = [] } = useQuery({
+    queryKey: ['transactions', selectedMonth],
+    queryFn: async () => {
+      const [year, month] = selectedMonth.split('-').map(Number);
+      const start = new Date(year, month - 1, 1).toISOString();
+      const end = new Date(year, month, 0, 23, 59, 59).toISOString();
+      const all = await base44.entities.Transaction.list('-created_date', 200);
+      return all.filter(tx => {
+        const d = tx.created_date;
+        return d >= start && d <= end;
+      });
+    },
+    enabled: !!selectedMonth
+  });
+
   useEffect(() => {
     if (profile && !profile.onboardingCompleted) {
       navigate(createPageUrl('Onboarding'));
