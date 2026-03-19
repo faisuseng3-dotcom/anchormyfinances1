@@ -59,6 +59,7 @@ import Settings from './pages/Settings';
 import TravelPlanner from './pages/TravelPlanner';
 import WhatIf from './pages/WhatIf';
 import TransactionHistory from './pages/TransactionHistory';
+import ResellScanner from './pages/ResellScanner';
 import __Layout from './Layout.jsx';
 
 
@@ -75,6 +76,7 @@ export const PAGES = {
     "TravelPlanner": TravelPlanner,
     "WhatIf": WhatIf,
     "TransactionHistory": TransactionHistory,
+    "ResellScanner": ResellScanner,
 }
 
 export const pagesConfig = {
