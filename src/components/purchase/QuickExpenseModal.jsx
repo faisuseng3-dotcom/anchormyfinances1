@@ -22,6 +22,25 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile,
   const [analyzing, setAnalyzing] = useState(false);
   const [aiInsight, setAiInsight] = useState(null);
 
+  // Safe-to-Spend beräkning
+  const safeToSpend = (() => {
+    if (!profile) return 0;
+    const todayDay = new Date().getDate();
+    const DUE_DAYS = [8, 12, 15, 18, 22, 27];
+    let remaining = 0;
+    const housingDay = profile.housingDueDay || 27;
+    if (housingDay > todayDay) remaining += (profile.housingCost || 0);
+    (profile.loans || []).forEach((l, i) => { if ((5 + i) > todayDay) remaining += (l.monthlyPayment || 0); });
+    (profile.subscriptions || []).forEach((s, i) => {
+      const d = s.billingDay || DUE_DAYS[i % DUE_DAYS.length];
+      if (d > todayDay) remaining += (s.amount || 0);
+    });
+    return Math.max(0, Math.round((profile.buffer || 0) - remaining - 500));
+  })();
+
+  const amountNum = parseInt(amount?.toString().replace(/\s/g, '')) || 0;
+  const exceedsSafe = amountNum > 0 && amountNum > safeToSpend;
+
   const formatNumber = (value) => {
     return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
   };
