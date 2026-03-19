@@ -201,9 +201,18 @@ export default function HeroCards({ profile }) {
                   </div>
 
                   {card.id === 'savings' && profile.savingsGoal > 0 && (
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">
-                      {savingsBalance.toLocaleString('sv-SE')} / {profile.savingsGoal.toLocaleString('sv-SE')} kr
-                    </p>
+                    <>
+                      <p className="text-xs text-slate-500 mt-0.5 truncate">
+                        {savingsBalance.toLocaleString('sv-SE')} / {profile.savingsGoal.toLocaleString('sv-SE')} kr
+                      </p>
+                      {savingsProgress >= 100 && (
+                        <motion.p
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          className="text-xs text-emerald-400 font-bold mt-1"
+                        >🎉 Mål uppnått!</motion.p>
+                      )}
+                    </>
                   )}
 
                   {card.subtitle && card.id !== 'savings' && (
