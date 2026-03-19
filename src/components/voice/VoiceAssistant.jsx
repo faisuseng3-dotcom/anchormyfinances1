@@ -177,20 +177,45 @@ Svara nu med ren taltext:`;
     }
   };
 
-  const speakText = (text) => {
-    synthRef.current.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'sv-SE';
-    utterance.rate = 0.95;
-    utterance.pitch = 1;
+  const audioRef = useRef(null);
 
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-
-    synthRef.current.speak(utterance);
+  const speakText = async (text) => {
+    // Stop any current playback
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setIsSpeaking(true);
+    try {
+      const res = await base44.functions.invoke('tts', { text });
+      // res.data is an ArrayBuffer (binary audio)
+      const blob = new Blob([res.data], { type: 'audio/mpeg' });
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => {
+        setIsSpeaking(false);
+        URL.revokeObjectURL(url);
+      };
+      audio.onerror = () => setIsSpeaking(false);
+      await audio.play();
+    } catch {
+      // Fallback to browser TTS if OpenAI fails
+      synthRef.current.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'sv-SE';
+      utterance.rate = 0.95;
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      synthRef.current.speak(utterance);
+    }
   };
 
   const stopSpeaking = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     synthRef.current.cancel();
     setIsSpeaking(false);
   };
