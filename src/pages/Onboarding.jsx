@@ -31,11 +31,8 @@ export default function Onboarding() {
   const handleComplete = async () => {
     setLoading(true);
 
-    // Merge any guest data that was saved locally
-    const guestData = loadGuestProfile();
-    const mergedData = { ...guestData, ...data, mode: data.mode || 'basic', onboardingCompleted: true };
+    const mergedData = { ...data, mode: data.mode || 'basic', onboardingCompleted: true };
 
-    // Convert totalLoans number → loans array entry if user entered a total but no detailed loans
     if (mergedData.totalLoans > 0 && (!mergedData.loans || mergedData.loans.length === 0)) {
       mergedData.loans = [{
         name: 'Mitt lån',
@@ -45,7 +42,6 @@ export default function Onboarding() {
       }];
     }
 
-    // Check if profile exists in DB
     const profiles = await base44.entities.FinancialProfile.list();
     if (profiles.length > 0) {
       await base44.entities.FinancialProfile.update(profiles[0].id, mergedData);
@@ -53,45 +49,30 @@ export default function Onboarding() {
       await base44.entities.FinancialProfile.create(mergedData);
     }
 
-    // Clear guest mode now that data is in DB
-    setGuestMode(false);
-
-    base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: mergedData.mode, was_guest: !!guestData } });
-
+    base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: mergedData.mode } });
     navigate(createPageUrl('Pulse'));
   };
 
-  const handleGuest = () => {
-    // Save initial empty profile to localStorage and go straight to dashboard
-    saveGuestProfile({ ...data, mode: 'basic', onboardingCompleted: true });
-    navigate(createPageUrl('Dashboard'));
-  };
-
   const steps = [
-    <WelcomeStep
-      key="welcome"
-      onNext={() => setStep(1)}
-      onGuest={handleGuest}
-    />,
     <QuickGoalStep
       key="goal"
       data={data}
       onChange={setData}
-      onNext={() => setStep(2)}
+      onNext={() => setStep(1)}
     />,
     <QuickDataStep
       key="data"
       data={data}
       onChange={setData}
-      onNext={() => setStep(3)}
-      onBack={() => setStep(1)}
+      onNext={() => setStep(2)}
+      onBack={() => setStep(0)}
     />,
     <PersonaStep
       key="persona"
       data={data}
       onChange={setData}
       onNext={handleComplete}
-      onBack={() => setStep(2)}
+      onBack={() => setStep(1)}
     />
   ];
 
