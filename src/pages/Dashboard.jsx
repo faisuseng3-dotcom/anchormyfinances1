@@ -8,7 +8,8 @@ import { motion } from 'framer-motion';
 import { Settings, ShoppingBag, Zap, TrendingUp, Landmark, Brain, Plus, Plane, GitBranch, Calculator, ScanLine, BarChart2, Flame } from 'lucide-react';
 import SafeToSpendWidget from '@/components/dashboard/SafeToSpendWidget';
 import StreakHeader from '@/components/dashboard/StreakHeader';
-import { useGamification, calculateLevel, checkAndUnlockBadges } from '@/hooks/useGamification';
+import { useGamification, calculateLevel, checkAndUnlockBadges, BADGES } from '@/hooks/useGamification';
+import BadgeUnlock from '@/components/gamification/BadgeUnlock';
 import { Button } from "@/components/ui/button";
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import HeroCards from '@/components/dashboard/HeroCards';
@@ -38,6 +39,8 @@ export default function Dashboard() {
   const [showModeSelector, setShowModeSelector] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
+  const [unlockedBadge, setUnlockedBadge] = useState(null);
+  const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
   const nowDate = new Date();
   const currentMonthKey = `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, '0')}`;
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
@@ -51,7 +54,11 @@ export default function Dashboard() {
       const profiles = await base44.entities.FinancialProfile.list();
       if (profiles.length > 0) {
         // Check for badge unlocks on every load
-        checkAndUnlockBadges(profiles[0]);
+        const newBadges = await checkAndUnlockBadges(profiles[0]);
+        if (newBadges.length > 0) {
+          setUnlockedBadge(newBadges[0]);
+          setShowBadgeUnlock(true);
+        }
       }
       return profiles[0] || null;
     }
@@ -565,6 +572,13 @@ export default function Dashboard() {
           />
         )}
       </AnimatePresence>
+
+      {/* Badge Unlock Modal */}
+      <BadgeUnlock
+        badgeId={unlockedBadge}
+        isVisible={showBadgeUnlock}
+        onClose={() => setShowBadgeUnlock(false)}
+      />
     </div>
   );
 }
