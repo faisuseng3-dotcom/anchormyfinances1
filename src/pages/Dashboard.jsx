@@ -428,6 +428,7 @@ export default function Dashboard() {
             { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600', isPro: true },
             { icon: GitBranch, label: 'What-If', page: 'WhatIf', color: 'from-indigo-500 to-violet-600' },
             { icon: Calculator, label: 'Skatt', page: 'WhatIf', color: 'from-rose-500 to-pink-600' },
+            { icon: ScanLine, label: 'Resell', page: 'ResellScanner', color: 'from-cyan-500 to-blue-600' },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
