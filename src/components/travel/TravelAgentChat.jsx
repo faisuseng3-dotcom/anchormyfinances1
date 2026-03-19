@@ -287,6 +287,7 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
             destImage={destImage}
             selected={selectedPkg?.id === packages[activeIndex]?.id}
             onSelect={onSelect}
+            onBook={onBook}
             index={0}
           />
         </motion.div>
