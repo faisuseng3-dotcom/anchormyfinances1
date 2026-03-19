@@ -26,7 +26,7 @@ const valuePoints = [
 
 export default function Landing() {
   const handleCTA = () =>
-    base44.auth.redirectToLogin(window.location.href.split('?')[0].replace(/\/?$/, '') + '/Onboarding');
+    base44.auth.redirectToLogin(`${window.location.origin}/Onboarding`);
 
   return (
     <div
