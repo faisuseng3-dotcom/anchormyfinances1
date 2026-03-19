@@ -363,16 +363,19 @@ function ThinkingBubble() {
 }
 
 export default function TravelAgentChat({ profile }) {
-  const [messages, setMessages] = useState([
-    {
+  const [messages, setMessages] = useState(() => {
+    const cached = loadFromCache();
+    if (cached?.messages) return cached.messages;
+    return [{
       role: 'assistant',
       content: '✈️ Hej! Jag är din **Anchor Travel Agent**. Beskriv din resa — destination, datum, budget och vad du vill göra. Jag bygger tre skräddarsydda resplaner åt dig!',
       type: 'text'
-    }
-  ]);
+    }];
+  });
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [selectedPkg, setSelectedPkg] = useState(null);
+  const [bookingPkg, setBookingPkg] = useState(null);
   const [goalSaved, setGoalSaved] = useState(false);
   const [latestBudgetCheck, setLatestBudgetCheck] = useState(null);
   const [latestDestination, setLatestDestination] = useState('');
