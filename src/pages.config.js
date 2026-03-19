@@ -62,6 +62,7 @@ import TransactionHistory from './pages/TransactionHistory';
 import ResellScanner from './pages/ResellScanner';
 import Pulse from './pages/Pulse';
 import Landing from './pages/Landing';
+import FinancialHistory from './pages/FinancialHistory';
 import __Layout from './Layout.jsx';
 
 
