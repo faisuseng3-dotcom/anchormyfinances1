@@ -19,12 +19,29 @@ function AddIncomeTab({ onSave }) {
   const [label, setLabel] = useState('Lön');
   const [customLabel, setCustomLabel] = useState('');
   const [done, setDone] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [particles, setParticles] = useState([]);
 
-  const handleSave = () => {
-    if (amount <= 0) return;
-    onSave({ type: 'income', amount, label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label });
+  const triggerParticles = () => {
+    const p = Array.from({ length: 6 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 160 - 80,
+      y: -(Math.random() * 80 + 40),
+    }));
+    setParticles(p);
+    setTimeout(() => setParticles([]), 800);
+  };
+
+  const handleSave = async () => {
+    if (amount <= 0 || saving) return;
+    setSaving(true);
+    // Haptic feedback
+    if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
+    await onSave({ type: 'income', amount, label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label });
+    triggerParticles();
     setDone(true);
-    setTimeout(() => { setDone(false); setAmount(0); }, 2000);
+    setSaving(false);
+    setTimeout(() => { setDone(false); setAmount(0); }, 2500);
   };
 
   return (
