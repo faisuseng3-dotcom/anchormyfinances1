@@ -710,6 +710,7 @@ Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren f
 
   return (
     <div className="flex flex-col h-[calc(100vh-220px)] min-h-[520px]">
+      {bookingPkg && <BookingModal pkg={bookingPkg} onClose={() => setBookingPkg(null)} />}
       {/* CFO status bubble — floats top right when active */}
       <AnimatePresence>
         {latestBudgetCheck && (
