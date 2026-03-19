@@ -26,10 +26,11 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
         subscriptions: [...(data.subscriptions || []), {
           name: newSub.name,
           amount: parseInt(newSub.amount),
-          category: newSub.category
+          category: newSub.category,
+          billingDay: parseInt(newSub.billingDay) || null
         }]
       });
-      setNewSub({ name: '', amount: '', category: 'other' });
+      setNewSub({ name: '', amount: '', category: 'other', billingDay: '' });
       setShowForm(false);
     }
   };

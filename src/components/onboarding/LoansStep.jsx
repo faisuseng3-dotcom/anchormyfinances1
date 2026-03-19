@@ -25,10 +25,11 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
           name: newLoan.name,
           totalAmount: parseNumber(newLoan.totalAmount),
           interestRate: parseFloat(newLoan.interestRate) || 0,
-          monthlyPayment: parseNumber(newLoan.monthlyPayment)
+          monthlyPayment: parseNumber(newLoan.monthlyPayment),
+          billingDay: parseInt(newLoan.billingDay) || null
         }]
       });
-      setNewLoan({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
+      setNewLoan({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '', billingDay: '' });
       setShowForm(false);
     }
   };
