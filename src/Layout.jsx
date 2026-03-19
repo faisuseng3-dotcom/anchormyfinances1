@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ShoppingBag, TrendingUp, Settings, Mic } from 'lucide-react';
+import { Home, ShoppingBag, TrendingUp, Settings, Mic, ClipboardList } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
@@ -12,6 +12,7 @@ import { isGuestMode } from '@/components/guestStorage';
 const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
   { icon: ShoppingBag, label: 'Köp', page: 'PurchaseSimulator' },
+  { icon: ClipboardList, label: 'Historik', page: 'TransactionHistory' },
   { icon: TrendingUp, label: 'Utgifter', page: 'Expenses' },
   { icon: Settings, label: 'Inställningar', page: 'Settings' },
 ];
