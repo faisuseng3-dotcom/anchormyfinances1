@@ -1,16 +1,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, AlertCircle, TrendingDown } from 'lucide-react';
-import { getPulseEvents } from '@/components/pulse/pulseEngine';
+import { buildUpcomingExpenses, getUpcomingDates, calculateRunningBalance } from '@/components/pulse/pulseEngine';
 
 export default function FutureTimeline({ profile }) {
   if (!profile) return null;
 
-  const events = getPulseEvents(profile);
-  
-  // Filter to only future events
+  const expenses = buildUpcomingExpenses(profile);
+  const rawEvents = getUpcomingDates(expenses, profile.buffer || 0, 25, profile.income || 0);
+  const eventsWithBalance = calculateRunningBalance(rawEvents, profile.buffer || 0);
+
+  // Map to FutureTimeline format and filter to future events
   const today = new Date();
-  const futureEvents = events.filter(e => new Date(e.date) >= today).slice(0, 8);
+  const futureEvents = eventsWithBalance
+    .filter(e => new Date(e.date) >= today)
+    .map(e => ({
+      date: e.date instanceof Date ? e.date.toISOString().split('T')[0] : e.date,
+      description: e.name,
+      amount: e.priority === 'income' ? e.amount : -e.amount,
+      balance: e.balanceAfter,
+      icon: e.icon,
+    }))
+    .slice(0, 8);
 
   if (futureEvents.length === 0) {
     return (
