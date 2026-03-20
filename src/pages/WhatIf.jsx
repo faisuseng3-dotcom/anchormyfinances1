@@ -29,6 +29,20 @@ export default function WhatIf() {
   const handleWhatIfChange = ({ incomeChange: ic, sickDays: sd }) => {
     if (ic !== undefined) setIncomeChange(ic);
     if (sd !== undefined) setSickDays(sd);
+    // Award points for running a simulation
+    base44.functions.invoke('awardPoints', { event_type: 'whatif_simulation' })
+      .then(r => {
+        if (r?.data?.points > 0) {
+          import('sonner').then(({ toast }) => {
+            toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
+              description: 'What-If simulering körd',
+              duration: 3000,
+              style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+            });
+          });
+        }
+      })
+      .catch(() => {});
   };
 
   return (

@@ -33,6 +33,20 @@ export default function ResellScanner() {
     if (res.data && res.data.identified) {
       setResult(res.data);
       setPhase('result');
+      // Award points for using ResellScanner
+      base44.functions.invoke('awardPoints', { event_type: 'resell_scanner' })
+        .then(r => {
+          if (r?.data?.points > 0) {
+            import('sonner').then(({ toast }) => {
+              toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
+                description: 'ResellScanner använd',
+                duration: 3000,
+                style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+              });
+            });
+          }
+        })
+        .catch(() => {});
     } else {
       setPhase('error');
     }

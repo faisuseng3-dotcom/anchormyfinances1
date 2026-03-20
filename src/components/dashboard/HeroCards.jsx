@@ -12,6 +12,21 @@ import DepositHistory from '@/components/goals/DepositHistory';
 import AnchorWealthCard from '@/components/goals/AnchorWealthCard';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+const awardHeroCardPoints = () => {
+  base44.functions.invoke('awardPoints', { event_type: 'hero_card_click' })
+    .then(r => {
+      if (r?.data?.points > 0) {
+        toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
+          description: 'Hero Card öppnat',
+          duration: 3000,
+          style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+        });
+      }
+    })
+    .catch(() => {});
+};
 
 const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
@@ -107,6 +122,7 @@ export default function HeroCards({ profile }) {
             transition={{ delay: i * 0.05, type: "spring", stiffness: 100 }}
             whileTap={{ scale: 0.97 }}
             onClick={isClickable ? () => {
+              awardHeroCardPoints();
               if (card.id === 'savings') setShowDreamBuilder(true);
               else if (card.id === 'buffer') setOpenModal('buffer');
               else setOpenModal(CLICKABLE[card.id]);

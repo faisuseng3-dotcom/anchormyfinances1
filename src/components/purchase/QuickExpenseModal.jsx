@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { suggestCategory } from '@/lib/smartCategorization';
+import { toast } from 'sonner';
 
 const categories = [
   { id: 'food', label: 'Mat & Dryck' },
@@ -107,6 +108,24 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
       eventName: 'expense_registered',
       properties: { category, amount: parseNumber(amount) }
     });
+
+    // Award challenge points
+    base44.functions.invoke('awardPoints', { event_type: 'expense_register' })
+      .then(r => {
+        if (r?.data?.points > 0) {
+          toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
+            description: 'Köp registrerat',
+            duration: 3000,
+            style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+          });
+        }
+      })
+      .catch(() => {});
+    // Award points for manual categorization
+    if (category) {
+      base44.functions.invoke('awardPoints', { event_type: 'expense_categorize' })
+        .catch(() => {});
+    }
 
     setAnalyzing(false);
   };

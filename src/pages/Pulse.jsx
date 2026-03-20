@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
@@ -24,6 +24,29 @@ import FutureTimeline from '@/components/pulse/FutureTimeline';
 
 export default function Pulse() {
   const [whatIfAmount, setWhatIfAmount] = useState(0);
+
+  // Award points on open (max 2/day)
+  useEffect(() => {
+    import('@/hooks/useAwardPoints').then(m => {
+      const { useAwardPoints } = m;
+    });
+    // Call via sdk directly to avoid hook rules
+    import('@/api/base44Client').then(({ base44 }) => {
+      import('sonner').then(({ toast }) => {
+        base44.functions.invoke('awardPoints', { event_type: 'pulse_open' })
+          .then(res => {
+            if (res?.data?.points > 0) {
+              toast.success(`+${res.data.points} poäng till tävlingen! 🏆`, {
+                description: 'The Pulse besökt',
+                duration: 3000,
+                style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+              });
+            }
+          })
+          .catch(() => {});
+      });
+    });
+  }, []);
 
   // Fetch profile
   const { data: profile, isLoading } = useQuery({

@@ -50,6 +50,16 @@ export default function Onboarding() {
     }
 
     base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: mergedData.mode } });
+    // Award onboarding points
+    base44.functions.invoke('awardPoints', { event_type: 'onboarding_complete' })
+      .then(res => {
+        if (res?.data?.points > 0) {
+          import('sonner').then(({ toast }) => {
+            toast.success(`+${res.data.points} poäng! Välkommen till Anchor Challenge! 🏆`, { duration: 5000 });
+          });
+        }
+      })
+      .catch(() => {});
     navigate(createPageUrl('Dashboard'));
   };
 
