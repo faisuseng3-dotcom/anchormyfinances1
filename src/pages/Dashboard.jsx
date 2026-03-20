@@ -27,6 +27,8 @@ import LivePulse from '@/components/dashboard/LivePulse';
 import CashFlowCalendar from '@/components/dashboard/CashFlowCalendar';
 import DebtAlert from '@/components/dashboard/DebtAlert';
 import TransactionHub from '@/components/transactions/TransactionHub';
+import WeeklyPointsBadge from '@/components/challenge/WeeklyPointsBadge';
+import AdminScoreboard from '@/components/challenge/AdminScoreboard';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -331,17 +333,19 @@ export default function Dashboard() {
           />
         )}
 
+        <AdminScoreboard />
         <div className="flex items-center justify-between mb-4">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <p className="text-slate-500 text-sm">Välkommen tillbaka</p>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-              ANCHOR
-            </h1>
-          </motion.div>
-          <div className="flex items-center gap-2">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+        >
+          <p className="text-slate-500 text-sm">Välkommen tillbaka</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            ANCHOR
+          </h1>
+        </motion.div>
+        <div className="flex items-center gap-2">
+          <WeeklyPointsBadge />
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowModeSelector(true)}
