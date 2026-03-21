@@ -130,12 +130,13 @@ export default function ForecastChart({ profile }) {
         border: '1px solid rgba(255, 255, 255, 0.1)'
       }}
     >
+      {/* Status badge – in flow, not absolute */}
       {isStable && !customDate && (
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="absolute top-4 right-4 z-10"
+          className="flex justify-end mb-3"
         >
           <div className="px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -145,7 +146,7 @@ export default function ForecastChart({ profile }) {
       )}
 
       {/* Title row */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-3 mb-4">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-blue-400" />
           <h3 className="text-sm font-semibold text-white">
@@ -156,7 +157,7 @@ export default function ForecastChart({ profile }) {
         {/* Calendar picker toggle */}
         <button
           onClick={() => setShowDatePicker(v => !v)}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
+          className="self-start flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs transition-all"
           style={{
             background: showDatePicker || customDate ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.06)',
             border: `1px solid ${showDatePicker || customDate ? 'rgba(99,102,241,0.5)' : 'rgba(255,255,255,0.1)'}`,
@@ -164,7 +165,7 @@ export default function ForecastChart({ profile }) {
           }}
         >
           <Calendar className="w-3.5 h-3.5" />
-          <span>{customDate ? customLabel : 'Välj datum'}</span>
+          <span>{customDate ? customLabel : 'Välj eget datum'}</span>
           {customDate && (
             <span
               onClick={(e) => { e.stopPropagation(); clearCustomDate(); }}
