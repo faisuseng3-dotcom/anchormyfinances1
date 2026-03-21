@@ -1,5 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 
+// Tävlingsperiod: 24 mars 2026 00:00 – 31 mars 2026 23:59 (Stockholm)
+const COMPETITION_START = '2026-03-24';
+const COMPETITION_END   = '2026-03-31';
+
 const POINT_RULES = {
   onboarding_complete: { points: 1000, cap_type: 'ever' },
   pulse_open:          { points: 50,   cap_type: 'daily', daily_cap: 2 },
@@ -12,6 +16,21 @@ const POINT_RULES = {
   savings_goal_setup:  { points: 250,  cap_type: 'weekly', weekly_cap: 1 },
 };
 
+function getStockholmDate() {
+  // Stockholm is UTC+1 (winter) / UTC+2 (summer, DST starts last Sunday March = March 29 2026)
+  const now = new Date();
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  // March 29+ 2026 = UTC+2, before = UTC+1
+  const dstStart = new Date('2026-03-29T01:00:00Z');
+  const offset = now >= dstStart ? 2 : 1;
+  const stockholm = new Date(utcMs + offset * 3600000);
+  return stockholm.toISOString().split('T')[0];
+}
+
+function isCompetitionActive(dateStr) {
+  return dateStr >= COMPETITION_START && dateStr <= COMPETITION_END;
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -23,7 +42,12 @@ Deno.serve(async (req) => {
     const rule = POINT_RULES[event_type];
     if (!rule) return Response.json({ error: 'Unknown event type' }, { status: 400 });
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = getStockholmDate();
+
+    // Only award points during competition window
+    if (!isCompetitionActive(today)) {
+      return Response.json({ points: 0, reason: 'outside_competition_period', competition_start: COMPETITION_START, competition_end: COMPETITION_END });
+    }
 
     // Fetch all existing events for this user+type for cap checking
     const existingEvents = await base44.asServiceRole.entities.ChallengeEvent.filter({
@@ -44,13 +68,7 @@ Deno.serve(async (req) => {
     }
 
     if (rule.cap_type === 'weekly') {
-      const now = new Date();
-      const dayOfWeek = now.getDay();
-      const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-      const weekStart = new Date(now);
-      weekStart.setDate(now.getDate() - daysFromMonday);
-      const weekStartStr = weekStart.toISOString().split('T')[0];
-      const thisWeeksEvents = existingEvents.filter(e => e.date >= weekStartStr);
+      const thisWeeksEvents = existingEvents.filter(e => e.date >= COMPETITION_START);
       if (thisWeeksEvents.length >= rule.weekly_cap) {
         return Response.json({ points: 0, reason: 'weekly_cap_reached' });
       }
