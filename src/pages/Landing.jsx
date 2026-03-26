@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Lock, Bot, Smartphone, ChevronRight, CheckCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Lock, Bot, Smartphone, ChevronRight } from 'lucide-react';
 
 const valuePoints = [
   {
@@ -25,8 +26,11 @@ const valuePoints = [
 ];
 
 export default function Landing() {
-  const handleCTA = () =>
+  const [agreed, setAgreed] = useState(false);
+  const handleCTA = () => {
+    if (!agreed) return;
     base44.auth.redirectToLogin(`${window.location.origin}/Onboarding`);
+  };
 
   return (
     <div
@@ -103,13 +107,14 @@ export default function Landing() {
           className="w-full max-w-xs space-y-3"
         >
           <motion.button
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: agreed ? 0.97 : 1 }}
             onClick={handleCTA}
-            className="relative w-full h-14 rounded-2xl font-bold text-white text-base overflow-hidden"
+            className="relative w-full h-14 rounded-2xl font-bold text-white text-base overflow-hidden transition-opacity"
             style={{
               background: 'linear-gradient(135deg, #6366f1, #7c3aed)',
               boxShadow: '0 8px 32px rgba(99,102,241,0.4)',
+              opacity: agreed ? 1 : 0.45,
+              cursor: agreed ? 'pointer' : 'not-allowed',
             }}
           >
             <motion.div
@@ -131,11 +136,9 @@ export default function Landing() {
           </div>
 
           <motion.button
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ scale: 1.02 }}
             onClick={handleCTA}
-            className="w-full h-12 rounded-2xl font-semibold text-white text-sm flex items-center justify-center gap-2 border border-white/15"
-            style={{ background: 'rgba(255,255,255,0.06)' }}
+            className="w-full h-12 rounded-2xl font-semibold text-white text-sm flex items-center justify-center gap-2 border border-white/15 transition-opacity"
+            style={{ background: 'rgba(255,255,255,0.06)', opacity: agreed ? 1 : 0.45, cursor: agreed ? 'pointer' : 'not-allowed' }}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -146,11 +149,33 @@ export default function Landing() {
             Fortsätt med Google
           </motion.button>
 
+          {/* GDPR Consent */}
+          <label className="flex items-start gap-3 cursor-pointer text-left">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={e => setAgreed(e.target.checked)}
+              className="mt-0.5 w-4 h-4 rounded accent-indigo-500 shrink-0"
+            />
+            <span className="text-xs text-slate-400 leading-relaxed">
+              Jag godkänner Anchors{' '}
+              <Link to="/TermsOfService" className="text-indigo-400 underline underline-offset-2" onClick={e => e.stopPropagation()}>Användarvillkor</Link>
+              {' '}och{' '}
+              <Link to="/PrivacyPolicy" className="text-indigo-400 underline underline-offset-2" onClick={e => e.stopPropagation()}>Integritetspolicy</Link>.
+            </span>
+          </label>
+
           <p className="text-center text-xs text-slate-500">
             Ingen BankID behövs &nbsp;•&nbsp; Gratis &nbsp;•&nbsp; Tar &lt;2 min
           </p>
         </motion.div>
       </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 mt-auto pb-8 pt-4 flex justify-center gap-6 text-xs text-slate-600">
+        <Link to="/TermsOfService" className="hover:text-slate-400 transition-colors">Användarvillkor</Link>
+        <Link to="/PrivacyPolicy" className="hover:text-slate-400 transition-colors">Integritetspolicy</Link>
+      </footer>
 
       {/* ── VALUE POINTS ── */}
       <section className="relative z-10 px-6 pb-16 space-y-4 max-w-sm mx-auto w-full">

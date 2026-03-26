@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Save, Trash2, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield } from 'lucide-react';
 import InviteUserSection from '@/components/settings/InviteUserSection';
+import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -458,6 +459,12 @@ export default function Settings() {
           {/* Invite */}
           <InviteUserSection />
 
+          {/* Legal links */}
+          <div className="flex justify-center gap-6 text-xs text-slate-500 py-2">
+            <Link to="/TermsOfService" className="hover:text-slate-300 transition-colors">Användarvillkor</Link>
+            <Link to="/PrivacyPolicy" className="hover:text-slate-300 transition-colors">Integritetspolicy</Link>
+          </div>
+
           {/* Logout */}
           <Button
             variant="outline"
@@ -467,6 +474,9 @@ export default function Settings() {
             <LogOut className="w-4 h-4 mr-2" />
             Logga ut
           </Button>
+
+          {/* Delete account */}
+          <DeleteAccountSection profile={profile} />
         </div>
       </div>
     </div>
