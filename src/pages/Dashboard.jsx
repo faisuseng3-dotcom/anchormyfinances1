@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '@/lib/AuthContext';
+import Landing from '@/pages/Landing';
 import { isGuestMode, loadGuestProfile, saveGuestProfile } from '@/components/guestStorage';
 import { createPageUrl } from '@/utils';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -33,6 +35,7 @@ import AdminScoreboard from '@/components/challenge/AdminScoreboard';
 export default function Dashboard() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isAuthenticated, isLoadingAuth } = useAuth();
   const [insights, setInsights] = useState([]);
   const [healthScore, setHealthScore] = useState(0);
   const [healthLabel, setHealthLabel] = useState('');
@@ -278,6 +281,19 @@ export default function Dashboard() {
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
     setShowModeSelector(false);
   };
+
+  // Auth guard — show landing page for unauthenticated users
+  if (!isLoadingAuth && !isAuthenticated && !isGuestMode()) {
+    return <Landing />;
+  }
+
+  if (isLoadingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-slate-600 border-t-indigo-500 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (

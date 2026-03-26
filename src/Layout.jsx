@@ -8,6 +8,7 @@ import ProfileSwitcher from '@/components/ProfileSwitcher';
 import ImpulseTrigger from '@/components/ImpulseTrigger';
 import GuestBanner from '@/components/GuestBanner';
 import { isGuestMode } from '@/components/guestStorage';
+import { useAuth } from '@/lib/AuthContext';
 
 const navItems = [
   { icon: Home, label: 'Hem', page: 'Dashboard' },
@@ -21,8 +22,9 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [voiceOpen, setVoiceOpen] = useState(false);
   
-  // Hide nav on onboarding
-  const hideNav = currentPageName === 'Onboarding';
+  const { isAuthenticated, isLoadingAuth } = useAuth();
+  // Hide nav on onboarding or when not authenticated
+  const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0a0e1a]">
