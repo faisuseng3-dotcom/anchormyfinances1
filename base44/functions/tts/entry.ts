@@ -26,8 +26,8 @@ Deno.serve(async (req) => {
     body: JSON.stringify({
       model: 'tts-1-hd',
       input: clean,
-      voice: 'nova',       // varm, entusiastisk – som en coach/storasyster
-      speed: 1.0,
+      voice: 'alloy',      // neutral, klar och professionell röst
+      speed: 0.95,
       response_format: 'mp3',
     }),
   });
