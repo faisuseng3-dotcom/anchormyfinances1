@@ -37,7 +37,7 @@ const DEST_IMAGES = {
 const VIBE_THEMES = {
   experience: {
     emoji: '🎒',
-    vibe: 'The Urban Backpacker',
+    vibe: 'Maxad Upplevelse',
     gradient: 'from-orange-600 to-rose-600',
     glow: 'rgba(234,88,12,0.3)',
     tag: 'Maxad Upplevelse',
@@ -45,7 +45,7 @@ const VIBE_THEMES = {
   },
   balance: {
     emoji: '🏛️',
-    vibe: 'The Cultural Strategist',
+    vibe: 'Bästa Balansen',
     gradient: 'from-blue-600 to-indigo-600',
     glow: 'rgba(59,130,246,0.3)',
     tag: 'Mest Prisvärd',
@@ -53,7 +53,7 @@ const VIBE_THEMES = {
   },
   safety: {
     emoji: '🥂',
-    vibe: 'The Copenhagen High-Life',
+    vibe: 'Säkrast Marginal',
     gradient: 'from-purple-600 to-pink-600',
     glow: 'rgba(147,51,234,0.3)',
     tag: 'Säkrast Marginal',
@@ -416,6 +416,13 @@ export default function TravelAgentChat({ profile }) {
       (profile?.loans || []).reduce((s, x) => s + x.monthlyPayment, 0);
     const margin = income - fixedCosts;
 
+    // Extract checkin/checkout dates from user message for deep-linking
+    const today = new Date();
+    const checkinDefault = new Date(today.getFullYear(), today.getMonth() + 1, 15);
+    const checkoutDefault = new Date(checkinDefault);
+    checkoutDefault.setDate(checkoutDefault.getDate() + 5);
+    const fmt = (d) => d.toISOString().split('T')[0];
+
     const prompt = `Du är "Anchor Travel Agent", en smart rese-AI med CFO-instinkt.
 
 Användaren skriver: "${userMsg}"
@@ -425,94 +432,104 @@ Användarens ekonomi:
 - Månatlig marginal: ${margin} kr
 - Buffert: ${profile?.buffer || 0} kr
 
-Steg 1 – Smart Analys: Identifiera destination, datum, antal nätter, total budget, eventuell aktivitetsbudget.
+VIKTIGT: Analysera noggrant vad användaren faktiskt frågar om. Destinationen MÅSTE baseras på användarens meddelande – föreslå ALDRIG Köpenhamn om användaren inte nämnt det.
 
-Steg 2 – Generera EXAKT 3 respaket. De ska ha id:n "explorer", "chill", "ninja" och tags "experience", "balance", "safety". Namnge dem gärna med "vibe"-känsla. Alla ska rymmas inom angivna budget. Använd REALISTISKA prisnivåer för destinationen i mars 2026.
+Steg 1 – Smart Analys: Identifiera destination (från användarens meddelande!), datum (YYYY-MM-DD format), antal nätter, total budget.
+- Om användaren nämner "sol" / "strand" → föreslå sydeuropeiska destinationer (Mallorca, Kreta, Malaga, etc.)
+- Om användaren nämner "kultur" / "stad" → föreslå passande storstäder baserat på budget
+- Anpassa budget efter användarens marginal: om inget anges, föreslå resor som ryms inom ${margin} kr/mån × 3
 
-Steg 3 – Budget-koll: Beräkna marginalen per dag.
+Steg 2 – Generera EXAKT 3 respaket med tags "experience", "balance", "safety".
+- Alla priser ska vara REALISTISKA för den faktiska destinationen och tidsperioden
+- bookingUrl: Bygg en RIKTIG Booking.com söklänk med parametrarna: ss=[destination på engelska], checkin=[YYYY-MM-DD], checkout=[YYYY-MM-DD], group_adults=2
+- Exempel: https://www.booking.com/searchresults.html?ss=Palma+de+Mallorca&checkin=2026-07-10&checkout=2026-07-17&group_adults=2
 
-Svara med JSON:
+Steg 3 – Budget-koll: Beräkna marginalen per dag baserat på det valda paketet.
+
+Svara med JSON där ALL data är anpassad efter användarens faktiska önskemål och destination:
 
 {
   "analysis": {
-    "destination": "Köpenhamn, Danmark",
-    "dates": "12–16 mars",
-    "nights": 4,
-    "totalBudget": 7000,
-    "activityBudget": 3000,
-    "summary": "Kort sammanfattning av vad vi hittade"
+    "destination": "[DEN DESTINATION ANVÄNDAREN FRÅGAT OM]",
+    "dates": "[FAKTISKA DATUM]",
+    "checkin": "${fmt(checkinDefault)}",
+    "checkout": "${fmt(checkoutDefault)}",
+    "nights": 5,
+    "totalBudget": ${Math.min(margin * 3, profile?.buffer || margin * 3)},
+    "activityBudget": ${Math.round(margin * 1)},
+    "summary": "Sammanfattning baserad på DENNA destination och önskemål"
   },
   "timeline": {
-    "destination": "Köpenhamn",
+    "destination": "[FAKTISK DESTINATION]",
     "dates": [
-      { "label": "12 mar", "event": "Ankomst", "highlight": false },
-      { "label": "13 mar", "event": "Utforska", "highlight": false },
-      { "label": "14 mar", "event": "Aktiviteter", "highlight": true },
-      { "label": "15 mar", "event": "Aktiviteter", "highlight": true },
-      { "label": "16 mar", "event": "Hemresa", "highlight": false }
+      { "label": "Dag 1", "event": "Ankomst", "highlight": false },
+      { "label": "Dag 2", "event": "[Aktivitet för denna destination]", "highlight": true },
+      { "label": "Dag 3", "event": "[Aktivitet för denna destination]", "highlight": true },
+      { "label": "Dag 4", "event": "[Aktivitet för denna destination]", "highlight": false },
+      { "label": "Dag 5", "event": "Hemresa", "highlight": false }
     ]
   },
   "packages": [
     {
       "id": "explorer",
-      "name": "The Urban Backpacker",
+      "name": "[Kreativt namn för DENNA destination/resa]",
       "tag": "experience",
-      "accommodation": "Steel House Copenhagen (sovsal)",
-      "accommodationCost": 1800,
-      "activities": "Tivoli + Street Food Tour + Christiania-cyklar",
-      "activitiesCost": 3000,
-      "otherCosts": 500,
-      "totalCost": 5300,
-      "margin": 1700,
-      "aiComment": "Energi, folkliv och sena kvällar – perfekt för den äventyrslystne!",
-      "bookingUrl": "https://www.booking.com/searchresults.html?ss=Copenhagen",
+      "accommodation": "[Specifikt hotell/hostel för DENNA destination]",
+      "accommodationCost": 0,
+      "activities": "[Specifika aktiviteter för DENNA destination]",
+      "activitiesCost": 0,
+      "otherCosts": 0,
+      "totalCost": 0,
+      "margin": 0,
+      "aiComment": "[Kommentar specifik för DENNA resa]",
+      "bookingUrl": "https://www.booking.com/searchresults.html?ss=[DESTINATION_PÅ_ENGELSKA]&checkin=[YYYY-MM-DD]&checkout=[YYYY-MM-DD]&group_adults=2",
       "provider": "Booking.com"
     },
     {
       "id": "chill",
-      "name": "The Cultural Strategist",
+      "name": "[Kreativt namn för DENNA destination/resa]",
       "tag": "balance",
-      "accommodation": "CityHub Cabin-room",
-      "accommodationCost": 3200,
-      "activities": "Kanalturné + Glyptoteket + dansk middag",
-      "activitiesCost": 2500,
-      "otherCosts": 300,
-      "totalCost": 6000,
-      "margin": 1000,
-      "aiComment": "Museum, bra kaffe och smarta kulturval – den balanserade resenären!",
-      "bookingUrl": "https://www.hotels.com/search/copenhagen",
-      "provider": "Hotels.com"
+      "accommodation": "[Annat specifikt hotell för DENNA destination]",
+      "accommodationCost": 0,
+      "activities": "[Andra specifika aktiviteter för DENNA destination]",
+      "activitiesCost": 0,
+      "otherCosts": 0,
+      "totalCost": 0,
+      "margin": 0,
+      "aiComment": "[Kommentar specifik för DENNA resa]",
+      "bookingUrl": "https://www.booking.com/searchresults.html?ss=[DESTINATION_PÅ_ENGELSKA]&checkin=[YYYY-MM-DD]&checkout=[YYYY-MM-DD]&group_adults=2",
+      "provider": "Booking.com"
     },
     {
       "id": "ninja",
-      "name": "The Copenhagen High-Life",
+      "name": "[Kreativt namn för DENNA destination/resa]",
       "tag": "safety",
-      "accommodation": "Zleep Hotel",
-      "accommodationCost": 2500,
-      "activities": "Nyhavn-middag + Designmuseet + kanalbåt",
-      "activitiesCost": 2200,
-      "otherCosts": 300,
-      "totalCost": 5000,
-      "margin": 2000,
-      "aiComment": "Kvalitet över kvantitet – en lyxmiddag och de bästa upplevelserna!",
-      "bookingUrl": "https://www.skyscanner.se/hotels/denmark/copenhagen",
-      "provider": "Skyscanner"
+      "accommodation": "[Hotell med bra marginal för DENNA destination]",
+      "accommodationCost": 0,
+      "activities": "[Utvalda aktiviteter för DENNA destination]",
+      "activitiesCost": 0,
+      "otherCosts": 0,
+      "totalCost": 0,
+      "margin": 0,
+      "aiComment": "[Kommentar specifik för DENNA resa]",
+      "bookingUrl": "https://www.booking.com/searchresults.html?ss=[DESTINATION_PÅ_ENGELSKA]&checkin=[YYYY-MM-DD]&checkout=[YYYY-MM-DD]&group_adults=2",
+      "provider": "Booking.com"
     }
   ],
   "budgetCheck": {
     "breakdown": [
-      { "label": "Boende", "amount": 2500 },
-      { "label": "Aktiviteter", "amount": 2500 },
-      { "label": "Marginal", "amount": 2000 }
+      { "label": "Boende", "amount": 0 },
+      { "label": "Aktiviteter", "amount": 0 },
+      { "label": "Marginal", "amount": 0 }
     ],
-    "marginPerDay": 400,
-    "verdict": "Du har ca 400 kr/dag kvar – bra marginal för Köpenhamn!"
+    "marginPerDay": 0,
+    "verdict": "[Omdöme om budget specifikt för DENNA destination]"
   },
-  "goalName": "Köpenhamnsresa",
-  "goalEndDate": "2026-03-12"
+  "goalName": "[Resmålets namn]-resa",
+  "goalEndDate": "${fmt(checkinDefault)}"
 }
 
-Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren faktiskt frågade om!`;
+KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska destinationen. Beräkna alla kostnader (accommodationCost, activitiesCost, etc.) baserat på realistiska priser. Bygg bookingUrl med faktisk destination på engelska och faktiska datum.`;
 
     const result = await base44.integrations.Core.InvokeLLM({
       prompt,
@@ -752,7 +769,7 @@ Anpassa ALL data (priser, platsnamn, datum, kommentarer) efter vad användaren f
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
-              placeholder="Beskriv din resa... t.ex. 'Köpenhamn 12–16 mars, 7000 kr, aktiviteter den 14–15'"
+              placeholder="Beskriv din resa... t.ex. 'Solsemester i Spanien i juli, 7 nätter, ca 8 000 kr' eller 'Städresa till Berlin i maj'"
               rows={2}
               className="w-full resize-none bg-white/8 backdrop-blur-xl border border-white/15 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/70 focus:ring-1 focus:ring-indigo-500/20 transition-all"
               style={{ backdropFilter: 'blur(20px)' }}
