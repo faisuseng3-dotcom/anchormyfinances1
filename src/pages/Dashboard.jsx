@@ -91,7 +91,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (profile && !profile.onboardingCompleted) {
-      navigate(createPageUrl('Onboarding'));
+      navigate(createPageUrl('Onboarding'), { replace: true });
     }
   }, [profile, navigate]);
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -10,6 +10,15 @@ import PersonaStep from '@/components/onboarding/PersonaStep';
 export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
+
+  // Kolla om användaren redan har en färdig profil — hoppa direkt till Dashboard
+  useEffect(() => {
+    base44.entities.FinancialProfile.list().then(profiles => {
+      if (profiles.length > 0 && profiles[0].onboardingCompleted) {
+        navigate(createPageUrl('Dashboard'), { replace: true });
+      }
+    });
+  }, []);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     userGoal: '',
