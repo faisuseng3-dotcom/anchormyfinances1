@@ -1,24 +1,83 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Wallet, Home, PiggyBank, CreditCard, ChevronRight } from 'lucide-react';
+import { Wallet, Home, PiggyBank, CreditCard, ChevronRight, Plus, X } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
-import DayPicker from './DayPicker';
+
+const DEFAULT_COST_ITEMS = [
+  { id: 'housing', label: 'Hyra / Boende', amount: '', placeholder: '10 000' },
+];
+
+const COST_SUGGESTIONS = [
+  { label: 'El & Värme', placeholder: '500' },
+  { label: 'Internet', placeholder: '300' },
+  { label: 'Gym', placeholder: '400' },
+  { label: 'Försäkringar', placeholder: '600' },
+  { label: 'Övrigt', placeholder: '500' },
+];
+
+const formatNumber = (value) => {
+  if (value === 0 || value === '0') return '0';
+  return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+};
+
+const parseNumber = (value) => {
+  const cleaned = value.replace(/\s/g, '');
+  if (cleaned === '') return 0;
+  return parseInt(cleaned) || 0;
+};
 
 export default function QuickDataStep({ data, onChange, onNext, onBack }) {
-  const formatNumber = (value) => {
-    if (value === 0 || value === '0') return '0';
-    return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+  const [costItems, setCostItems] = useState(() => {
+    // Restore from data if editing
+    if (data.fixedCostItems && data.fixedCostItems.length > 0) {
+      return data.fixedCostItems.map((item, i) => ({ ...item, id: item.id || String(i) }));
+    }
+    // Pre-fill housing from existing housingCost
+    return [{ id: 'housing', label: 'Hyra / Boende', amount: data.housingCost ? String(data.housingCost) : '', placeholder: '10 000' }];
+  });
+
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const totalFixed = costItems.reduce((sum, item) => sum + parseNumber(item.amount || ''), 0);
+
+  const updateItem = (id, field, value) => {
+    const updated = costItems.map(item => item.id === id ? { ...item, [field]: value } : item);
+    setCostItems(updated);
+    syncToParent(updated);
   };
 
-  const parseNumber = (value) => {
-    const cleaned = value.replace(/\s/g, '');
-    if (cleaned === '') return 0;
-    return parseInt(cleaned) || 0;
+  const addItem = (suggestion = null) => {
+    const newItem = {
+      id: Date.now().toString(),
+      label: suggestion?.label || '',
+      amount: '',
+      placeholder: suggestion?.placeholder || '0',
+    };
+    const updated = [...costItems, newItem];
+    setCostItems(updated);
+    setShowSuggestions(false);
   };
 
-  const isValid = data.income > 0 && data.housingCost >= 0;
+  const removeItem = (id) => {
+    if (costItems.length <= 1) return;
+    const updated = costItems.filter(item => item.id !== id);
+    setCostItems(updated);
+    syncToParent(updated);
+  };
+
+  const syncToParent = (items) => {
+    const total = items.reduce((sum, item) => sum + parseNumber(item.amount || ''), 0);
+    const housingItem = items.find(i => i.id === 'housing');
+    onChange({
+      ...data,
+      housingCost: housingItem ? parseNumber(housingItem.amount || '') : 0,
+      fixedCostItems: items.map(i => ({ id: i.id, label: i.label, amount: parseNumber(i.amount || '') })),
+    });
+  };
+
+  const isValid = data.income > 0;
 
   return (
     <OnboardingStep
@@ -46,29 +105,85 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
           </div>
         </div>
 
-        {/* Fixed Costs */}
+        {/* Fixed Costs — multi-row */}
         <div className="space-y-2">
           <Label className="text-slate-300 flex items-center gap-2 text-sm">
             <Home className="w-4 h-4 text-indigo-400" />
-            Hyra / Boende
+            Fasta månadskostnader
           </Label>
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="12 000"
-              value={formatNumber(data.housingCost)}
-              onChange={(e) => onChange({ ...data, housingCost: parseNumber(e.target.value) })}
-              className="h-14 text-lg pr-12 rounded-xl"
-            />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
+          <p className="text-xs text-slate-500 -mt-1">Inkludera hyra, el, abonnemang, försäkringar och gym.</p>
+
+          <div className="space-y-2">
+            {costItems.map((item) => (
+              <div key={item.id} className="flex gap-2 items-center">
+                <Input
+                  type="text"
+                  value={item.label}
+                  onChange={(e) => updateItem(item.id, 'label', e.target.value)}
+                  placeholder="t.ex. Hyra"
+                  className="h-11 rounded-xl flex-1 text-sm"
+                />
+                <div className="relative w-32 flex-shrink-0">
+                  <Input
+                    type="text"
+                    value={item.amount}
+                    onChange={(e) => updateItem(item.id, 'amount', e.target.value)}
+                    placeholder={item.placeholder}
+                    className="h-11 rounded-xl pr-8 text-sm"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">kr</span>
+                </div>
+                {costItems.length > 1 && (
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    className="w-9 h-11 rounded-xl bg-white/5 hover:bg-rose-500/20 flex items-center justify-center flex-shrink-0 transition-colors"
+                  >
+                    <X className="w-4 h-4 text-slate-400 hover:text-rose-400" />
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
-          {data.housingCost > 0 && (
-            <DayPicker
-              value={data.housingDueDay || 27}
-              onChange={(d) => onChange({ ...data, housingDueDay: d })}
-              label="Vilken dag i månaden betalas hyran?"
-              hint="Standard: 27:e – ändra om du vet exakt datum"
-            />
+
+          {/* Add row */}
+          <div className="relative">
+            <button
+              onClick={() => setShowSuggestions(!showSuggestions)}
+              className="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors py-1"
+            >
+              <Plus className="w-4 h-4" />
+              Lägg till kostnad
+            </button>
+
+            {showSuggestions && (
+              <div className="absolute top-8 left-0 z-10 bg-[#1a2235] border border-white/10 rounded-xl p-2 shadow-xl min-w-48">
+                {COST_SUGGESTIONS.map((s) => (
+                  <button
+                    key={s.label}
+                    onClick={() => addItem(s)}
+                    className="w-full text-left px-3 py-2 text-sm text-slate-300 hover:bg-white/8 rounded-lg transition-colors"
+                  >
+                    {s.label}
+                  </button>
+                ))}
+                <div className="border-t border-white/10 mt-1 pt-1">
+                  <button
+                    onClick={() => addItem()}
+                    className="w-full text-left px-3 py-2 text-sm text-indigo-400 hover:bg-white/8 rounded-lg transition-colors"
+                  >
+                    + Eget fält
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Total */}
+          {totalFixed > 0 && (
+            <div className="flex justify-between items-center text-sm border-t border-white/10 pt-2 mt-1">
+              <span className="text-slate-400">Totalt fasta kostnader:</span>
+              <span className="text-white font-semibold">{formatNumber(totalFixed)} kr/mån</span>
+            </div>
           )}
         </div>
 
@@ -110,14 +225,19 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
         </div>
 
         {/* Preview */}
-        {data.income > 0 && data.housingCost >= 0 && (
-          <div className="mt-6 p-4 glass-effect rounded-xl border border-indigo-500/30">
+        {data.income > 0 && (
+          <div className="mt-2 p-4 glass-effect rounded-xl border border-indigo-500/30">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-slate-400">Ungefär kvar per månad</p>
-                <p className="text-2xl font-bold text-white mt-1">
-                  {formatNumber(data.income - data.housingCost)} kr
+                <p className={`text-2xl font-bold mt-1 ${(data.income - totalFixed) < 0 ? 'text-rose-400' : 'text-white'}`}>
+                  {formatNumber(data.income - totalFixed)} kr
                 </p>
+                {totalFixed > 0 && (
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {Math.round((totalFixed / data.income) * 100)}% går till fasta kostnader
+                  </p>
+                )}
               </div>
               <ChevronRight className="w-5 h-5 text-indigo-400" />
             </div>

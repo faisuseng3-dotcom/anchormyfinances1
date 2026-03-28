@@ -1,0 +1,240 @@
+{
+  "name": "FinancialProfile",
+  "type": "object",
+  "properties": {
+    "mode": {
+      "type": "string",
+      "enum": [
+        "basic",
+        "smart",
+        "pro"
+      ],
+      "default": "basic",
+      "description": "Valt l\u00e4ge: Basic, Smart eller Pro"
+    },
+    "userGoal": {
+      "type": "string",
+      "enum": [
+        "control",
+        "save",
+        "improve",
+        "plan"
+      ],
+      "description": "Prim\u00e4rt m\u00e5l (legacy, anv\u00e4nds som fallback)"
+    },
+    "userGoals": {
+      "type": "array",
+      "description": "Alla valda m\u00e5l fr\u00e5n onboarding",
+      "items": {
+        "type": "string"
+      }
+    },
+    "primaryGoal": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens h\u00f6gsta prioritet bland valda m\u00e5l \u2013 AI:ns huvudfokus"
+    },
+    "income": {
+      "type": "number",
+      "description": "M\u00e5natlig nettoinkomst"
+    },
+    "housingCost": {
+      "type": "number",
+      "description": "Boendekostnad per m\u00e5nad (legacy \u2013 anv\u00e4nds som fallback om fixedCostItems saknas)"
+    },
+    "fixedCostItems": {
+      "type": "array",
+      "description": "Nedbrytning av fasta m\u00e5nadskostnader (hyra, el, gym etc.)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "buffer": {
+      "type": "number",
+      "description": "Sparad buffert"
+    },
+    "savingsGoal": {
+      "type": "number",
+      "description": "Sparm\u00e5l (totalt belopp)"
+    },
+    "savingsGoalName": {
+      "type": "string",
+      "description": "Namn p\u00e5 sparm\u00e5let"
+    },
+    "savingsCurrentBalance": {
+      "type": "number",
+      "default": 0,
+      "description": "Nuvarande inbetalt belopp mot sparm\u00e5let"
+    },
+    "financialGoal": {
+      "type": "string",
+      "enum": [
+        "save",
+        "reduce_debt",
+        "reduce_stress",
+        "build_buffer"
+      ],
+      "description": "Ekonomiskt huvudm\u00e5l"
+    },
+    "subscriptions": {
+      "type": "array",
+      "description": "Abonnemang och fasta kostnader",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "entertainment",
+              "transport",
+              "health",
+              "streaming",
+              "food",
+              "insurance",
+              "other"
+            ]
+          }
+        }
+      }
+    },
+    "loans": {
+      "type": "array",
+      "description": "L\u00e5n",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "totalAmount": {
+            "type": "number"
+          },
+          "interestRate": {
+            "type": "number"
+          },
+          "monthlyPayment": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "plannedPurchases": {
+      "type": "array",
+      "description": "Planerade k\u00f6p i bevakningslistan",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "addedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "waiting",
+              "approved",
+              "rejected"
+            ]
+          }
+        }
+      }
+    },
+    "priceWatches": {
+      "type": "array",
+      "description": "Produkter under prisbevakning",
+      "items": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "type": "string"
+          },
+          "currentLowestPrice": {
+            "type": "number"
+          },
+          "addedDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "monthlyExpenses": {
+      "type": "array",
+      "description": "Registrerade utgifter",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "category": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "onboardingCompleted": {
+      "type": "boolean",
+      "description": "Om onboarding \u00e4r slutf\u00f6rd"
+    },
+    "dailyLoginStreak": {
+      "type": "integer",
+      "default": 0,
+      "description": "Antal dagar i rad med inloggning"
+    },
+    "lastLoginDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Senaste inloggningsdatum"
+    },
+    "totalXP": {
+      "type": "integer",
+      "default": 0,
+      "description": "Total XP po\u00e4ng"
+    },
+    "level": {
+      "type": "integer",
+      "default": 1,
+      "description": "Anv\u00e4ndarens niv\u00e5 (baserat p\u00e5 XP)"
+    },
+    "unlockedBadges": {
+      "type": "array",
+      "description": "Ol\u00e5sta badges",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "income"
+  ]
+}

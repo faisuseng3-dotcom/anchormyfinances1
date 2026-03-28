@@ -1,14 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, TrendingUp } from 'lucide-react';
+import { getTotalFixedCosts } from '@/lib/financialUtils';
 
 export default function SafeToSpendWidget({ profile }) {
   if (!profile) return null;
 
   // Beräkna Safe-to-Spend
-  const subscriptionCosts = (profile.subscriptions || []).reduce((sum, s) => sum + (s.amount || 0), 0);
-  const loanPayments = (profile.loans || []).reduce((sum, l) => sum + (l.monthlyPayment || 0), 0);
-  const totalFixedCosts = (profile.housingCost || 0) + subscriptionCosts + loanPayments;
+  const totalFixedCosts = getTotalFixedCosts(profile);
 
   // Buffer är inte med i beräkningen - det är en separat buffert
   // Safe-to-Spend = vad du kan spendera denna månad från inkomst efter fasta utgifter

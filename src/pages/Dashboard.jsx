@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
+import { getTotalFixedCosts } from '@/lib/financialUtils';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import Landing from '@/pages/Landing';
@@ -124,9 +125,7 @@ export default function Dashboard() {
   const calculateHealthScore = (p) => {
     let score = 50;
     
-    const totalSubscriptions = (p.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
-    const totalLoanPayments = (p.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
-    const totalFixedCosts = p.housingCost + totalSubscriptions + totalLoanPayments;
+    const totalFixedCosts = getTotalFixedCosts(p);
     const margin = p.income - totalFixedCosts;
     const marginPercent = (margin / p.income) * 100;
 
@@ -155,9 +154,7 @@ export default function Dashboard() {
   const generateInsights = (p) => {
     const newInsights = [];
     
-    const totalSubscriptions = (p.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
-    const totalLoanPayments = (p.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
-    const totalFixedCosts = p.housingCost + totalSubscriptions + totalLoanPayments;
+    const totalFixedCosts = getTotalFixedCosts(p);
     const margin = p.income - totalFixedCosts;
 
     if (margin < p.income * 0.1) {
@@ -223,9 +220,7 @@ export default function Dashboard() {
       factors.push({ name: `${loanCount} aktiva lån`, positive: false });
     }
 
-    const totalFixedCosts = p.housingCost + 
-      (p.subscriptions || []).reduce((sum, s) => sum + s.amount, 0) + 
-      (p.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
+    const totalFixedCosts = getTotalFixedCosts(p);
     const margin = p.income - totalFixedCosts;
     
     if (margin < p.income * 0.1) {
