@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Save, Trash2, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield } from 'lucide-react';
 import InviteUserSection from '@/components/settings/InviteUserSection';
+import TrialTimer from '@/components/subscriptions/TrialTimer';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
@@ -439,6 +440,12 @@ export default function Settings() {
               )}
             </div>
           </div>
+
+          {/* Trial Timer */}
+          <TrialTimer
+            profile={profile}
+            onUpdate={() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] })}
+          />
 
           {/* Security & Data */}
           <Link to={createPageUrl('SecurityInfo')}>

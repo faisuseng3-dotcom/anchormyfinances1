@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Wallet, Home, PiggyBank, CreditCard, ChevronRight, Plus, X } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
+import SubscriptionDetective from './SubscriptionDetective';
 
 const DEFAULT_COST_ITEMS = [
   { id: 'housing', label: 'Hyra / Boende', amount: '', placeholder: '10 000' },
@@ -39,6 +40,16 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
   });
 
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Sync selected detective services to subscriptions in parent data
+  const handleDetectiveToggle = (service) => {
+    const existing = (data.subscriptions || []);
+    const alreadyIn = existing.some(s => s.name === service.name);
+    const updated = alreadyIn
+      ? existing.filter(s => s.name !== service.name)
+      : [...existing, { name: service.name, amount: service.amount, category: service.category, billingDay: null }];
+    onChange({ ...data, subscriptions: updated });
+  };
 
   const totalFixed = costItems.reduce((sum, item) => sum + parseNumber(item.amount || ''), 0);
 
@@ -184,6 +195,19 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               <span className="text-slate-400">Totalt fasta kostnader:</span>
               <span className="text-white font-semibold">{formatNumber(totalFixed)} kr/mån</span>
             </div>
+          )}
+        </div>
+
+        {/* Subscription Detective */}
+        <div className="space-y-2">
+          <SubscriptionDetective
+            selected={data.subscriptions || []}
+            onToggle={handleDetectiveToggle}
+          />
+          {(data.subscriptions || []).length > 0 && (
+            <p className="text-xs text-slate-500 px-1">
+              {(data.subscriptions || []).length} tjänst{(data.subscriptions || []).length > 1 ? 'er' : ''} valda · {(data.subscriptions || []).reduce((s, x) => s + (x.amount || 0), 0)} kr/mån läggs automatiskt till i dina fasta kostnader.
+            </p>
           )}
         </div>
 
