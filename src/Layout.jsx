@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { Home, ShoppingBag, TrendingUp, Settings, Mic, ClipboardList, Activity } from 'lucide-react';
 import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
 import ImpulseTrigger from '@/components/ImpulseTrigger';
 import GuestBanner from '@/components/GuestBanner';
@@ -220,6 +221,9 @@ export default function Layout({ children, currentPageName }) {
           />
         </>
       )}
+
+      {/* PWA Install Prompt */}
+      {!hideNav && <PWAInstallPrompt />}
 
       {/* Bottom Navigation */}
       {!hideNav && (

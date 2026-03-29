@@ -18,7 +18,7 @@ export default function Onboarding() {
         navigate(createPageUrl('Dashboard'), { replace: true });
       }
     });
-  }, []);
+  }, [navigate]);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     userGoal: '',

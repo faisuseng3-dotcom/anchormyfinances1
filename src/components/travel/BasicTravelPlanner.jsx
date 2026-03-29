@@ -26,10 +26,12 @@ export default function BasicTravelPlanner({ profile }) {
   });
   const [saved, setSaved] = useState(false);
 
-  const totalSubscriptions = (profile.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
-  const totalLoanPayments = (profile.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
-  const fixedExpenses = profile.housingCost + totalSubscriptions + totalLoanPayments;
-  const availableBalance = profile.income - fixedExpenses;
+  const totalSubscriptions = (profile?.subscriptions || []).reduce((sum, s) => sum + (s.amount || 0), 0);
+  const totalLoanPayments = (profile?.loans || []).reduce((sum, l) => sum + (l.monthlyPayment || 0), 0);
+  const fixedExpenses = (profile?.housingCost || 0) + totalSubscriptions + totalLoanPayments;
+  const income = profile?.income || 0;
+  const availableBalance = income - fixedExpenses;
+  const monthlySavings = Math.max(0, availableBalance * 0.3); // konservativt: 30% av marginalen
 
   const totalCost = 
     parseNumber(costs.flight) +
@@ -164,7 +166,40 @@ export default function BasicTravelPlanner({ profile }) {
         </div>
       </motion.div>
 
+      {/* Dynamisk sparplan */}
+      {totalCost > 0 && monthlySavings > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25 }}
+          className="glass-effect p-5 rounded-2xl border border-indigo-500/20"
+        >
+          <h3 className="font-semibold text-white mb-2">📅 Din sparplan</h3>
+          <p className="text-slate-300 text-sm">
+            Med din nuvarande marginal kan du spara ca{' '}
+            <span className="text-indigo-300 font-semibold">{formatNumber(Math.round(monthlySavings))} kr/mån</span>.
+          </p>
+          <p className="text-slate-300 text-sm mt-1">
+            Du når {destination || 'ditt resmål'} på ungefär{' '}
+            <span className="text-emerald-400 font-bold">
+              {Math.ceil(totalCost / monthlySavings)} månader
+            </span>.
+          </p>
+        </motion.div>
+      )}
+
       {/* Save Button */}
+      {destination && (
+        <a
+          href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-300 text-sm font-medium transition-colors"
+        >
+          🔍 Sök boende i {destination} på Booking.com
+        </a>
+      )}
+
       <Button
         onClick={handleSave}
         disabled={!destination || totalCost === 0}
@@ -181,11 +216,21 @@ export default function BasicTravelPlanner({ profile }) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-effect p-4 rounded-xl text-center"
+          className="glass-effect p-4 rounded-xl text-center space-y-3"
         >
           <p className="text-sm text-slate-300">
             Din {destination}-budget är nu sparad och dras från ditt kvarvarande saldo för {month || 'den valda månaden'}.
           </p>
+          {destination && (
+            <a
+              href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
+            >
+              🏨 Sök boende i {destination} på Booking.com
+            </a>
+          )}
         </motion.div>
       )}
     </div>

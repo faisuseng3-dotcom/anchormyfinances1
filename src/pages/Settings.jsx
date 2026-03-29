@@ -171,7 +171,7 @@ export default function Settings() {
                   <Input
                     type="text"
                     value={formatNumber(formData.income)}
-                    onChange={(e) => setFormData({ ...formData, income: parseNumber(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, income: Math.max(0, parseNumber(e.target.value)) })}
                     className="h-12 pr-12 rounded-xl"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>

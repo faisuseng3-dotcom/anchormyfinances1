@@ -109,7 +109,10 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               type="text"
               placeholder="25 000"
               value={formatNumber(data.income)}
-              onChange={(e) => onChange({ ...data, income: parseNumber(e.target.value) })}
+              onChange={(e) => {
+                const val = parseNumber(e.target.value);
+                onChange({ ...data, income: Math.max(0, val) });
+              }}
               className="h-14 text-lg pr-12 rounded-xl"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
