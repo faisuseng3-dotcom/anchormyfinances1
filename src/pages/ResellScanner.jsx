@@ -11,11 +11,14 @@ import FutureImpactModal from '@/components/resell/FutureImpactModal';
 export default function ResellScanner() {
   const navigate = useNavigate();
   const fileRef = useRef(null);
-  const [phase, setPhase] = useState('idle'); // idle | scanning | result | error
+  const [phase, setPhase] = useState('idle'); // idle | scanning | result | error | guess
   const [capturedImage, setCapturedImage] = useState(null);
   const [result, setResult] = useState(null);
   const [showFutureModal, setShowFutureModal] = useState(false);
   const [futureAdded, setFutureAdded] = useState(false);
+  const [guesses, setGuesses] = useState([]);
+  const [manualQuery, setManualQuery] = useState('');
+  const [manualLoading, setManualLoading] = useState(false);
 
   const handleFile = async (file) => {
     if (!file) return;
@@ -28,28 +31,60 @@ export default function ResellScanner() {
     reader.readAsDataURL(file);
   };
 
+  const awardPoints = () => {
+    base44.functions.invoke('awardPoints', { event_type: 'resell_scanner' })
+      .then(r => {
+        if (r?.data?.points > 0) {
+          import('sonner').then(({ toast }) => {
+            toast.success(`+${r.data.points} poäng! 🏆`, {
+              duration: 3000,
+              style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+            });
+          });
+        }
+      }).catch(() => {});
+  };
+
+  const applyResult = (data) => {
+    setResult(data);
+    setPhase('result');
+    awardPoints();
+  };
+
   const runScan = async (file) => {
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     const res = await base44.functions.invoke('resellScanner', { imageUrl: file_url });
-    if (res.data && res.data.identified) {
-      setResult(res.data);
-      setPhase('result');
-      // Award points silently
-      base44.functions.invoke('awardPoints', { event_type: 'resell_scanner' })
-        .then(r => {
-          if (r?.data?.points > 0) {
-            import('sonner').then(({ toast }) => {
-              toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
-                duration: 3000,
-                style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
-              });
-            });
-          }
-        })
-        .catch(() => {});
+    const data = res.data;
+
+    if (data && data.identified) {
+      // If AI has guesses (uncertain), show guess confirmation first
+      if ((data.confidence === 'låg' || data.confidence === 'medel') && data.guesses?.length > 0) {
+        setGuesses(data.guesses);
+        setResult(data); // store preliminary result
+        setPhase('guess');
+      } else {
+        applyResult(data);
+      }
     } else {
+      // Not identified → show manual search
       setPhase('error');
     }
+  };
+
+  const handleManualSearch = async () => {
+    if (!manualQuery.trim()) return;
+    setManualLoading(true);
+    const res = await base44.functions.invoke('resellScanner', { manualQuery: manualQuery.trim() });
+    setManualLoading(false);
+    if (res.data?.identified) {
+      applyResult(res.data);
+    }
+  };
+
+  const confirmGuess = (guess) => {
+    // Apply the confirmed guess label as model override
+    const confirmed = { ...result, model: guess.label, category: guess.category || result.category, confidence: 'hög', guesses: [] };
+    applyResult(confirmed);
   };
 
   const reset = () => {
@@ -58,6 +93,9 @@ export default function ResellScanner() {
     setResult(null);
     setShowFutureModal(false);
     setFutureAdded(false);
+    setGuesses([]);
+    setManualQuery('');
+    setManualLoading(false);
   };
 
   return (
@@ -172,7 +210,7 @@ export default function ResellScanner() {
                 <p className="text-sm text-slate-400">{result.category} · {result.condition}</p>
                 {result.conditionNote && <p className="text-xs text-slate-500 italic mt-1">"{result.conditionNote}"</p>}
                 {result.uncertainAboutModel && (
-                  <p className="text-xs text-amber-400 mt-1">⚠️ AI är osäker på exakt modell. Uppskattade priser baserade på kategori.</p>
+                  <p className="text-xs text-amber-400 mt-1">⚠️ Priser baserade på kategori. Specificera modellen för exaktare värdering.</p>
                 )}
               </div>
 
@@ -238,21 +276,107 @@ export default function ResellScanner() {
             </motion.div>
           )}
 
-          {/* ERROR */}
+          {/* SMART GUESS – AI is unsure, shows options */}
+          {phase === 'guess' && (
+            <motion.div
+              key="guess"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="w-full max-w-sm flex flex-col gap-4 mt-4"
+            >
+              {capturedImage && (
+                <div className="relative w-full aspect-square rounded-3xl overflow-hidden opacity-80">
+                  <img src={capturedImage} alt="scanned" className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="rounded-3xl p-5 border border-amber-500/30" style={{ background: 'rgba(245,158,11,0.08)' }}>
+                <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-1">AI behöver din hjälp</p>
+                <p className="text-base font-bold text-white mb-1">Vad är det för vara?</p>
+                <p className="text-sm text-slate-400">Är det något av dessa?</p>
+              </div>
+
+              <div className="space-y-2">
+                {guesses.map((guess, i) => (
+                  <motion.button
+                    key={i}
+                    initial={{ opacity: 0, x: -15 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.08 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => confirmGuess(guess)}
+                    className="w-full text-left p-4 rounded-2xl border border-white/10 flex items-center justify-between hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold text-white">{guess.label}</p>
+                      {guess.category && <p className="text-xs text-slate-500">{guess.category}</p>}
+                    </div>
+                    <span className="text-indigo-400 text-lg">→</span>
+                  </motion.button>
+                ))}
+
+                <button
+                  onClick={() => setPhase('error')}
+                  className="w-full py-3 rounded-2xl border border-white/8 text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  Nej, inget av dessa
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ERROR + MANUAL SEARCH */}
           {phase === 'error' && (
             <motion.div
               key="error"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center gap-4 text-center mt-16"
+              className="flex flex-col items-center gap-5 w-full max-w-sm mt-8"
             >
-              <div className="text-5xl">🔍</div>
-              <p className="text-white font-semibold">Kunde inte identifiera varan</p>
-              <p className="text-slate-500 text-sm">Försök med en tydligare bild med bättre ljus</p>
-              <motion.button whileTap={{ scale: 0.95 }} onClick={reset}
-                className="px-6 py-3 rounded-2xl bg-indigo-500 text-white font-semibold">
-                Försök igen
-              </motion.button>
+              <div className="text-center">
+                <div className="text-5xl mb-3">🔍</div>
+                <p className="text-white font-semibold">Vi såg det inte tydligt</p>
+                <p className="text-slate-500 text-sm mt-1">Skriv vad du säljer så hjälper AI:n dig ändå</p>
+              </div>
+
+              {/* Manual search bar */}
+              <div className="w-full space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={manualQuery}
+                    onChange={e => setManualQuery(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleManualSearch()}
+                    placeholder="t.ex. PS5 DualSense, Nike Air Force 1..."
+                    className="flex-1 px-4 py-3 rounded-2xl text-sm text-white placeholder-slate-500"
+                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
+                    autoFocus
+                  />
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleManualSearch}
+                    disabled={!manualQuery.trim() || manualLoading}
+                    className="px-4 py-3 rounded-2xl font-semibold text-white bg-indigo-500 disabled:opacity-40 flex items-center justify-center"
+                  >
+                    {manualLoading
+                      ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      : '→'}
+                  </motion.button>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {['PS5 Kontroll', 'iPhone 14', 'Nike skor', 'Jacka'].map(s => (
+                    <button key={s} onClick={() => setManualQuery(s)}
+                      className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-colors">
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button onClick={reset} className="text-sm text-slate-600 hover:text-slate-400 transition-colors">
+                ← Ta en ny bild istället
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
