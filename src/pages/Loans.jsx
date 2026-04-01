@@ -38,7 +38,9 @@ export default function Loans() {
   const extraPayment = Math.round(Math.min(monthlyDisposable * 0.2, 500));
 
   const runDebtEraser = async (loan, idx) => {
+    if (!(loan.monthlyPayment > 0)) return;
     setLoadingEraser(idx);
+    const isZero = (loan.interestRate || 0) === 0;
     const res = await base44.integrations.Core.InvokeLLM({
       prompt: `Du är en CFO. Användaren har ett lån:
 Namn: ${loan.name}
@@ -47,11 +49,16 @@ Ränta: ${loan.interestRate}%
 Månadsbetalning: ${loan.monthlyPayment} kr/mån
 Disponibel marginal att flytta: ${extraPayment} kr/mån
 
-Beräkna:
-1. Nuvarande tid att bli skuldfri (månader)
+${isZero
+  ? `Räntan är 0%. Fokusera INTE på räntebesparing. Fokusera istället på TID och kassaflöde:
+Beräkna hur många månader snabbare de blir skuldfria om de betalar ${extraPayment} kr extra/mån, och hur mycket kassaflöde per månad som frigörs när lånet är betalt.
+Exempel: "Eftersom räntan är 0% sparar du inga pengar på att betala av snabbare, men du frigör ${loan.monthlyPayment} kr/mån i kassaflöde X månader tidigare."
+Sätt interestSaved till 0.`
+  : `Beräkna:
+1. Nuvarande tid att bli skuldfri (månader): totalAmount / monthlyPayment
 2. Tid om de betalar ${extraPayment} kr extra/mån
 3. Hur många månader snabbare
-4. Total räntebesparing i kr
+4. Total räntebesparing i kr`}
 
 Ge ett kort, engagerande svar på svenska. Max 3 meningar. Inkludera siffrorna.`,
       response_json_schema: {
@@ -232,20 +239,23 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
                     <div className="flex gap-2">
                       <button
                         onClick={() => runDebtEraser(loan, i)}
-                        disabled={loadingEraser === i}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-xs font-medium transition-colors"
+                        disabled={loadingEraser === i || !(loan.monthlyPayment > 0)}
+                        title={!(loan.monthlyPayment > 0) ? 'Lägg till en månadsbetalning för att analysera' : undefined}
+                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         {loadingEraser === i ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Scissors className="w-3.5 h-3.5" />}
                         Radera snabbare
                       </button>
-                      <button
-                        onClick={() => runNegotiation(loan, i)}
-                        disabled={loadingNegotiate === i}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium transition-colors"
-                      >
-                        {loadingNegotiate === i ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MessageSquare className="w-3.5 h-3.5" />}
-                        Sänk min ränta
-                      </button>
+                      {!isZeroInterest && (
+                        <button
+                          onClick={() => runNegotiation(loan, i)}
+                          disabled={loadingNegotiate === i}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium transition-colors"
+                        >
+                          {loadingNegotiate === i ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MessageSquare className="w-3.5 h-3.5" />}
+                          Sänk min ränta
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -266,24 +276,33 @@ Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bät
                             </div>
                             <button onClick={() => setDebtEraserResult(null)}><X className="w-4 h-4 text-slate-500" /></button>
                           </div>
-                          <div className="grid grid-cols-3 gap-2 mb-3">
-                            <div className="bg-white/5 rounded-xl p-3 text-center">
-                              <p className="text-white font-bold">{debtEraserResult.monthsNow} mån</p>
-                              <p className="text-slate-400 text-xs">Nu</p>
+                          {/* monthsNow = 0 means no monthly payment set */}
+                          {debtEraserResult.monthsNow === 0 || debtEraserResult.monthsNow === Infinity ? (
+                            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mb-3">
+                              <p className="text-amber-300 text-sm">Lägg till en månadsbetalning för att se när du blir skuldfri.</p>
                             </div>
-                            <div className="bg-indigo-500/20 rounded-xl p-3 text-center">
-                              <p className="text-indigo-300 font-bold">{debtEraserResult.monthsWithExtra} mån</p>
-                              <p className="text-slate-400 text-xs">Med extra</p>
+                          ) : (
+                            <div className="grid grid-cols-3 gap-2 mb-3">
+                              <div className="bg-white/5 rounded-xl p-3 text-center">
+                                <p className="text-white font-bold">{debtEraserResult.monthsNow} mån</p>
+                                <p className="text-slate-400 text-xs">Nu</p>
+                              </div>
+                              <div className="bg-indigo-500/20 rounded-xl p-3 text-center">
+                                <p className="text-indigo-300 font-bold">{debtEraserResult.monthsWithExtra} mån</p>
+                                <p className="text-slate-400 text-xs">Med extra</p>
+                              </div>
+                              <div className="bg-emerald-500/20 rounded-xl p-3 text-center">
+                                <p className="text-emerald-300 font-bold">{debtEraserResult.monthsFaster} mån</p>
+                                <p className="text-slate-400 text-xs">Snabbare</p>
+                              </div>
                             </div>
-                            <div className="bg-emerald-500/20 rounded-xl p-3 text-center">
-                              <p className="text-emerald-300 font-bold">{debtEraserResult.monthsFaster} mån</p>
-                              <p className="text-slate-400 text-xs">Snabbare</p>
-                            </div>
-                          </div>
+                          )}
                           <p className="text-slate-300 text-sm leading-relaxed">{debtEraserResult.message}</p>
-                          <p className="text-emerald-400 text-sm font-medium mt-2">
-                            Räntebesparing: {fmt(debtEraserResult.interestSaved)} kr 🎉
-                          </p>
+                          {debtEraserResult.interestSaved > 0 && (
+                            <p className="text-emerald-400 text-sm font-medium mt-2">
+                              Räntebesparing: {fmt(debtEraserResult.interestSaved)} kr 🎉
+                            </p>
+                          )}
                         </div>
                       </motion.div>
                     )}
