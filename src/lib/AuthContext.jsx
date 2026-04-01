@@ -2,6 +2,22 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { queryClientInstance } from '@/lib/query-client';
+
+// All localStorage keys that contain user-specific data
+const USER_SESSION_KEYS = [
+  'hasSeenWelcome',
+  'hasSeenWalkthrough',
+  'anchor_guest_profile',
+  'anchor_is_guest',
+  'pwaInstallDismissed',
+];
+
+const clearUserSessionData = () => {
+  USER_SESSION_KEYS.forEach(key => localStorage.removeItem(key));
+  // Clear ALL React Query cached data so new user starts fresh
+  queryClientInstance.clear();
+};
 
 const AuthContext = createContext();
 
@@ -89,9 +105,16 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserAuth = async () => {
     try {
-      // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
+
+      // If a different user was previously cached, clear their data
+      const previousUserId = sessionStorage.getItem('anchor_current_user_id');
+      if (previousUserId && previousUserId !== currentUser.id) {
+        clearUserSessionData();
+      }
+      sessionStorage.setItem('anchor_current_user_id', currentUser.id);
+
       setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
@@ -111,14 +134,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = (shouldRedirect = true) => {
+    // Clear all user-specific cached data before logging out
+    clearUserSessionData();
+    sessionStorage.removeItem('anchor_current_user_id');
     setUser(null);
     setIsAuthenticated(false);
     
     if (shouldRedirect) {
-      // Use the SDK's logout method which handles token cleanup and redirect
       base44.auth.logout(window.location.href);
     } else {
-      // Just remove the token without redirect
       base44.auth.logout();
     }
   };
