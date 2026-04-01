@@ -28,47 +28,47 @@ export default function Layout({ children, currentPageName }) {
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0e1a] via-[#111827] to-[#0a0e1a]">
+    <div className="min-h-screen" style={{ background: 'var(--color-background-primary)' }}>
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
       <style>{`
         :root {
-          /* Primary Colors */
-          --color-background-primary: #0B0F1A;
-          --color-background-secondary: #111827;
-          --color-surface: #1A2233;
-          --color-card: #1F2937;
+          /* Primary Colors — mörkblå istället för svart */
+          --color-background-primary: #0F1724;
+          --color-background-secondary: #141E2E;
+          --color-surface: #1C2B3F;
+          --color-card: #1E2D42;
           
-          /* Accent */
-          --color-accent: #3B82F6;
-          --color-accent-hover: #2563EB;
+          /* Accent — dämpat stålblått, inte neon */
+          --color-accent: #4B7CF3;
+          --color-accent-hover: #3A6ADE;
           
           /* Text */
-          --color-text-primary: #F3F4F6;
-          --color-text-secondary: #9CA3AF;
-          --color-text-muted: #6B7280;
+          --color-text-primary: #EDF0F5;
+          --color-text-secondary: #8B97A8;
+          --color-text-muted: #5C6B7D;
           
-          /* Status */
-          --color-success: #10B981;
-          --color-danger: #EF4444;
-          --color-warning: #F59E0B;
+          /* Status — naturligare toner */
+          --color-success: #3DAA7A;
+          --color-danger: #D95F5F;
+          --color-warning: #C8923A;
           
-          /* Effects */
-          --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-          --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.2);
-          --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3);
-          --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4);
+          /* Effects — subtila skuggor, ingen glow */
+          --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.15);
+          --shadow-md: 0 4px 8px -1px rgb(0 0 0 / 0.25);
+          --shadow-lg: 0 8px 16px -3px rgb(0 0 0 / 0.3);
+          --shadow-xl: 0 16px 24px -5px rgb(0 0 0 / 0.35);
           
           /* Borders */
-          --border-radius-sm: 12px;
-          --border-radius-md: 16px;
-          --border-radius-lg: 20px;
+          --border-radius-sm: 10px;
+          --border-radius-md: 14px;
+          --border-radius-lg: 18px;
           
           /* Transitions */
           --transition-fast: 150ms ease-out;
-          --transition-base: 250ms ease-in-out;
-          --transition-slow: 350ms ease-in-out;
+          --transition-base: 220ms ease-in-out;
+          --transition-slow: 320ms ease-in-out;
         }
         
         * {
@@ -81,7 +81,7 @@ export default function Layout({ children, currentPageName }) {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
-          background: linear-gradient(135deg, var(--color-background-primary) 0%, var(--color-background-secondary) 100%);
+          background: var(--color-background-primary);
           color: var(--color-text-primary);
           min-height: 100vh;
         }
@@ -112,26 +112,26 @@ export default function Layout({ children, currentPageName }) {
           100% { background-position: 1000px 0; }
         }
 
-        /* Glass Effect */
+        /* Glass Effect — mjukare, mindre blur-intensiv */
         .glass-effect {
-          background: rgba(31, 41, 55, 0.6);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(28, 43, 63, 0.75);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border: 1px solid rgba(255, 255, 255, 0.07);
         }
         
         /* Card Effect */
         .dark-card {
           background: var(--color-card);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.06);
           border-radius: var(--border-radius-md);
           transition: all var(--transition-base);
         }
         
         .dark-card:hover {
-          border-color: rgba(255, 255, 255, 0.12);
-          transform: translateY(-2px);
-          box-shadow: var(--shadow-lg);
+          border-color: rgba(255, 255, 255, 0.10);
+          transform: translateY(-1px);
+          box-shadow: var(--shadow-md);
         }
         
         /* Input Styling */
@@ -209,8 +209,8 @@ export default function Layout({ children, currentPageName }) {
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
             onClick={() => setVoiceOpen(true)}
-            className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/50 flex items-center justify-center z-40"
-            style={{ animation: 'pulse-glow 2s infinite' }}
+            className="fixed bottom-24 right-6 w-12 h-12 rounded-full flex items-center justify-center z-40 border border-white/12 hover:border-white/20 transition-colors"
+            style={{ background: 'var(--color-surface)' }}
           >
             <Mic className="w-6 h-6 text-white" />
           </motion.button>
@@ -227,7 +227,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Bottom Navigation */}
       {!hideNav && (
-        <nav className="fixed bottom-0 left-0 right-0 glass-effect mobile-safe-area z-50">
+        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6" style={{ background: 'var(--color-background-secondary)' }}>
           <div className="flex items-center justify-around py-2 max-w-md mx-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -243,8 +243,8 @@ export default function Layout({ children, currentPageName }) {
                     whileTap={{ scale: 0.9 }}
                     className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
                       isActive 
-                        ? 'text-indigo-400' 
-                        : 'text-slate-500 hover:text-slate-300'
+                        ? 'text-white' 
+                        : 'text-slate-600 hover:text-slate-400'
                     }`}
                   >
                     <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : ''}`} />
@@ -252,7 +252,7 @@ export default function Layout({ children, currentPageName }) {
                     {isActive && (
                       <motion.div
                         layoutId="activeTab"
-                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"
+                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-white rounded-full"
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       />
                     )}

@@ -339,7 +339,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
       <div className="px-6 pt-6 pb-4">
         {/* Streak & Level */}
@@ -358,7 +358,7 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
         >
           <p className="text-slate-500 text-sm">Välkommen tillbaka</p>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-white tracking-tight">
             ANCHOR
           </h1>
         </motion.div>
@@ -428,55 +428,46 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 gap-3 auto-rows-auto">
           <motion.button
             whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
             onClick={() => setShowExpenseModal(true)}
-            className="glass-effect rounded-2xl p-5 text-white shadow-lg shadow-emerald-500/20 relative overflow-hidden"
+            className="rounded-2xl p-5 text-white border border-white/8 flex items-center gap-3 hover:border-white/14 transition-colors"
+            style={{ background: 'var(--color-card)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-emerald-600/20" />
-            <div className="relative flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-lg">
-                <Plus className="w-6 h-6" />
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-white">Registrera köp</p>
-                <p className="text-xs text-slate-400">Lägg till utgift</p>
-              </div>
+            <div className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center flex-shrink-0" style={{ background: 'var(--color-surface)' }}>
+              <Plus className="w-5 h-5 text-slate-300" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-white text-sm">Registrera köp</p>
+              <p className="text-xs text-slate-500">Lägg till utgift</p>
             </div>
           </motion.button>
 
           <motion.button
             whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.02 }}
             onClick={() => setShowTransactionHub(true)}
-            className="glass-effect rounded-2xl p-5 text-white shadow-lg shadow-indigo-500/20 relative overflow-hidden"
+            className="rounded-2xl p-5 text-white border border-white/8 flex items-center gap-3 hover:border-white/14 transition-colors"
+            style={{ background: 'var(--color-card)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-indigo-600/20" />
-            <div className="relative flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg">
-                <Zap className="w-6 h-6" />
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-white">Hantera pengar</p>
-                <p className="text-xs text-slate-400">In · Ut · Flytta</p>
-              </div>
+            <div className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center flex-shrink-0" style={{ background: 'var(--color-surface)' }}>
+              <Zap className="w-5 h-5 text-slate-300" />
+            </div>
+            <div className="text-left">
+              <p className="font-semibold text-white text-sm">Hantera pengar</p>
+              <p className="text-xs text-slate-500">In · Ut · Flytta</p>
             </div>
           </motion.button>
 
           <Link to={createPageUrl('Expenses')}>
             <motion.div
               whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.02 }}
-              className="glass-effect rounded-2xl p-5 shadow-lg h-full relative overflow-hidden"
+              className="rounded-2xl p-5 h-full border border-white/8 flex items-center gap-3 hover:border-white/14 transition-colors"
+              style={{ background: 'var(--color-card)' }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/10" />
-              <div className="relative flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg">
-                  <ShoppingBag className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-left">
-                  <p className="font-semibold text-white">Se utgifter</p>
-                  <p className="text-xs text-slate-400">Översikt</p>
-                </div>
+              <div className="w-10 h-10 rounded-xl border border-white/10 flex items-center justify-center flex-shrink-0" style={{ background: 'var(--color-surface)' }}>
+                <ShoppingBag className="w-5 h-5 text-slate-300" />
+              </div>
+              <div className="text-left">
+                <p className="font-semibold text-white text-sm">Se utgifter</p>
+                <p className="text-xs text-slate-500">Översikt</p>
               </div>
             </motion.div>
           </Link>
@@ -490,68 +481,50 @@ export default function Dashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             whileTap={{ scale: 0.98 }}
-            whileHover={{ scale: 1.01 }}
-            className="relative overflow-hidden rounded-2xl p-6 cursor-pointer group"
-            style={{
-              background: 'rgba(139, 92, 246, 0.1)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
-              boxShadow: '0 0 40px rgba(139, 92, 246, 0.2)'
-            }}
+            className="rounded-2xl p-5 cursor-pointer border border-white/8 hover:border-white/14 transition-colors flex items-center gap-4"
+            style={{ background: 'var(--color-card)' }}
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/50">
-                <TrendingUp className="w-7 h-7 text-white" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-white mb-1">Pro Tools</h3>
-                <p className="text-xs text-slate-400">15 avancerade verktyg för din ekonomi</p>
-              </div>
-              <motion.div
-                animate={{ x: [0, 4, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-              >
-                <Brain className="w-6 h-6 text-purple-400" />
-              </motion.div>
+            <div className="w-12 h-12 rounded-xl border border-white/10 flex items-center justify-center flex-shrink-0" style={{ background: 'var(--color-surface)' }}>
+              <TrendingUp className="w-6 h-6 text-slate-300" />
             </div>
+            <div className="flex-1">
+              <h3 className="text-base font-semibold text-white">Pro Tools</h3>
+              <p className="text-xs text-slate-500 mt-0.5">15 avancerade verktyg för din ekonomi</p>
+            </div>
+            <Brain className="w-5 h-5 text-slate-500 flex-shrink-0" />
           </motion.div>
         </Link>
 
         {/* Other Actions */}
-        <div className="grid grid-cols-6 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {[
-            { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
-            { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
-            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600', isPro: true, walkthroughId: 'walkthrough-simulator' },
-            { icon: GitBranch, label: 'What-If', page: 'WhatIf', color: 'from-indigo-500 to-violet-600' },
-            { icon: Calculator, label: 'Skatt', page: 'WhatIf', color: 'from-rose-500 to-pink-600' },
-            { icon: ScanLine, label: 'Resell', page: 'ResellScanner', color: 'from-cyan-500 to-blue-600', walkthroughId: 'walkthrough-resell' },
-            { icon: BarChart2, label: 'Historik', page: 'FinancialHistory', color: 'from-violet-500 to-purple-600' },
+            { icon: Plane, label: 'Resor', page: 'TravelPlanner', walkthroughId: null },
+            { icon: Landmark, label: 'Lån', page: 'Loans', walkthroughId: null },
+            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', isPro: true, walkthroughId: 'walkthrough-simulator' },
+            { icon: GitBranch, label: 'What-If', page: 'WhatIf', walkthroughId: null },
+            { icon: Calculator, label: 'Skatt', page: 'WhatIf', walkthroughId: null },
+            { icon: ScanLine, label: 'Resell', page: 'ResellScanner', walkthroughId: 'walkthrough-resell' },
+            { icon: BarChart2, label: 'Historik', page: 'FinancialHistory', walkthroughId: null },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
-              <Link key={action.page} to={createPageUrl(action.page)}>
+              <Link key={i} to={createPageUrl(action.page)}>
                 <motion.div
                   id={action.walkthroughId}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.45 + i * 0.05 }}
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.05 }}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl glass-effect relative"
+                  whileTap={{ scale: 0.95 }}
+                  className="flex flex-col items-center gap-2 py-4 px-2 rounded-xl border border-white/8 hover:border-white/14 transition-colors relative"
+                  style={{ background: 'var(--color-card)' }}
                 >
                   {action.isPro && (
-                    <div className="absolute top-2 right-2">
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-                        <span className="text-[8px] font-bold text-white">PRO</span>
-                      </div>
+                    <div className="absolute top-1.5 right-1.5">
+                      <span className="text-[8px] font-bold text-slate-400 bg-white/10 px-1 rounded">PRO</span>
                     </div>
                   )}
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center shadow-lg`}>
-                    <Icon className="w-6 h-6 text-white" />
-                  </div>
-                  <span className="text-xs text-slate-300 font-medium">{action.label}</span>
+                  <Icon className="w-5 h-5 text-slate-400" strokeWidth={1.5} />
+                  <span className="text-xs text-slate-400 font-medium">{action.label}</span>
                 </motion.div>
               </Link>
             );
