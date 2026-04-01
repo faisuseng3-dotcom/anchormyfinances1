@@ -32,6 +32,7 @@ import DebtAlert from '@/components/dashboard/DebtAlert';
 import TransactionHub from '@/components/transactions/TransactionHub';
 import WeeklyPointsBadge from '@/components/challenge/WeeklyPointsBadge';
 import AdminScoreboard from '@/components/challenge/AdminScoreboard';
+import OnboardingWalkthrough from '@/components/onboarding/OnboardingWalkthrough';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ export default function Dashboard() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
+  const [showWalkthrough, setShowWalkthrough] = useState(false);
   const nowDate = new Date();
   const currentMonthKey = `${nowDate.getFullYear()}-${String(nowDate.getMonth() + 1).padStart(2, '0')}`;
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
@@ -103,6 +105,11 @@ export default function Dashboard() {
       if (!hasSeenWelcome) {
         setShowWelcome(true);
         localStorage.setItem('hasSeenWelcome', 'true');
+      }
+      const hasSeenWalkthrough = localStorage.getItem('hasSeenWalkthrough');
+      if (!hasSeenWalkthrough) {
+        // Short delay so dashboard renders first
+        setTimeout(() => setShowWalkthrough(true), 800);
       }
     }
   }, [profile]);
@@ -380,7 +387,7 @@ export default function Dashboard() {
       </div>
 
       {/* Safe-to-Spend Widget */}
-      <div className="px-6 mb-4 mt-4">
+      <div id="walkthrough-safe-to-spend" className="px-6 mb-4 mt-4">
         <SafeToSpendWidget profile={displayProfile} />
       </div>
 
@@ -410,7 +417,9 @@ export default function Dashboard() {
         <HeroCards profile={displayProfile} />
 
         {/* Forecast Chart */}
-        <ForecastChart profile={displayProfile} />
+        <div id="walkthrough-forecast">
+          <ForecastChart profile={displayProfile} />
+        </div>
 
         {/* Insights, Risks & Actions */}
         <InsightsSection insights={insights} profile={displayProfile} />
@@ -514,16 +523,17 @@ export default function Dashboard() {
           {[
             { icon: Plane, label: 'Resor', page: 'TravelPlanner', color: 'from-blue-500 to-cyan-600' },
             { icon: Landmark, label: 'Lån', page: 'Loans', color: 'from-amber-500 to-orange-600' },
-            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600', isPro: true },
+            { icon: Brain, label: 'Simulator', page: 'PurchaseSimulator', color: 'from-emerald-500 to-green-600', isPro: true, walkthroughId: 'walkthrough-simulator' },
             { icon: GitBranch, label: 'What-If', page: 'WhatIf', color: 'from-indigo-500 to-violet-600' },
             { icon: Calculator, label: 'Skatt', page: 'WhatIf', color: 'from-rose-500 to-pink-600' },
-            { icon: ScanLine, label: 'Resell', page: 'ResellScanner', color: 'from-cyan-500 to-blue-600' },
+            { icon: ScanLine, label: 'Resell', page: 'ResellScanner', color: 'from-cyan-500 to-blue-600', walkthroughId: 'walkthrough-resell' },
             { icon: BarChart2, label: 'Historik', page: 'FinancialHistory', color: 'from-violet-500 to-purple-600' },
           ].map((action, i) => {
             const Icon = action.icon;
             return (
               <Link key={action.page} to={createPageUrl(action.page)}>
                 <motion.div
+                  id={action.walkthroughId}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.45 + i * 0.05 }}
@@ -594,6 +604,18 @@ export default function Dashboard() {
         isVisible={showBadgeUnlock}
         onClose={() => setShowBadgeUnlock(false)}
       />
+
+      {/* Onboarding Walkthrough */}
+      <AnimatePresence>
+        {showWalkthrough && (
+          <OnboardingWalkthrough
+            onFinish={() => {
+              setShowWalkthrough(false);
+              localStorage.setItem('hasSeenWalkthrough', 'true');
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
