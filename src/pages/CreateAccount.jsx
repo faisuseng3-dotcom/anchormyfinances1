@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { loadGuestProfile, setGuestMode } from '@/components/guestStorage';
+import { loadGuestProfile, clearGuestData } from '@/components/guestStorage';
 import SignupValueScreen from '@/components/signup/SignupValueScreen';
 import SignupPersonaStep from '@/components/signup/SignupPersonaStep';
 import SignupConfirmation from '@/components/signup/SignupConfirmation';
@@ -32,7 +32,7 @@ export default function CreateAccount() {
       await base44.entities.FinancialProfile.create(mergedData);
     }
 
-    setGuestMode(false);
+    clearGuestData(); // Wipe guest localStorage so it never leaks to another user
     base44.analytics.track({ eventName: 'account_created', properties: { persona: selectedPersona, had_guest_data: !!savedProfile } });
     setStep(2);
   };
