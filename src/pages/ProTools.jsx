@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bot, Brain, Rocket, User, Scissors, Users, Activity, Newspaper } from 'lucide-react';
+import { ArrowLeft, Bot, Brain, Rocket, User, Scissors, Users } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 // Feature components (existing)
@@ -22,9 +22,6 @@ import FutureSimulator from '@/components/protools/mastery/FutureSimulator';
 import EconomicSelf from '@/components/protools/mastery/EconomicSelf';
 import MarginMaxer from '@/components/protools/mastery/MarginMaxer';
 import LifePuzzle from '@/components/protools/mastery/LifePuzzle';
-import InvestmentVault from '@/components/protools/mastery/InvestmentVault';
-import MarketHeatMap from '@/components/protools/mastery/MarketHeatMap';
-import SmartNewsCards from '@/components/protools/mastery/SmartNewsCards';
 
 const MODULES = [
   {
@@ -92,39 +89,6 @@ const MODULES = [
     accent: '#22d3ee',
     tag: 'RELATION',
     component: LifePuzzle,
-  },
-  {
-    id: 'vault',
-    title: 'Investment Vault',
-    hook: 'Från insikt till investering på 3 sekunder. Exekvera din AI-strategi.',
-    icon: Activity,
-    gradient: 'from-yellow-500 to-amber-600',
-    glow: 'rgba(251,191,36,0.35)',
-    accent: '#fbbf24',
-    tag: 'INVESTERA',
-    component: InvestmentVault,
-  },
-  {
-    id: 'heatmap',
-    title: 'Marknadens Puls',
-    hook: 'Se marknaden som ett levande väsen — inte som en Excel-tabell.',
-    icon: Brain,
-    gradient: 'from-emerald-400 to-green-600',
-    glow: 'rgba(16,185,129,0.35)',
-    accent: '#10b981',
-    tag: 'HEAT MAP',
-    component: MarketHeatMap,
-  },
-  {
-    id: 'news',
-    title: 'Smart Nyhetsflöde',
-    hook: 'AI Butler väljer 3 nyheter som faktiskt påverkar din frihet.',
-    icon: Newspaper,
-    gradient: 'from-indigo-500 to-violet-600',
-    glow: 'rgba(99,102,241,0.35)',
-    accent: '#818cf8',
-    tag: 'NYHETER',
-    component: SmartNewsCards,
   },
 ];
 

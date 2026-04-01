@@ -89,23 +89,10 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserAuth = async () => {
     try {
+      // Now check if the user is authenticated
       setIsLoadingAuth(true);
       const currentUser = await base44.auth.me();
-
-      // If a different user is now logging in, clear the previous session's cached data
-      setUser(prev => {
-        if (prev && prev.id !== currentUser.id) {
-          import('@/lib/query-client').then(({ queryClientInstance }) => {
-            queryClientInstance.clear();
-          });
-          localStorage.removeItem('hasSeenWelcome');
-          localStorage.removeItem('hasSeenWalkthrough');
-          localStorage.removeItem('anchor_guest_profile');
-          localStorage.removeItem('anchor_is_guest');
-        }
-        return currentUser;
-      });
-
+      setUser(currentUser);
       setIsAuthenticated(true);
       setIsLoadingAuth(false);
     } catch (error) {
@@ -123,27 +110,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const clearSessionState = () => {
-    // Clear React Query cache so no previous user's data leaks to the next session
-    import('@/lib/query-client').then(({ queryClientInstance }) => {
-      queryClientInstance.clear();
-    });
-    // Clear per-user localStorage keys
-    localStorage.removeItem('hasSeenWelcome');
-    localStorage.removeItem('hasSeenWalkthrough');
-    // Clear any guest data
-    localStorage.removeItem('anchor_guest_profile');
-    localStorage.removeItem('anchor_is_guest');
-  };
-
   const logout = (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
-    clearSessionState();
     
     if (shouldRedirect) {
+      // Use the SDK's logout method which handles token cleanup and redirect
       base44.auth.logout(window.location.href);
     } else {
+      // Just remove the token without redirect
       base44.auth.logout();
     }
   };
