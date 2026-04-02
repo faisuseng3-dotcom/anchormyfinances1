@@ -1,65 +1,137 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, FileText } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 export default function TermsOfService() {
   return (
-    <div className="min-h-screen px-6 py-10 max-w-2xl mx-auto text-slate-300"
-      style={{ background: 'linear-gradient(160deg, #07090f 0%, #0d1321 50%, #0b1120 100%)' }}>
-      <Link to="/" className="inline-flex items-center gap-2 text-indigo-400 text-sm mb-8 hover:text-indigo-300">
+    <div
+      className="min-h-screen px-6 py-10 max-w-2xl mx-auto"
+      style={{ background: 'var(--color-background-primary)', color: 'var(--color-text-secondary)' }}
+    >
+      <Link
+        to="/"
+        className="inline-flex items-center gap-2 text-sm mb-10 hover:opacity-80 transition-opacity"
+        style={{ color: 'var(--color-accent)' }}
+      >
         <ArrowLeft className="w-4 h-4" /> Tillbaka
       </Link>
 
-      <div className="flex items-center gap-3 mb-8">
-        <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-          <FileText className="w-5 h-5 text-purple-400" />
-        </div>
-        <h1 className="text-2xl font-bold text-white">Användarvillkor</h1>
-      </div>
+      <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--color-text-primary)' }}>
+        Användarvillkor
+      </h1>
+      <p className="text-sm mb-10" style={{ color: 'var(--color-text-muted)' }}>
+        Senast uppdaterad: april 2026
+      </p>
 
-      <p className="text-slate-400 text-sm mb-8">Senast uppdaterad: mars 2026</p>
+      <div className="space-y-10 text-sm leading-relaxed">
 
-      <div className="space-y-8 text-sm leading-relaxed">
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">1. Om tjänsten</h2>
-          <p className="text-slate-400">Anchor är ett verktyg för ekonomisk simulering och personlig budgetplanering. Genom att skapa ett konto och använda Anchor godkänner du dessa villkor.</p>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            1. Tjänstens karaktär
+          </h2>
+          <p>
+            Anchor är ett verktyg för personlig ekonomiplanering och budgetsimulering. Tjänsten beräknar prognoser och sammanställer ekonomisk data uteslutande baserat på de uppgifter du själv anger.
+          </p>
+          <p className="mt-3">
+            Anchor är ett produktnamn och utgör inte en juridisk person. Tjänsten tillhandahålls av den fysiska person som registrerat applikationen hos tjänsteleverantören Base44.
+          </p>
+          <p className="mt-3">
+            Genom att registrera ett konto och använda tjänsten godkänner du dessa villkor i sin helhet.
+          </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">2. Ej finansiell rådgivning</h2>
-          <p className="text-slate-400">Anchor tillhandahåller <strong className="text-white">inga officiella finansiella råd</strong>. All information och alla prognoser i appen är simuleringar baserade på de uppgifter du själv anger. Alla ekonomiska beslut du fattar baserat på appens innehåll är ditt eget ansvar. Rådgör alltid med en certifierad finansiell rådgivare vid viktiga ekonomiska beslut.</p>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            2. Inte finansiell rådgivning
+          </h2>
+          <p>
+            Anchor tillhandahåller inte licensierad finansiell rådgivning. Alla beräkningar, prognoser och sammanfattningar i tjänsten är simuleringar baserade på de siffror du anger och ska inte betraktas som rekommendationer att köpa, sälja eller omstrukturera tillgångar eller skulder.
+          </p>
+          <p className="mt-3">
+            Vid ekonomiska beslut av väsentlig karaktär rekommenderas kontakt med en certifierad finansiell rådgivare eller auktoriserad revisor.
+          </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">3. Ditt ansvar</h2>
-          <p className="text-slate-400">Du ansvarar själv för att:</p>
-          <ul className="list-disc list-inside text-slate-400 mt-2 space-y-1">
-            <li>Hålla dina inloggningsuppgifter hemliga och säkra.</li>
-            <li>De uppgifter du anger i appen är korrekta.</li>
-            <li>Inte dela ditt konto med andra.</li>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            3. Användarens ansvar
+          </h2>
+          <p>Du ansvarar för att:</p>
+          <ul className="mt-3 space-y-2 list-disc list-inside">
+            <li>De uppgifter du anger i tjänsten är korrekta och aktuella.</li>
+            <li>Inloggningsuppgifter förvaras konfidentiellt och inte delas med tredje part.</li>
+            <li>Kontot används för personligt bruk och inte för obehörig åtkomst eller missbruk av systemet.</li>
           </ul>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">4. Ändringar i tjänsten</h2>
-          <p className="text-slate-400">Vi förbehåller oss rätten att uppdatera, ändra eller lägga till funktioner i appen. Vi meddelar om väsentliga förändringar via e-post eller direkt i appen.</p>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            4. Ändringar i tjänsten
+          </h2>
+          <p>
+            Tjänsteutgivaren förbehåller sig rätten att uppdatera, förändra eller utöka tjänstens funktioner. Vid väsentliga ändringar av dessa villkor aviseras berörda användare via e-post till den adress som är registrerad på kontot, med minst 14 dagars varsel.
+          </p>
+          <p className="mt-3">
+            Fortsatt användning av tjänsten efter att ny villkorsversion trätt i kraft innebär att du godkänner de uppdaterade villkoren.
+          </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">5. Avslutande av konto</h2>
-          <p className="text-slate-400">Du kan när som helst radera ditt konto och all tillhörande data via Inställningar i appen. Vi kan stänga av konton som missbrukar tjänsten.</p>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            5. Avslutande av konto och dataradering
+          </h2>
+          <p>
+            Du kan när som helst avsluta ditt konto via Inställningar i appen. Samtliga personuppgifter och din ekonomiska data raderas permanent inom 30 dagar från begäran.
+          </p>
+          <p className="mt-3">
+            Tjänsteutgivaren kan stänga av konton som bedöms missbruka tjänsten, försöka bereda sig obehörig åtkomst eller på annat sätt bryta mot dessa villkor.
+          </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">6. Tillämplig lag</h2>
-          <p className="text-slate-400">Dessa villkor styrs av svensk lag. Eventuella tvister ska lösas i svensk domstol.</p>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            6. Ansvarsbegränsning
+          </h2>
+          <p>
+            Tjänsteutgivaren ansvarar inte för ekonomiska beslut fattade med stöd av tjänstens beräkningar, för driftsavbrott utanför tjänsteutgivarens kontroll, eller för dataintrång som beror på felaktig hantering av inloggningsuppgifter från användarens sida.
+          </p>
         </section>
 
         <section>
-          <h2 className="text-white font-semibold text-base mb-2">7. Kontakt</h2>
-          <p className="text-slate-400">Frågor om användarvillkoren skickas till: <a href="mailto:hello@anchormyfinances.com" className="text-indigo-400 hover:underline">hello@anchormyfinances.com</a></p>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            7. Tillämplig lag och tvistlösning
+          </h2>
+          <p>
+            Dessa villkor regleras av svensk lag. Tvister som inte kan lösas i samförstånd hänskjuts till allmän domstol med Stockholms tingsrätt som första instans, om inte parterna skriftligen överenskommit om annan tvistlösningsmekanism.
+          </p>
         </section>
+
+        <section>
+          <h2 className="font-semibold text-base mb-3" style={{ color: 'var(--color-text-primary)' }}>
+            8. Kontakt
+          </h2>
+          <p>
+            Frågor om dessa villkor riktas till:{' '}
+            <a
+              href="mailto:hello@anchormyfinances.com"
+              style={{ color: 'var(--color-accent)' }}
+              className="hover:underline"
+            >
+              hello@anchormyfinances.com
+            </a>
+          </p>
+        </section>
+
       </div>
+
+      <footer className="mt-16 pt-8 border-t text-xs" style={{ borderColor: 'rgba(255,255,255,0.07)', color: 'var(--color-text-muted)' }}>
+        <Link to="/PrivacyPolicy" className="hover:opacity-80 transition-opacity mr-6" style={{ color: 'var(--color-text-muted)' }}>
+          Integritetspolicy
+        </Link>
+        <Link to="/" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>
+          Tillbaka till tjänsten
+        </Link>
+      </footer>
     </div>
   );
 }

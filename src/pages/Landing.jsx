@@ -2,31 +2,29 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Lock, Bot, Smartphone, ChevronRight } from 'lucide-react';
+import { Lock, BarChart2, Smartphone, ChevronRight, Shield } from 'lucide-react';
 
 const valuePoints = [
   {
-    icon: Lock,
-    color: 'from-indigo-500 to-purple-600',
-    title: 'Permanent minne',
-    description: 'Din ekonomi raderas aldrig. Se din utveckling över månader och år.',
+    icon: BarChart2,
+    title: 'Fullständig ekonomisk historik',
+    description: 'Din data bevaras kontinuerligt. Följ din ekonomiska utveckling över månader och år med exakta siffror.',
   },
   {
-    icon: Bot,
-    color: 'from-emerald-500 to-teal-600',
-    title: 'Personliga AI-Botar',
-    description: 'Dina botar lär känna ditt beteende och ger bättre råd ju längre du använder appen.',
+    icon: Lock,
+    title: 'Data lagrad inom EU',
+    description: 'Alla uppgifter lagras krypterat på servrar i Europa (Frankfurt/Stockholm) i enlighet med GDPR.',
   },
   {
     icon: Smartphone,
-    color: 'from-blue-500 to-cyan-600',
-    title: 'Multi-enhet',
-    description: 'Börja på datorn, fortsätt i mobilen. Din data är alltid synkad.',
+    title: 'Tillgänglig på alla enheter',
+    description: 'Din data är synkroniserad och tillgänglig oavsett om du använder mobil eller dator.',
   },
 ];
 
 export default function Landing() {
   const [agreed, setAgreed] = useState(false);
+
   const handleCTA = () => {
     if (!agreed) return;
     base44.auth.redirectToLogin(`${window.location.origin}/Onboarding`);
@@ -35,68 +33,61 @@ export default function Landing() {
   return (
     <div
       className="min-h-screen flex flex-col relative overflow-x-hidden"
-      style={{ background: 'linear-gradient(160deg, #07090f 0%, #0d1321 50%, #0b1120 100%)' }}
+      style={{ background: 'var(--color-background-primary)' }}
     >
-      {/* Background glows */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <div className="absolute top-[-120px] left-[-100px] w-96 h-96 rounded-full opacity-25"
-          style={{ background: 'radial-gradient(circle, #6366f1 0%, transparent 70%)' }} />
-        <div className="absolute top-[40%] right-[-80px] w-72 h-72 rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, #10b981 0%, transparent 70%)' }} />
-      </div>
-
       {/* Flow indicator */}
       <div className="relative z-10 flex justify-center pt-8 pb-2">
-        <div className="flex items-center gap-2 text-xs text-slate-500">
+        <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--color-text-muted)' }}>
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-white text-[10px] font-bold">1</div>
-            <span className="text-slate-300 font-medium">Skapa konto</span>
+            <div
+              className="w-5 h-5 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
+              style={{ background: 'var(--color-accent)' }}
+            >1</div>
+            <span style={{ color: 'var(--color-text-primary)' }} className="font-medium">Skapa konto</span>
           </div>
-          <div className="w-8 h-px bg-white/20" />
+          <div className="w-8 h-px bg-white/15" />
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-slate-500 text-[10px] font-bold">2</div>
+            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold" style={{ color: 'var(--color-text-muted)' }}>2</div>
             <span>Dina mål</span>
           </div>
-          <div className="w-8 h-px bg-white/20" />
+          <div className="w-8 h-px bg-white/15" />
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-slate-500 text-[10px] font-bold">3</div>
+            <div className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center text-[10px] font-bold" style={{ color: 'var(--color-text-muted)' }}>3</div>
             <span>Din ekonomi</span>
           </div>
         </div>
       </div>
 
-      {/* ── HERO ── */}
-      <section className="relative z-10 flex flex-col items-center px-6 pt-8 pb-10 text-center">
-        {/* Logo pill */}
+      {/* Hero */}
+      <section className="relative z-10 flex flex-col items-center px-6 pt-10 pb-10 text-center">
         <motion.div
-          initial={{ opacity: 0, y: -16 }}
+          initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-6 flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-sm text-slate-400"
+          className="mb-6 flex items-center gap-2 px-4 py-1.5 rounded-full border bg-white/4 text-sm"
+          style={{ borderColor: 'rgba(255,255,255,0.1)', color: 'var(--color-text-secondary)' }}
         >
-          <span className="text-base">⚓</span>
-          <span className="font-semibold tracking-wider text-white">ANCHOR</span>
+          <span className="font-semibold tracking-wider" style={{ color: 'var(--color-text-primary)' }}>ANCHOR</span>
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
-          className="text-4xl font-black text-white leading-tight mb-4 max-w-xs"
+          className="text-4xl font-black leading-tight mb-4 max-w-xs"
+          style={{ color: 'var(--color-text-primary)' }}
         >
-          Ta kontroll över din ekonomi – se din{' '}
-          <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            framtid i klartext
-          </span>
+          Din ekonomi i klartext
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-slate-400 text-sm mb-8 max-w-xs"
+          className="text-sm mb-8 max-w-xs leading-relaxed"
+          style={{ color: 'var(--color-text-secondary)' }}
         >
-          Skapa ett gratis konto på 60 sekunder – appen fylls direkt med dina siffror och AI-analyser.
+          Registrera dina inkomster, kostnader och lån. Anchor beräknar din ekonomiska marginal, prognos och buffert — utan koppling till din bank.
         </motion.p>
 
         {/* CTA */}
@@ -106,39 +97,35 @@ export default function Landing() {
           transition={{ delay: 0.3, duration: 0.5 }}
           className="w-full max-w-xs space-y-3"
         >
-          <motion.button
-            whileTap={{ scale: agreed ? 0.97 : 1 }}
+          <button
             onClick={handleCTA}
-            className="relative w-full h-14 rounded-2xl font-bold text-white text-base overflow-hidden transition-opacity"
+            className="w-full h-14 rounded-2xl font-semibold text-white text-sm flex items-center justify-center gap-2 transition-opacity"
             style={{
-              background: 'linear-gradient(135deg, #6366f1, #7c3aed)',
-              boxShadow: '0 8px 32px rgba(99,102,241,0.4)',
-              opacity: agreed ? 1 : 0.45,
+              background: agreed ? 'var(--color-accent)' : 'rgba(75,124,243,0.3)',
+              opacity: agreed ? 1 : 0.55,
               cursor: agreed ? 'pointer' : 'not-allowed',
             }}
           >
-            <motion.div
-              animate={{ x: ['-100%', '200%'] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 opacity-20"
-              style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent)', width: '50%' }}
-            />
-            <span className="relative flex items-center justify-center gap-2">
-              Skapa konto med e-post
-              <ChevronRight className="w-4 h-4" />
-            </span>
-          </motion.button>
+            Skapa konto med e-post
+            <ChevronRight className="w-4 h-4" />
+          </button>
 
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-slate-600 text-xs">eller</span>
+            <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>eller</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
 
-          <motion.button
+          <button
             onClick={handleCTA}
-            className="w-full h-12 rounded-2xl font-semibold text-white text-sm flex items-center justify-center gap-2 border border-white/15 transition-opacity"
-            style={{ background: 'rgba(255,255,255,0.06)', opacity: agreed ? 1 : 0.45, cursor: agreed ? 'pointer' : 'not-allowed' }}
+            className="w-full h-12 rounded-2xl font-medium text-sm flex items-center justify-center gap-2 border transition-opacity"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              borderColor: 'rgba(255,255,255,0.12)',
+              color: 'var(--color-text-primary)',
+              opacity: agreed ? 1 : 0.55,
+              cursor: agreed ? 'pointer' : 'not-allowed',
+            }}
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -147,67 +134,95 @@ export default function Landing() {
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
             </svg>
             Fortsätt med Google
-          </motion.button>
+          </button>
 
           {/* GDPR Consent */}
-          <label className="flex items-start gap-3 cursor-pointer text-left">
+          <label className="flex items-start gap-3 cursor-pointer text-left mt-1">
             <input
               type="checkbox"
               checked={agreed}
               onChange={e => setAgreed(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded accent-indigo-500 shrink-0"
+              className="mt-0.5 w-4 h-4 rounded shrink-0"
+              style={{ accentColor: 'var(--color-accent)' }}
             />
-            <span className="text-xs text-slate-400 leading-relaxed">
-              Jag godkänner Anchors{' '}
-              <Link to="/TermsOfService" className="text-indigo-400 underline underline-offset-2" onClick={e => e.stopPropagation()}>Användarvillkor</Link>
+            <span className="text-xs leading-relaxed" style={{ color: 'var(--color-text-muted)' }}>
+              Jag har läst och godkänner{' '}
+              <Link
+                to="/TermsOfService"
+                className="underline underline-offset-2 hover:opacity-80"
+                style={{ color: 'var(--color-accent)' }}
+                onClick={e => e.stopPropagation()}
+              >
+                Användarvillkoren
+              </Link>
               {' '}och{' '}
-              <Link to="/PrivacyPolicy" className="text-indigo-400 underline underline-offset-2" onClick={e => e.stopPropagation()}>Integritetspolicy</Link>.
+              <Link
+                to="/PrivacyPolicy"
+                className="underline underline-offset-2 hover:opacity-80"
+                style={{ color: 'var(--color-accent)' }}
+                onClick={e => e.stopPropagation()}
+              >
+                Integritetspolicyn
+              </Link>.
             </span>
           </label>
 
-          <p className="text-center text-xs text-slate-500">
-            Ingen BankID behövs &nbsp;•&nbsp; Gratis &nbsp;•&nbsp; Tar &lt;2 min
-          </p>
+          <div className="flex items-center justify-center gap-1 pt-1">
+            <Shield className="w-3 h-3" style={{ color: 'var(--color-text-muted)' }} />
+            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+              GDPR-kompatibel &nbsp;·&nbsp; Data lagras inom EU &nbsp;·&nbsp; Ingen bankbehörighet krävs
+            </p>
+          </div>
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 mt-auto pb-8 pt-4 flex justify-center gap-6 text-xs text-slate-600">
-        <Link to="/TermsOfService" className="hover:text-slate-400 transition-colors">Användarvillkor</Link>
-        <Link to="/PrivacyPolicy" className="hover:text-slate-400 transition-colors">Integritetspolicy</Link>
-      </footer>
-
-      {/* ── VALUE POINTS ── */}
-      <section className="relative z-10 px-6 pb-16 space-y-4 max-w-sm mx-auto w-full">
-        <motion.h2
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center text-xs font-semibold tracking-widest text-slate-500 uppercase mb-6"
+      {/* Value Points */}
+      <section className="relative z-10 px-6 pb-16 space-y-3 max-w-sm mx-auto w-full">
+        <p
+          className="text-center text-xs font-semibold tracking-widest uppercase mb-6"
+          style={{ color: 'var(--color-text-muted)' }}
         >
-          Varför ANCHOR?
-        </motion.h2>
+          Om tjänsten
+        </p>
 
-        {valuePoints.map(({ icon: Icon, color, title, description }, i) => (
+        {valuePoints.map(({ icon: Icon, title, description }, i) => (
           <motion.div
             key={title}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.55 + i * 0.1, duration: 0.5 }}
-            className="flex items-start gap-4 p-4 rounded-2xl border border-white/8 bg-white/4"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 + i * 0.1, duration: 0.4 }}
+            className="flex items-start gap-4 p-4 rounded-2xl border"
+            style={{
+              background: 'var(--color-card)',
+              borderColor: 'rgba(255,255,255,0.06)',
+            }}
           >
-            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shrink-0 shadow-lg`}>
-              <Icon className="w-5 h-5 text-white" />
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+              style={{ background: 'var(--color-surface)' }}
+            >
+              <Icon className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm mb-0.5">{title}</p>
-              <p className="text-slate-400 text-xs leading-relaxed">{description}</p>
+              <p className="font-semibold text-sm mb-1" style={{ color: 'var(--color-text-primary)' }}>{title}</p>
+              <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>{description}</p>
             </div>
           </motion.div>
         ))}
-
-
       </section>
+
+      {/* Footer */}
+      <footer
+        className="relative z-10 mt-auto pb-10 pt-4 flex justify-center gap-8 text-xs border-t"
+        style={{ borderColor: 'rgba(255,255,255,0.06)', color: 'var(--color-text-muted)' }}
+      >
+        <Link to="/TermsOfService" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>
+          Användarvillkor
+        </Link>
+        <Link to="/PrivacyPolicy" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>
+          Integritetspolicy
+        </Link>
+      </footer>
     </div>
   );
 }
