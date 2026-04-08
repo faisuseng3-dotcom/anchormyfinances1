@@ -228,34 +228,31 @@ export default function Layout({ children, currentPageName }) {
       {/* Bottom Navigation */}
       {!hideNav && (
         <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6" style={{ background: 'var(--color-background-secondary)' }}>
-          <div className="flex items-center justify-around py-2 max-w-md mx-auto">
+          <div className="flex items-center justify-around py-3 max-w-md mx-auto px-4">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentPageName === item.page;
-              
+
               return (
                 <Link
                   key={item.page}
                   to={createPageUrl(item.page)}
-                  className="relative"
+                  className="relative flex items-center justify-center w-12 h-12"
                 >
                   <motion.div
-                    whileTap={{ scale: 0.9 }}
-                    className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all ${
-                      isActive 
-                        ? 'text-white' 
-                        : 'text-slate-600 hover:text-slate-400'
-                    }`}
+                    whileTap={{ scale: 0.85 }}
+                    className="flex items-center justify-center w-10 h-10 rounded-full transition-all"
+                    style={{
+                      background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    }}
                   >
-                    <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : ''}`} />
-                    <span className="text-xs font-medium">{item.label}</span>
-                    {isActive && (
-                      <motion.div
-                        layoutId="activeTab"
-                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-white rounded-full"
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                    )}
+                    <Icon
+                      className="w-5 h-5"
+                      style={{
+                        color: isActive ? '#fff' : 'var(--color-text-muted)',
+                        strokeWidth: isActive ? 2.5 : 1.8,
+                      }}
+                    />
                   </motion.div>
                 </Link>
               );

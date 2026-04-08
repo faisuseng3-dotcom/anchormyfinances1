@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import FeedbackPrompt from '@/components/feedback/FeedbackPrompt';
 import HeroSpendingCard from '@/components/expenses/HeroSpendingCard';
 import SpendingDonut from '@/components/expenses/SpendingDonut';
+import SpendingBubbles from '@/components/expenses/SpendingBubbles';
 import CategoryExpenseList from '@/components/expenses/CategoryExpenseList';
 
 const categories = [
@@ -128,7 +129,10 @@ export default function Expenses() {
       </div>
 
       <div className="px-6 space-y-5">
-        {/* Donut Chart */}
+        {/* Bubble visualization */}
+        <SpendingBubbles categoryTotals={categoryTotals} />
+
+        {/* Donut Chart (detailed) */}
         <SpendingDonut categoryTotals={categoryTotals} totalSpent={totalSpent} onCategoryClick={handleDonutClick} />
 
         {/* Categorized Transactions */}

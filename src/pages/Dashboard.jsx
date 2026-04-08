@@ -342,15 +342,6 @@ export default function Dashboard() {
     <div className="min-h-screen pb-24" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
       <div className="px-6 pt-6 pb-4">
-        {/* Streak & Level */}
-        {profile && (
-          <StreakHeader 
-            streak={profile.dailyLoginStreak || 0} 
-            level={calculateLevel(profile.totalXP || 0)}
-            totalXP={profile.totalXP || 0}
-          />
-        )}
-
         <AdminScoreboard />
         <div className="flex items-center justify-between mb-4">
         <motion.div
@@ -387,7 +378,7 @@ export default function Dashboard() {
       </div>
 
       {/* Safe-to-Spend Widget */}
-      <div id="walkthrough-safe-to-spend" className="px-6 mb-4 mt-4">
+      <div id="walkthrough-safe-to-spend" className="px-6 mb-6 mt-2">
         <SafeToSpendWidget profile={displayProfile} />
       </div>
 
@@ -409,7 +400,7 @@ export default function Dashboard() {
       {/* Debt Alert — visas om användaren har lån */}
       <DebtAlert profile={displayProfile} />
 
-      <div className="px-6 space-y-6">
+      <div className="px-6 space-y-8">
         {/* Cash Flow Calendar */}
         <CashFlowCalendar profile={displayProfile} />
 
