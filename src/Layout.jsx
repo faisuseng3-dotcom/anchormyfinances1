@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, ShoppingBag, TrendingUp, Settings, Mic, ClipboardList, Activity } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Home, TrendingUp, Settings, Mic, ClipboardList, Activity, Plus, PlusCircle, ArrowLeftRight, PiggyBank } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
@@ -10,22 +10,28 @@ import ImpulseTrigger from '@/components/ImpulseTrigger';
 import GuestBanner from '@/components/GuestBanner';
 import { isGuestMode } from '@/components/guestStorage';
 import { useAuth } from '@/lib/AuthContext';
+import ActionMenu from '@/components/nav/ActionMenu';
 
 const navItems = [
-  { icon: Home, label: 'Hem', page: 'Dashboard' },
-  { icon: Activity, label: 'Pulse', page: 'Pulse' },
-  { icon: ClipboardList, label: 'Historik', page: 'TransactionHistory' },
-  { icon: TrendingUp, label: 'Utgifter', page: 'Expenses' },
-  { icon: Settings, label: 'Inställningar', page: 'Settings' },
+  { icon: Home, page: 'Dashboard' },
+  { icon: Activity, page: 'Pulse' },
+  null, // placeholder for center FAB
+  { icon: ClipboardList, page: 'TransactionHistory' },
+  { icon: Settings, page: 'Settings' },
 ];
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [actionMenuOpen, setActionMenuOpen] = useState(false);
   
   const { isAuthenticated, isLoadingAuth } = useAuth();
-  // Hide nav on onboarding or when not authenticated
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated);
+
+  const handleAction = (actionId) => {
+    // Dispatch a custom event that Dashboard listens to
+    window.dispatchEvent(new CustomEvent('anchor:action', { detail: { action: actionId } }));
+  };
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--color-background-primary)' }}>
@@ -225,11 +231,37 @@ export default function Layout({ children, currentPageName }) {
       {/* PWA Install Prompt */}
       {!hideNav && <PWAInstallPrompt />}
 
+      {/* Action Menu */}
+      {!hideNav && (
+        <ActionMenu
+          isOpen={actionMenuOpen}
+          onClose={() => setActionMenuOpen(false)}
+          onAction={handleAction}
+        />
+      )}
+
       {/* Bottom Navigation */}
       {!hideNav && (
         <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6" style={{ background: 'var(--color-background-secondary)' }}>
           <div className="flex items-center justify-around py-3 max-w-md mx-auto px-4">
-            {navItems.map((item) => {
+            {navItems.map((item, idx) => {
+              // Center FAB
+              if (item === null) {
+                return (
+                  <motion.button
+                    key="fab"
+                    whileTap={{ scale: 0.88 }}
+                    onClick={() => setActionMenuOpen(v => !v)}
+                    className="relative flex items-center justify-center w-14 h-14 rounded-full shadow-lg -mt-5"
+                    style={{ background: 'var(--color-accent)' }}
+                  >
+                    <motion.div animate={{ rotate: actionMenuOpen ? 45 : 0 }} transition={{ duration: 0.2 }}>
+                      <Plus className="w-6 h-6 text-white" />
+                    </motion.div>
+                  </motion.button>
+                );
+              }
+
               const Icon = item.icon;
               const isActive = currentPageName === item.page;
 
@@ -242,9 +274,7 @@ export default function Layout({ children, currentPageName }) {
                   <motion.div
                     whileTap={{ scale: 0.85 }}
                     className="flex items-center justify-center w-10 h-10 rounded-full transition-all"
-                    style={{
-                      background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent',
-                    }}
+                    style={{ background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent' }}
                   >
                     <Icon
                       className="w-5 h-5"

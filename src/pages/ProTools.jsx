@@ -4,18 +4,14 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bot, Brain, Rocket, User, Scissors, Users } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { ArrowLeft, Plane, Landmark, ScanLine, Brain, GitBranch, Calculator, BarChart2, Bot, Rocket, User, Scissors, Users } from 'lucide-react';
 
-// Feature components (existing)
+// Feature components
 import DecisionEngine from '@/components/protools/DecisionEngine';
 import SpendingProfile from '@/components/protools/SpendingProfile';
 import SubscriptionHunter from '@/components/protools/SubscriptionHunter';
 import FamilyFinances from '@/components/protools/FamilyFinances';
 import AgentHub from '@/components/protools/AgentHub';
-import ModeGate from '@/components/ModeGate';
-
-// New mastery modules
 import StrategyCenter from '@/components/protools/mastery/StrategyCenter';
 import AIGuru from '@/components/protools/mastery/AIGuru';
 import FutureSimulator from '@/components/protools/mastery/FutureSimulator';
@@ -23,73 +19,30 @@ import EconomicSelf from '@/components/protools/mastery/EconomicSelf';
 import MarginMaxer from '@/components/protools/mastery/MarginMaxer';
 import LifePuzzle from '@/components/protools/mastery/LifePuzzle';
 
+// Discovery row — circular shortcut icons
+const DISCOVERY = [
+  { id: 'travel', label: 'Resor', icon: Plane, color: '#4B7CF3', page: 'TravelPlanner' },
+  { id: 'resell', label: 'Sälj & Tjäna', icon: ScanLine, color: '#7C6CF3', page: 'ResellScanner' },
+  { id: 'loans', label: 'Lån', icon: Landmark, color: '#3DAA7A', page: 'Loans' },
+  { id: 'planner', label: 'Planeraren', icon: GitBranch, color: '#C8923A', page: 'WhatIf' },
+];
+
+// Tools grid — 2×2 secondary tools
+const TOOLS = [
+  { id: 'simulator', label: 'Simulator', icon: Brain, page: 'PurchaseSimulator' },
+  { id: 'tax', label: 'Skatt', icon: Calculator, page: 'WhatIf' },
+  { id: 'history', label: 'Historik', icon: BarChart2, page: 'FinancialHistory' },
+  { id: 'pulse', label: 'Pulse', icon: Rocket, page: 'Pulse' },
+];
+
+// Deep modules
 const MODULES = [
-  {
-    id: 'strategy',
-    title: 'Strategi-Center',
-    hook: 'Se din ekonomi uppifrån — som en VD för ditt eget liv.',
-    icon: Bot,
-    gradient: 'from-violet-500 to-purple-700',
-    glow: 'rgba(139,92,246,0.35)',
-    accent: '#a78bfa',
-    tag: 'EXECUTIVE',
-    component: StrategyCenter,
-  },
-  {
-    id: 'ai_guru',
-    title: 'AI-Gurun',
-    hook: 'Dra i slidern. Få svaret. Fatta bättre beslut på sekunder.',
-    icon: Brain,
-    gradient: 'from-blue-500 to-indigo-600',
-    glow: 'rgba(59,130,246,0.35)',
-    accent: '#60a5fa',
-    tag: 'BESLUT',
-    component: AIGuru,
-  },
-  {
-    id: 'future',
-    title: 'Framtids-Simulatorn',
-    hook: 'Res genom tiden. Se resultatet av dina beslut idag.',
-    icon: Rocket,
-    gradient: 'from-emerald-500 to-teal-600',
-    glow: 'rgba(16,185,129,0.35)',
-    accent: '#34d399',
-    tag: 'FRAMTID',
-    component: FutureSimulator,
-  },
-  {
-    id: 'self',
-    title: 'Ditt Ekonomiska Jag',
-    hook: 'Är du en Oros-sparare eller Impuls-shoppare? Ta reda på det.',
-    icon: User,
-    gradient: 'from-amber-500 to-orange-600',
-    glow: 'rgba(245,158,11,0.35)',
-    accent: '#fbbf24',
-    tag: 'PSYKOLOGI',
-    component: EconomicSelf,
-  },
-  {
-    id: 'margin',
-    title: 'Marginal-Maxaren',
-    hook: 'Återta din frihet — en onödig kostnad i taget.',
-    icon: Scissors,
-    gradient: 'from-rose-500 to-pink-600',
-    glow: 'rgba(244,63,94,0.35)',
-    accent: '#fb7185',
-    tag: 'OPTIMERING',
-    component: MarginMaxer,
-  },
-  {
-    id: 'puzzle',
-    title: 'Livspusslet',
-    hook: 'Dela mål, inte hemligheter. Bygg ekonomisk trygghet tillsammans.',
-    icon: Users,
-    gradient: 'from-cyan-500 to-blue-600',
-    glow: 'rgba(6,182,212,0.35)',
-    accent: '#22d3ee',
-    tag: 'RELATION',
-    component: LifePuzzle,
-  },
+  { id: 'strategy', title: 'Strategi-Center', hook: 'Se din ekonomi uppifrån.', icon: Bot, accent: '#a78bfa', component: StrategyCenter },
+  { id: 'ai_guru', title: 'AI-Gurun', hook: 'Bättre beslut på sekunder.', icon: Brain, accent: '#60a5fa', component: AIGuru },
+  { id: 'future', title: 'Framtids-Simulatorn', hook: 'Se resultatet av dina beslut.', icon: Rocket, accent: '#34d399', component: FutureSimulator },
+  { id: 'self', title: 'Ditt Ekonomiska Jag', hook: 'Förstå ditt ekonomibeteende.', icon: User, accent: '#fbbf24', component: EconomicSelf },
+  { id: 'margin', title: 'Marginal-Maxaren', hook: 'Återta din frihet.', icon: Scissors, accent: '#fb7185', component: MarginMaxer },
+  { id: 'puzzle', title: 'Livspusslet', hook: 'Bygg ekonomisk trygghet tillsammans.', icon: Users, accent: '#22d3ee', component: LifePuzzle },
 ];
 
 export default function ProTools() {
@@ -107,139 +60,136 @@ export default function ProTools() {
   const ActiveComponent = active?.component;
 
   return (
-    <div className="min-h-screen pb-28">
+    <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
-      <div className="px-6 pt-8 pb-4">
+      <div className="px-5 pt-8 pb-4 flex items-center gap-3">
         {activeModule ? (
-          <button
-            onClick={() => setActiveModule(null)}
-            className="flex items-center gap-2 text-slate-400 hover:text-white mb-4 transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span className="text-sm">Tillbaka</span>
+          <button onClick={() => setActiveModule(null)}
+            className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ background: 'var(--color-surface)' }}>
+            <ArrowLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
           </button>
         ) : (
           <Link to={createPageUrl('Dashboard')}>
-            <button className="flex items-center gap-2 text-slate-400 hover:text-white mb-4 transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-              <span className="text-sm">Dashboard</span>
+            <button className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: 'var(--color-surface)' }}>
+              <ArrowLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
             </button>
           </Link>
         )}
-
-        <AnimatePresence mode="wait">
-          {!activeModule ? (
-            <motion.div key="header" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold tracking-widest text-indigo-400 uppercase">Financial Mastery Center</span>
-              </div>
-              <h1 className="text-3xl font-bold text-white leading-tight">
-                Din cockpit<br />
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  för livet.
-                </span>
-              </h1>
-              <p className="text-sm text-slate-500 mt-2">6 verktyg byggda på beteendeforskning</p>
-            </motion.div>
-          ) : (
-            <motion.div key="module-header" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold tracking-widest uppercase" style={{ color: active.accent }}>{active.tag}</span>
-              </div>
-              <h1 className="text-2xl font-bold text-white">{active.title}</h1>
-              <p className="text-sm text-slate-400 mt-1">{active.hook}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div>
+          <p className="text-xs font-medium uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>
+            {activeModule ? active?.title : 'Verktyg'}
+          </p>
+          <h1 className="text-2xl font-black" style={{ color: 'var(--color-text-primary)' }}>
+            {activeModule ? active?.hook : 'Min Ekonomi'}
+          </h1>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="px-6">
-        <AnimatePresence mode="wait">
-          {!activeModule ? (
-            <motion.div
-              key="grid"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="grid grid-cols-1 gap-4"
-            >
-              {MODULES.map((mod, i) => {
-                const Icon = mod.icon;
-                return (
-                  <motion.button
-                    key={mod.id}
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.07, type: 'spring', stiffness: 300, damping: 28 }}
-                    whileHover={{ scale: 1.02, y: -2 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => setActiveModule(mod.id)}
-                    className="w-full text-left relative overflow-hidden rounded-2xl p-5 border border-white/10"
-                    style={{
-                      background: 'rgba(15,20,35,0.7)',
-                      backdropFilter: 'blur(20px)',
-                      WebkitBackdropFilter: 'blur(20px)',
-                      boxShadow: `0 0 30px ${mod.glow}, inset 0 1px 0 rgba(255,255,255,0.06)`,
-                      borderColor: `${mod.accent}30`,
-                    }}
-                  >
-                    {/* Glow orb */}
-                    <div
-                      className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-3xl opacity-20 pointer-events-none"
-                      style={{ background: mod.glow }}
-                    />
+      <AnimatePresence mode="wait">
+        {!activeModule ? (
+          <motion.div key="overview" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-5 space-y-6">
 
-                    <div className="relative flex items-start gap-4">
-                      {/* Icon */}
-                      <div
-                        className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${mod.gradient} flex items-center justify-center flex-shrink-0 shadow-lg`}
-                        style={{ boxShadow: `0 8px 20px ${mod.glow}` }}
+            {/* Discovery row — horizontal scroll of circular icons */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-text-muted)' }}>Snabbval</p>
+              <div className="flex gap-4 overflow-x-auto pb-1 scrollbar-hide">
+                {DISCOVERY.map((item, i) => {
+                  const Icon = item.icon;
+                  return (
+                    <Link key={item.id} to={createPageUrl(item.page)}>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: i * 0.07 }}
+                        whileTap={{ scale: 0.92 }}
+                        className="flex flex-col items-center gap-2 flex-shrink-0"
                       >
-                        <Icon className="w-7 h-7 text-white" />
-                      </div>
+                        <div className="w-16 h-16 rounded-full flex items-center justify-center"
+                          style={{ background: `${item.color}18`, border: `1.5px solid ${item.color}33` }}>
+                          <Icon className="w-7 h-7" style={{ color: item.color }} strokeWidth={1.5} />
+                        </div>
+                        <p className="text-xs font-medium text-center" style={{ color: 'var(--color-text-secondary)' }}>
+                          {item.label}
+                        </p>
+                      </motion.div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
 
-                      {/* Text */}
+            {/* Tools grid — 2×2 */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-text-muted)' }}>Verktyg</p>
+              <div className="grid grid-cols-2 gap-3">
+                {TOOLS.map((tool, i) => {
+                  const Icon = tool.icon;
+                  return (
+                    <Link key={tool.id} to={createPageUrl(tool.page)}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 + i * 0.06 }}
+                        whileTap={{ scale: 0.96 }}
+                        className="rounded-2xl p-5 flex flex-col gap-3"
+                        style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}
+                      >
+                        <Icon className="w-5 h-5" style={{ color: 'var(--color-text-muted)' }} strokeWidth={1.5} />
+                        <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{tool.label}</p>
+                      </motion.div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Deep modules */}
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-text-muted)' }}>Djupanalys</p>
+              <div className="space-y-3">
+                {MODULES.map((mod, i) => {
+                  const Icon = mod.icon;
+                  return (
+                    <motion.button
+                      key={mod.id}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 + i * 0.06 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => setActiveModule(mod.id)}
+                      className="w-full flex items-center gap-4 p-4 rounded-2xl text-left"
+                      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}
+                    >
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                        style={{ background: `${mod.accent}18`, border: `1px solid ${mod.accent}33` }}>
+                        <Icon className="w-5 h-5" style={{ color: mod.accent }} />
+                      </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span
-                            className="text-[10px] font-bold tracking-widest uppercase px-2 py-0.5 rounded-full"
-                            style={{ color: mod.accent, background: `${mod.accent}18` }}
-                          >
-                            {mod.tag}
-                          </span>
-                        </div>
-                        <h3 className="text-base font-bold text-white">{mod.title}</h3>
-                        <p className="text-xs text-slate-400 mt-1 leading-relaxed">{mod.hook}</p>
+                        <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>{mod.title}</p>
+                        <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{mod.hook}</p>
                       </div>
-
-                      {/* Arrow */}
-                      <div className="flex-shrink-0 self-center">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center"
-                          style={{ background: `${mod.accent}20` }}
-                        >
-                          <span style={{ color: mod.accent }} className="text-sm font-bold">›</span>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </motion.div>
-          ) : (
-            <motion.div
-              key={activeModule}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            >
-              {ActiveComponent && <ActiveComponent profile={profile} />}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                      <ArrowLeft className="w-4 h-4 rotate-180 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
+                    </motion.button>
+                  );
+                })}
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key={activeModule}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="px-5"
+          >
+            {ActiveComponent && <ActiveComponent profile={profile} />}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
