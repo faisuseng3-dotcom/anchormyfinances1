@@ -170,7 +170,7 @@ export default function HeroCards({ profile }) {
             <div className="relative">
               {card.showAspiration ? (
                 <div className="mt-1">
-                  <p className="text-xs text-purple-400 leading-snug font-medium">✨ Tryck för att skapa ditt sparmål</p>
+                  <p className="text-xs text-purple-400 leading-snug font-medium">Tryck för att sätta upp ett sparmål</p>
                 </div>
               ) : (
                 <>
@@ -226,7 +226,7 @@ export default function HeroCards({ profile }) {
                           initial={{ scale: 0.8, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
                           className="text-xs text-emerald-400 font-bold mt-1"
-                        >🎉 Mål uppnått!</motion.p>
+                        >Mål uppnatt</motion.p>
                       )}
                     </>
                   )}
@@ -288,13 +288,13 @@ export default function HeroCards({ profile }) {
             <button onClick={() => setShowDepositHub('savings')}
               className="py-3 rounded-xl text-sm font-semibold text-emerald-300 flex items-center justify-center gap-2 transition-all hover:opacity-90"
               style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)' }}>
-              💰 Sätt in i sparmål
+              Spara mot malet
             </button>
           )}
           <button onClick={() => setShowDepositHub('buffer')}
             className="py-3 rounded-xl text-sm font-semibold text-blue-300 flex items-center justify-center gap-2 transition-all hover:opacity-90"
             style={{ background: 'rgba(59,130,246,0.12)', border: '1px solid rgba(59,130,246,0.25)' }}>
-            🛡 Sätt in i buffert
+            Starka bufferten
           </button>
         </div>
 

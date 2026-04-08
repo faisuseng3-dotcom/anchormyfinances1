@@ -358,8 +358,8 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
         >
           <p className="text-slate-500 text-sm">Välkommen tillbaka</p>
-          <h1 className="text-3xl font-bold text-white tracking-tight">
-            ANCHOR
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            Din ekonomi
           </h1>
         </motion.div>
         <div className="flex items-center gap-2">
@@ -436,8 +436,8 @@ export default function Dashboard() {
               <Plus className="w-5 h-5 text-slate-300" />
             </div>
             <div className="text-left">
-              <p className="font-semibold text-white text-sm">Registrera köp</p>
-              <p className="text-xs text-slate-500">Lägg till utgift</p>
+              <p className="font-semibold text-white text-sm">Lägg till köp</p>
+              <p className="text-xs text-slate-500">Registrera utgift</p>
             </div>
           </motion.button>
 
@@ -451,8 +451,8 @@ export default function Dashboard() {
               <Zap className="w-5 h-5 text-slate-300" />
             </div>
             <div className="text-left">
-              <p className="font-semibold text-white text-sm">Hantera pengar</p>
-              <p className="text-xs text-slate-500">In · Ut · Flytta</p>
+              <p className="font-semibold text-white text-sm">Flytta pengar</p>
+              <p className="text-xs text-slate-500">Inkomst · Uttag · Spara</p>
             </div>
           </motion.button>
 
@@ -466,8 +466,8 @@ export default function Dashboard() {
                 <ShoppingBag className="w-5 h-5 text-slate-300" />
               </div>
               <div className="text-left">
-                <p className="font-semibold text-white text-sm">Se utgifter</p>
-                <p className="text-xs text-slate-500">Översikt</p>
+                <p className="font-semibold text-white text-sm">Mina utgifter</p>
+                <p className="text-xs text-slate-500">Se vad pengarna går till</p>
               </div>
             </motion.div>
           </Link>
@@ -488,8 +488,8 @@ export default function Dashboard() {
               <TrendingUp className="w-6 h-6 text-slate-300" />
             </div>
             <div className="flex-1">
-              <h3 className="text-base font-semibold text-white">Pro Tools</h3>
-              <p className="text-xs text-slate-500 mt-0.5">15 avancerade verktyg för din ekonomi</p>
+              <h3 className="text-base font-semibold text-white">Djupare analys</h3>
+              <p className="text-xs text-slate-500 mt-0.5">Prognos, lonsimulator och fler verktyg</p>
             </div>
             <Brain className="w-5 h-5 text-slate-500 flex-shrink-0" />
           </motion.div>
