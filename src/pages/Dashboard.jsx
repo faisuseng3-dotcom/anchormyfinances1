@@ -138,6 +138,36 @@ export default function Dashboard() {
         {/* Safe-to-Spend — primary widget */}
         <SafeToSpendWidget profile={profile} />
 
+        {/* Action Card — Verktyg & Intelligens */}
+        <Link to={createPageUrl('ProTools')}>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileTap={{ scale: 0.97 }}
+            className="rounded-2xl p-4 flex items-center gap-4 cursor-pointer"
+            style={{
+              background: 'linear-gradient(135deg, #2d1f6e 0%, #1a2f5e 100%)',
+              border: '1px solid rgba(139,92,246,0.35)',
+              boxShadow: '0 4px 20px rgba(75,124,243,0.18)',
+            }}
+          >
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(139,92,246,0.25)', border: '1px solid rgba(139,92,246,0.4)' }}>
+              <span className="text-xl">✦</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold" style={{ color: '#e0d8ff' }}>Dina Superkrafter</p>
+              <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(180,168,255,0.7)' }}>
+                Simulatorer, lån, reseanalys &amp; intelligens
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: 'rgba(139,92,246,0.3)' }}>
+              <ChevronRight className="w-4 h-4" style={{ color: '#c4b5fd' }} />
+            </div>
+          </motion.div>
+        </Link>
+
         {/* Debt alert */}
         <DebtAlert profile={profile} />
 
@@ -153,21 +183,7 @@ export default function Dashboard() {
         {/* Insights */}
         <InsightsSection insights={insights} profile={profile} />
 
-        {/* Min Ekonomi entry card */}
-        <Link to={createPageUrl('ProTools')}>
-          <motion.div
-            whileTap={{ scale: 0.98 }}
-            className="rounded-2xl p-5 flex items-center justify-between cursor-pointer"
-            style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}
-          >
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>Verktyg</p>
-              <p className="text-base font-bold" style={{ color: 'var(--color-text-primary)' }}>Min Ekonomi</p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>Simulatorer, lån, resor och mer</p>
-            </div>
-            <ChevronRight className="w-5 h-5 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
-          </motion.div>
-        </Link>
+
       </div>
 
       {/* Modals */}
