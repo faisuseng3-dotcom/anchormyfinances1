@@ -104,40 +104,41 @@ export default function Expenses() {
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
-      <div className="px-6 pt-8 pb-4">
-        <div className="flex items-center gap-4 mb-5">
-          <Link to={createPageUrl('Dashboard')}>
-            <Button variant="ghost" size="icon" className="rounded-xl">
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-          </Link>
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-white">Utgifter</h1>
-            <p className="text-xs text-slate-500">Visuell överblick denna månad</p>
+      <div className="px-5 pt-8 pb-4">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <Link to={createPageUrl('Dashboard')}>
+              <button className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'var(--color-surface)' }}>
+                <ArrowLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
+              </button>
+            </Link>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Denna månad</p>
+              <h1 className="text-2xl font-black" style={{ color: 'var(--color-text-primary)' }}>Utgifter</h1>
+            </div>
           </div>
-          <Button
+          <button
             onClick={() => setShowAddForm(true)}
-            size="icon"
-            className="w-12 h-12 rounded-full bg-emerald-500 hover:bg-emerald-600 shadow-lg shadow-emerald-500/30"
+            className="w-11 h-11 rounded-full flex items-center justify-center text-white"
+            style={{ background: 'var(--color-accent)' }}
           >
-            <Plus className="w-6 h-6" />
-          </Button>
+            <Plus className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Hero Card */}
         <HeroSpendingCard totalSpent={totalSpent} budget={budget} />
       </div>
 
-      <div className="px-6 space-y-5">
-        {/* Bubble visualization */}
-        <SpendingBubbles categoryTotals={categoryTotals} />
-
-        {/* Donut Chart (detailed) */}
-        <SpendingDonut categoryTotals={categoryTotals} totalSpent={totalSpent} onCategoryClick={handleDonutClick} />
+      <div className="px-5 space-y-5">
+        {/* Bubble visualization — primary */}
+        <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <SpendingBubbles categoryTotals={categoryTotals} />
+        </div>
 
         {/* Categorized Transactions */}
         <div>
-          <p className="text-sm font-semibold text-white mb-3">Utgifter per kategori</p>
+          <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-text-muted)' }}>Per kategori</p>
           <CategoryExpenseList expenses={expenses} subscriptions={profile?.subscriptions} autoOpenCategory={autoOpenCategory} onAutoOpenHandled={() => setAutoOpenCategory(null)} />
         </div>
       </div>

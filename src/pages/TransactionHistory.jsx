@@ -2,13 +2,19 @@ import React, { useState, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ChevronDown, Trash2, Edit2, X, Check, Bot } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Bot, ChevronRight } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
 
-const CATEGORY_ICONS = {
-  food: '🍔', transport: '🚌', entertainment: '🎮', travel: '✈️',
-  health: '💊', home: '🏠', shopping: '🛍️', income: '💰',
-  savings: '🏦', other: '📦'
+const CATEGORY_COLORS = {
+  food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
+  travel: '#7C6CF3', health: '#3DAABB', home: '#5C7CF3',
+  shopping: '#B06CF3', income: '#3DAA7A', savings: '#3DAA7A', other: '#8B97A8'
+};
+
+const CATEGORY_LABELS = {
+  food: 'Mat', transport: 'Transport', entertainment: 'Nöje',
+  travel: 'Resa', health: 'Hälsa', home: 'Bostad',
+  shopping: 'Shopping', income: 'Inkomst', savings: 'Sparande', other: 'Övrigt'
 };
 
 const TYPE_LABELS = {
@@ -27,10 +33,6 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });
 }
 
-function formatTime(dateStr) {
-  return new Date(dateStr).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' });
-}
-
 function groupByDay(transactions) {
   const groups = {};
   transactions.forEach(tx => {
@@ -47,19 +49,13 @@ function TransactionRow({ tx, onDelete, onEdit }) {
   const longPressTimer = useRef(null);
 
   const isPositive = tx.amount > 0 || ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(tx.type);
-  const amountColor = isPositive ? 'text-emerald-400' : 'text-red-400';
-  const amountSign = isPositive ? '+' : '-';
-  const icon = CATEGORY_ICONS[tx.category] || '📦';
+  const color = CATEGORY_COLORS[tx.category] || '#8B97A8';
 
-  const handleLongPressStart = () => {
-    longPressTimer.current = setTimeout(() => setShowActions(true), 500);
-  };
-  const handleLongPressEnd = () => {
-    clearTimeout(longPressTimer.current);
-  };
+  const handleLongPressStart = () => { longPressTimer.current = setTimeout(() => setShowActions(true), 500); };
+  const handleLongPressEnd = () => { clearTimeout(longPressTimer.current); };
 
   return (
-    <div>
+    <div className="border-b last:border-b-0" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
       <motion.div
         onTouchStart={handleLongPressStart}
         onTouchEnd={handleLongPressEnd}
@@ -67,97 +63,73 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         onMouseUp={handleLongPressEnd}
         onMouseLeave={handleLongPressEnd}
         onClick={() => !showActions && setExpanded(!expanded)}
-        className="flex items-center gap-3 px-4 py-3.5 active:bg-white/5 cursor-pointer select-none"
+        className="flex items-center gap-4 px-5 py-4 cursor-pointer active:opacity-70"
+        whileTap={{ scale: 0.99 }}
       >
-        {/* Icon */}
-        <div className="w-10 h-10 rounded-2xl bg-white/8 flex items-center justify-center text-xl flex-shrink-0">
-          {icon}
-        </div>
+        {/* Category dot */}
+        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
 
-        {/* Label + vendor */}
+        {/* Label */}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-white truncate">{tx.vendor || tx.label}</p>
-          <p className="text-xs text-slate-500 truncate">{tx.vendor ? tx.label : (TYPE_LABELS[tx.type] || tx.type)}</p>
-        </div>
-
-        {/* Time */}
-        <div className="text-center flex-shrink-0">
-          <p className="text-xs text-slate-500">{formatTime(tx.created_date)}</p>
-          {tx.paymentMethod && (
-            <p className="text-[10px] text-slate-600 mt-0.5">{tx.paymentMethod}</p>
-          )}
-        </div>
-
-        {/* Amount */}
-        <div className="text-right flex-shrink-0 min-w-[64px]">
-          <p className={`text-sm font-bold ${amountColor}`}>
-            {amountSign}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr
+          <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
+            {tx.vendor || tx.label}
+          </p>
+          <p className="text-xs truncate mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
+            {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {new Date(tx.created_date).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
 
-        <ChevronDown className={`w-4 h-4 text-slate-600 flex-shrink-0 transition-transform ${expanded ? 'rotate-180' : ''}`} />
+        {/* Amount */}
+        <p className="text-sm font-bold flex-shrink-0" style={{ color: isPositive ? 'var(--color-success)' : 'var(--color-text-primary)' }}>
+          {isPositive ? '+' : '-'}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr
+        </p>
       </motion.div>
 
-      {/* Actions overlay (long press) */}
+      {/* Long-press actions */}
       <AnimatePresence>
         {showActions && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-center gap-2 px-4 pb-3 overflow-hidden"
+            className="flex gap-2 px-5 pb-3 overflow-hidden"
           >
-            <button
-              onClick={() => { onEdit(tx); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold"
-            >
+            <button onClick={() => { onEdit(tx); setShowActions(false); }}
+              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold"
+              style={{ background: 'rgba(75,124,243,0.15)', color: 'var(--color-accent)', border: '1px solid rgba(75,124,243,0.3)' }}>
               <Edit2 className="w-3.5 h-3.5" /> Redigera
             </button>
-            <button
-              onClick={() => { onDelete(tx.id); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl bg-red-500/20 border border-red-400/30 text-red-400 text-xs font-semibold"
-            >
+            <button onClick={() => { onDelete(tx.id); setShowActions(false); }}
+              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold"
+              style={{ background: 'rgba(217,95,95,0.15)', color: 'var(--color-danger)', border: '1px solid rgba(217,95,95,0.3)' }}>
               <Trash2 className="w-3.5 h-3.5" /> Ta bort
             </button>
-            <button
-              onClick={() => setShowActions(false)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/8 text-slate-400"
-            >
+            <button onClick={() => setShowActions(false)}
+              className="w-9 h-9 flex items-center justify-center rounded-xl"
+              style={{ background: 'var(--color-surface)', color: 'var(--color-text-muted)' }}>
               <X className="w-4 h-4" />
             </button>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Expandable detail / kvitto */}
+      {/* Expanded detail */}
       <AnimatePresence>
-        {expanded && (
+        {expanded && (tx.note || tx.aiNote) && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="mx-4 mb-3 p-3 rounded-2xl bg-white/5 border border-white/8 space-y-2">
-              {tx.note && (
-                <div>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-wide mb-0.5">Anteckning</p>
-                  <p className="text-xs text-slate-300">{tx.note}</p>
-                </div>
-              )}
+            <div className="mx-5 mb-3 p-4 rounded-xl space-y-2" style={{ background: 'var(--color-surface)' }}>
+              {tx.note && <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{tx.note}</p>}
               {tx.aiNote && (
-                <div className="flex gap-2 p-2 rounded-xl bg-purple-500/10 border border-purple-400/20">
-                  <Bot className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[10px] text-purple-400 font-semibold mb-0.5">{tx.aiAgent || 'Beteende-AI'}</p>
-                    <p className="text-xs text-purple-200">{tx.aiNote}</p>
-                  </div>
+                <div className="flex gap-2 p-2.5 rounded-lg" style={{ background: 'rgba(75,124,243,0.1)', border: '1px solid rgba(75,124,243,0.2)' }}>
+                  <Bot className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
+                  <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{tx.aiNote}</p>
                 </div>
               )}
-              <div className="flex justify-between text-[10px] text-slate-500 pt-1 border-t border-white/5">
-                <span>ID: {tx.id?.slice(-6)}</span>
-                <span>{new Date(tx.created_date).toLocaleString('sv-SE')}</span>
-              </div>
             </div>
           </motion.div>
         )}
@@ -171,19 +143,21 @@ function DayGroup({ day, txs, onDelete, onEdit }) {
     const pos = ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(tx.type);
     return sum + (pos ? tx.amount : -Math.abs(tx.amount));
   }, 0);
-  const totalColor = dayTotal >= 0 ? 'text-emerald-400' : 'text-red-400';
 
   return (
-    <div>
+    <div className="mb-3">
       {/* Day header */}
-      <div className="flex items-center justify-between px-4 py-2 sticky top-0 bg-[#0a0e1a]/90 backdrop-blur-sm z-10">
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{formatDate(txs[0].created_date)}</p>
-        <p className={`text-xs font-bold ${totalColor}`}>
+      <div className="flex items-center justify-between px-5 py-2">
+        <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>
+          {formatDate(txs[0].created_date)}
+        </p>
+        <p className="text-xs font-semibold" style={{ color: dayTotal >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
           {dayTotal >= 0 ? '+' : ''}{dayTotal.toLocaleString('sv-SE')} kr
         </p>
       </div>
-      {/* Transactions */}
-      <div className="divide-y divide-white/5">
+
+      {/* Card grouping */}
+      <div className="mx-5 rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
         {txs.map(tx => (
           <TransactionRow key={tx.id} tx={tx} onDelete={onDelete} onEdit={onEdit} />
         ))}
@@ -207,73 +181,63 @@ export default function TransactionHistory() {
     queryClient.invalidateQueries({ queryKey: ['transactions'] });
   };
 
-  const handleEdit = (tx) => {
-    setEditingTx(tx);
-    setShowForm(true);
-  };
-
-  const handleFormSuccess = () => {
-    setShowForm(false);
-    setEditingTx(null);
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
-  };
+  const handleEdit = (tx) => { setEditingTx(tx); setShowForm(true); };
+  const handleFormSuccess = () => { setShowForm(false); setEditingTx(null); queryClient.invalidateQueries({ queryKey: ['transactions'] }); };
 
   const groups = groupByDay(transactions);
 
+  // Summary totals
+  const totalIn = transactions.filter(t => ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
+  const totalOut = transactions.filter(t => !['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type)).reduce((s, t) => s + Math.abs(t.amount), 0);
+
   return (
-    <div className="min-h-screen pb-32">
+    <div className="min-h-screen pb-32" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
-      <div className="px-6 pt-8 pb-4">
-        <h1 className="text-2xl font-bold text-white">Transaktionslogg</h1>
-        <p className="text-slate-500 text-sm mt-0.5">{transactions.length} transaktioner</p>
+      <div className="px-5 pt-8 pb-2">
+        <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>Historik</p>
+        <h1 className="text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Transaktioner</h1>
+        <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{transactions.length} poster</p>
       </div>
 
-      {/* Summary bar */}
-      {transactions.length > 0 && (() => {
-        const totalIn = transactions.filter(t => ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
-        const totalOut = transactions.filter(t => !['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
-        return (
-          <div className="mx-4 mb-4 p-4 rounded-2xl bg-white/5 border border-white/8 flex justify-around">
-            <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase tracking-wide">In</p>
-              <p className="text-sm font-bold text-emerald-400">+{totalIn.toLocaleString('sv-SE')} kr</p>
-            </div>
-            <div className="w-px bg-white/10" />
-            <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase tracking-wide">Ut</p>
-              <p className="text-sm font-bold text-red-400">-{totalOut.toLocaleString('sv-SE')} kr</p>
-            </div>
-            <div className="w-px bg-white/10" />
-            <div className="text-center">
-              <p className="text-[10px] text-slate-500 uppercase tracking-wide">Netto</p>
-              <p className={`text-sm font-bold ${totalIn - totalOut >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                {(totalIn - totalOut).toLocaleString('sv-SE')} kr
-              </p>
-            </div>
+      {/* Summary card */}
+      {transactions.length > 0 && (
+        <div className="mx-5 mt-4 mb-2 rounded-2xl p-5 grid grid-cols-3 gap-4"
+          style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <div>
+            <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>In</p>
+            <p className="text-sm font-bold" style={{ color: 'var(--color-success)' }}>+{totalIn.toLocaleString('sv-SE')} kr</p>
           </div>
-        );
-      })()}
+          <div>
+            <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>Ut</p>
+            <p className="text-sm font-bold" style={{ color: 'var(--color-danger)' }}>-{totalOut.toLocaleString('sv-SE')} kr</p>
+          </div>
+          <div>
+            <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>Netto</p>
+            <p className="text-sm font-bold" style={{ color: (totalIn - totalOut) >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+              {(totalIn - totalOut).toLocaleString('sv-SE')} kr
+            </p>
+          </div>
+        </div>
+      )}
 
-      {/* Loading */}
+      {/* Loading skeletons */}
       {isLoading && (
-        <div className="space-y-1 px-4">
-          {[1,2,3,4,5].map(i => (
-            <div key={i} className="h-16 rounded-2xl skeleton" />
-          ))}
+        <div className="space-y-2 px-5 mt-4">
+          {[1,2,3,4,5].map(i => <div key={i} className="h-16 rounded-2xl skeleton" />)}
         </div>
       )}
 
       {/* Empty state */}
       {!isLoading && transactions.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-          <div className="text-5xl mb-4">📋</div>
-          <p className="text-white font-semibold text-lg">Inga transaktioner än</p>
-          <p className="text-slate-500 text-sm mt-1">Tryck på + för att lägga till din första transaktion</p>
+          <p className="text-4xl mb-4">📋</p>
+          <p className="font-semibold text-lg" style={{ color: 'var(--color-text-primary)' }}>Inga transaktioner än</p>
+          <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Tryck på + för att lägga till</p>
         </div>
       )}
 
-      {/* Transaction groups */}
-      <div>
+      {/* Groups */}
+      <div className="mt-2">
         {groups.map(({ day, txs }) => (
           <DayGroup key={day} day={day} txs={txs} onDelete={handleDelete} onEdit={handleEdit} />
         ))}
@@ -284,12 +248,13 @@ export default function TransactionHistory() {
         whileTap={{ scale: 0.9 }}
         whileHover={{ scale: 1.05 }}
         onClick={() => { setEditingTx(null); setShowForm(true); }}
-        className="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/40 flex items-center justify-center z-40"
+        className="fixed bottom-24 right-6 w-14 h-14 rounded-full flex items-center justify-center z-40 shadow-lg"
+        style={{ background: 'var(--color-accent)' }}
       >
         <Plus className="w-7 h-7 text-white" />
       </motion.button>
 
-      {/* Transaction Form Modal */}
+      {/* Form modal */}
       <AnimatePresence>
         {showForm && (
           <TransactionForm
