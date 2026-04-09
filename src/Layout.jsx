@@ -11,6 +11,7 @@ import GuestBanner from '@/components/GuestBanner';
 import { isGuestMode } from '@/components/guestStorage';
 import { useAuth } from '@/lib/AuthContext';
 import ActionMenu from '@/components/nav/ActionMenu';
+import PushNotificationManager from '@/components/notifications/PushNotificationManager';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
@@ -230,6 +231,9 @@ export default function Layout({ children, currentPageName }) {
 
       {/* PWA Install Prompt */}
       {!hideNav && <PWAInstallPrompt />}
+
+      {/* Push Notification Manager */}
+      {!hideNav && <PushNotificationManager />}
 
       {/* Action Menu */}
       {!hideNav && (
