@@ -20,15 +20,35 @@ export default function ResellScanner() {
   const [manualQuery, setManualQuery] = useState('');
   const [manualLoading, setManualLoading] = useState(false);
 
+  const compressImage = (file) => new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const MAX = 1024;
+      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(resolve, 'image/jpeg', 0.82);
+    };
+    img.src = url;
+  });
+
   const handleFile = async (file) => {
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      setCapturedImage(e.target.result);
-      setPhase('scanning');
-      await runScan(file);
-    };
-    reader.readAsDataURL(file);
+    // Show preview immediately
+    const previewUrl = URL.createObjectURL(file);
+    setCapturedImage(previewUrl);
+    setPhase('scanning');
+    try {
+      const compressed = await compressImage(file);
+      await runScan(compressed);
+    } catch (err) {
+      console.error('ResellScanner handleFile error:', err);
+      setPhase('error');
+    }
   };
 
   const awardPoints = () => {
@@ -52,21 +72,21 @@ export default function ResellScanner() {
   };
 
   const runScan = async (file) => {
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    const res = await base44.functions.invoke('resellScanner', { imageUrl: file_url });
-    const data = res.data;
+    const uploadResult = await base44.integrations.Core.UploadFile({ file });
+    if (!uploadResult?.file_url) throw new Error('Upload failed – no file_url returned');
+    const res = await base44.functions.invoke('resellScanner', { imageUrl: uploadResult.file_url });
+    const data = res?.data;
+    if (!data) throw new Error('Empty response from resellScanner');
 
-    if (data && data.identified) {
-      // If AI has guesses (uncertain), show guess confirmation first
+    if (data.identified) {
       if ((data.confidence === 'låg' || data.confidence === 'medel') && data.guesses?.length > 0) {
         setGuesses(data.guesses);
-        setResult(data); // store preliminary result
+        setResult(data);
         setPhase('guess');
       } else {
         applyResult(data);
       }
     } else {
-      // Not identified → show manual search
       setPhase('error');
     }
   };
