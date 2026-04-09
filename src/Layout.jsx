@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Home, TrendingUp, Settings, Mic, ClipboardList, Activity, Plus, PlusCircle, ArrowLeftRight, PiggyBank } from 'lucide-react';
@@ -12,6 +12,9 @@ import { isGuestMode } from '@/components/guestStorage';
 import { useAuth } from '@/lib/AuthContext';
 import ActionMenu from '@/components/nav/ActionMenu';
 import PushNotificationManager from '@/components/notifications/PushNotificationManager';
+import ModeSwitch from '@/components/modes/ModeSwitch';
+import { useModeContext } from '@/components/modes/ModeContext';
+import { useNavigate } from 'react-router-dom';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
@@ -25,9 +28,19 @@ export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [actionMenuOpen, setActionMenuOpen] = useState(false);
-  
+  const { isBusiness, toggleMode } = useModeContext();
+  const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated);
+
+  // Route to business or personal dashboard based on mode
+  React.useEffect(() => {
+    if (!hideNav && isBusiness && currentPageName === 'Dashboard') {
+      navigate('/BusinessDashboard', { replace: true });
+    } else if (!hideNav && !isBusiness && currentPageName === 'BusinessDashboard') {
+      navigate('/', { replace: true });
+    }
+  }, [isBusiness]);
 
   const handleAction = (actionId) => {
     // Dispatch a custom event that Dashboard listens to
@@ -209,6 +222,13 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </main>
 
+      {/* Mode Switch — floating above nav */}
+      {!hideNav && (
+        <div className="fixed bottom-24 left-6 z-40">
+          <ModeSwitch compact={false} />
+        </div>
+      )}
+
       {/* Voice Assistant */}
       {!hideNav && (
         <>
@@ -221,10 +241,9 @@ export default function Layout({ children, currentPageName }) {
           >
             <Mic className="w-6 h-6 text-white" />
           </motion.button>
-
-          <VoiceAssistant 
-            isOpen={voiceOpen} 
-            onClose={() => setVoiceOpen(false)} 
+          <VoiceAssistant
+            isOpen={voiceOpen}
+            onClose={() => setVoiceOpen(false)}
           />
         </>
       )}
