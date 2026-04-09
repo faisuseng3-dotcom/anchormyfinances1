@@ -1,0 +1,40 @@
+{
+  "name": "PushSubscription",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens e-post"
+    },
+    "endpoint": {
+      "type": "string",
+      "description": "Push subscription endpoint URL"
+    },
+    "p256dh": {
+      "type": "string",
+      "description": "Public key f\u00f6r kryptering"
+    },
+    "auth": {
+      "type": "string",
+      "description": "Auth secret f\u00f6r push"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Om subscription \u00e4r aktiv"
+    },
+    "quiet_hours_enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Pausa icke-kritiska notiser 22:00-07:00"
+    }
+  },
+  "required": [
+    "user_id",
+    "endpoint"
+  ]
+}
