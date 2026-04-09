@@ -53,7 +53,8 @@ function getPlatforms(category, brand) {
 }
 
 Deno.serve(async (req) => {
-  const base44 = createClientFromRequest(req);
+  try {
+    const base44 = createClientFromRequest(req);
   const user = await base44.auth.me();
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
@@ -126,7 +127,6 @@ Estimera andrahandsvärde för denna vara i Sverige. Svara med JSON:
 
   // ── IMAGE SCAN MODE ─────────────────────────────────────────────
   const aiResult = await base44.asServiceRole.integrations.Core.InvokeLLM({
-    model: 'claude_sonnet_4_6',
     prompt: `Du är en AI som kombinerar Google Lens, OCR och marknadsanalys. Din uppgift är att identifiera VARJE objekt i bilden, oavsett vad det är.
 
 STEG 1 – OBJEKTIGENKÄNNING: Vad ser du? Beskriv form, färg, storlek.
@@ -186,12 +186,10 @@ Basera priserna på faktiska svenska andrahandspriser 2024-2025.`,
     }
   });
 
-  // If AI says not identified but there IS an image — treat as uncertain and show guesses
+  // If AI says not identified — still return something useful so user can search manually
   if (!aiResult.identified) {
-    return Response.json({
-      identified: false,
-      needsManualInput: true,
-    });
+    console.error('Vision AI returned identified:false. Raw:', JSON.stringify(aiResult));
+    return Response.json({ identified: false, needsManualInput: true });
   }
 
   const platforms = getPlatforms(aiResult.category, aiResult.brand);
@@ -214,4 +212,8 @@ Basera priserna på faktiska svenska andrahandspriser 2024-2025.`,
       : '',
     marketplaces: platformPrices.map(p => p.name),
   });
+  } catch (err) {
+    console.error('resellScanner error:', err?.message || err);
+    return Response.json({ error: err?.message || 'Unknown error', identified: false }, { status: 500 });
+  }
 });

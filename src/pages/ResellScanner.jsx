@@ -19,20 +19,27 @@ export default function ResellScanner() {
   const [guesses, setGuesses] = useState([]);
   const [manualQuery, setManualQuery] = useState('');
   const [manualLoading, setManualLoading] = useState(false);
+  const [scanError, setScanError] = useState(null);
 
-  const compressImage = (file) => new Promise((resolve) => {
+  const compressImage = (file) => new Promise((resolve, reject) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {
       const MAX = 1024;
       const scale = Math.min(1, MAX / Math.max(img.width, img.height));
       const canvas = document.createElement('canvas');
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
       URL.revokeObjectURL(url);
-      canvas.toBlob(resolve, 'image/jpeg', 0.82);
+      canvas.toBlob((blob) => {
+        if (!blob) { reject(new Error('Canvas compression failed')); return; }
+        // Ensure proper File object with name + MIME so upload API recognizes it
+        const namedFile = new File([blob], 'scan.jpg', { type: 'image/jpeg' });
+        resolve(namedFile);
+      }, 'image/jpeg', 0.82);
     };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load failed')); };
     img.src = url;
   });
 
@@ -47,6 +54,7 @@ export default function ResellScanner() {
       await runScan(compressed);
     } catch (err) {
       console.error('ResellScanner handleFile error:', err);
+      setScanError(err?.message || 'Okänt fel');
       setPhase('error');
     }
   };
@@ -116,6 +124,7 @@ export default function ResellScanner() {
     setGuesses([]);
     setManualQuery('');
     setManualLoading(false);
+    setScanError(null);
   };
 
   return (
@@ -357,6 +366,9 @@ export default function ResellScanner() {
                 <div className="text-5xl mb-3">🔍</div>
                 <p className="text-white font-semibold">Vi såg det inte tydligt</p>
                 <p className="text-slate-500 text-sm mt-1">Skriv vad du säljer så hjälper AI:n dig ändå</p>
+                {scanError && (
+                  <p className="text-red-400 text-xs mt-2 px-4 opacity-70">Fel: {scanError}</p>
+                )}
               </div>
 
               {/* Manual search bar */}
