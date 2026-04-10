@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Save, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw } from 'lucide-react';
+import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import DayPicker from '@/components/onboarding/DayPicker';
@@ -46,6 +47,7 @@ function FieldRow({ label, icon: Icon, children }) {
 
 export default function Settings() {
   const queryClient = useQueryClient();
+  const { isBusiness, setPersonal, setBusiness } = useModeContext();
   const [formData, setFormData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [newSub, setNewSub] = useState({ name: '', amount: '', category: 'other', billingDay: '', frequency: 'monthly' });
@@ -310,9 +312,25 @@ export default function Settings() {
           <Link to="/PrivacyPolicy" className="text-xs transition-colors" style={{ color: 'var(--color-text-muted)' }}>Integritetspolicy</Link>
         </div>
 
+        {/* Switch mode & logout */}
+        <button
+          onClick={() => {
+            // Switch to other mode, then log out to gateway
+            if (isBusiness) setPersonal(); else setBusiness();
+            base44.auth.logout(window.location.origin);
+          }}
+          className="w-full h-14 rounded-full text-sm font-semibold transition-opacity"
+          style={{ background: 'rgba(75,124,243,0.1)', color: 'var(--color-accent)', border: '1px solid rgba(75,124,243,0.3)' }}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <RefreshCw className="w-4 h-4" />
+            Byt till {isBusiness ? 'Personal' : 'Business'} &amp; logga ut
+          </span>
+        </button>
+
         {/* Logout */}
         <button
-          onClick={() => base44.auth.logout()}
+          onClick={() => base44.auth.logout(window.location.origin)}
           className="w-full h-14 rounded-full text-sm font-semibold transition-opacity"
           style={{ background: 'rgba(217,95,95,0.12)', color: 'var(--color-danger)', border: '1px solid rgba(217,95,95,0.3)' }}
         >

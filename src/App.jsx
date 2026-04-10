@@ -13,6 +13,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { ModeProvider } from '@/components/modes/ModeContext';
 import BusinessTheme from '@/components/business/BusinessTheme';
 import BusinessDashboard from './pages/BusinessDashboard';
+import BusinessOnboarding from './pages/BusinessOnboarding';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -70,6 +71,7 @@ const AuthenticatedApp = () => {
           <BusinessDashboard />
         </LayoutWrapper>
       } />
+      <Route path="/BusinessOnboarding" element={<BusinessOnboarding />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

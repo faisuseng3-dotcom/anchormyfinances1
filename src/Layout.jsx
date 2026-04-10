@@ -222,12 +222,7 @@ export default function Layout({ children, currentPageName }) {
         {children}
       </main>
 
-      {/* Mode Switch — floating above nav */}
-      {!hideNav && (
-        <div className="fixed bottom-24 left-6 z-40">
-          <ModeSwitch compact={false} />
-        </div>
-      )}
+
 
       {/* Voice Assistant */}
       {!hideNav && (
