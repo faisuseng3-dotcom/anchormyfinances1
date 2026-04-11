@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, Clock, AlertTriangle, Search, BookOpen } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Clock, AlertTriangle, Search, BookOpen, Download } from 'lucide-react';
 import LedgerEntryDetail from '@/components/business/LedgerEntryDetail';
 
 const LEDGER_ENTRIES = [
@@ -121,6 +121,36 @@ const statusConfig = {
   error: { icon: AlertTriangle, color: '#D95F5F', label: 'Fel', bg: 'rgba(217,95,95,0.12)' },
 };
 
+const exportSIE = () => {
+  const now = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  let sie = `#FLAGGA 0\n#PROGRAM "Anchor Business" 1.0\n#GEN ${now}\n#FNAMN "Mitt F\u00f6retag AB"\n#RAR 0 ${now.slice(0,4)}0101 ${now.slice(0,4)}1231\n\n`;
+  LEDGER_ENTRIES.forEach(e => {
+    sie += `#VER "A" ${e.id.split('-')[1]} ${e.date.replace(/-/g,'')} "${e.description}"\n{\n`;
+    e.lines.forEach(l => {
+      const amt = l.debit ? l.debit.toFixed(2) : (-l.credit).toFixed(2);
+      sie += `  #TRANS ${l.account} {} ${amt}\n`;
+    });
+    sie += `}\n`;
+  });
+  const blob = new Blob([sie], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = `anchor_export_${now}.se`; a.click();
+  URL.revokeObjectURL(url);
+};
+
+const exportCSV = () => {
+  const rows = ['Verifikat,Datum,Leverantör,Beskrivning,Belopp,Status,Synkad'];
+  LEDGER_ENTRIES.forEach(e => {
+    rows.push(`${e.id},${e.date},"${e.vendor}","${e.description}",${e.amount},${e.status},${e.synced}`);
+  });
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = 'anchor_ledger.csv'; a.click();
+  URL.revokeObjectURL(url);
+};
+
 export default function LedgerVault() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
@@ -153,6 +183,18 @@ export default function LedgerVault() {
             </div>
             <h1 className="text-xl font-black tracking-tight" style={{ color: '#F0EAD6' }}>Bokföring & Arkiv</h1>
           </div>
+        </div>
+        <div className="flex gap-2">
+          <button onClick={exportCSV}
+            className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
+            style={{ background: 'rgba(75,124,243,0.12)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.3)' }}>
+            <Download className="w-3.5 h-3.5" /> CSV
+          </button>
+          <button onClick={exportSIE}
+            className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
+            style={{ background: 'rgba(212,175,55,0.12)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
+            <Download className="w-3.5 h-3.5" /> SIE
+          </button>
         </div>
       </div>
 

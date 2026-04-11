@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Briefcase, Building2, FlaskConical, BookOpen, Sparkles } from 'lucide-react';
+import { Settings, Briefcase, Building2, FlaskConical, BookOpen, Sparkles, Plus } from 'lucide-react';
 import MagicImport from '@/components/business/MagicImport';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
@@ -12,6 +12,8 @@ import InvoiceList from '@/components/business/InvoiceList';
 import DeductibleTransactions from '@/components/business/DeductibleTransactions';
 import AutonomousBookkeeping from '@/components/business/AutonomousBookkeeping';
 import TaxOptimizer from '@/components/business/TaxOptimizer';
+import TaxWidget from '@/components/business/TaxWidget';
+import ManualTransactionModal from '@/components/business/ManualTransactionModal';
 import DailyDigest from '@/components/business/DailyDigest';
 import ActivityStream from '@/components/business/ActivityStream';
 import ReviewMode from '@/components/business/ReviewMode';
@@ -24,11 +26,22 @@ export default function BusinessDashboard() {
   const { toggleMode } = useModeContext();
   const [simulated] = useState(true);
   const [showImport, setShowImport] = useState(false);
+  const [showManual, setShowManual] = useState(false);
+  const [manualTransactions, setManualTransactions] = useState([]);
   const imported = localStorage.getItem('anchor_imported') === 'true';
 
   return (
     <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
       {/* Simulated data banner */}
+      <AnimatePresence>
+        {showManual && (
+          <ManualTransactionModal
+            onClose={() => setShowManual(false)}
+            onAdd={tx => { setManualTransactions(prev => [tx, ...prev]); setShowManual(false); }}
+          />
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showImport && <MagicImport onClose={() => setShowImport(false)} onComplete={() => setShowImport(false)} />}
       </AnimatePresence>
@@ -60,6 +73,12 @@ export default function BusinessDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => setShowManual(true)}
+            className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
+            style={{ background: 'rgba(61,170,122,0.12)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.3)' }}>
+            <Plus className="w-3.5 h-3.5" />
+            Ny
+          </button>
           <button onClick={() => setShowImport(true)}
             className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
             style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.35)' }}>
@@ -136,6 +155,33 @@ export default function BusinessDashboard() {
 
         {/* Daily Digest */}
         <DailyDigest />
+
+        {/* Tax Calculator Widget */}
+        <TaxWidget />
+
+        {/* Manual transactions */}
+        {manualTransactions.length > 0 && (
+          <div className="rounded-2xl overflow-hidden"
+            style={{ background: 'var(--color-card)', border: '1px solid rgba(61,170,122,0.2)' }}>
+            <div className="px-4 pt-4 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+              <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>MANUELLT INMATADE ({manualTransactions.length})</p>
+            </div>
+            <div className="px-4 pb-3 pt-2 space-y-2">
+              {manualTransactions.map((tx, i) => (
+                <div key={i} className="flex items-center justify-between py-1.5"
+                  style={{ borderBottom: i < manualTransactions.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
+                  <div>
+                    <p className="text-xs font-bold" style={{ color: '#F0EAD6' }}>{tx.vendor}</p>
+                    <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Konto {tx.account} · {tx.date}</p>
+                  </div>
+                  <p className="text-xs font-black" style={{ color: tx.amount < 0 ? '#D95F5F' : '#3DAA7A' }}>
+                    {tx.amount < 0 ? '−' : '+'}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Tax Optimizer AI */}
         <TaxOptimizer />

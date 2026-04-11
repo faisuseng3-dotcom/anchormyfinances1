@@ -30,6 +30,7 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
   const [uploading, setUploading] = useState(false);
   const [receiptUrl, setReceiptUrl] = useState(null);
   const [changingAccount, setChangingAccount] = useState(false);
+  const [ocrData, setOcrData] = useState(null);
   const [selectedAccount, setSelectedAccount] = useState(tx.account);
   const fileInputRef = useRef(null);
 
@@ -43,7 +44,25 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
     if (!file) return;
     setUploading(true);
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    // AI-driven OCR — extract amount, vendor, VAT from receipt image
+    const ocrResult = await base44.integrations.Core.InvokeLLM({
+      prompt: `Analysera detta kvitto och extrahera: leverantör, totalt belopp inkl moms, momssats (6/12/25%), momsbelopp. Returnera på svenska.`,
+      file_urls: [file_url],
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          vendor: { type: 'string' },
+          total: { type: 'number' },
+          vatRate: { type: 'number' },
+          vatAmount: { type: 'number' },
+          confidence: { type: 'number' },
+        },
+      },
+    });
     setReceiptUrl(file_url);
+    if (ocrResult?.vendor) {
+      setOcrData(ocrResult);
+    }
     setUploading(false);
   };
 
@@ -146,8 +165,16 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
           {uploading ? '⏳ Laddar upp...' : <><Camera className="w-3.5 h-3.5" /> Fota kvitto nu</>}
         </button>
       )}
-      {receiptUrl && (
+      {receiptUrl && !ocrData && (
         <p className="text-xs mt-2 text-center" style={{ color: '#3DAA7A' }}>✓ Kvitto bifogat — redo att bokföras</p>
+      )}
+      {ocrData && (
+        <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.25)' }}>
+          <p className="text-xs font-bold mb-1" style={{ color: '#3DAA7A' }}>✓ AI läste kvittot automatiskt</p>
+          <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.7)' }}>
+            {ocrData.vendor} · {ocrData.total?.toFixed(2)} kr · Moms {ocrData.vatRate}% ({ocrData.vatAmount?.toFixed(2)} kr)
+          </p>
+        </div>
       )}
 
       <input ref={fileInputRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleReceiptUpload} />

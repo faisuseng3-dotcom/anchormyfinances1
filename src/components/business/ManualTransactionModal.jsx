@@ -1,0 +1,178 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Plus, CheckCircle2 } from 'lucide-react';
+
+const ACCOUNTS = [
+  { code: '5420', label: 'Programvaror & IT' },
+  { code: '5800', label: 'Resekostnader' },
+  { code: '5900', label: 'Representation' },
+  { code: '5410', label: 'Förbrukningsinventarier' },
+  { code: '3000', label: 'Försäljning / Intäkter' },
+  { code: '4000', label: 'Varuinköp' },
+  { code: '5100', label: 'Lokalkostnader' },
+  { code: '6212', label: 'Mobiltelefon' },
+];
+
+export default function ManualTransactionModal({ onClose, onAdd }) {
+  const [type, setType] = useState('expense');
+  const [vendor, setVendor] = useState('');
+  const [amount, setAmount] = useState('');
+  const [vatRate, setVatRate] = useState('25');
+  const [account, setAccount] = useState('5420');
+  const [note, setNote] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  const parsedAmount = parseFloat(amount.replace(',', '.')) || 0;
+  const vatAmt = parsedAmount * (parseInt(vatRate) / 100);
+
+  const handleSave = () => {
+    if (!vendor || !parsedAmount) return;
+    onAdd?.({
+      vendor,
+      amount: type === 'expense' ? -parsedAmount : parsedAmount,
+      vatRate: parseInt(vatRate),
+      vat: vatAmt,
+      account,
+      accountLabel: ACCOUNTS.find(a => a.code === account)?.label || '',
+      note,
+      type,
+      date: new Date().toLocaleDateString('sv-SE'),
+    });
+    setSaved(true);
+    setTimeout(() => { setSaved(false); onClose(); }, 1200);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end justify-center"
+      style={{ background: 'rgba(0,0,0,0.8)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 60 }}
+        animate={{ y: 0 }}
+        exit={{ y: 60 }}
+        onClick={e => e.stopPropagation()}
+        className="w-full max-w-md rounded-t-2xl overflow-hidden"
+        style={{ background: '#1A2B3C', maxHeight: '90vh', overflowY: 'auto' }}
+      >
+        <div className="px-5 pt-5 pb-4 flex items-center justify-between"
+          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+          <p className="font-bold text-sm" style={{ color: '#F0EAD6' }}>Ny transaktion</p>
+          <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.07)' }}>
+            <X className="w-4 h-4" style={{ color: 'rgba(155,173,184,0.6)' }} />
+          </button>
+        </div>
+
+        <div className="px-5 py-4 space-y-4">
+
+          {/* Type toggle */}
+          <div className="flex gap-2">
+            {[{ id: 'expense', label: '📤 Utgift' }, { id: 'income', label: '📥 Inkomst' }].map(t => (
+              <button key={t.id} onClick={() => { setType(t.id); setAccount(t.id === 'income' ? '3000' : '5420'); }}
+                className="flex-1 h-10 rounded-xl font-bold text-xs"
+                style={{
+                  background: type === t.id ? (t.id === 'expense' ? 'rgba(217,95,95,0.2)' : 'rgba(61,170,122,0.2)') : 'rgba(255,255,255,0.04)',
+                  color: type === t.id ? (t.id === 'expense' ? '#D95F5F' : '#3DAA7A') : 'rgba(155,173,184,0.6)',
+                  border: type === t.id ? `1px solid ${t.id === 'expense' ? 'rgba(217,95,95,0.4)' : 'rgba(61,170,122,0.4)'}` : '1px solid rgba(255,255,255,0.07)',
+                }}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Vendor */}
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
+              style={{ color: 'rgba(155,173,184,0.5)' }}>Leverantör / Kund</label>
+            <input value={vendor} onChange={e => setVendor(e.target.value)} placeholder="t.ex. Adobe Inc"
+              className="w-full h-11 px-3 rounded-xl text-sm"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+          </div>
+
+          {/* Amount + VAT */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
+                style={{ color: 'rgba(155,173,184,0.5)' }}>Belopp (inkl moms)</label>
+              <div className="relative">
+                <input type="text" inputMode="numeric" value={amount} onChange={e => setAmount(e.target.value)}
+                  placeholder="0"
+                  className="w-full h-11 px-3 pr-8 rounded-xl text-sm font-bold"
+                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'rgba(155,173,184,0.5)' }}>kr</span>
+              </div>
+            </div>
+            <div>
+              <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
+                style={{ color: 'rgba(155,173,184,0.5)' }}>Momssats</label>
+              <select value={vatRate} onChange={e => setVatRate(e.target.value)}
+                className="w-full h-11 px-3 rounded-xl text-sm font-bold"
+                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+                <option value="25">25%</option>
+                <option value="12">12%</option>
+                <option value="6">6%</option>
+                <option value="0">0%</option>
+              </select>
+            </div>
+          </div>
+
+          {/* VAT preview */}
+          {parsedAmount > 0 && (
+            <div className="flex gap-2">
+              <div className="flex-1 p-2.5 rounded-xl text-center"
+                style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.2)' }}>
+                <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Exkl. moms</p>
+                <p className="text-sm font-black" style={{ color: '#3DAA7A' }}>
+                  {(parsedAmount - vatAmt).toFixed(2)} kr
+                </p>
+              </div>
+              <div className="flex-1 p-2.5 rounded-xl text-center"
+                style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
+                <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Moms {vatRate}%</p>
+                <p className="text-sm font-black" style={{ color: '#D4AF37' }}>
+                  {vatAmt.toFixed(2)} kr
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Account */}
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
+              style={{ color: 'rgba(155,173,184,0.5)' }}>Bokföringskonto (AI-förslag)</label>
+            <select value={account} onChange={e => setAccount(e.target.value)}
+              className="w-full h-11 px-3 rounded-xl text-sm font-bold"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+              {ACCOUNTS.map(a => (
+                <option key={a.code} value={a.code}>{a.code} — {a.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Note */}
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
+              style={{ color: 'rgba(155,173,184,0.5)' }}>Anteckning (valfri)</label>
+            <input value={note} onChange={e => setNote(e.target.value)} placeholder="t.ex. Affärsresa kund X"
+              className="w-full h-11 px-3 rounded-xl text-sm"
+              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+          </div>
+
+          <button onClick={handleSave}
+            className="w-full h-12 rounded-xl font-black text-sm flex items-center justify-center gap-2"
+            style={{
+              background: saved ? 'rgba(61,170,122,0.2)' : 'linear-gradient(135deg, #D4AF37, #C8923A)',
+              color: saved ? '#3DAA7A' : '#0F1724',
+            }}>
+            {saved ? <><CheckCircle2 className="w-4 h-4" /> Sparad!</> : <><Plus className="w-4 h-4" /> Bokför transaktion</>}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
