@@ -4,8 +4,30 @@ import { useNavigate } from 'react-router-dom';
 import {
   Camera, Code, Scissors, Briefcase, Zap, ArrowRight,
   CheckCircle2, Building2, Sparkles, TrendingUp, Clock,
-  Receipt, Shield, BarChart3, ChevronRight, Loader2
+  Receipt, Shield, BarChart3, ChevronRight, Loader2, Store
 } from 'lucide-react';
+
+// ─── Legal entity types ─────────────────────────────────────────────────────────
+const LEGAL_ENTITIES = [
+  {
+    id: 'enskild',
+    label: 'Enskild firma',
+    desc: 'Aktiverar egenavgifter (28.97%) och F-skatteberegning',
+    emoji: '🧑‍💼',
+    color: '#4B7CF3',
+    bg: 'rgba(75,124,243,0.1)',
+    border: 'rgba(75,124,243,0.4)',
+  },
+  {
+    id: 'ab',
+    label: 'Aktiebolag (AB)',
+    desc: 'Aktiverar bolagsskatt (20.6%), lön & utdelningsutrymme',
+    emoji: '🏢',
+    color: '#D4AF37',
+    bg: 'rgba(212,175,55,0.1)',
+    border: 'rgba(212,175,55,0.4)',
+  },
+];
 
 // ─── Persona data ────────────────────────────────────────────────────────────
 const PERSONAS = [
@@ -177,6 +199,69 @@ const HOROSCOPE = {
 
 // ─── Step components ─────────────────────────────────────────────────────────
 
+function StepLegalEntity({ onNext }) {
+  const [selected, setSelected] = useState(null);
+
+  return (
+    <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-5">
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 1 av 5</p>
+        <h2 className="text-2xl font-black" style={{ color: '#F0EAD6' }}>Din företagsform</h2>
+        <p className="text-sm mt-1" style={{ color: 'rgba(155,173,184,0.75)' }}>
+          Vi anpassar skatte- och momslogiken efter din bolagsform.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {LEGAL_ENTITIES.map(e => {
+          const sel = selected === e.id;
+          return (
+            <motion.button
+              key={e.id}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setSelected(e.id)}
+              className="w-full p-5 rounded-2xl flex items-center gap-4 text-left transition-all relative"
+              style={{
+                background: sel ? e.bg : 'rgba(255,255,255,0.04)',
+                border: sel ? `2px solid ${e.border.replace('0.4', '0.8')}` : '1.5px solid rgba(255,255,255,0.08)',
+              }}
+            >
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+                style={{ background: sel ? e.bg : 'rgba(255,255,255,0.06)', border: `1px solid ${e.border}` }}>
+                {e.emoji}
+              </div>
+              <div className="flex-1">
+                <p className="font-black text-base" style={{ color: sel ? e.color : '#F0EAD6' }}>{e.label}</p>
+                <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.6)' }}>{e.desc}</p>
+              </div>
+              {sel && (
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: e.color }}>
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="#0D1B2A" strokeWidth={3.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                </motion.div>
+              )}
+            </motion.button>
+          );
+        })}
+      </div>
+
+      <motion.button
+        whileTap={{ scale: 0.97 }}
+        onClick={() => selected && onNext(selected)}
+        className="w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all"
+        style={{
+          background: selected ? 'linear-gradient(135deg, #b8942a 0%, #D4AF37 100%)' : 'rgba(212,175,55,0.15)',
+          color: selected ? '#0D1B2A' : 'rgba(212,175,55,0.5)',
+          cursor: selected ? 'pointer' : 'not-allowed',
+        }}
+      >
+        Fortsätt <ChevronRight className="w-4 h-4" />
+      </motion.button>
+    </motion.div>
+  );
+}
+
 function StepHandshake({ onNext }) {
   const [typing, setTyping] = useState('');
   const fullText = 'Hej! Jag är Anchor. Ge mig 30 sekunder — så bygger jag din personliga ekonomiavdelning.';
@@ -237,7 +322,7 @@ function StepPersona({ onNext }) {
   return (
     <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-5">
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 1 av 4</p>
+        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 2 av 5</p>
         <h2 className="text-2xl font-black" style={{ color: '#F0EAD6' }}>Vem är du?</h2>
         <p className="text-sm mt-1" style={{ color: 'rgba(155,173,184,0.75)' }}>
           Välj din profil — Anchor anpassar AI:ns fokus direkt.
@@ -314,7 +399,7 @@ function StepPainPoints({ persona, onNext }) {
   return (
     <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-5">
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 2 av 4</p>
+        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 3 av 5</p>
         <h2 className="text-2xl font-black" style={{ color: '#F0EAD6' }}>Vad skaver mest?</h2>
         {p && (
           <p className="text-sm mt-1" style={{ color: 'rgba(155,173,184,0.75)' }}>
@@ -395,7 +480,7 @@ function StepIntegrations({ persona, onNext }) {
   return (
     <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-5">
       <div>
-        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 3 av 4</p>
+        <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 4 av 5</p>
         <h2 className="text-2xl font-black" style={{ color: '#F0EAD6' }}>Dina verktyg</h2>
         <p className="text-sm mt-1" style={{ color: 'rgba(155,173,184,0.75)' }}>
           {p ? `De flesta ${p.title.toLowerCase()}er använder dessa — koppla dem direkt.` : 'Välj de system du använder.'}
@@ -538,12 +623,14 @@ function StepHoroscope({ persona, onComplete }) {
 export default function BusinessOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
+  const [legalEntity, setLegalEntity] = useState(null);
   const [persona, setPersona] = useState(null);
   const [pains, setPains] = useState([]);
   const [integrations, setIntegrations] = useState([]);
 
   const handleComplete = () => {
     localStorage.setItem('anchor_biz_onboarded', 'true');
+    localStorage.setItem('anchor_biz_legal_entity', legalEntity || 'enskild');
     localStorage.setItem('anchor_biz_persona', persona);
     localStorage.setItem('anchor_biz_pains', JSON.stringify(pains));
     localStorage.setItem('anchor_biz_integrations', JSON.stringify(integrations));
@@ -552,9 +639,10 @@ export default function BusinessOnboarding() {
 
   const steps = [
     <StepHandshake key="handshake" onNext={() => setStep(1)} />,
-    <StepPersona key="persona" onNext={(p) => { setPersona(p); setStep(2); }} />,
-    <StepPainPoints key="pain" persona={persona} onNext={(p) => { setPains(p); setStep(3); }} />,
-    <StepIntegrations key="integrations" persona={persona} onNext={(i) => { setIntegrations(i); setStep(4); }} />,
+    <StepLegalEntity key="legal" onNext={(e) => { setLegalEntity(e); setStep(2); }} />,
+    <StepPersona key="persona" onNext={(p) => { setPersona(p); setStep(3); }} />,
+    <StepPainPoints key="pain" persona={persona} onNext={(p) => { setPains(p); setStep(4); }} />,
+    <StepIntegrations key="integrations" persona={persona} onNext={(i) => { setIntegrations(i); setStep(5); }} />,
     <StepHoroscope key="horoscope" persona={persona} onComplete={handleComplete} />,
   ];
 
@@ -563,9 +651,9 @@ export default function BusinessOnboarding() {
       style={{ background: 'linear-gradient(160deg, #0D1B2A 0%, #080f18 100%)' }}>
 
       {/* Progress dots */}
-      {step > 0 && step < 5 && (
+      {step > 0 && step < 6 && (
         <div className="fixed top-6 left-0 right-0 flex justify-center gap-2 z-10">
-          {[1, 2, 3, 4].map(i => (
+          {[1, 2, 3, 4, 5].map(i => (
             <motion.div
               key={i}
               animate={{ width: i === step ? 24 : 6 }}

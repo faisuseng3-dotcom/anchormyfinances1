@@ -4,6 +4,8 @@ import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, Briefcase, Building2, FlaskConical, BookOpen, Sparkles, Plus } from 'lucide-react';
 import MagicImport from '@/components/business/MagicImport';
+import ReceiptScanner from '@/components/business/ReceiptScanner';
+import NetSalaryCalculator from '@/components/business/NetSalaryCalculator';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
 import VATShield from '@/components/business/VATShield';
@@ -27,12 +29,23 @@ export default function BusinessDashboard() {
   const [simulated] = useState(true);
   const [showImport, setShowImport] = useState(false);
   const [showManual, setShowManual] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
+  const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const imported = localStorage.getItem('anchor_imported') === 'true';
 
   return (
     <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
       {/* Simulated data banner */}
+      <AnimatePresence>
+        {showScanner && (
+          <ReceiptScanner
+            onClose={() => setShowScanner(false)}
+            onSave={tx => { setManualTransactions(prev => [tx, ...prev]); setShowScanner(false); }}
+          />
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showManual && (
           <ManualTransactionModal
@@ -73,6 +86,11 @@ export default function BusinessDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => setShowScanner(true)}
+            className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
+            style={{ background: 'rgba(212,175,55,0.12)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
+            📷 Kvitto
+          </button>
           <button onClick={() => setShowManual(true)}
             className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
             style={{ background: 'rgba(61,170,122,0.12)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.3)' }}>
@@ -156,8 +174,8 @@ export default function BusinessDashboard() {
         {/* Daily Digest */}
         <DailyDigest />
 
-        {/* Tax Calculator Widget */}
-        <TaxWidget />
+        {/* Net Salary Calculator */}
+        <NetSalaryCalculator entityType={legalEntity} />
 
         {/* Manual transactions */}
         {manualTransactions.length > 0 && (
