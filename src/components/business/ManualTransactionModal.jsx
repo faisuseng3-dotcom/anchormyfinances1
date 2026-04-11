@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, CheckCircle2 } from 'lucide-react';
+import { X, Plus, CheckCircle2, Camera, Paperclip } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
 
 const ACCOUNTS = [
   { code: '5420', label: 'Programvaror & IT' },
@@ -21,6 +22,18 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
   const [account, setAccount] = useState('5420');
   const [note, setNote] = useState('');
   const [saved, setSaved] = useState(false);
+  const [receiptUrl, setReceiptUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef();
+
+  const handleReceiptUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    setReceiptUrl(file_url);
+    setUploading(false);
+  };
 
   const parsedAmount = parseFloat(amount.replace(',', '.')) || 0;
   const vatAmt = parsedAmount * (parseInt(vatRate) / 100);
@@ -36,6 +49,7 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
       accountLabel: ACCOUNTS.find(a => a.code === account)?.label || '',
       note,
       type,
+      receiptUrl,
       date: new Date().toLocaleDateString('sv-SE'),
     });
     setSaved(true);
@@ -161,6 +175,30 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
             <input value={note} onChange={e => setNote(e.target.value)} placeholder="t.ex. Affärsresa kund X"
               className="w-full h-11 px-3 rounded-xl text-sm"
               style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+          </div>
+
+          {/* Receipt upload */}
+          <div>
+            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
+              style={{ color: 'rgba(155,173,184,0.5)' }}>Underlag / Kvitto</label>
+            {receiptUrl ? (
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
+                style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.25)' }}>
+                <CheckCircle2 className="w-4 h-4" style={{ color: '#3DAA7A' }} />
+                <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>Kvitto bifogat ✓</p>
+                <button onClick={() => setReceiptUrl(null)} className="ml-auto text-[10px]" style={{ color: 'rgba(155,173,184,0.4)' }}>Ta bort</button>
+              </div>
+            ) : (
+              <button
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="w-full h-11 rounded-xl flex items-center justify-center gap-2 text-xs font-bold"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px dashed rgba(255,255,255,0.15)', color: 'rgba(155,173,184,0.5)' }}>
+                {uploading ? <span>Laddar upp…</span> : <><Camera className="w-3.5 h-3.5" /> Fota eller ladda upp kvitto</>}
+              </button>
+            )}
+            <input ref={fileRef} type="file" accept="image/*,application/pdf" className="hidden"
+              onChange={handleReceiptUpload} />
           </div>
 
           <button onClick={handleSave}

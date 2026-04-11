@@ -32,8 +32,15 @@ export default function BusinessDashboard() {
   const [showManual, setShowManual] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
+  const [nettoView, setNettoView] = useState(false);
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const legalLabel = legalEntity === 'ab' ? 'Aktiebolag (AB)' : 'Enskild firma';
+
+  // Tax reserve estimate
+  const taxRate = legalEntity === 'ab' ? 0.35 : 0.45;
+  const netIncome = biz.bankBalance - biz.vatReserved;
+  const taxReserve = Math.round(netIncome * taxRate * 0.3); // conservative
+  const safeToSpend = biz.bankBalance - biz.vatReserved - taxReserve;
   const imported = localStorage.getItem('anchor_imported') === 'true';
 
   return (
@@ -147,16 +154,51 @@ export default function BusinessDashboard() {
             boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
           }}
         >
-          <p className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>
-            Tillgänglig kassabalans
-          </p>
-          <p className="text-4xl font-black mb-0.5" style={{ color: '#F0EAD6' }}>
-            {(biz.bankBalance - biz.vatReserved).toLocaleString('sv-SE')}
+          {/* Toggle */}
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#D4AF37' }}>
+              {nettoView ? 'Safe to Spend (netto)' : 'Kassabalans (brutto)'}
+            </p>
+            <button onClick={() => setNettoView(v => !v)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold transition-all"
+              style={{
+                background: nettoView ? 'rgba(61,170,122,0.2)' : 'rgba(255,255,255,0.07)',
+                color: nettoView ? '#3DAA7A' : 'rgba(155,173,184,0.6)',
+                border: nettoView ? '1px solid rgba(61,170,122,0.4)' : '1px solid rgba(255,255,255,0.1)',
+              }}>
+              {nettoView ? 'NETTO' : 'BRUTTO'}
+            </button>
+          </div>
+
+          <p className="text-4xl font-black mb-0.5" style={{ color: nettoView ? '#3DAA7A' : '#F0EAD6' }}>
+            {(nettoView ? safeToSpend : biz.bankBalance).toLocaleString('sv-SE')}
             <span className="text-xl font-normal ml-2" style={{ color: '#9BADB8' }}>kr</span>
           </p>
-          <p className="text-xs" style={{ color: 'rgba(155,173,184,0.7)' }}>
-            Totalt: {biz.bankBalance.toLocaleString('sv-SE')} kr · Momsreservat exkluderat
-          </p>
+
+          {nettoView ? (
+            <div className="mt-2 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px]" style={{ color: 'rgba(155,173,184,0.6)' }}>Totalt på banken</span>
+                <span className="text-[11px] font-bold" style={{ color: 'rgba(155,173,184,0.6)' }}>{biz.bankBalance.toLocaleString('sv-SE')} kr</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px]" style={{ color: '#D4AF37' }}>− Moms-sköld (tillhör staten)</span>
+                <span className="text-[11px] font-bold" style={{ color: '#D4AF37' }}>−{biz.vatReserved.toLocaleString('sv-SE')} kr</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-[11px]" style={{ color: '#D95F5F' }}>− Prelim. skattereservat</span>
+                <span className="text-[11px] font-bold" style={{ color: '#D95F5F' }}>−{taxReserve.toLocaleString('sv-SE')} kr</span>
+              </div>
+              <div className="pt-1 border-t flex items-center justify-between" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                <span className="text-xs font-bold" style={{ color: '#3DAA7A' }}>= Dina att använda</span>
+                <span className="text-sm font-black" style={{ color: '#3DAA7A' }}>{safeToSpend.toLocaleString('sv-SE')} kr</span>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs" style={{ color: 'rgba(155,173,184,0.7)' }}>
+              Tryck NETTO för att se vad som faktiskt är ditt
+            </p>
+          )}
         </motion.div>
       </div>
 
