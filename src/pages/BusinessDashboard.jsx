@@ -9,6 +9,7 @@ import VATShield from '@/components/business/VATShield';
 import RunwayEngine from '@/components/business/RunwayEngine';
 import InvoiceList from '@/components/business/InvoiceList';
 import DeductibleTransactions from '@/components/business/DeductibleTransactions';
+import AutonomousBookkeeping from '@/components/business/AutonomousBookkeeping';
 
 const biz = SIMULATED_BUSINESS;
 const monthlyBurn = calcMonthlyBurn(biz);
@@ -94,6 +95,9 @@ export default function BusinessDashboard() {
 
         {/* Unpaid invoices */}
         <InvoiceList invoices={biz.unpaidInvoices} />
+
+        {/* Autonomous Bookkeeping */}
+        <AutonomousBookkeeping />
 
         {/* Deductible transactions */}
         <DeductibleTransactions transactions={biz.recentTransactions} />
