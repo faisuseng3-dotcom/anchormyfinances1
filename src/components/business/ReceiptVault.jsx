@@ -7,7 +7,7 @@ import { jsPDF } from 'jspdf';
 async function exportReceiptsPDF(transactions) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
-  
+
   doc.setFontSize(18);
   doc.setTextColor(30, 30, 30);
   doc.text('Kvittopärm — Anchor Business', 14, 20);
@@ -25,7 +25,10 @@ async function exportReceiptsPDF(transactions) {
     doc.text(`${tx.vendor || '–'}`, 14, y);
     doc.setFontSize(9);
     doc.setTextColor(100, 100, 100);
-    doc.text(`Belopp: ${Math.abs(tx.amount || 0).toLocaleString('sv-SE')} kr  |  Moms: ${tx.vatRate ?? '–'}%  |  Konto: ${tx.account || '–'}  |  ${tx.date || ''}`, 14, y + 5);
+    doc.text(
+      `Belopp: ${Math.abs(tx.amount || 0).toLocaleString('sv-SE')} kr  |  Moms: ${tx.vatRate ?? '–'}%  |  Konto: ${tx.account || '–'}  |  ${tx.date || ''}`,
+      14, y + 5
+    );
     if (tx.note) doc.text(`Anteckning: ${tx.note}`, 14, y + 10);
 
     if (tx.receiptUrl) {
@@ -111,7 +114,6 @@ export default function ReceiptVault({ transactions = [], onUploadStandalone }) 
       </div>
 
       <div className="px-4 pt-3 pb-4 space-y-3">
-        {/* Receipts with thumbnails */}
         {withReceipts.length > 0 && (
           <div className="grid grid-cols-3 gap-2">
             {withReceipts.slice(0, 6).map((tx, i) => (
@@ -123,18 +125,12 @@ export default function ReceiptVault({ transactions = [], onUploadStandalone }) 
                 whileTap={{ scale: 0.95 }}
                 className="relative aspect-square rounded-xl overflow-hidden flex items-center justify-center"
                 style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(75,124,243,0.2)' }}>
-                <img
-                  src={tx.receiptUrl}
-                  alt={tx.vendor}
-                  className="w-full h-full object-cover"
-                  onError={e => { e.target.style.display = 'none'; }}
-                />
+                <img src={tx.receiptUrl} alt={tx.vendor} className="w-full h-full object-cover"
+                  onError={e => { e.target.style.display = 'none'; }} />
                 <div className="absolute bottom-0 left-0 right-0 px-1.5 py-1"
                   style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}>
                   <p className="text-[9px] font-bold truncate" style={{ color: '#F0EAD6' }}>{tx.vendor}</p>
-                  <p className="text-[9px]" style={{ color: '#D4AF37' }}>
-                    {Math.abs(tx.amount).toLocaleString('sv-SE')} kr
-                  </p>
+                  <p className="text-[9px]" style={{ color: '#D4AF37' }}>{Math.abs(tx.amount).toLocaleString('sv-SE')} kr</p>
                 </div>
                 <div className="absolute top-1 right-1">
                   <CheckCircle2 className="w-3 h-3" style={{ color: '#3DAA7A' }} />
@@ -144,7 +140,6 @@ export default function ReceiptVault({ transactions = [], onUploadStandalone }) 
           </div>
         )}
 
-        {/* Missing receipts warning */}
         {withoutReceipts.length > 0 && (
           <div className="p-3 rounded-xl"
             style={{ background: 'rgba(217,95,95,0.08)', border: '1px solid rgba(217,95,95,0.2)' }}>
@@ -167,7 +162,6 @@ export default function ReceiptVault({ transactions = [], onUploadStandalone }) 
           </div>
         )}
 
-        {/* Empty state */}
         {transactions.length === 0 && (
           <div className="py-6 flex flex-col items-center gap-2">
             <FileImage className="w-8 h-8" style={{ color: 'rgba(155,173,184,0.2)' }} />
