@@ -1,10 +1,64 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FolderOpen, Camera, FileImage, CheckCircle2 } from 'lucide-react';
+import { FolderOpen, Camera, FileImage, CheckCircle2, Download, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { jsPDF } from 'jspdf';
+
+async function exportReceiptsPDF(transactions) {
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const pageW = doc.internal.pageSize.getWidth();
+  
+  doc.setFontSize(18);
+  doc.setTextColor(30, 30, 30);
+  doc.text('Kvittopärm — Anchor Business', 14, 20);
+  doc.setFontSize(10);
+  doc.setTextColor(120, 120, 120);
+  doc.text(`Exporterad: ${new Date().toLocaleDateString('sv-SE')}`, 14, 28);
+  doc.setDrawColor(220, 220, 220);
+  doc.line(14, 32, pageW - 14, 32);
+
+  let y = 40;
+  for (const tx of transactions) {
+    if (y > 240) { doc.addPage(); y = 20; }
+    doc.setFontSize(11);
+    doc.setTextColor(30, 30, 30);
+    doc.text(`${tx.vendor || '–'}`, 14, y);
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Belopp: ${Math.abs(tx.amount || 0).toLocaleString('sv-SE')} kr  |  Moms: ${tx.vatRate ?? '–'}%  |  Konto: ${tx.account || '–'}  |  ${tx.date || ''}`, 14, y + 5);
+    if (tx.note) doc.text(`Anteckning: ${tx.note}`, 14, y + 10);
+
+    if (tx.receiptUrl) {
+      try {
+        const res = await fetch(tx.receiptUrl);
+        const blob = await res.blob();
+        const dataUrl = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(blob);
+        });
+        const imgProps = doc.getImageProperties(dataUrl);
+        const ratio = imgProps.height / imgProps.width;
+        const imgW = 60;
+        const imgH = imgW * ratio;
+        doc.addImage(dataUrl, 'JPEG', pageW - 14 - imgW, y - 4, imgW, imgH);
+        y += Math.max(20, imgH + 4);
+      } catch { y += 20; }
+    } else {
+      doc.setFontSize(8);
+      doc.setTextColor(200, 80, 80);
+      doc.text('⚠ Kvitto saknas', 14, y + 13);
+      y += 22;
+    }
+    doc.setDrawColor(240, 240, 240);
+    doc.line(14, y - 2, pageW - 14, y - 2);
+  }
+  doc.save('anchor_kvittopärm.pdf');
+}
 
 export default function ReceiptVault({ transactions = [], onUploadStandalone }) {
   const fileRef = useRef();
+  const [exporting, setExporting] = useState(false);
   const withReceipts = transactions.filter(t => t.receiptUrl);
   const withoutReceipts = transactions.filter(t => !t.receiptUrl);
 
@@ -34,12 +88,24 @@ export default function ReceiptVault({ transactions = [], onUploadStandalone }) 
             </p>
           </div>
         </div>
-        <button
-          onClick={() => fileRef.current?.click()}
-          className="flex items-center gap-1.5 px-3 h-8 rounded-full text-[11px] font-bold"
-          style={{ background: 'rgba(75,124,243,0.15)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.3)' }}>
-          <Camera className="w-3 h-3" /> Fota kvitto
-        </button>
+        <div className="flex items-center gap-2">
+          {transactions.length > 0 && (
+            <button
+              onClick={async () => { setExporting(true); await exportReceiptsPDF(transactions); setExporting(false); }}
+              disabled={exporting}
+              className="flex items-center gap-1.5 px-3 h-8 rounded-full text-[11px] font-bold"
+              style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
+              {exporting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
+              PDF
+            </button>
+          )}
+          <button
+            onClick={() => fileRef.current?.click()}
+            className="flex items-center gap-1.5 px-3 h-8 rounded-full text-[11px] font-bold"
+            style={{ background: 'rgba(75,124,243,0.15)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.3)' }}>
+            <Camera className="w-3 h-3" /> Fota kvitto
+          </button>
+        </div>
         <input ref={fileRef} type="file" accept="image/*,application/pdf" className="hidden"
           onChange={handleQuickUpload} />
       </div>
