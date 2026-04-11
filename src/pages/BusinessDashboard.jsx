@@ -20,6 +20,7 @@ import DailyDigest from '@/components/business/DailyDigest';
 import ActivityStream from '@/components/business/ActivityStream';
 import ReviewMode from '@/components/business/ReviewMode';
 import UITranslate from '@/components/business/UITranslate';
+import LiquidityGauge from '@/components/business/LiquidityGauge';
 
 const biz = SIMULATED_BUSINESS;
 const monthlyBurn = calcMonthlyBurn(biz);
@@ -32,6 +33,7 @@ export default function BusinessDashboard() {
   const [showScanner, setShowScanner] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
+  const legalLabel = legalEntity === 'ab' ? 'Aktiebolag (AB)' : 'Enskild firma';
   const imported = localStorage.getItem('anchor_imported') === 'true';
 
   return (
@@ -83,6 +85,10 @@ export default function BusinessDashboard() {
             <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#D4AF37' }}>Anchor Business</p>
             <h1 className="text-xl font-black tracking-tight" style={{ color: '#F0EAD6' }}>{biz.companyName}</h1>
             <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Org.nr {biz.orgNr}</p>
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5"
+              style={{ background: legalEntity === 'ab' ? 'rgba(212,175,55,0.15)' : 'rgba(75,124,243,0.15)', color: legalEntity === 'ab' ? '#D4AF37' : '#4B7CF3', border: `1px solid ${legalEntity === 'ab' ? 'rgba(212,175,55,0.3)' : 'rgba(75,124,243,0.3)'}` }}>
+              {legalLabel}
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -155,6 +161,14 @@ export default function BusinessDashboard() {
       </div>
 
       <div className="px-5 space-y-4">
+        {/* Liquidity Gauge — juridiska skikten */}
+        <LiquidityGauge
+          totalBalance={biz.bankBalance}
+          vatReserved={biz.vatReserved}
+          grossIncome={biz.bankBalance}
+          entityType={legalEntity}
+        />
+
         {/* VAT Shield */}
         <VATShield vatReserved={biz.vatReserved} vatDeadlines={biz.vatDeadlines} />
 
