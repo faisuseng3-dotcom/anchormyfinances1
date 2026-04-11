@@ -11,25 +11,25 @@ import {
 const PERSONAS = [
   {
     id: 'artist',
-    icon: Camera,
     emoji: '🎨',
     title: 'Kreatören',
     subtitle: 'Frilansaren',
-    who: 'Fotograf, copywriter, designer, influencer',
+    who: 'Fotograf, copywriter, designer',
     hook: 'Vi hjälper dig med oregelbundna inkomster',
+    keyMetric: 'Buffertfokus',
     color: '#A78BFA',
     bgAccent: 'rgba(167,139,250,0.12)',
     borderAccent: 'rgba(167,139,250,0.5)',
-    aiSetup: 'Byggger buffert för månader utan uppdrag & jagar avdrag för utrustning och mjukvara.',
+    aiSetup: 'Bygger buffert för månader utan uppdrag & jagar avdrag för utrustning och mjukvara.',
   },
   {
     id: 'consultant',
-    icon: Code,
     emoji: '💻',
     title: 'Gig-konsulten',
     subtitle: 'The Professional',
     who: 'IT-konsult, projektledare, interim-chef',
     hook: 'Vi optimerar din skatt och lön',
+    keyMetric: 'Skatteoptimering',
     color: '#4B7CF3',
     bgAccent: 'rgba(75,124,243,0.12)',
     borderAccent: 'rgba(75,124,243,0.5)',
@@ -37,12 +37,12 @@ const PERSONAS = [
   },
   {
     id: 'local',
-    icon: Scissors,
     emoji: '✂️',
     title: 'Tjänsteutövaren',
     subtitle: 'The Local Hero',
     who: 'Frisör, PT, massör, hantverkare',
     hook: 'Vi dödar ditt kvitto-kaos',
+    keyMetric: 'Kvittomatching',
     color: '#3DAA7A',
     bgAccent: 'rgba(61,170,122,0.12)',
     borderAccent: 'rgba(61,170,122,0.5)',
@@ -50,16 +50,55 @@ const PERSONAS = [
   },
   {
     id: 'hustler',
-    icon: Zap,
     emoji: '⚡',
     title: 'Sido-projektet',
     subtitle: 'The Hustler',
     who: 'Anställd som kör eget på kvällar & helger',
     hook: 'Minimal admin, maximal koll',
+    keyMetric: 'Nettofokus',
     color: '#F59E0B',
     bgAccent: 'rgba(245,158,11,0.12)',
     borderAccent: 'rgba(245,158,11,0.5)',
     aiSetup: 'Fokus på enkelhet. Beräknar vad du faktiskt tjänar efter egenavgifter.',
+  },
+  {
+    id: 'merchant',
+    emoji: '🛒',
+    title: 'E-handlaren',
+    subtitle: 'The Digital Merchant',
+    who: 'Shopify, Amazon, Dropshipping',
+    hook: 'Vi maximerar din marginal och ROAS',
+    keyMetric: 'Marginalanalys',
+    color: '#F97316',
+    bgAccent: 'rgba(249,115,22,0.12)',
+    borderAccent: 'rgba(249,115,22,0.5)',
+    aiSetup: 'Marginalanalys (COGS), fraktkostnader och annonsavkastning. Förbered Shopify/Stripe-koppling.',
+  },
+  {
+    id: 'educator',
+    emoji: '🎓',
+    title: 'Utbildaren',
+    subtitle: 'The Knowledge Guru',
+    who: 'Onlinekurser, nyhetsbrev, coachning',
+    hook: 'Vi håller koll på din MRR och churn',
+    keyMetric: 'MRR-tillväxt',
+    color: '#EC4899',
+    bgAccent: 'rgba(236,72,153,0.12)',
+    borderAccent: 'rgba(236,72,153,0.5)',
+    aiSetup: 'Bevakar MRR och churn. Förbereder logik för Substack/Kajabi/Teachable.',
+  },
+  {
+    id: 'landlord',
+    emoji: '🏠',
+    title: 'Uthyraren',
+    subtitle: 'The Space Manager',
+    who: 'Studio, kontorsplatser, Airbnb',
+    hook: 'Vi optimerar beläggning vs. driftskostnad',
+    keyMetric: 'Beläggningsgrad',
+    color: '#06B6D4',
+    bgAccent: 'rgba(6,182,212,0.12)',
+    borderAccent: 'rgba(6,182,212,0.5)',
+    aiSetup: 'Beläggningsgrad vs. fasta driftskostnader. Fastighetsrelaterade utgiftskategorier aktiverade.',
   },
 ];
 
@@ -121,6 +160,18 @@ const HOROSCOPE = {
   hustler: {
     insight: 'Din effektiva inkomst från sidoprojektet är 23% lägre än bruttobeloppet efter egenavgifter. Jag visar dig nettot.',
     actions: ['Egenavgiftskalkyl aktiv (28,97%)', 'Separation av privat vs. företagsskatt', 'Minimalistisk vy aktiverad — bara det viktigaste'],
+  },
+  merchant: {
+    insight: 'Jag ser att dina fraktkostnader äter upp 18% av din bruttomarginal. Det finns potential att förbättra ROAS med bättre kostnadsspridning.',
+    actions: ['Marginalanalys (COGS) aktiverad per produkt', 'Shopify/Stripe-koppling förberedd', 'Lagervärde vs. Cashflow-widget aktiverad'],
+  },
+  educator: {
+    insight: 'Din MRR-tillväxt är positiv men churnen på månad 3 är högre än snittet. Jag har flaggat detta åt dig.',
+    actions: ['MRR Growth-widget aktiverad', 'Substack/Kajabi-logik förberedd', 'Churn-analys inbyggd i prognos'],
+  },
+  landlord: {
+    insight: 'Dina fasta driftskostnader är höga relativt beläggningsgraden. En extra uthyrningsdag per månad täcker din el-kostnad.',
+    actions: ['Beläggningsgrad-tracker aktiverad', 'Fastighetsavdrag förberedd (el, underhåll, försäkring)', 'Hyresfaktura-påminnelse schemalagd'],
   },
 };
 
@@ -193,42 +244,41 @@ function StepPersona({ onNext }) {
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
         {PERSONAS.map(p => {
-          const Icon = p.icon;
           const sel = selected === p.id;
           return (
             <motion.button
               key={p.id}
-              whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => setSelected(p.id)}
-              className="w-full p-4 rounded-2xl flex items-center gap-4 text-left transition-all"
+              className="p-4 rounded-2xl flex flex-col items-start gap-2 text-left transition-all relative"
               style={{
                 background: sel ? p.bgAccent : 'rgba(255,255,255,0.04)',
                 border: sel ? `2px solid ${p.borderAccent.replace('0.5', '0.8')}` : '1.5px solid rgba(255,255,255,0.08)',
               }}
             >
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
                 style={{ background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)', border: `1px solid ${p.borderAccent}` }}>
                 {p.emoji}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-sm" style={{ color: sel ? p.color : '#F0EAD6' }}>{p.title}</span>
-                  <span className="text-xs" style={{ color: 'rgba(155,173,184,0.5)' }}>· {p.subtitle}</span>
-                </div>
-                <p className="text-xs mt-0.5 truncate" style={{ color: 'rgba(155,173,184,0.65)' }}>{p.who}</p>
-                {sel && (
-                  <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
-                    className="text-xs mt-1.5 font-medium" style={{ color: p.color }}>
-                    ✦ {p.hook}
-                  </motion.p>
-                )}
+                <p className="font-bold text-sm leading-tight" style={{ color: sel ? p.color : '#F0EAD6' }}>{p.title}</p>
+                <p className="text-xs mt-0.5 leading-snug" style={{ color: 'rgba(155,173,184,0.6)' }}>{p.who}</p>
               </div>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full transition-all"
+                style={{
+                  background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)',
+                  color: sel ? p.color : 'rgba(155,173,184,0.5)',
+                  border: `1px solid ${sel ? p.borderAccent : 'transparent'}`,
+                }}>
+                {p.keyMetric}
+              </span>
               {sel && (
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  className="absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center"
                   style={{ background: p.color }}>
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="#0D1B2A" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="#0D1B2A" strokeWidth={3.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                 </motion.div>
               )}
             </motion.button>
@@ -326,7 +376,13 @@ function StepPainPoints({ persona, onNext }) {
 function StepIntegrations({ persona, onNext }) {
   const [selected, setSelected] = useState([]);
   const p = PERSONAS.find(x => x.id === persona);
-  const suggested = persona === 'local' ? ['fortnox', 'swish'] : persona === 'artist' ? ['bokio', 'stripe'] : ['fortnox', 'stripe'];
+  const suggested =
+    persona === 'local' ? ['fortnox', 'swish'] :
+    persona === 'artist' ? ['bokio', 'stripe'] :
+    persona === 'merchant' ? ['stripe', 'bokio'] :
+    persona === 'educator' ? ['stripe', 'bokio'] :
+    persona === 'landlord' ? ['fortnox', 'swish'] :
+    ['fortnox', 'stripe'];
 
   const toggle = (id) => {
     if (id === 'none') { setSelected(['none']); return; }
