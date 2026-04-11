@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Briefcase, Building2, FlaskConical } from 'lucide-react';
+import { Settings, Briefcase, Building2, FlaskConical, BookOpen } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
 import VATShield from '@/components/business/VATShield';
@@ -121,6 +121,27 @@ export default function BusinessDashboard() {
 
         {/* Deductible transactions */}
         <DeductibleTransactions transactions={biz.recentTransactions} />
+
+        {/* Ledger Vault link */}
+        <Link to="/LedgerVault">
+          <motion.div
+            whileTap={{ scale: 0.97 }}
+            className="w-full rounded-2xl p-4 flex items-center justify-between"
+            style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}>
+                <BookOpen className="w-4 h-4" style={{ color: '#D4AF37' }} />
+              </div>
+              <div>
+                <p className="text-sm font-bold" style={{ color: '#F0EAD6' }}>Bokföring & Arkiv</p>
+                <p className="text-xs" style={{ color: 'rgba(155,173,184,0.55)' }}>The Ledger Vault — alla verifikat</p>
+              </div>
+            </div>
+            <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>→</span>
+          </motion.div>
+        </Link>
 
         {/* Switch to Personal */}
         <motion.button
