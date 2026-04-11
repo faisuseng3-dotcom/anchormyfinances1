@@ -11,6 +11,10 @@ import InvoiceList from '@/components/business/InvoiceList';
 import DeductibleTransactions from '@/components/business/DeductibleTransactions';
 import AutonomousBookkeeping from '@/components/business/AutonomousBookkeeping';
 import TaxOptimizer from '@/components/business/TaxOptimizer';
+import DailyDigest from '@/components/business/DailyDigest';
+import ActivityStream from '@/components/business/ActivityStream';
+import ReviewMode from '@/components/business/ReviewMode';
+import UITranslate from '@/components/business/UITranslate';
 
 const biz = SIMULATED_BUSINESS;
 const monthlyBurn = calcMonthlyBurn(biz);
@@ -97,11 +101,23 @@ export default function BusinessDashboard() {
         {/* Unpaid invoices */}
         <InvoiceList invoices={biz.unpaidInvoices} />
 
+        {/* UI Translate — Fortnox-översättaren */}
+        <UITranslate />
+
+        {/* Daily Digest */}
+        <DailyDigest />
+
         {/* Tax Optimizer AI */}
         <TaxOptimizer />
 
         {/* Autonomous Bookkeeping */}
         <AutonomousBookkeeping />
+
+        {/* Activity Stream */}
+        <ActivityStream />
+
+        {/* Review Mode */}
+        <ReviewMode />
 
         {/* Deductible transactions */}
         <DeductibleTransactions transactions={biz.recentTransactions} />
