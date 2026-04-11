@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Briefcase, Building2, FlaskConical, BookOpen } from 'lucide-react';
+import { Settings, Briefcase, Building2, FlaskConical, BookOpen, Sparkles } from 'lucide-react';
+import MagicImport from '@/components/business/MagicImport';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
 import VATShield from '@/components/business/VATShield';
@@ -21,11 +22,17 @@ const monthlyBurn = calcMonthlyBurn(biz);
 
 export default function BusinessDashboard() {
   const { toggleMode } = useModeContext();
-  const [simulated] = useState(true); // Always simulated for now
+  const [simulated] = useState(true);
+  const [showImport, setShowImport] = useState(false);
+  const imported = localStorage.getItem('anchor_imported') === 'true';
 
   return (
     <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
       {/* Simulated data banner */}
+      <AnimatePresence>
+        {showImport && <MagicImport onClose={() => setShowImport(false)} onComplete={() => setShowImport(false)} />}
+      </AnimatePresence>
+
       {simulated && (
         <motion.div
           initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
@@ -53,6 +60,12 @@ export default function BusinessDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button onClick={() => setShowImport(true)}
+            className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
+            style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.35)' }}>
+            <Sparkles className="w-3.5 h-3.5" />
+            Importera
+          </button>
           <Link to={createPageUrl('Settings')}>
             <button className="w-9 h-9 rounded-full flex items-center justify-center"
               style={{ background: 'var(--color-surface)' }}>
@@ -61,6 +74,23 @@ export default function BusinessDashboard() {
           </Link>
         </div>
       </div>
+
+      {/* Contextual import greeting */}
+      {imported && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          className="px-5 mb-4"
+        >
+          <div className="p-4 rounded-2xl flex items-start gap-3"
+            style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.2)' }}>
+            <span className="text-xl">👋</span>
+            <div>
+              <p className="text-sm font-bold" style={{ color: '#F0EAD6' }}>Baserat på ditt kontoutdrag ser jag att din Runway är 5 månader.</p>
+              <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.6)' }}>Vill du se hur vi kan förlänga den? Scrolla ner till Runway Engine →</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Bank balance hero */}
       <div className="px-5 mb-4">

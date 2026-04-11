@@ -14,6 +14,7 @@ const ACCOUNTS = [
 ];
 
 const MOCK_TRANSACTIONS = [
+  { id: 0, vendor: 'Apple Store', amount: 14990, vat: 2998, vatRate: 25, account: '5410', accountLabel: 'Förbrukningsinventarier', icon: '🍎', hasReceipt: false, date: 'Importerad från kontoutdrag', aiText: 'Jag hittade detta i ditt kontoutdrag. Det ser ut som en arbetsdator – vill du bokföra den som inventarie? (Konto 5410 Inventarier rekommenderas)', fromImport: true },
   { id: 1, vendor: 'Adobe Inc', amount: 699, vat: 139.80, vatRate: 25, account: '5420', accountLabel: 'Programvaror & IT', icon: '🎨', hasReceipt: true, date: 'Idag 14:22', aiText: 'Adobe Creative Cloud — 25% moms automatiskt dragen. Fullt avdragsgill.' },
   { id: 2, vendor: 'SJ AB', amount: 580, vat: 52.73, vatRate: 10, account: '5800', accountLabel: 'Resekostnader', icon: '🚆', hasReceipt: true, date: 'Idag 09:15', aiText: 'Tågresa Stockholm–Göteborg — 10% moms. Affärsresa antagen baserat på din profil.' },
   { id: 3, vendor: 'Webhallen', amount: 4990, vat: 998, vatRate: 25, account: '5410', accountLabel: 'IT-utrustning', icon: '💻', hasReceipt: false, date: 'Igår 18:40', aiText: 'Elektronik — kvitto saknas. Bokföringen är pausad tills underlag finns.' },
