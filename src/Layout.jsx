@@ -31,7 +31,7 @@ export default function Layout({ children, currentPageName }) {
   const { isBusiness, toggleMode } = useModeContext();
   const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth } = useAuth();
-  const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated);
+  const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
 
   // Route to business or personal dashboard based on mode
   React.useEffect(() => {
