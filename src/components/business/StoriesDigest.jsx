@@ -100,8 +100,9 @@ export default function StoriesDigest() {
               className="flex flex-col items-center gap-1.5 flex-shrink-0">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-xl relative"
                 style={{
-                  background: isSeen ? 'rgba(255,255,255,0.06)' : `${story.color}25`,
-                  border: isSeen ? '2px solid rgba(255,255,255,0.1)' : `2px solid ${story.color}`,
+                  background: isSeen ? '#F0F2F5' : `${story.color}18`,
+                  border: isSeen ? '2px solid #E8EBF0' : `2px solid ${story.color}55`,
+                  boxShadow: isSeen ? 'none' : '0 2px 8px rgba(0,0,0,0.08)',
                 }}>
                 {story.emoji}
                 {!isSeen && (
@@ -110,7 +111,7 @@ export default function StoriesDigest() {
                 )}
               </div>
               <p className="text-[10px] font-semibold text-center w-16 leading-tight truncate"
-                style={{ color: isSeen ? 'rgba(155,173,184,0.4)' : 'rgba(240,234,214,0.8)' }}>
+                style={{ color: isSeen ? '#B0BAC9' : '#4A5568' }}>
                 {story.title}
               </p>
             </button>

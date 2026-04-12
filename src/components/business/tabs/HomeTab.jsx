@@ -25,7 +25,7 @@ export default function HomeTab({ safeToSpend, label, onScannerOpen }) {
   };
 
   return (
-    <div className="px-5 space-y-5">
+    <div className="px-5 space-y-4">
       {/* Stories row */}
       <StoriesDigest />
 
