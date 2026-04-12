@@ -54,25 +54,25 @@ export default function Layout({ children, currentPageName }) {
       {isGuestMode() && !hideNav && <GuestBanner />}
       <style>{`
         :root {
-          /* Primary Colors — mörkblå istället för svart */
-          --color-background-primary: #0F1724;
-          --color-background-secondary: #141E2E;
-          --color-surface: #1C2B3F;
-          --color-card: #1E2D42;
+          /* Premium Teal — Starling/Revolut inspiration */
+          --color-background-primary: #F4F6F8;
+          --color-background-secondary: #ECEEF1;
+          --color-surface: #FFFFFF;
+          --color-card: #FFFFFF;
           
-          /* Accent — dämpat stålblått, inte neon */
-          --color-accent: #4B7CF3;
-          --color-accent-hover: #3A6ADE;
+          /* Accent — Starling teal */
+          --color-accent: #0D7377;
+          --color-accent-hover: #0a5f63;
           
           /* Text */
-          --color-text-primary: #EDF0F5;
-          --color-text-secondary: #8B97A8;
-          --color-text-muted: #5C6B7D;
+          --color-text-primary: #1A2332;
+          --color-text-secondary: #4A5568;
+          --color-text-muted: #8896A5;
           
-          /* Status — naturligare toner */
-          --color-success: #3DAA7A;
-          --color-danger: #D95F5F;
-          --color-warning: #C8923A;
+          /* Status */
+          --color-success: #0D7377;
+          --color-danger: #E53E3E;
+          --color-warning: #D69E2E;
           
           /* Effects — subtila skuggor, ingen glow */
           --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.15);
@@ -81,9 +81,9 @@ export default function Layout({ children, currentPageName }) {
           --shadow-xl: 0 16px 24px -5px rgb(0 0 0 / 0.35);
           
           /* Borders */
-          --border-radius-sm: 10px;
-          --border-radius-md: 14px;
-          --border-radius-lg: 18px;
+          --border-radius-sm: 12px;
+          --border-radius-md: 16px;
+          --border-radius-lg: 24px;
           
           /* Transitions */
           --transition-fast: 150ms ease-out;
@@ -104,6 +104,29 @@ export default function Layout({ children, currentPageName }) {
           background: var(--color-background-primary);
           color: var(--color-text-primary);
           min-height: 100vh;
+        }
+        
+        /* Business mode — light premium */
+        [data-mode='business'] body,
+        [data-mode='business'] {
+          background: #F4F6F8;
+          color: #1A2332;
+        }
+        [data-mode='business'] .dark-card {
+          background: #FFFFFF;
+          border: 1px solid rgba(0,0,0,0.07);
+          box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        [data-mode='business'] .dark-card:hover {
+          box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+        }
+        [data-mode='business'] input, [data-mode='business'] select, [data-mode='business'] textarea {
+          background: #F8FAFB !important;
+          border: 1px solid #DDE1E7 !important;
+          color: #1A2332 !important;
+        }
+        [data-mode='business'] input::placeholder, [data-mode='business'] textarea::placeholder {
+          color: #9AA5B4 !important;
         }
         
         #root {
@@ -132,12 +155,12 @@ export default function Layout({ children, currentPageName }) {
           100% { background-position: 1000px 0; }
         }
 
-        /* Glass Effect — mjukare, mindre blur-intensiv */
+        /* Glass Effect */
         .glass-effect {
-          background: rgba(28, 43, 63, 0.75);
+          background: rgba(255,255,255,0.75);
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 255, 255, 0.07);
+          border: 1px solid rgba(0, 0, 0, 0.06);
         }
         
         /* Card Effect */

@@ -16,7 +16,7 @@ import AutonomousBookkeeping from '@/components/business/AutonomousBookkeeping';
 import TaxOptimizer from '@/components/business/TaxOptimizer';
 import TaxWidget from '@/components/business/TaxWidget';
 import ManualTransactionModal from '@/components/business/ManualTransactionModal';
-import DailyDigest from '@/components/business/DailyDigest';
+import StoriesDigest from '@/components/business/StoriesDigest';
 import ActivityStream from '@/components/business/ActivityStream';
 import ReviewMode from '@/components/business/ReviewMode';
 import UITranslate from '@/components/business/UITranslate';
@@ -42,7 +42,7 @@ export default function BusinessDashboard() {
   const imported = localStorage.getItem('anchor_imported') === 'true';
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
+    <div className="min-h-screen pb-28" style={{ background: '#F4F6F8' }}>
       {/* Simulated data banner */}
       <AnimatePresence>
         {showScanner && (
@@ -70,54 +70,45 @@ export default function BusinessDashboard() {
         <motion.div
           initial={{ y: -30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
           className="flex items-center gap-2 px-4 py-2"
-          style={{ background: 'rgba(212,175,55,0.15)', borderBottom: '1px solid rgba(212,175,55,0.25)' }}
+          style={{ background: 'rgba(13,115,119,0.08)', borderBottom: '1px solid rgba(13,115,119,0.15)' }}
         >
-          <FlaskConical className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#D4AF37' }} />
-          <p className="text-xs font-medium" style={{ color: '#D4AF37' }}>
+          <FlaskConical className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#0D7377' }} />
+          <p className="text-xs font-medium" style={{ color: '#0D7377' }}>
             Demo-läge — Simulerad företagsdata (Fortnox-koppling ej aktiv)
           </p>
         </motion.div>
       )}
 
       {/* Header */}
-      <div className="px-5 pt-6 pb-4 flex items-center justify-between">
+      <div className="px-5 pt-6 pb-6 flex items-center justify-between"
+        style={{ background: 'linear-gradient(160deg, #0D7377 0%, #085f63 100%)', borderRadius: '0 0 28px 28px', marginBottom: 0 }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)' }}>
-            <Building2 className="w-5 h-5" style={{ color: '#D4AF37' }} />
+          <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.2)' }}>
+            <Building2 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#D4AF37' }}>Anchor Business</p>
-            <h1 className="text-xl font-black tracking-tight" style={{ color: '#F0EAD6' }}>{biz.companyName}</h1>
-            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Org.nr {biz.orgNr}</p>
-            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold mt-0.5"
-              style={{ background: legalEntity === 'ab' ? 'rgba(212,175,55,0.15)' : 'rgba(75,124,243,0.15)', color: legalEntity === 'ab' ? '#D4AF37' : '#4B7CF3', border: `1px solid ${legalEntity === 'ab' ? 'rgba(212,175,55,0.3)' : 'rgba(75,124,243,0.3)'}` }}>
-              {legalLabel}
-            </span>
+            <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.65)' }}>Anchor Business</p>
+            <h1 className="text-xl font-black tracking-tight text-white">{biz.companyName}</h1>
+            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.5)' }}>Org.nr {biz.orgNr} · {legalLabel}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={() => setShowScanner(true)}
             className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
-            style={{ background: 'rgba(212,175,55,0.12)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
+            style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}>
             📷 Kvitto
           </button>
           <button onClick={() => setShowManual(true)}
             className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
-            style={{ background: 'rgba(61,170,122,0.12)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.3)' }}>
+            style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}>
             <Plus className="w-3.5 h-3.5" />
             Ny
           </button>
-          <button onClick={() => setShowImport(true)}
-            className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
-            style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.35)' }}>
-            <Sparkles className="w-3.5 h-3.5" />
-            Importera
-          </button>
           <Link to={createPageUrl('Settings')}>
             <button className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: 'var(--color-surface)' }}>
-              <Settings className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+              style={{ background: 'rgba(255,255,255,0.15)' }}>
+              <Settings className="w-4 h-4 text-white" />
             </button>
           </Link>
         </div>
@@ -174,8 +165,8 @@ export default function BusinessDashboard() {
         {/* UI Translate — Fortnox-översättaren */}
         <UITranslate />
 
-        {/* Daily Digest */}
-        <DailyDigest />
+        {/* Stories Digest */}
+        <StoriesDigest />
 
         {/* Net Salary Calculator */}
         <NetSalaryCalculator entityType={legalEntity} />

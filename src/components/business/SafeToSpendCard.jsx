@@ -50,57 +50,44 @@ export default function SafeToSpendCard({ grossBalance, vatReserved, entityType 
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.97 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="rounded-2xl overflow-hidden"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-3xl overflow-hidden"
       style={{
-        background: 'linear-gradient(135deg, #1A2B3C 0%, #0D1B2A 100%)',
-        border: '1.5px solid rgba(61,170,122,0.35)',
-        boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+        background: 'linear-gradient(145deg, #0D7377 0%, #085f63 60%, #074f52 100%)',
+        boxShadow: '0 16px 48px rgba(13,115,119,0.35)',
       }}
     >
       {/* Main balance */}
-      <div className="px-5 pt-5 pb-4">
-        <div className="flex items-start justify-between mb-1">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg flex items-center justify-center"
-              style={{ background: 'rgba(61,170,122,0.2)' }}>
-              <Wallet className="w-3.5 h-3.5" style={{ color: '#3DAA7A' }} />
-            </div>
-            <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#3DAA7A' }}>
-              Safe to Spend
-            </p>
-          </div>
-          <span className="text-[10px] px-2 py-0.5 rounded-full font-bold"
-            style={{ background: 'rgba(61,170,122,0.15)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.3)' }}>
-            {pct}% av saldo
-          </span>
-        </div>
-
-        <p className="text-4xl font-black mt-2 mb-0.5" style={{ color: '#3DAA7A' }}>
+      <div className="px-6 pt-7 pb-6">
+        <p className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>Ditt att röra dig med</p>
+        <p className="font-black mt-1 mb-1 leading-none" style={{ fontSize: 52, color: '#ffffff', letterSpacing: '-2px' }}>
           {safeToSpend.toLocaleString('sv-SE')}
-          <span className="text-xl font-normal ml-2" style={{ color: '#9BADB8' }}>kr</span>
+          <span className="text-2xl font-semibold ml-2" style={{ color: 'rgba(255,255,255,0.55)' }}>kr</span>
         </p>
-        <p className="text-xs" style={{ color: 'rgba(155,173,184,0.6)' }}>{label}</p>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</p>
 
-        {/* Mini bar */}
-        <div className="mt-3 h-2 rounded-full overflow-hidden flex gap-0.5"
-          style={{ background: 'rgba(255,255,255,0.06)' }}>
-          <div style={{ width: `${pct}%`, background: '#3DAA7A', borderRadius: 4 }} />
-          <div style={{ width: `${Math.round((vatReserved / grossBalance) * 100)}%`, background: '#D4AF37', borderRadius: 4 }} />
-          <div style={{ flex: 1, background: '#D95F5F', borderRadius: 4 }} />
-        </div>
-        <div className="flex gap-4 mt-1.5">
+        {/* Three pill badges */}
+        <div className="flex gap-2 mt-4">
           {[
-            { label: 'Ditt', color: '#3DAA7A' },
-            { label: 'Moms', color: '#D4AF37' },
-            { label: 'Skatt', color: '#D95F5F' },
+            { label: 'Ditt', amount: safeToSpend, color: 'rgba(255,255,255,0.25)' },
+            { label: 'Moms', amount: vatReserved, color: 'rgba(212,175,55,0.35)' },
+            { label: 'Skatt', amount: grossBalance - vatReserved - safeToSpend, color: 'rgba(217,95,95,0.35)' },
           ].map(l => (
-            <div key={l.label} className="flex items-center gap-1">
-              <div className="w-1.5 h-1.5 rounded-full" style={{ background: l.color }} />
-              <span className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>{l.label}</span>
+            <div key={l.label} className="flex-1 rounded-2xl px-3 py-2 text-center"
+              style={{ background: l.color }}>
+              <p className="text-[10px] font-semibold text-white/60">{l.label}</p>
+              <p className="text-xs font-black text-white">{l.amount.toLocaleString('sv-SE')}</p>
             </div>
           ))}
+        </div>
+
+        {/* Bar */}
+        <div className="mt-4 h-1.5 rounded-full overflow-hidden flex"
+          style={{ background: 'rgba(255,255,255,0.15)' }}>
+          <div style={{ width: `${pct}%`, background: 'rgba(255,255,255,0.8)', borderRadius: 4 }} />
+          <div style={{ width: `${Math.round((vatReserved / grossBalance) * 100)}%`, background: 'rgba(212,175,55,0.7)', borderRadius: 4 }} />
+          <div style={{ flex: 1, background: 'rgba(217,95,95,0.5)', borderRadius: 4 }} />
         </div>
       </div>
 
