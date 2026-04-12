@@ -18,19 +18,22 @@ function generateData(startValue, monthlySavings, months) {
 
 export default function ForecastChart({ profile }) {
   const [selectedYears, setSelectedYears] = useState(5);
-  if (!profile) return null;
 
-  const totalFixedCosts = getTotalFixedCosts(profile);
-  const income = profile.income || 0;
+  const totalFixedCosts = getTotalFixedCosts(profile || {});
+  const income = profile?.income || 0;
   const margin = income - totalFixedCosts;
   const monthlySavings = income > 0 && margin > 0 ? margin * 0.3 : 0;
-  const startValue = profile.buffer || 0;
+  const startValue = profile?.buffer || 0;
   const activeMonths = selectedYears * 12;
 
   const data = useMemo(
     () => generateData(startValue, monthlySavings, activeMonths),
     [startValue, monthlySavings, activeMonths]
   );
+
+  if (!profile) return null;
+
+
 
   const finalValue = data[data.length - 1]?.value || 0;
   const isFlat = monthlySavings === 0;

@@ -23,6 +23,9 @@ import UITranslate from '@/components/business/UITranslate';
 import LiquidityGauge from '@/components/business/LiquidityGauge';
 import SafeToSpendCard from '@/components/business/SafeToSpendCard';
 import ReceiptVault from '@/components/business/ReceiptVault';
+import SwipeApprove from '@/components/business/SwipeApprove';
+import AuditorAccess from '@/components/business/AuditorAccess';
+import CrisisMode from '@/components/business/CrisisMode';
 
 const biz = SIMULATED_BUSINESS;
 const monthlyBurn = calcMonthlyBurn(biz);
@@ -215,6 +218,15 @@ export default function BusinessDashboard() {
 
         {/* Receipt Vault */}
         <ReceiptVault transactions={manualTransactions} />
+
+        {/* Swipe to approve */}
+        <SwipeApprove />
+
+        {/* Crisis Mode */}
+        <CrisisMode monthlyBurn={monthlyBurn} />
+
+        {/* Auditor Access */}
+        <AuditorAccess />
 
         {/* Deductible transactions */}
         <DeductibleTransactions transactions={biz.recentTransactions} />
