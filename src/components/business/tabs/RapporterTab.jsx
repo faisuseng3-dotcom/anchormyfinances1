@@ -8,9 +8,10 @@ export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, in
   return (
     <div className="px-5 space-y-4">
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        className="text-2xl font-black pt-2" style={{ color: '#1A2332' }}>
+        className="text-2xl font-black pt-4" style={{ color: '#1A2332', letterSpacing: '-0.5px' }}>
         Rapporter
       </motion.p>
+      <p className="text-sm -mt-2" style={{ color: '#9AA5B4' }}>Kassaflöde, runway och fakturor</p>
       <RunwayEngine runwayMonths={runwayMonths} runwayData={runwayData} monthlyBurn={monthlyBurn} />
       <InvoiceList invoices={invoices} />
       <DeductibleTransactions transactions={transactions} />

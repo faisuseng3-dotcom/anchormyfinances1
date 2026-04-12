@@ -9,9 +9,10 @@ export default function ArkivTab({ transactions }) {
   return (
     <div className="px-5 space-y-4">
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        className="text-2xl font-black pt-2" style={{ color: '#1A2332' }}>
+        className="text-2xl font-black pt-4" style={{ color: '#1A2332', letterSpacing: '-0.5px' }}>
         Arkiv
       </motion.p>
+      <p className="text-sm -mt-2" style={{ color: '#9AA5B4' }}>Kvitton, verifikat och din huvudbok</p>
       <ReceiptVault transactions={transactions} />
       <ActivityStream />
       <Link to="/LedgerVault">
