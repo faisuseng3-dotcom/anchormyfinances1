@@ -70,15 +70,15 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
         animate={{ y: 0 }}
         exit={{ y: 60 }}
         onClick={e => e.stopPropagation()}
-        className="w-full max-w-md rounded-t-2xl overflow-hidden"
-        style={{ background: '#1A2B3C', maxHeight: '90vh', overflowY: 'auto' }}
+        className="w-full max-w-md rounded-t-3xl overflow-hidden"
+        style={{ background: '#FFFFFF', maxHeight: '90vh', overflowY: 'auto' }}
       >
         <div className="px-5 pt-5 pb-4 flex items-center justify-between"
-          style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <p className="font-bold text-sm" style={{ color: '#F0EAD6' }}>Ny transaktion</p>
+          style={{ borderBottom: '1px solid #F0F2F5' }}>
+          <p className="font-bold text-sm" style={{ color: '#1A2332' }}>Ny transaktion</p>
           <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.07)' }}>
-            <X className="w-4 h-4" style={{ color: 'rgba(155,173,184,0.6)' }} />
+            style={{ background: '#F4F6F8' }}>
+            <X className="w-4 h-4" style={{ color: '#9AA5B4' }} />
           </button>
         </div>
 
@@ -90,9 +90,9 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
               <button key={t.id} onClick={() => { setType(t.id); setAccount(t.id === 'income' ? '3000' : '5420'); }}
                 className="flex-1 h-10 rounded-xl font-bold text-xs"
                 style={{
-                  background: type === t.id ? (t.id === 'expense' ? 'rgba(217,95,95,0.2)' : 'rgba(61,170,122,0.2)') : 'rgba(255,255,255,0.04)',
-                  color: type === t.id ? (t.id === 'expense' ? '#D95F5F' : '#3DAA7A') : 'rgba(155,173,184,0.6)',
-                  border: type === t.id ? `1px solid ${t.id === 'expense' ? 'rgba(217,95,95,0.4)' : 'rgba(61,170,122,0.4)'}` : '1px solid rgba(255,255,255,0.07)',
+                  background: type === t.id ? (t.id === 'expense' ? 'rgba(217,95,95,0.08)' : 'rgba(13,115,119,0.08)') : '#F4F6F8',
+                  color: type === t.id ? (t.id === 'expense' ? '#E53E3E' : '#0D7377') : '#9AA5B4',
+                  border: type === t.id ? `1.5px solid ${t.id === 'expense' ? 'rgba(229,62,62,0.3)' : 'rgba(13,115,119,0.3)'}` : '1.5px solid #F0F2F5',
                 }}>
                 {t.label}
               </button>
@@ -101,32 +101,32 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
 
           {/* Vendor */}
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
-              style={{ color: 'rgba(155,173,184,0.5)' }}>Leverantör / Kund</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider mb-1.5 block"
+              style={{ color: '#9AA5B4' }}>Leverantör / Kund</label>
             <input value={vendor} onChange={e => setVendor(e.target.value)} placeholder="t.ex. Adobe Inc"
-              className="w-full h-11 px-3 rounded-xl text-sm"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+              className="w-full h-11 px-3 rounded-2xl text-sm"
+              style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }} />
           </div>
 
           {/* Amount + VAT */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
-                style={{ color: 'rgba(155,173,184,0.5)' }}>Belopp (inkl moms)</label>
+              <label className="text-[11px] font-semibold uppercase tracking-wider mb-1.5 block"
+                style={{ color: '#9AA5B4' }}>Belopp (inkl moms)</label>
               <div className="relative">
                 <input type="text" inputMode="numeric" value={amount} onChange={e => setAmount(e.target.value)}
                   placeholder="0"
-                  className="w-full h-11 px-3 pr-8 rounded-xl text-sm font-bold"
-                  style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'rgba(155,173,184,0.5)' }}>kr</span>
+                  className="w-full h-11 px-3 pr-8 rounded-2xl text-sm font-bold"
+                  style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }} />
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs" style={{ color: '#9AA5B4' }}>kr</span>
               </div>
             </div>
             <div>
-              <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
-                style={{ color: 'rgba(155,173,184,0.5)' }}>Momssats</label>
+              <label className="text-[11px] font-semibold uppercase tracking-wider mb-1.5 block"
+                style={{ color: '#9AA5B4' }}>Momssats</label>
               <select value={vatRate} onChange={e => setVatRate(e.target.value)}
-                className="w-full h-11 px-3 rounded-xl text-sm font-bold"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+                className="w-full h-11 px-3 rounded-2xl text-sm font-bold"
+                style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }}>
                 <option value="25">25%</option>
                 <option value="12">12%</option>
                 <option value="6">6%</option>
@@ -138,18 +138,18 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
           {/* VAT preview */}
           {parsedAmount > 0 && (
             <div className="flex gap-2">
-              <div className="flex-1 p-2.5 rounded-xl text-center"
-                style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.2)' }}>
-                <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Exkl. moms</p>
-                <p className="text-sm font-black" style={{ color: '#3DAA7A' }}>
-                  {(parsedAmount - vatAmt).toFixed(2)} kr
+              <div className="flex-1 p-2.5 rounded-2xl text-center"
+                style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.15)' }}>
+                <p className="text-[10px]" style={{ color: '#9AA5B4' }}>Exkl. moms</p>
+                <p className="text-sm font-black" style={{ color: '#0D7377' }}>
+                  {(parsedAmount - vatAmt).toFixed(0)} kr
                 </p>
               </div>
-              <div className="flex-1 p-2.5 rounded-xl text-center"
-                style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
-                <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Moms {vatRate}%</p>
-                <p className="text-sm font-black" style={{ color: '#D4AF37' }}>
-                  {vatAmt.toFixed(2)} kr
+              <div className="flex-1 p-2.5 rounded-2xl text-center"
+                style={{ background: '#F4F6F8', border: '1px solid #E8ECF0' }}>
+                <p className="text-[10px]" style={{ color: '#9AA5B4' }}>Moms {vatRate}%</p>
+                <p className="text-sm font-black" style={{ color: '#1A2332' }}>
+                  {vatAmt.toFixed(0)} kr
                 </p>
               </div>
             </div>
@@ -157,11 +157,11 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
 
           {/* Account */}
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
-              style={{ color: 'rgba(155,173,184,0.5)' }}>Bokföringskonto (AI-förslag)</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider mb-1.5 block"
+              style={{ color: '#9AA5B4' }}>Bokföringskonto</label>
             <select value={account} onChange={e => setAccount(e.target.value)}
-              className="w-full h-11 px-3 rounded-xl text-sm font-bold"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+              className="w-full h-11 px-3 rounded-2xl text-sm font-bold"
+              style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }}>
               {ACCOUNTS.map(a => (
                 <option key={a.code} value={a.code}>{a.code} — {a.label}</option>
               ))}
@@ -170,30 +170,30 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
 
           {/* Note */}
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
-              style={{ color: 'rgba(155,173,184,0.5)' }}>Anteckning (valfri)</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider mb-1.5 block"
+              style={{ color: '#9AA5B4' }}>Anteckning (valfri)</label>
             <input value={note} onChange={e => setNote(e.target.value)} placeholder="t.ex. Affärsresa kund X"
-              className="w-full h-11 px-3 rounded-xl text-sm"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+              className="w-full h-11 px-3 rounded-2xl text-sm"
+              style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }} />
           </div>
 
           {/* Receipt upload */}
           <div>
-            <label className="text-[11px] font-bold uppercase tracking-wider mb-1.5 block"
-              style={{ color: 'rgba(155,173,184,0.5)' }}>Underlag / Kvitto</label>
+            <label className="text-[11px] font-semibold uppercase tracking-wider mb-1.5 block"
+              style={{ color: '#9AA5B4' }}>Underlag / Kvitto</label>
             {receiptUrl ? (
-              <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
-                style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.25)' }}>
-                <CheckCircle2 className="w-4 h-4" style={{ color: '#3DAA7A' }} />
-                <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>Kvitto bifogat ✓</p>
-                <button onClick={() => setReceiptUrl(null)} className="ml-auto text-[10px]" style={{ color: 'rgba(155,173,184,0.4)' }}>Ta bort</button>
+              <div className="flex items-center gap-2 px-3 py-2.5 rounded-2xl"
+                style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.2)' }}>
+                <CheckCircle2 className="w-4 h-4" style={{ color: '#0D7377' }} />
+                <p className="text-xs font-bold" style={{ color: '#0D7377' }}>Kvitto bifogat ✓</p>
+                <button onClick={() => setReceiptUrl(null)} className="ml-auto text-[10px]" style={{ color: '#9AA5B4' }}>Ta bort</button>
               </div>
             ) : (
               <button
                 onClick={() => fileRef.current?.click()}
                 disabled={uploading}
-                className="w-full h-11 rounded-xl flex items-center justify-center gap-2 text-xs font-bold"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px dashed rgba(255,255,255,0.15)', color: 'rgba(155,173,184,0.5)' }}>
+                className="w-full h-11 rounded-2xl flex items-center justify-center gap-2 text-xs font-bold"
+                style={{ background: '#F4F6F8', border: '1.5px dashed #D0D7E0', color: '#9AA5B4' }}>
                 {uploading ? <span>Laddar upp…</span> : <><Camera className="w-3.5 h-3.5" /> Fota eller ladda upp kvitto</>}
               </button>
             )}
@@ -202,10 +202,10 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
           </div>
 
           <button onClick={handleSave}
-            className="w-full h-12 rounded-xl font-black text-sm flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-2xl font-black text-sm flex items-center justify-center gap-2"
             style={{
-              background: saved ? 'rgba(61,170,122,0.2)' : 'linear-gradient(135deg, #D4AF37, #C8923A)',
-              color: saved ? '#3DAA7A' : '#0F1724',
+              background: saved ? 'rgba(13,115,119,0.1)' : '#0D7377',
+              color: saved ? '#0D7377' : '#FFFFFF',
             }}>
             {saved ? <><CheckCircle2 className="w-4 h-4" /> Sparad!</> : <><Plus className="w-4 h-4" /> Bokför transaktion</>}
           </button>

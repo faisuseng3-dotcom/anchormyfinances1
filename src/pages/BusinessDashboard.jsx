@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FlaskConical, Building2, Plus, Settings } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { Building2, Plus } from 'lucide-react';
 
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
 import BusinessTabBar from '@/components/business/BusinessTabBar';
 import ReceiptScanner from '@/components/business/ReceiptScanner';
 import ManualTransactionModal from '@/components/business/ManualTransactionModal';
-import MagicImport from '@/components/business/MagicImport';
 
 import HomeTab from '@/components/business/tabs/HomeTab';
 import SkattMomsTab from '@/components/business/tabs/SkattMomsTab';
 import RapporterTab from '@/components/business/tabs/RapporterTab';
 import ArkivTab from '@/components/business/tabs/ArkivTab';
 import ProfilTab from '@/components/business/tabs/ProfilTab';
+
+const TAB_TITLES = {
+  home: null, // uses company name
+  skatt: 'Skatt & Moms',
+  rapporter: 'Rapporter',
+  arkiv: 'Arkiv',
+  profil: 'Profil',
+};
 
 // Tax calc for safe-to-spend
 function calcSafeToSpend(grossBalance, vatReserved, entityType) {
@@ -35,8 +40,11 @@ export default function BusinessDashboard() {
   const [activeTab, setActiveTab] = useState('home');
   const [showScanner, setShowScanner] = useState(false);
   const [showManual, setShowManual] = useState(false);
-  const [showImport, setShowImport] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
+  // Remove unused showImport state
+
+  // Persist business mode on refresh
+  useEffect(() => { localStorage.setItem('anchor_mode', 'business'); }, []);
 
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const legalLabel = legalEntity === 'ab' ? 'Aktiebolag (AB)' : 'Enskild firma';
@@ -62,24 +70,11 @@ export default function BusinessDashboard() {
           />
         )}
       </AnimatePresence>
-      <AnimatePresence>
-        {showImport && <MagicImport onClose={() => setShowImport(false)} onComplete={() => setShowImport(false)} />}
-      </AnimatePresence>
-
-      {/* Demo banner */}
-      <div className="flex items-center gap-2 px-4 py-2"
-        style={{ background: 'rgba(13,115,119,0.08)', borderBottom: '1px solid rgba(13,115,119,0.12)' }}>
-        <FlaskConical className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#0D7377' }} />
-        <p className="text-xs font-medium" style={{ color: '#0D7377' }}>
-          Demo-läge — Simulerad företagsdata
-        </p>
-      </div>
-
-      {/* Top header */}
-      <div className="px-5 pt-5 pb-6 flex items-center justify-between"
+      {/* Top header — consistent across all tabs */}
+      <div className="px-5 pt-5 pb-5 flex items-center justify-between"
         style={{
           background: 'linear-gradient(160deg, #0D7377 0%, #074f52 100%)',
-          borderRadius: '0 0 32px 32px',
+          borderRadius: '0 0 28px 28px',
         }}>
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
@@ -87,27 +82,21 @@ export default function BusinessDashboard() {
             <Building2 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
-            <h1 className="text-lg font-black text-white tracking-tight">{biz.companyName}</h1>
+            <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
+            <h1 className="text-base font-black text-white tracking-tight">
+              {TAB_TITLES[activeTab] || biz.companyName}
+            </h1>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowManual(true)}
-            className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.2)' }}>
-            <Plus className="w-4 h-4 text-white" />
-          </button>
-          <Link to={createPageUrl('Settings')}>
-            <button className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.15)' }}>
-              <Settings className="w-4 h-4 text-white" />
-            </button>
-          </Link>
-        </div>
+        <button onClick={() => setShowManual(true)}
+          className="w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: 'rgba(255,255,255,0.2)' }}>
+          <Plus className="w-4 h-4 text-white" />
+        </button>
       </div>
 
       {/* Tab content */}
-      <div className="pb-28 pt-4">
+      <div className="pb-28 pt-5">
         <AnimatePresence mode="wait">
           {activeTab === 'home' && (
             <motion.div key="home" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>

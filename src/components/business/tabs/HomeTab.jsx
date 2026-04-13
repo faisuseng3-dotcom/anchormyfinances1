@@ -3,8 +3,6 @@ import { motion } from 'framer-motion';
 import { Camera, ArrowUpRight, ArrowDownLeft, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
-import StoriesDigest from '@/components/business/StoriesDigest';
-
 const RECENT_TX = [
   { vendor: 'Adobe Creative Cloud', amount: -599, date: 'Idag', category: 'Programvara' },
   { vendor: 'Kund: Eriksson AB', amount: 18500, date: 'Igår', category: 'Inkomst' },
@@ -26,9 +24,6 @@ export default function HomeTab({ safeToSpend, label, onScannerOpen }) {
 
   return (
     <div className="px-5 space-y-4">
-      {/* Stories row */}
-      <StoriesDigest />
-
       {/* Safe to spend hero */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-3xl overflow-hidden"
