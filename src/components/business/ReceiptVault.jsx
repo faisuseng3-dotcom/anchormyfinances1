@@ -1,13 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FolderOpen, Camera, FileImage, CheckCircle2, Download, Loader2 } from 'lucide-react';
+import { Camera, CheckCircle2, Download, Loader2, FileImage } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { jsPDF } from 'jspdf';
 
 async function exportReceiptsPDF(transactions) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const pageW = doc.internal.pageSize.getWidth();
-
   doc.setFontSize(18);
   doc.setTextColor(30, 30, 30);
   doc.text('Kvittopärm — Anchor Business', 14, 20);
@@ -16,7 +15,6 @@ async function exportReceiptsPDF(transactions) {
   doc.text(`Exporterad: ${new Date().toLocaleDateString('sv-SE')}`, 14, 28);
   doc.setDrawColor(220, 220, 220);
   doc.line(14, 32, pageW - 14, 32);
-
   let y = 40;
   for (const tx of transactions) {
     if (y > 240) { doc.addPage(); y = 20; }
@@ -30,7 +28,6 @@ async function exportReceiptsPDF(transactions) {
       14, y + 5
     );
     if (tx.note) doc.text(`Anteckning: ${tx.note}`, 14, y + 10);
-
     if (tx.receiptUrl) {
       try {
         const res = await fetch(tx.receiptUrl);
@@ -48,9 +45,6 @@ async function exportReceiptsPDF(transactions) {
         y += Math.max(20, imgH + 4);
       } catch { y += 20; }
     } else {
-      doc.setFontSize(8);
-      doc.setTextColor(200, 80, 80);
-      doc.text('⚠ Kvitto saknas', 14, y + 13);
       y += 22;
     }
     doc.setDrawColor(240, 240, 240);
@@ -73,104 +67,103 @@ export default function ReceiptVault({ transactions = [], onUploadStandalone }) 
   };
 
   return (
-    <div className="rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-
-      {/* Header */}
-      <div className="px-4 pt-4 pb-3 flex items-center justify-between"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(75,124,243,0.2)', border: '1px solid rgba(75,124,243,0.3)' }}>
-            <FolderOpen className="w-3.5 h-3.5" style={{ color: '#4B7CF3' }} />
-          </div>
+    <div className="space-y-3">
+      {/* Header card */}
+      <div className="rounded-3xl overflow-hidden"
+        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+        <div className="px-5 pt-4 pb-3 flex items-center justify-between"
+          style={{ borderBottom: '1px solid #F0F2F5' }}>
           <div>
-            <p className="text-xs font-bold" style={{ color: '#4B7CF3' }}>RECEIPT VAULT</p>
-            <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>
-              {withReceipts.length} kvitton sparade · {withoutReceipts.length} saknar underlag
+            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Kvitton & Underlag</p>
+            <p className="text-xs" style={{ color: '#9AA5B4' }}>
+              {withReceipts.length} sparade · {withoutReceipts.length} saknas
             </p>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
           {transactions.length > 0 && (
             <button
               onClick={async () => { setExporting(true); await exportReceiptsPDF(transactions); setExporting(false); }}
               disabled={exporting}
-              className="flex items-center gap-1.5 px-3 h-8 rounded-full text-[11px] font-bold"
-              style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
-              {exporting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
-              PDF
+              className="flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-bold"
+              style={{ background: '#F4F6F8', color: '#4A5568' }}>
+              {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+              Exportera
             </button>
           )}
+        </div>
+
+        {/* Scan CTA */}
+        <div className="px-5 py-4">
           <button
             onClick={() => fileRef.current?.click()}
-            className="flex items-center gap-1.5 px-3 h-8 rounded-full text-[11px] font-bold"
-            style={{ background: 'rgba(75,124,243,0.15)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.3)' }}>
-            <Camera className="w-3 h-3" /> Fota kvitto
+            className="w-full h-12 rounded-2xl flex items-center justify-center gap-2 font-bold text-sm"
+            style={{ background: '#0D7377', color: '#fff', boxShadow: '0 4px 16px rgba(13,115,119,0.25)' }}>
+            <Camera className="w-5 h-5" />
+            Fota ett kvitto
           </button>
+          <input ref={fileRef} type="file" accept="image/*,application/pdf" className="hidden"
+            onChange={handleQuickUpload} />
         </div>
-        <input ref={fileRef} type="file" accept="image/*,application/pdf" className="hidden"
-          onChange={handleQuickUpload} />
-      </div>
 
-      <div className="px-4 pt-3 pb-4 space-y-3">
+        {/* Receipt thumbnails */}
         {withReceipts.length > 0 && (
-          <div className="grid grid-cols-3 gap-2">
-            {withReceipts.slice(0, 6).map((tx, i) => (
-              <motion.a
-                key={i}
-                href={tx.receiptUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                whileTap={{ scale: 0.95 }}
-                className="relative aspect-square rounded-xl overflow-hidden flex items-center justify-center"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(75,124,243,0.2)' }}>
-                <img src={tx.receiptUrl} alt={tx.vendor} className="w-full h-full object-cover"
-                  onError={e => { e.target.style.display = 'none'; }} />
-                <div className="absolute bottom-0 left-0 right-0 px-1.5 py-1"
-                  style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}>
-                  <p className="text-[9px] font-bold truncate" style={{ color: '#F0EAD6' }}>{tx.vendor}</p>
-                  <p className="text-[9px]" style={{ color: '#D4AF37' }}>{Math.abs(tx.amount).toLocaleString('sv-SE')} kr</p>
-                </div>
-                <div className="absolute top-1 right-1">
-                  <CheckCircle2 className="w-3 h-3" style={{ color: '#3DAA7A' }} />
-                </div>
-              </motion.a>
-            ))}
-          </div>
-        )}
-
-        {withoutReceipts.length > 0 && (
-          <div className="p-3 rounded-xl"
-            style={{ background: 'rgba(217,95,95,0.08)', border: '1px solid rgba(217,95,95,0.2)' }}>
-            <p className="text-xs font-bold mb-1.5" style={{ color: '#D95F5F' }}>
-              ⚠️ {withoutReceipts.length} transaktioner saknar kvitto
-            </p>
-            <div className="space-y-1">
-              {withoutReceipts.slice(0, 3).map((tx, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <span className="text-[11px]" style={{ color: 'rgba(155,173,184,0.6)' }}>{tx.vendor}</span>
-                  <span className="text-[11px] font-bold" style={{ color: '#D95F5F' }}>
-                    {Math.abs(tx.amount).toLocaleString('sv-SE')} kr
-                  </span>
-                </div>
+          <div className="px-5 pb-4">
+            <div className="grid grid-cols-3 gap-2">
+              {withReceipts.slice(0, 6).map((tx, i) => (
+                <motion.a
+                  key={i}
+                  href={tx.receiptUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileTap={{ scale: 0.95 }}
+                  className="relative aspect-square rounded-2xl overflow-hidden flex items-center justify-center"
+                  style={{ background: '#F4F6F8' }}>
+                  <img src={tx.receiptUrl} alt={tx.vendor} className="w-full h-full object-cover"
+                    onError={e => { e.target.style.display = 'none'; }} />
+                  <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5"
+                    style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }}>
+                    <p className="text-[9px] font-bold truncate text-white">{tx.vendor}</p>
+                  </div>
+                  <div className="absolute top-1.5 right-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" style={{ color: '#0D7377' }} />
+                  </div>
+                </motion.a>
               ))}
             </div>
-            <p className="text-[10px] mt-2" style={{ color: 'rgba(155,173,184,0.4)' }}>
-              Bokföringslagens krav: underlag krävs för varje affärshändelse
-            </p>
           </div>
         )}
 
         {transactions.length === 0 && (
-          <div className="py-6 flex flex-col items-center gap-2">
-            <FileImage className="w-8 h-8" style={{ color: 'rgba(155,173,184,0.2)' }} />
-            <p className="text-xs text-center" style={{ color: 'rgba(155,173,184,0.4)' }}>
-              Fota ditt första kvitto — AI:n läser av beloppet automatiskt
+          <div className="pb-6 flex flex-col items-center gap-2">
+            <FileImage className="w-8 h-8" style={{ color: '#D0D7E0' }} />
+            <p className="text-xs text-center" style={{ color: '#9AA5B4' }}>
+              Fota ditt första kvitto för att komma igång
             </p>
           </div>
         )}
       </div>
+
+      {/* Missing receipts — soft pastel warning */}
+      {withoutReceipts.length > 0 && (
+        <div className="rounded-3xl px-5 py-4"
+          style={{ background: '#FFF8F0', border: '1px solid #FFE0B2' }}>
+          <p className="text-sm font-bold mb-2" style={{ color: '#B45309' }}>
+            {withoutReceipts.length} transaktioner saknar kvitto
+          </p>
+          <div className="space-y-2">
+            {withoutReceipts.slice(0, 3).map((tx, i) => (
+              <div key={i} className="flex items-center justify-between">
+                <span className="text-sm" style={{ color: '#92400E' }}>{tx.vendor}</span>
+                <span className="text-sm font-bold" style={{ color: '#B45309' }}>
+                  {Math.abs(tx.amount).toLocaleString('sv-SE')} kr
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="text-xs mt-3" style={{ color: '#D97706' }}>
+            Fota kvittona för att hålla bokföringen komplett
+          </p>
+        </div>
+      )}
     </div>
   );
 }
