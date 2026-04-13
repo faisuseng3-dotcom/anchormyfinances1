@@ -70,26 +70,25 @@ export default function NetSalaryCalculator({ entityType = 'enskild' }) {
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <div className="rounded-3xl overflow-hidden"
+      style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
 
-      <div className="px-4 pt-4 pb-3 flex items-center gap-2"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-          style={{ background: 'rgba(61,170,122,0.2)', border: '1px solid rgba(61,170,122,0.3)' }}>
-          <Wallet className="w-3.5 h-3.5" style={{ color: '#3DAA7A' }} />
+      <div className="px-5 pt-4 pb-3 flex items-center gap-3"
+        style={{ borderBottom: '1px solid #F0F2F5' }}>
+        <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
+          style={{ background: 'rgba(13,115,119,0.1)' }}>
+          <Wallet className="w-4 h-4" style={{ color: '#0D7377' }} />
         </div>
         <div>
-          <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>LÖNEBERÄKNAREN</p>
-          <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>{cfg.label} · Vad tjänar du netto?</p>
+          <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Löneberäknaren</p>
+          <p className="text-xs" style={{ color: '#9AA5B4' }}>{cfg.label} · Vad tjänar du netto?</p>
         </div>
       </div>
 
-      <div className="px-4 pt-3 pb-4 space-y-3">
+      <div className="px-5 pt-4 pb-5 space-y-3">
         <div className="grid grid-cols-3 gap-2">
           <div className="col-span-2">
-            <label className="text-[10px] font-bold uppercase tracking-wider mb-1 block"
-              style={{ color: 'rgba(155,173,184,0.45)' }}>Fakturerat belopp</label>
+            <label className="text-xs font-semibold mb-1.5 block" style={{ color: '#9AA5B4' }}>Fakturerat belopp</label>
             <div className="relative">
               <input
                 type="text"
@@ -97,19 +96,17 @@ export default function NetSalaryCalculator({ entityType = 'enskild' }) {
                 value={gross}
                 onChange={e => setGross(e.target.value)}
                 placeholder="20 000"
-                className="w-full h-12 px-3 pr-8 rounded-xl text-xl font-black text-right"
-                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}
+                className="w-full h-11 px-3 pr-8 rounded-2xl text-lg font-black text-right"
+                style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }}
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold"
-                style={{ color: 'rgba(155,173,184,0.4)' }}>kr</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs" style={{ color: '#9AA5B4' }}>kr</span>
             </div>
           </div>
           <div>
-            <label className="text-[10px] font-bold uppercase tracking-wider mb-1 block"
-              style={{ color: 'rgba(155,173,184,0.45)' }}>Moms</label>
+            <label className="text-xs font-semibold mb-1.5 block" style={{ color: '#9AA5B4' }}>Moms</label>
             <select value={vatRate} onChange={e => setVatRate(e.target.value)}
-              className="w-full h-12 px-2 rounded-xl text-sm font-bold"
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+              className="w-full h-11 px-2 rounded-2xl text-sm font-bold"
+              style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }}>
               <option value="25">25%</option>
               <option value="12">12%</option>
               <option value="6">6%</option>
@@ -128,34 +125,33 @@ export default function NetSalaryCalculator({ entityType = 'enskild' }) {
             >
               {rows.map((row, i) => (
                 <div key={i}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-2xl"
                   style={{
-                    background: row.bold ? 'rgba(61,170,122,0.1)' : row.sub ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.03)',
-                    borderLeft: row.bold ? '3px solid #3DAA7A' : 'none',
+                    background: row.bold ? 'rgba(13,115,119,0.06)' : '#F4F6F8',
+                    borderLeft: row.bold ? '3px solid #0D7377' : 'none',
                   }}>
-                  <p className="text-xs" style={{ color: 'rgba(155,173,184,0.65)', fontWeight: row.bold ? 700 : 400 }}>
+                  <p className="text-xs" style={{ color: '#4A5568', fontWeight: row.bold ? 700 : 400 }}>
                     {row.label}
                   </p>
-                  <p className={row.bold ? 'text-base font-black' : 'text-xs font-bold'} style={{ color: row.color }}>
+                  <p className={row.bold ? 'text-base font-black' : 'text-xs font-bold'}
+                    style={{ color: row.bold ? '#0D7377' : row.value < 0 ? '#E53E3E' : '#1A2332' }}>
                     {row.value >= 0 ? '' : '− '}
                     {Math.abs(row.value).toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
                   </p>
                 </div>
               ))}
 
-              {/* Summary bar */}
-              <div className="mt-3 pt-3 flex items-center justify-between"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div className="text-center">
-                  <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.45)' }}>Tillgänglig nettolön</p>
-                  <p className="text-lg font-black" style={{ color: '#3DAA7A' }}>
+              <div className="mt-2 pt-3 grid grid-cols-2 gap-3"
+                style={{ borderTop: '1px solid #F0F2F5' }}>
+                <div className="text-center p-3 rounded-2xl" style={{ background: 'rgba(13,115,119,0.06)' }}>
+                  <p className="text-xs" style={{ color: '#9AA5B4' }}>Nettolön</p>
+                  <p className="text-lg font-black" style={{ color: '#0D7377' }}>
                     {Math.max(0, net).toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
                   </p>
                 </div>
-                <div className="w-px h-10" style={{ background: 'rgba(255,255,255,0.08)' }} />
-                <div className="text-center">
-                  <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.45)' }}>Reserverat skatt/moms</p>
-                  <p className="text-lg font-black" style={{ color: '#D95F5F' }}>
+                <div className="text-center p-3 rounded-2xl" style={{ background: '#F4F6F8' }}>
+                  <p className="text-xs" style={{ color: '#9AA5B4' }}>Skatt/moms</p>
+                  <p className="text-lg font-black" style={{ color: '#E53E3E' }}>
                     {taxReserve.toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
                   </p>
                 </div>

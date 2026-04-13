@@ -62,31 +62,31 @@ export default function LiquidityGauge({ totalBalance, vatReserved, grossIncome,
   ];
 
   return (
-    <div className="rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+    <div className="rounded-3xl overflow-hidden"
+      style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
 
-      <button onClick={() => setExpanded(v => !v)} className="w-full px-4 pt-4 pb-3 flex items-center justify-between"
-        style={{ borderBottom: expanded ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(61,170,122,0.2)', border: '1px solid rgba(61,170,122,0.3)' }}>
-            <Shield className="w-3.5 h-3.5" style={{ color: '#3DAA7A' }} />
+      <button onClick={() => setExpanded(v => !v)} className="w-full px-5 pt-4 pb-3 flex items-center justify-between"
+        style={{ borderBottom: expanded ? '1px solid #F0F2F5' : 'none' }}>
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
+            style={{ background: 'rgba(13,115,119,0.1)' }}>
+            <Shield className="w-4 h-4" style={{ color: '#0D7377' }} />
           </div>
           <div className="text-left">
-            <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>LIKVIDITETSSKIKTEN</p>
-            <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>
-              {spendable.toLocaleString('sv-SE')} kr disponibelt av {totalBalance.toLocaleString('sv-SE')} kr totalt
+            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Likviditetsskikten</p>
+            <p className="text-xs" style={{ color: '#9AA5B4' }}>
+              {spendable.toLocaleString('sv-SE')} kr disponibelt
             </p>
           </div>
         </div>
         {expanded
-          ? <ChevronUp className="w-4 h-4" style={{ color: 'rgba(155,173,184,0.4)' }} />
-          : <ChevronDown className="w-4 h-4" style={{ color: 'rgba(155,173,184,0.4)' }} />}
+          ? <ChevronUp className="w-4 h-4" style={{ color: '#9AA5B4' }} />
+          : <ChevronDown className="w-4 h-4" style={{ color: '#9AA5B4' }} />}
       </button>
 
-      {/* Stacked bar — always visible */}
-      <div className="px-4 py-3">
-        <div className="flex h-4 rounded-full overflow-hidden gap-0.5">
+      {/* Stacked bar */}
+      <div className="px-5 py-3">
+        <div className="flex h-3 rounded-full overflow-hidden gap-0.5">
           {layers.map((l, i) => (
             <motion.div
               key={i}
@@ -97,36 +97,33 @@ export default function LiquidityGauge({ totalBalance, vatReserved, grossIncome,
             />
           ))}
         </div>
-        <div className="flex justify-between mt-1.5">
+        <div className="flex justify-between mt-2">
           {layers.map((l, i) => (
             <div key={i} className="flex items-center gap-1">
               <div className="w-2 h-2 rounded-full" style={{ background: l.color }} />
-              <span className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>{l.pct}%</span>
+              <span className="text-xs" style={{ color: '#9AA5B4' }}>{l.pct}%</span>
             </div>
           ))}
         </div>
       </div>
 
       {expanded && (
-        <div className="px-4 pb-4 space-y-2">
+        <div className="px-5 pb-4 space-y-2">
           {layers.map((l, i) => (
-            <div key={i} className="p-3 rounded-xl"
-              style={{ background: l.bg, border: `1px solid ${l.border}` }}>
-              <div className="flex items-center justify-between mb-0.5">
-                <p className="text-xs font-bold" style={{ color: l.color }}>{l.label}</p>
-                <p className="text-sm font-black" style={{ color: l.color }}>
-                  {l.amount.toLocaleString('sv-SE')} kr
-                </p>
+            <div key={i} className="p-3 rounded-2xl flex items-center justify-between"
+              style={{ background: '#F4F6F8' }}>
+              <div className="flex items-center gap-2">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ background: l.color }} />
+                <p className="text-xs font-semibold" style={{ color: '#4A5568' }}>{l.label}</p>
               </div>
-              <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.55)' }}>{l.desc}</p>
+              <p className="text-sm font-black" style={{ color: '#1A2332' }}>
+                {l.amount.toLocaleString('sv-SE')} kr
+              </p>
             </div>
           ))}
-
-          <div className="pt-2 border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-            <p className="text-[10px] text-center" style={{ color: 'rgba(155,173,184,0.35)' }}>
-              Skatteuppskattning baseras på {cfg.label}. Rådfråga revisor för exakta siffror.
-            </p>
-          </div>
+          <p className="text-xs text-center pt-1" style={{ color: '#9AA5B4' }}>
+            Uppskattning baserad på {cfg.label}
+          </p>
         </div>
       )}
     </div>

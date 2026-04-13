@@ -12,60 +12,58 @@ export default function RunwayEngine({ runwayMonths, runwayData, monthlyBurn }) 
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl p-4"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}
+      className="rounded-3xl overflow-hidden"
+      style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
     >
-      <div className="flex items-center justify-between mb-3">
+      <div className="px-5 pt-4 pb-3 flex items-center justify-between"
+        style={{ borderBottom: '1px solid #F0F2F5' }}>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{
-              background: isWarning ? 'rgba(201,64,64,0.2)' : 'rgba(52,168,106,0.2)',
-              border: `1px solid ${isWarning ? 'rgba(201,64,64,0.4)' : 'rgba(52,168,106,0.4)'}`,
-            }}>
+          <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
+            style={{ background: isWarning ? 'rgba(229,62,62,0.1)' : 'rgba(13,115,119,0.1)' }}>
             {isWarning
-              ? <AlertTriangle className="w-5 h-5" style={{ color: '#C94040' }} />
-              : <TrendingUp className="w-5 h-5" style={{ color: '#34A86A' }} />}
+              ? <AlertTriangle className="w-4 h-4" style={{ color: '#E53E3E' }} />
+              : <TrendingUp className="w-4 h-4" style={{ color: '#0D7377' }} />}
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Runway Engine</p>
-            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Kassaflödesprognos</p>
+            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Kassaflödesprognos</p>
+            <p className="text-xs" style={{ color: '#9AA5B4' }}>Runway</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-black" style={{ color: isWarning ? '#C94040' : '#34A86A' }}>
+          <p className="text-2xl font-black" style={{ color: isWarning ? '#E53E3E' : '#0D7377', letterSpacing: '-1px' }}>
             {runwayMonths.toFixed(1)}
           </p>
-          <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>månader kvar</p>
+          <p className="text-xs" style={{ color: '#9AA5B4' }}>månader kvar</p>
         </div>
       </div>
 
-      <div className="h-32 -mx-1">
+      <div className="px-2 py-3 h-36">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={runwayData} margin={{ top: 4, right: 4, bottom: 0, left: -10 }}>
+          <AreaChart data={runwayData} margin={{ top: 4, right: 8, bottom: 0, left: -10 }}>
             <defs>
               <linearGradient id="runwayGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={isWarning ? '#C94040' : '#D4AF37'} stopOpacity={0.25} />
-                <stop offset="95%" stopColor={isWarning ? '#C94040' : '#D4AF37'} stopOpacity={0.02} />
+                <stop offset="5%" stopColor={isWarning ? '#E53E3E' : '#0D7377'} stopOpacity={0.2} />
+                <stop offset="95%" stopColor={isWarning ? '#E53E3E' : '#0D7377'} stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#5A7285' }} axisLine={false} tickLine={false} />
-            <YAxis tickFormatter={fmt} tick={{ fontSize: 10, fill: '#5A7285' }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: '#9AA5B4' }} axisLine={false} tickLine={false} />
+            <YAxis tickFormatter={fmt} tick={{ fontSize: 10, fill: '#9AA5B4' }} axisLine={false} tickLine={false} />
             <Tooltip
-              contentStyle={{ background: '#162535', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 10, fontSize: 12 }}
+              contentStyle={{ background: '#fff', border: '1px solid #F0F2F5', borderRadius: 12, fontSize: 12, color: '#1A2332', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
               formatter={(v) => [`${v.toLocaleString('sv-SE')} kr`, 'Kassabalans']}
             />
             <Area
-              type="monotone" dataKey="balance" stroke={isWarning ? '#C94040' : '#D4AF37'}
+              type="monotone" dataKey="balance" stroke={isWarning ? '#E53E3E' : '#0D7377'}
               strokeWidth={2} fill="url(#runwayGrad)"
             />
           </AreaChart>
         </ResponsiveContainer>
       </div>
 
-      <div className="mt-3 flex items-center justify-between rounded-xl px-3 py-2"
-        style={{ background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.05)' }}>
-        <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Månadsutgifter</p>
-        <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>
+      <div className="mx-5 mb-4 flex items-center justify-between rounded-2xl px-4 py-3"
+        style={{ background: '#F4F6F8' }}>
+        <p className="text-xs font-semibold" style={{ color: '#4A5568' }}>Månadsutgifter</p>
+        <p className="text-sm font-black" style={{ color: '#1A2332' }}>
           {monthlyBurn.toLocaleString('sv-SE')} kr/mån
         </p>
       </div>

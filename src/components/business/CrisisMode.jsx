@@ -25,59 +25,59 @@ export default function CrisisMode({ monthlyBurn = 45000 }) {
   return (
     <>
       <button onClick={() => setOpen(true)}
-        className="w-full rounded-2xl p-4 flex items-center gap-3"
-        style={{ background: 'rgba(217,95,95,0.08)', border: '1px solid rgba(217,95,95,0.3)' }}>
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-          style={{ background: 'rgba(217,95,95,0.15)', border: '1px solid rgba(217,95,95,0.4)' }}>
-          <AlertTriangle className="w-4 h-4" style={{ color: '#D95F5F' }} />
+        className="w-full rounded-3xl p-4 flex items-center gap-3"
+        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+        <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
+          style={{ background: 'rgba(229,62,62,0.1)' }}>
+          <AlertTriangle className="w-4 h-4" style={{ color: '#E53E3E' }} />
         </div>
         <div className="text-left flex-1">
-          <p className="text-sm font-bold" style={{ color: '#D95F5F' }}>CRISIS MODE</p>
-          <p className="text-xs" style={{ color: 'rgba(155,173,184,0.55)' }}>Simulera om intäkterna dippar — vad kan du skära?</p>
+          <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Krissimulatorn</p>
+          <p className="text-xs" style={{ color: '#9AA5B4' }}>Simulera om intäkterna dippar</p>
         </div>
-        <TrendingDown className="w-4 h-4" style={{ color: 'rgba(217,95,95,0.5)' }} />
+        <TrendingDown className="w-4 h-4" style={{ color: '#9AA5B4' }} />
       </button>
 
       <AnimatePresence>
         {open && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-end justify-center"
-            style={{ background: 'rgba(0,0,0,0.85)' }}
+            style={{ background: 'rgba(0,0,0,0.6)' }}
             onClick={() => setOpen(false)}>
             <motion.div initial={{ y: 80 }} animate={{ y: 0 }} exit={{ y: 80 }}
               onClick={e => e.stopPropagation()}
-              className="w-full max-w-md rounded-t-2xl overflow-hidden"
-              style={{ background: '#1A2B3C', maxHeight: '85vh', overflowY: 'auto' }}>
+              className="w-full max-w-md rounded-t-3xl overflow-hidden"
+              style={{ background: '#F4F6F8', maxHeight: '85vh', overflowY: 'auto' }}>
 
-              <div className="px-5 pt-5 pb-4 flex items-center justify-between"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+              <div className="px-5 pt-5 pb-4 flex items-center justify-between bg-white"
+                style={{ borderBottom: '1px solid #F0F2F5' }}>
                 <div>
-                  <p className="font-black text-sm" style={{ color: '#D95F5F' }}>⚠️ Crisis Mode — Kostnadsanalys</p>
-                  <p className="text-[11px] mt-0.5" style={{ color: 'rgba(155,173,184,0.5)' }}>
-                    Bocka av vad du kan skära om försäljningen stannar
+                  <p className="font-black text-sm" style={{ color: '#1A2332' }}>Krissimulatorn</p>
+                  <p className="text-xs mt-0.5" style={{ color: '#9AA5B4' }}>
+                    Vad kan du skära om försäljningen stannar?
                   </p>
                 </div>
                 <button onClick={() => setOpen(false)}
-                  className="w-7 h-7 rounded-full flex items-center justify-center"
-                  style={{ background: 'rgba(255,255,255,0.07)' }}>
-                  <X className="w-4 h-4" style={{ color: 'rgba(155,173,184,0.6)' }} />
+                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  style={{ background: '#F4F6F8' }}>
+                  <X className="w-4 h-4" style={{ color: '#9AA5B4' }} />
                 </button>
               </div>
 
               {/* Live impact */}
-              <div className="px-5 py-3 grid grid-cols-3 gap-2"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(217,95,95,0.05)' }}>
+              <div className="px-5 py-3 grid grid-cols-3 gap-2 bg-white"
+                style={{ borderBottom: '1px solid #F0F2F5' }}>
                 <div className="text-center">
-                  <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Burn/mån nu</p>
-                  <p className="text-sm font-black" style={{ color: '#D95F5F' }}>{monthlyBurn.toLocaleString('sv-SE')} kr</p>
+                  <p className="text-xs" style={{ color: '#9AA5B4' }}>Burn/mån</p>
+                  <p className="text-sm font-black" style={{ color: '#E53E3E' }}>{monthlyBurn.toLocaleString('sv-SE')} kr</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Du sparar</p>
-                  <p className="text-sm font-black" style={{ color: '#3DAA7A' }}>-{totalSaved.toLocaleString('sv-SE')} kr</p>
+                  <p className="text-xs" style={{ color: '#9AA5B4' }}>Du sparar</p>
+                  <p className="text-sm font-black" style={{ color: '#0D7377' }}>-{totalSaved.toLocaleString('sv-SE')} kr</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Ny Runway</p>
-                  <p className="text-sm font-black" style={{ color: '#D4AF37' }}>{newRunway} mån</p>
+                  <p className="text-xs" style={{ color: '#9AA5B4' }}>Ny Runway</p>
+                  <p className="text-sm font-black" style={{ color: '#1A2332' }}>{newRunway} mån</p>
                 </div>
               </div>
 
@@ -86,31 +86,25 @@ export default function CrisisMode({ monthlyBurn = 45000 }) {
                   const selected = cut.includes(c.label);
                   return (
                     <button key={c.label} onClick={() => toggle(c.label)}
-                      className="w-full p-3 rounded-xl text-left transition-all"
+                      className="w-full p-4 rounded-2xl text-left transition-all"
                       style={{
-                        background: selected ? 'rgba(61,170,122,0.1)' : 'rgba(255,255,255,0.04)',
-                        border: `1px solid ${selected ? 'rgba(61,170,122,0.35)' : 'rgba(255,255,255,0.08)'}`,
+                        background: selected ? 'rgba(13,115,119,0.06)' : '#fff',
+                        border: `1.5px solid ${selected ? 'rgba(13,115,119,0.25)' : '#F0F2F5'}`,
                       }}>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
-                            style={{ background: selected ? '#3DAA7A' : 'rgba(255,255,255,0.1)', border: selected ? 'none' : '1px solid rgba(255,255,255,0.2)' }}>
+                          <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
+                            style={{ background: selected ? '#0D7377' : '#F4F6F8', border: selected ? 'none' : '1.5px solid #E8ECF0' }}>
                             {selected && <span className="text-[10px] text-white font-black">✓</span>}
                           </div>
-                          <span className="text-xs font-bold" style={{ color: '#F0EAD6' }}>{c.label}</span>
+                          <span className="text-sm font-semibold" style={{ color: '#1A2332' }}>{c.label}</span>
                         </div>
-                        <div className="text-right">
-                          <p className="text-xs font-black" style={{ color: selected ? '#3DAA7A' : '#D95F5F' }}>
-                            {selected ? '-' : ''}{c.amount.toLocaleString('sv-SE')} kr/mån
-                          </p>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded-full font-bold"
-                            style={{ background: `${priorityColor[c.priority]}20`, color: priorityColor[c.priority] }}>
-                            {c.priority}
-                          </span>
-                        </div>
+                        <p className="text-sm font-black" style={{ color: selected ? '#0D7377' : '#E53E3E' }}>
+                          {c.amount.toLocaleString('sv-SE')} kr/mån
+                        </p>
                       </div>
                       {selected && (
-                        <p className="text-[10px] mt-1.5 ml-6" style={{ color: 'rgba(61,170,122,0.8)' }}>
+                        <p className="text-xs mt-2 ml-7" style={{ color: '#0D7377' }}>
                           💡 {c.tip}
                         </p>
                       )}
@@ -120,13 +114,13 @@ export default function CrisisMode({ monthlyBurn = 45000 }) {
               </div>
 
               {cut.length > 0 && (
-                <div className="px-5 pb-5">
-                  <div className="p-3 rounded-xl text-center"
-                    style={{ background: 'rgba(61,170,122,0.1)', border: '1px solid rgba(61,170,122,0.3)' }}>
-                    <p className="text-sm font-black" style={{ color: '#3DAA7A' }}>
-                      Med dessa nedskärningar överlever du {newRunway} månader till
+                <div className="px-5 pb-6">
+                  <div className="p-4 rounded-2xl text-center"
+                    style={{ background: 'rgba(13,115,119,0.08)', border: '1px solid rgba(13,115,119,0.2)' }}>
+                    <p className="text-sm font-black" style={{ color: '#0D7377' }}>
+                      {newRunway} månaders runway med dessa åtgärder
                     </p>
-                    <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.5)' }}>
+                    <p className="text-xs mt-1" style={{ color: '#9AA5B4' }}>
                       Ny månadskostnad: {newBurn.toLocaleString('sv-SE')} kr
                     </p>
                   </div>

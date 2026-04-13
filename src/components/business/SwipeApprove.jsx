@@ -31,7 +31,7 @@ function SwipeCard({ tx, onApprove, onReject }) {
       onDragEnd={handleDragEnd}
       whileTap={{ cursor: 'grabbing' }}
       className="absolute w-full rounded-2xl p-5 cursor-grab select-none"
-      style={{ background: '#1E2D42', border: '1px solid rgba(255,255,255,0.1)', touchAction: 'none' }}
+      style={{ background: '#fff', border: '1.5px solid #E8ECF0', touchAction: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
     >
       {/* Approve overlay */}
       <motion.div className="absolute top-4 left-4 px-3 py-1 rounded-full border-2 border-green-500 rotate-[-20deg]"
@@ -45,35 +45,35 @@ function SwipeCard({ tx, onApprove, onReject }) {
       </motion.div>
 
       <div className="mt-2">
-        <p className="text-lg font-black" style={{ color: '#F0EAD6' }}>{tx.vendor}</p>
-        <p className="text-2xl font-black mt-1" style={{ color: '#D95F5F' }}>
+        <p className="text-lg font-black" style={{ color: '#1A2332' }}>{tx.vendor}</p>
+        <p className="text-2xl font-black mt-1" style={{ color: '#E53E3E', letterSpacing: '-1px' }}>
           {Math.abs(tx.amount).toLocaleString('sv-SE')} kr
         </p>
-        <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.5)' }}>{tx.date}</p>
+        <p className="text-xs mt-1" style={{ color: '#9AA5B4' }}>{tx.date}</p>
 
-        <div className="mt-4 p-3 rounded-xl space-y-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
+        <div className="mt-4 p-3 rounded-2xl space-y-2" style={{ background: '#F4F6F8' }}>
           <div className="flex justify-between">
-            <span className="text-xs" style={{ color: 'rgba(155,173,184,0.6)' }}>AI-konto</span>
-            <span className="text-xs font-bold" style={{ color: '#4B7CF3' }}>{tx.account} — {tx.accountLabel}</span>
+            <span className="text-xs" style={{ color: '#9AA5B4' }}>Konto</span>
+            <span className="text-xs font-bold" style={{ color: '#0D7377' }}>{tx.account} — {tx.accountLabel}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-xs" style={{ color: 'rgba(155,173,184,0.6)' }}>Moms {tx.vatRate}%</span>
-            <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>{Math.abs(vat).toFixed(0)} kr tillbaka</span>
+            <span className="text-xs" style={{ color: '#9AA5B4' }}>Moms {tx.vatRate}%</span>
+            <span className="text-xs font-bold" style={{ color: '#1A2332' }}>{Math.abs(vat).toFixed(0)} kr</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-xs" style={{ color: 'rgba(155,173,184,0.6)' }}>Netto</span>
-            <span className="text-xs font-bold" style={{ color: '#3DAA7A' }}>{Math.abs(net).toFixed(0)} kr</span>
+            <span className="text-xs" style={{ color: '#9AA5B4' }}>Netto</span>
+            <span className="text-xs font-bold" style={{ color: '#1A2332' }}>{Math.abs(net).toFixed(0)} kr</span>
           </div>
         </div>
 
         <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center gap-1.5" style={{ color: 'rgba(155,173,184,0.4)' }}>
-            <X className="w-4 h-4 text-red-400" />
-            <span className="text-[11px]">Swajpa vänster för att ändra</span>
+          <div className="flex items-center gap-1.5">
+            <X className="w-4 h-4" style={{ color: '#E53E3E' }} />
+            <span className="text-xs" style={{ color: '#9AA5B4' }}>Ändra</span>
           </div>
-          <div className="flex items-center gap-1.5" style={{ color: 'rgba(155,173,184,0.4)' }}>
-            <span className="text-[11px]">Godkänn</span>
-            <Check className="w-4 h-4 text-green-400" />
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs" style={{ color: '#9AA5B4' }}>Godkänn</span>
+            <Check className="w-4 h-4" style={{ color: '#0D7377' }} />
           </div>
         </div>
       </div>
@@ -92,20 +92,23 @@ export default function SwipeApprove() {
   const remaining = cards.length;
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(75,124,243,0.25)' }}>
+    <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
       <button onClick={() => setOpen(v => !v)}
-        className="w-full px-4 py-3.5 flex items-center justify-between"
-        style={{ borderBottom: open ? '1px solid rgba(255,255,255,0.06)' : 'none' }}>
-        <div className="flex items-center gap-2">
-          <span className="text-base">🃏</span>
+        className="w-full px-5 py-4 flex items-center justify-between"
+        style={{ borderBottom: open ? '1px solid #F0F2F5' : 'none' }}>
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
+            style={{ background: 'rgba(13,115,119,0.1)' }}>
+            <span className="text-base">🃏</span>
+          </div>
           <div className="text-left">
-            <p className="text-xs font-bold" style={{ color: '#4B7CF3' }}>SWAJPA & GODKÄNN</p>
-            <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>
-              {remaining} transaktioner väntar · {approved} godkända
+            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Godkänn transaktioner</p>
+            <p className="text-xs" style={{ color: '#9AA5B4' }}>
+              {remaining} väntar · {approved} godkända
             </p>
           </div>
         </div>
-        <ChevronRight className="w-4 h-4" style={{ color: 'rgba(155,173,184,0.4)', transform: open ? 'rotate(90deg)' : 'none', transition: '0.2s' }} />
+        <ChevronRight className="w-4 h-4" style={{ color: '#9AA5B4', transform: open ? 'rotate(90deg)' : 'none', transition: '0.2s' }} />
       </button>
 
       <AnimatePresence>
@@ -125,7 +128,7 @@ export default function SwipeApprove() {
                     <div key={tx.id} style={{ zIndex: 3 - i, transform: `scale(${1 - i * 0.03}) translateY(${i * 8}px)`, position: 'absolute', width: '100%' }}>
                       {i === 0
                         ? <SwipeCard tx={tx} onApprove={handleApprove} onReject={handleReject} />
-                        : <div className="w-full rounded-2xl" style={{ height: '100%', background: '#1E2D42', border: '1px solid rgba(255,255,255,0.06)', minHeight: 80 }} />
+                        : <div className="w-full rounded-2xl" style={{ height: '100%', background: '#F4F6F8', border: '1px solid #E8ECF0', minHeight: 80 }} />
                       }
                     </div>
                   ))}

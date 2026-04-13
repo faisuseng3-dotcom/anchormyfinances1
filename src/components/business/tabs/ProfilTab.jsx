@@ -28,8 +28,8 @@ export default function ProfilTab({ companyName, orgNr, legalLabel, monthlyBurn 
       <CrisisMode monthlyBurn={monthlyBurn} />
 
       <motion.button whileTap={{ scale: 0.97 }} onClick={toggleMode}
-        className="w-full rounded-3xl p-4 flex items-center justify-center gap-3 font-semibold text-sm"
-        style={{ background: '#fff', color: '#4A5568', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+        className="w-full rounded-3xl p-4 flex items-center justify-center gap-3 font-bold text-sm"
+        style={{ background: '#0D7377', color: '#fff', boxShadow: '0 4px 16px rgba(13,115,119,0.3)' }}>
         <Briefcase className="w-4 h-4" />
         Byt till Anchor Personal
       </motion.button>
