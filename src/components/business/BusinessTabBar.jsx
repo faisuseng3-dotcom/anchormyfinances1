@@ -12,7 +12,7 @@ const TABS = [
 
 export default function BusinessTabBar({ activeTab, onTabChange }) {
   return (
-    <nav className="sticky bottom-0 z-50"
+    <nav className="fixed bottom-0 left-0 right-0 z-50"
       style={{
         background: '#FFFFFF',
         borderTop: '1px solid rgba(0,0,0,0.07)',
