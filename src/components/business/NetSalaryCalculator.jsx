@@ -7,9 +7,9 @@ const ENTITY_CONFIGS = {
   enskild: {
     label: 'Enskild firma',
     vatRate: 0.25,
-    // Egenavgifter ~28.97% on profit, prelim skatt ~20% on net
+    // Egenavgifter ~28.97% on profit, prelim skatt 30% on net after egenavgifter
     egnavgifter: 0.2897,
-    prelimSkatt: 0.20,
+    prelimSkatt: 0.30,
     note: 'Egenavgifter + prelim. F-skatt',
   },
   ab: {
@@ -50,7 +50,7 @@ export default function NetSalaryCalculator({ entityType = 'enskild' }) {
       { label: 'Ex. moms (intäkt AB)', value: exVat, color: '#F0EAD6', sub: true },
       { label: `Arbetsgivaravgift (31.42%)`, value: -(exVat * cfg.arbgivaravgift), color: '#D95F5F' },
       { label: `Kommunalskatt (32%)`, value: -(exVat * cfg.kommunalskatt), color: '#D95F5F' },
-      { label: '💰 Netto i fickan', value: exVat * (1 - cfg.arbgivaravgift - cfg.kommunalskatt), color: '#3DAA7A', bold: true },
+      { label: 'Netto i fickan', value: exVat * (1 - cfg.arbgivaravgift - cfg.kommunalskatt), color: '#3DAA7A', bold: true },
     ];
     net = exVat * (1 - cfg.arbgivaravgift - cfg.kommunalskatt);
     taxReserve = vatAmt + exVat * (cfg.arbgivaravgift + cfg.kommunalskatt);
@@ -65,7 +65,7 @@ export default function NetSalaryCalculator({ entityType = 'enskild' }) {
       { label: 'Ex. moms (intäkt)', value: exVat, color: '#F0EAD6', sub: true },
       { label: 'Egenavgifter (28.97%)', value: -egenavg, color: '#D95F5F' },
       { label: 'Prelim. F-skatt (~20%)', value: -prelim, color: '#D95F5F' },
-      { label: '💰 Netto i fickan', value: net, color: '#3DAA7A', bold: true },
+      { label: 'Netto i fickan', value: net, color: '#3DAA7A', bold: true },
     ];
   }
 

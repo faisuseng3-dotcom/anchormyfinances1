@@ -96,7 +96,7 @@ export default function SafeToSpendCard({ grossBalance, vatReserved, entityType 
         onClick={() => setExpanded(v => !v)}
         className="w-full flex items-center justify-between px-5 py-3"
         style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-        <span className="text-[11px] font-bold" style={{ color: 'rgba(155,173,184,0.5)' }}>
+        <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>
           Visa uträkning
         </span>
         {expanded

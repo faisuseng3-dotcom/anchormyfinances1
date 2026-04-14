@@ -12,6 +12,7 @@ import SkattMomsTab from '@/components/business/tabs/SkattMomsTab';
 import RapporterTab from '@/components/business/tabs/RapporterTab';
 import ArkivTab from '@/components/business/tabs/ArkivTab';
 import ProfilTab from '@/components/business/tabs/ProfilTab';
+import { SkeletonCard, SkeletonHero } from '@/components/business/SkeletonCard';
 
 const TAB_TITLES = {
   home: null, // uses company name
@@ -41,10 +42,14 @@ export default function BusinessDashboard() {
   const [showScanner, setShowScanner] = useState(false);
   const [showManual, setShowManual] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
-  // Remove unused showImport state
+  const [loading, setLoading] = useState(true);
 
   // Persist business mode on refresh
-  useEffect(() => { localStorage.setItem('anchor_mode', 'business'); }, []);
+  useEffect(() => {
+    localStorage.setItem('anchor_mode', 'business');
+    const t = setTimeout(() => setLoading(false), 600);
+    return () => clearTimeout(t);
+  }, []);
 
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const legalLabel = legalEntity === 'ab' ? 'Aktiebolag (AB)' : 'Enskild firma';
@@ -97,28 +102,35 @@ export default function BusinessDashboard() {
 
       {/* Tab content */}
       <div className="pb-28 pt-5">
+        {loading && (
+          <div className="px-5 space-y-4">
+            <SkeletonHero />
+            <SkeletonCard rows={2} />
+            <SkeletonCard rows={3} />
+          </div>
+        )}
         <AnimatePresence mode="wait">
-          {activeTab === 'home' && (
+          {!loading && activeTab === 'home' && (
             <motion.div key="home" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
               <HomeTab safeToSpend={safeToSpend} label={label} onScannerOpen={() => setShowScanner(true)} />
             </motion.div>
           )}
-          {activeTab === 'skatt' && (
+          {!loading && activeTab === 'skatt' && (
             <motion.div key="skatt" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
               <SkattMomsTab vatReserved={biz.vatReserved} vatDeadlines={biz.vatDeadlines} entityType={legalEntity} totalBalance={biz.bankBalance} />
             </motion.div>
           )}
-          {activeTab === 'rapporter' && (
+          {!loading && activeTab === 'rapporter' && (
             <motion.div key="rapporter" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
               <RapporterTab runwayMonths={biz.runwayMonths} runwayData={biz.runwayData} monthlyBurn={monthlyBurn} invoices={biz.unpaidInvoices} transactions={biz.recentTransactions} />
             </motion.div>
           )}
-          {activeTab === 'arkiv' && (
+          {!loading && activeTab === 'arkiv' && (
             <motion.div key="arkiv" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
               <ArkivTab transactions={allTransactions} />
             </motion.div>
           )}
-          {activeTab === 'profil' && (
+          {!loading && activeTab === 'profil' && (
             <motion.div key="profil" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
               <ProfilTab companyName={biz.companyName} orgNr={biz.orgNr} legalLabel={legalLabel} monthlyBurn={monthlyBurn} />
             </motion.div>

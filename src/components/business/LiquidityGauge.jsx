@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, ChevronDown, ChevronUp } from 'lucide-react';
+import LiquidityTooltip from '@/components/business/LiquidityTooltip';
 
 // Swedish tax rates by entity type
 const TAX_RATES = {
@@ -73,7 +74,7 @@ export default function LiquidityGauge({ totalBalance, vatReserved, grossIncome,
             <Shield className="w-4 h-4" style={{ color: '#0D7377' }} />
           </div>
           <div className="text-left">
-            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Likviditetsskikten</p>
+            <LiquidityTooltip />
             <p className="text-xs" style={{ color: '#9AA5B4' }}>
               {spendable.toLocaleString('sv-SE')} kr disponibelt
             </p>
