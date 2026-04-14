@@ -48,7 +48,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-background-primary)', overflowY: 'auto' }}>
+    <div className="app-shell" style={{ background: 'var(--color-background-primary)' }}>
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
@@ -132,7 +132,38 @@ export default function Layout({ children, currentPageName }) {
         
         #root {
           min-height: 100vh;
-          overflow-y: auto;
+        }
+        
+        /* Desktop: phone simulator wrapper */
+        @media (min-width: 600px) {
+          #root {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 100vh;
+            background: #111827;
+            padding: 32px 0 32px 0;
+          }
+          #root > .app-shell {
+            width: 390px;
+            min-height: calc(100vh - 64px);
+            max-height: calc(100vh - 64px);
+            border-radius: 44px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.06);
+            position: relative;
+            background: #F4F6F8;
+          }
+        }
+        @media (max-width: 599px) {
+          #root > .app-shell {
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+          }
         }
         
         @media (max-width: 640px) {
@@ -240,12 +271,8 @@ export default function Layout({ children, currentPageName }) {
         }
       `}</style>
       
-      <main
-        style={!hideNav ? { paddingBottom: 'max(5rem, calc(env(safe-area-inset-bottom) + 5rem))' } : {}}
-      >
-        <div style={{ maxWidth: 680, margin: '0 auto', width: '100%' }}>
-          {children}
-        </div>
+      <main style={!hideNav ? { paddingBottom: 'max(5rem, calc(env(safe-area-inset-bottom) + 5rem))' } : {}}>
+        {children}
       </main>
 
 
@@ -286,7 +313,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Bottom Navigation */}
       {!hideNav && (
-        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6" style={{ background: 'var(--color-background-secondary)' }}>
+        <nav className="sticky bottom-0 mobile-safe-area z-50 border-t border-white/6" style={{ background: 'var(--color-background-secondary)' }}>
           <div className="flex items-center justify-around py-3 max-w-md mx-auto px-4">
             {navItems.map((item, idx) => {
               // Center FAB
