@@ -48,7 +48,7 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-background-primary)', overflowY: 'auto' }}>
+    <div className="min-h-screen" style={{ background: 'var(--color-background-primary)' }}>
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
@@ -104,7 +104,6 @@ export default function Layout({ children, currentPageName }) {
           background: var(--color-background-primary);
           color: var(--color-text-primary);
           min-height: 100vh;
-          overflow-y: auto;
         }
         
         /* Business mode — light premium */
@@ -132,7 +131,6 @@ export default function Layout({ children, currentPageName }) {
         
         #root {
           min-height: 100vh;
-          overflow-y: auto;
         }
         
         @media (max-width: 640px) {
@@ -241,11 +239,10 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
       
       <main
+        className={!hideNav ? 'overflow-y-auto' : ''}
         style={!hideNav ? { paddingBottom: 'max(5rem, calc(env(safe-area-inset-bottom) + 5rem))' } : {}}
       >
-        <div style={{ maxWidth: 680, margin: '0 auto', width: '100%' }}>
-          {children}
-        </div>
+        {children}
       </main>
 
 
