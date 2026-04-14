@@ -57,7 +57,7 @@ export default function BusinessDashboard() {
   const allTransactions = [...manualTransactions, ...biz.recentTransactions];
 
   return (
-    <div className="min-h-screen" style={{ background: '#F4F6F8' }}>
+    <div style={{ background: '#F4F6F8', minHeight: '100vh' }}>
       {/* Modals */}
       <AnimatePresence>
         {showScanner && (
@@ -101,7 +101,7 @@ export default function BusinessDashboard() {
       </div>
 
       {/* Tab content */}
-      <div className="pb-28 pt-5">
+      <div style={{ paddingBottom: 120, paddingTop: 20, maxWidth: 680, margin: '0 auto', width: '100%' }}>
         {loading && (
           <div className="px-5 space-y-4">
             <SkeletonHero />
