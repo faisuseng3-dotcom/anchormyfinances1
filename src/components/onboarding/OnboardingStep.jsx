@@ -13,7 +13,7 @@ export default function OnboardingStep({ children, title, subtitle, step, totalS
       <div className="max-w-md mx-auto">
         {/* Progress */}
         <div className="flex items-center gap-2 mb-8">
-          {Array.from({ length: totalSteps }).map((_, i) => (
+          {Array.from({ length: totalSteps || 0 }).map((_, i) => (
             <div
               key={i}
               className={`h-1 flex-1 rounded-full transition-all duration-300 ${
