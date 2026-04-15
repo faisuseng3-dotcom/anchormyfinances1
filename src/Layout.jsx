@@ -287,7 +287,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-around py-3 max-w-md mx-auto px-4">
             {navItems.map((item, idx) => {
               // Center FAB
-              if (item === null) {
+              if (item === null || item === undefined) {
                 return (
                   <motion.button
                     key="fab"
