@@ -15,6 +15,8 @@ import BusinessTheme from '@/components/business/BusinessTheme';
 import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import LedgerVault from './pages/LedgerVault';
+import ImportPage from './pages/ImportPage';
+import { DemoProvider } from '@/components/demo/DemoMode';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -78,6 +80,7 @@ const AuthenticatedApp = () => {
           <LedgerVault />
         </LayoutWrapper>
       } />
+      <Route path="/Import" element={<ImportPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
@@ -87,7 +90,8 @@ const AuthenticatedApp = () => {
 function App() {
 
   return (
-    <ModeProvider>
+    <DemoProvider>
+  <ModeProvider>
       <AuthProvider>
         <QueryClientProvider client={queryClientInstance}>
           <Router>
@@ -99,6 +103,7 @@ function App() {
         </QueryClientProvider>
       </AuthProvider>
     </ModeProvider>
+  </DemoProvider>
   )
 }
 

@@ -22,6 +22,11 @@ import AdminScoreboard from '@/components/challenge/AdminScoreboard';
 import WeeklyPointsBadge from '@/components/challenge/WeeklyPointsBadge';
 import { useGamification, checkAndUnlockBadges } from '@/hooks/useGamification';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import InsightCards from '@/components/import/InsightCards';
+import MagicEntryBox from '@/components/import/MagicEntryBox';
+import DemoToggle from '@/components/demo/DemoToggle';
+import { useDemoMode } from '@/components/demo/DemoMode';
+import { FileUp, Zap } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -29,12 +34,14 @@ export default function Dashboard() {
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
+  const [showMagicEntry, setShowMagicEntry] = useState(false);
+  const { isDemoMode, demoProfile, demoTransactions } = useDemoMode();
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
   const [insights, setInsights] = useState([]);
 
-  const { data: profile, isLoading } = useQuery({
+  const { data: profileData, isLoading } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
       if (isGuestMode()) return loadGuestProfile() || null;
@@ -47,7 +54,9 @@ export default function Dashboard() {
     }
   });
 
-  useGamification(profile);
+  const profile = isDemoMode ? demoProfile : profileData;
+
+  useGamification(profileData);
 
   useEffect(() => {
     if (profile && !profile.onboardingCompleted) {
@@ -125,6 +134,7 @@ export default function Dashboard() {
           <h1 className="text-2xl font-black" style={{ color: 'var(--color-text-primary)' }}>Din ekonomi</h1>
         </div>
         <div className="flex items-center gap-2">
+          <DemoToggle />
           <WeeklyPointsBadge />
           <Link to={createPageUrl('Settings')}>
             <button className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'var(--color-surface)' }}>
@@ -183,6 +193,27 @@ export default function Dashboard() {
         {/* Insights */}
         <InsightsSection insights={insights} profile={profile} />
 
+        {/* AI Coach Insight Cards */}
+        <InsightCards profile={profile} transactions={isDemoMode ? demoTransactions : []} />
+
+        {/* Quick action row */}
+        <div className="flex gap-3">
+          <Link to="/Import" className="flex-1">
+            <motion.div whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 px-4 py-3 rounded-2xl"
+              style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <FileUp className="w-4 h-4" style={{ color: '#0D7377' }} />
+              <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Importera CSV</span>
+            </motion.div>
+          </Link>
+          <motion.button whileTap={{ scale: 0.97 }} onClick={() => setShowMagicEntry(true)}
+            className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl"
+            style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
+            <Zap className="w-4 h-4" style={{ color: '#0D7377' }} />
+            <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Magisk inmatning</span>
+          </motion.button>
+        </div>
+
 
       </div>
 
@@ -202,6 +233,11 @@ export default function Dashboard() {
         {showWelcome && <WelcomeAnalysis profile={profile} onClose={() => setShowWelcome(false)} />}
       </AnimatePresence>
       <BadgeUnlock badgeId={unlockedBadge} isVisible={showBadgeUnlock} onClose={() => setShowBadgeUnlock(false)} />
+      <MagicEntryBox
+        isOpen={showMagicEntry}
+        onClose={() => setShowMagicEntry(false)}
+        onSaved={() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] })}
+      />
     </div>
   );
 }
