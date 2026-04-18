@@ -16,6 +16,8 @@ import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import LedgerVault from './pages/LedgerVault';
 import ImportPage from './pages/ImportPage';
+import BudgetDashboard from './pages/BudgetDashboard';
+import SavingsGoals from './pages/SavingsGoals';
 import { DemoProvider } from '@/components/demo/DemoMode';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -81,6 +83,16 @@ const AuthenticatedApp = () => {
         </LayoutWrapper>
       } />
       <Route path="/Import" element={<ImportPage />} />
+      <Route path="/Budget" element={
+        <LayoutWrapper currentPageName="BudgetDashboard">
+          <BudgetDashboard />
+        </LayoutWrapper>
+      } />
+      <Route path="/SavingsGoals" element={
+        <LayoutWrapper currentPageName="SavingsGoals">
+          <SavingsGoals />
+        </LayoutWrapper>
+      } />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

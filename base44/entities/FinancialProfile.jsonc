@@ -59,6 +59,13 @@
         }
       }
     },
+    "budgetLimits": {
+      "type": "object",
+      "description": "Budgetgr\u00e4nser per kategori (nyckel = kategori, v\u00e4rde = maxbelopp kr/m\u00e5nad)",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
     "buffer": {
       "type": "number",
       "description": "Sparad buffert"
@@ -70,6 +77,10 @@
     "savingsGoalName": {
       "type": "string",
       "description": "Namn p\u00e5 sparm\u00e5let"
+    },
+    "savingsGoalEmoji": {
+      "type": "string",
+      "description": "Emoji-ikon f\u00f6r sparm\u00e5let"
     },
     "savingsCurrentBalance": {
       "type": "number",
