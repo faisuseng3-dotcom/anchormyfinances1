@@ -1,83 +1,127 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Check, MapPin, Briefcase, Brain, TrendingUp, TrendingDown, Zap, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, Sparkles, Check, MapPin, Briefcase, Zap, Shield, Target, TrendingUp, TrendingDown } from 'lucide-react';
 import { AvatarSVG } from './AvatarBuilder';
 import { base44 } from '@/api/base44Client';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
-// ── Orbit System ───────────────────────────────────────────────────────────
-function OrbitSystem({ profile, accentColor, ghostItems }) {
+// ── Radar Chart (Spider/Aura) ──────────────────────────────────────────────
+function RadarChart({ axes, size = 200 }) {
+  const cx = size / 2, cy = size / 2;
+  const levels = 4;
+  const maxR = size / 2 - 24;
+  const n = axes.length;
+
+  const angleOf = (i) => (i * 2 * Math.PI) / n - Math.PI / 2;
+
+  const gridPolygons = Array.from({ length: levels }).map((_, l) => {
+    const r = (maxR * (l + 1)) / levels;
+    return Array.from({ length: n }).map((_, i) => {
+      const a = angleOf(i);
+      return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`;
+    }).join(' ');
+  });
+
+  const dataPoints = axes.map((ax, i) => {
+    const r = (ax.value / 100) * maxR;
+    const a = angleOf(i);
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), label: ax.label, value: ax.value, color: ax.color };
+  });
+  const dataPolygon = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+
+  return (
+    <svg width={size} height={size} style={{ overflow: 'visible' }}>
+      {/* Grid rings */}
+      {gridPolygons.map((pts, l) => (
+        <polygon key={l} points={pts} fill="none"
+          stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+      ))}
+      {/* Axes */}
+      {axes.map((_, i) => {
+        const a = angleOf(i);
+        return <line key={i} x1={cx} y1={cy}
+          x2={cx + maxR * Math.cos(a)} y2={cy + maxR * Math.sin(a)}
+          stroke="rgba(255,255,255,0.05)" strokeWidth="1" />;
+      })}
+      {/* Data fill */}
+      <polygon points={dataPolygon} fill="rgba(15,222,189,0.08)" stroke="rgba(15,222,189,0.35)" strokeWidth="1.5" />
+      {/* Data points */}
+      {dataPoints.map((p, i) => (
+        <circle key={i} cx={p.x} cy={p.y} r={3} fill={p.color || '#0FDEBD'}
+          style={{ filter: `drop-shadow(0 0 4px ${p.color || '#0FDEBD'})` }} />
+      ))}
+      {/* Labels */}
+      {dataPoints.map((p, i) => {
+        const a = angleOf(i);
+        const lx = cx + (maxR + 14) * Math.cos(a);
+        const ly = cy + (maxR + 14) * Math.sin(a);
+        return (
+          <text key={i} x={lx} y={ly} textAnchor="middle" dominantBaseline="middle"
+            fontSize="8" fontWeight="800" fill="rgba(255,255,255,0.35)">
+            {p.label}
+          </text>
+        );
+      })}
+    </svg>
+  );
+}
+
+// ── Orbit System with Radar aura ──────────────────────────────────────────
+function OrbitSystem({ profile, accentColor, radarAxes }) {
   const [hoveredItem, setHoveredItem] = useState(null);
   const isHybrid = profile.privacy_level === 'hybrid';
   const items = profile.finance.items;
-  const orbitRadii = [58, 92, 124, 152, 178];
+  const orbitRadii = [52, 84, 114, 140, 164];
 
   return (
-    <div className="relative flex items-center justify-center" style={{ height: 300 }}>
+    <div className="relative flex items-center justify-center" style={{ height: 280 }}>
+      {/* Radar aura behind everything */}
+      {radarAxes && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 1 }}>
+          <RadarChart axes={radarAxes} size={260} />
+        </div>
+      )}
+
       {/* Center orb */}
       <div className="absolute z-10 w-14 h-14 rounded-full flex items-center justify-center"
         style={{
           background: `radial-gradient(circle, ${accentColor}40, ${accentColor}10)`,
           border: `2px solid ${accentColor}60`,
           boxShadow: `0 0 24px ${accentColor}40`,
+          zIndex: 10,
         }}>
         <AvatarSVG style={profile.avatar_style} size={48} />
       </div>
 
       {items.map((item, i) => {
-        const rad = orbitRadii[i] || 178 + i * 20;
+        const rad = orbitRadii[i] || 164 + i * 20;
         const isHovered = hoveredItem === i;
         const moonAngle = (i * 72 - 90) * (Math.PI / 180);
         const mx = Math.cos(moonAngle) * rad;
         const my = Math.sin(moonAngle) * rad;
 
-        // Ghost moon position (if mirror mode active)
-        const ghostItem = ghostItems?.[i];
-        const ghostRad = ghostItem ? orbitRadii[i] : null;
-        const ghostAngle = ghostItem ? ((i * 72 - 60) * (Math.PI / 180)) : null;
-        const gx = ghostAngle !== null ? Math.cos(ghostAngle) * (ghostRad * (ghostItem.pct / item.pct)) : null;
-        const gy = ghostAngle !== null ? Math.sin(ghostAngle) * (ghostRad * (ghostItem.pct / item.pct)) : null;
-
         return (
           <React.Fragment key={i}>
-            {/* Orbit track */}
             <div className="absolute rounded-full pointer-events-none"
               style={{
-                width: rad * 2, height: rad * 2,
-                border: '1px solid rgba(255,255,255,0.04)',
-                left: '50%', top: '50%',
-                marginLeft: -rad, marginTop: -rad,
+                width: rad * 2, height: rad * 2, border: '1px solid rgba(255,255,255,0.04)',
+                left: '50%', top: '50%', marginLeft: -rad, marginTop: -rad, zIndex: 5,
               }} />
-
-            {/* Ghost moon (mirror effect) */}
-            {ghostItems && gx !== null && (
-              <div className="absolute pointer-events-none z-10"
-                style={{ left: '50%', top: '50%', transform: `translate(${gx - 12}px, ${gy - 12}px)` }}>
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs"
-                  style={{ background: `${item.color}08`, border: `1px dashed ${item.color}30`, opacity: 0.5 }}>
-                  {item.icon}
-                </div>
-              </div>
-            )}
-
-            {/* Real moon */}
-            <motion.div className="absolute cursor-pointer z-20"
-              style={{ left: '50%', top: '50%', transform: `translate(${mx - 16}px, ${my - 16}px)` }}
-              animate={{ scale: isHovered ? 1.2 : 1 }}
+            <motion.div className="absolute cursor-pointer"
+              style={{ left: '50%', top: '50%', transform: `translate(${mx - 16}px, ${my - 16}px)`, zIndex: 20 }}
+              animate={{ scale: isHovered ? 1.25 : 1 }}
               onMouseEnter={() => setHoveredItem(i)}
               onMouseLeave={() => setHoveredItem(null)}
               onClick={e => { e.stopPropagation(); setHoveredItem(isHovered ? null : i); }}
             >
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
                 style={{
-                  background: `${item.color}20`,
-                  border: `1.5px solid ${item.color}60`,
-                  boxShadow: isHovered ? `0 0 16px ${item.color}90` : `0 0 5px ${item.color}30`,
+                  background: `${item.color}20`, border: `1.5px solid ${item.color}60`,
+                  boxShadow: isHovered ? `0 0 20px ${item.color}` : `0 0 5px ${item.color}30`,
                 }}>
                 {item.icon}
               </div>
-
               <AnimatePresence>
                 {isHovered && (
                   <motion.div
@@ -104,161 +148,90 @@ function OrbitSystem({ profile, accentColor, ghostItems }) {
   );
 }
 
-// ── AI Strategy Breakdown ─────────────────────────────────────────────────
-function AIStrategyBreakdown({ profile, accentColor }) {
-  const [analysis, setAnalysis] = useState(null);
+// ── Economic Persona (DNA) ─────────────────────────────────────────────────
+function EconomicPersona({ profile, accentColor }) {
+  const [persona, setPersona] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
 
-  const loadAnalysis = async () => {
-    if (analysis) { setOpen(o => !o); return; }
-    setOpen(true);
-    setLoading(true);
-    const itemsText = profile.finance.items
-      .map(i => `${i.label}: ${i.pct}%${i.amount ? ` (${fmt(i.amount)} kr)` : ''}`)
-      .join(', ');
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
+      const itemsText = profile.finance.items.map(i => `${i.label}: ${i.pct}%`).join(', ');
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Du är en ekonomisk psykolog. Ge denna persons ekonomi en "DNA-profil" på svenska baserat på deras budgetfördelning.
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du är en ekonomisk strateg. Analysera denna persons ekonomi kort och precist på svenska.
-Namn: ${profile.display_name}, ${profile.age} år, ${profile.occupation}, ${profile.city}.
-Bio: ${profile.bio}
-Budgetfördelning: ${itemsText}
+Profil: ${profile.display_name}, ${profile.age} år, ${profile.occupation}. Budget: ${itemsText}.
 
-Ge exakt dessa tre saker, skriv inte mer:
-1. STRATEGI (2 meningar max): Vad är kärnan i deras ekonomiska strategi och filosofi?
-2. FÖRDELAR (2 punkter): De två starkaste sidorna med denna approach.
-3. NACKDELAR (2 punkter): De två svagaste sidorna eller riskerna.
-
-Var ärlig, specifik och undvik klichéer. Skriv i direkt stil.`,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          strategy: { type: 'string' },
-          pros: { type: 'array', items: { type: 'string' } },
-          cons: { type: 'array', items: { type: 'string' } },
+Returnera EXAKT detta JSON, inget annat:
+- style_name: ett coolt engelskt namn (t.ex. "The Targeted Sprinter", "The Minimalist Fortress", "The Aggressive Builder") — max 3 ord
+- tagline: en mening på svenska som sammanfattar strategin (max 12 ord, känslosam och direkt)
+- scores: objekt med trygghet, tillväxt, fokus, frihet (siffror 1-10)
+- badges_pos: array med max 3 korta svenska fördelar (t.ex. "Målfokuserad", "Låga fasta kostnader")
+- badges_neg: array med max 2 korta svenska varningar (t.ex. "Sårbar marginal", "Noll buffert")
+- sacrifice_score: 0-100 (hur hårt offrar de livsstil — 100 = extrem disciplin)
+- ai_punchline: EN mening på svenska, emotionell och ärlig, om vad denna budget egentligen innebär (max 15 ord)`,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            style_name: { type: 'string' },
+            tagline: { type: 'string' },
+            scores: {
+              type: 'object',
+              properties: {
+                trygghet: { type: 'number' },
+                tillväxt: { type: 'number' },
+                fokus: { type: 'number' },
+                frihet: { type: 'number' },
+              }
+            },
+            badges_pos: { type: 'array', items: { type: 'string' } },
+            badges_neg: { type: 'array', items: { type: 'string' } },
+            sacrifice_score: { type: 'number' },
+            ai_punchline: { type: 'string' },
+          }
         }
-      }
-    });
-    setAnalysis(result);
-    setLoading(false);
-  };
+      });
+      if (!cancelled) { setPersona(result); setLoading(false); }
+    };
+    load();
+    return () => { cancelled = true; };
+  }, [profile.id]);
 
-  return (
-    <div className="px-6">
-      <button onClick={loadAnalysis}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all"
-        style={{
-          background: open ? `${accentColor}12` : 'rgba(255,255,255,0.04)',
-          border: `1px solid ${open ? accentColor + '30' : 'rgba(255,255,255,0.07)'}`,
-        }}>
-        <div className="flex items-center gap-2">
-          <Brain className="w-4 h-4" style={{ color: accentColor }} />
-          <span className="text-xs font-black" style={{ color: open ? accentColor : 'rgba(255,255,255,0.6)' }}>
-            AI STRATEGY BREAKDOWN
-          </span>
-        </div>
-        {open ? <ChevronUp className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.3)' }} /> : <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.3)' }} />}
-      </button>
+  const sacrificeLabel = !persona ? '' :
+    persona.sacrifice_score >= 70 ? 'EXTREM DISCIPLIN' :
+    persona.sacrifice_score >= 40 ? 'KRÄVER PLANERING' : 'ENKEL OMSTÄLLNING';
+  const sacrificeColor = !persona ? '#0FDEBD' :
+    persona.sacrifice_score >= 70 ? '#FF4466' :
+    persona.sacrifice_score >= 40 ? '#F6AD55' : '#0FDEBD';
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="pt-3 space-y-3">
-              {loading ? (
-                <div className="flex items-center gap-2 py-4 justify-center">
-                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                    <Sparkles className="w-4 h-4" style={{ color: accentColor }} />
-                  </motion.div>
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>AI analyserar strategin...</span>
-                </div>
-              ) : analysis && (
-                <>
-                  {/* Strategy */}
-                  <div className="p-3 rounded-xl" style={{ background: `${accentColor}08`, border: `1px solid ${accentColor}20` }}>
-                    <p className="text-[9px] font-black tracking-widest mb-1.5" style={{ color: `${accentColor}80` }}>STRATEGI</p>
-                    <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>{analysis.strategy}</p>
-                  </div>
+  const radarAxes = persona ? [
+    { label: 'TRYGGHET', value: (persona.scores?.trygghet || 5) * 10, color: '#0FDEBD' },
+    { label: 'TILLVÄXT', value: (persona.scores?.tillväxt || 5) * 10, color: '#4B7CF3' },
+    { label: 'FOKUS',    value: (persona.scores?.fokus || 5) * 10,    color: '#A78BFA' },
+    { label: 'FRIHET',   value: (persona.scores?.frihet || 5) * 10,   color: '#F6AD55' },
+  ] : null;
 
-                  {/* Pros */}
-                  <div className="space-y-1.5">
-                    {analysis.pros?.map((pro, i) => (
-                      <div key={i} className="flex items-start gap-2 p-2.5 rounded-xl"
-                        style={{ background: 'rgba(15,222,189,0.06)', border: '1px solid rgba(15,222,189,0.15)' }}>
-                        <TrendingUp className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#0FDEBD' }} />
-                        <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{pro}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Cons */}
-                  <div className="space-y-1.5">
-                    {analysis.cons?.map((con, i) => (
-                      <div key={i} className="flex items-start gap-2 p-2.5 rounded-xl"
-                        style={{ background: 'rgba(255,68,102,0.06)', border: '1px solid rgba(255,68,102,0.15)' }}>
-                        <TrendingDown className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" style={{ color: '#FF4466' }} />
-                        <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.65)' }}>{con}</p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+  return { persona, loading, radarAxes, sacrificeLabel, sacrificeColor };
 }
 
-// ── Mirror Effect ──────────────────────────────────────────────────────────
-function MirrorEffect({ profile, userFinancialProfile, accentColor }) {
-  const [simulation, setSimulation] = useState(null);
-  const [loading, setLoading] = useState(false);
+// ── Visual Swap Comparison ────────────────────────────────────────────────
+function SwapComparison({ profile, userFinancialProfile, accentColor }) {
   const [open, setOpen] = useState(false);
   const [activated, setActivated] = useState(false);
-
   const userIncome = userFinancialProfile?.income || 0;
 
-  const runSimulation = async () => {
-    if (simulation) { setOpen(o => !o); return; }
-    if (!userIncome) { setOpen(true); setSimulation({ noIncome: true }); return; }
-    setOpen(true);
-    setLoading(true);
-
-    // Build projection rows
-    const rows = profile.finance.items
-      .filter(i => i.label !== 'Inkomst (CSN + jobb)')
-      .map(item => {
-        const newAmount = Math.round((item.pct / 100) * userIncome);
-        const currentKey = Object.keys(userFinancialProfile?.budgetLimits || {})
-          .find(k => item.label.toLowerCase().includes(k.replace(/_/g, ' ')));
-        const currentAmount = currentKey ? (userFinancialProfile.budgetLimits[currentKey] || 0) : null;
-        const diff = currentAmount !== null ? newAmount - currentAmount : null;
-        return { ...item, newAmount, currentAmount, diff };
-      });
-
-    // AI reality check
-    const rowsText = rows.map(r =>
-      `${r.label}: ${r.currentAmount !== null ? fmt(r.currentAmount) + ' kr nu' : 'okänt nu'} → ${fmt(r.newAmount)} kr (${r.diff !== null ? (r.diff > 0 ? '+' : '') + fmt(r.diff) + ' kr' : 'ny post'})`
-    ).join('\n');
-
-    const aiResult = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du är en ekonomisk rådgivare. En användare med ${fmt(userIncome)} kr/mån inkomst överväger att kopiera @${profile.username}s budget.
-
-Förändringarna:
-${rowsText}
-
-Ge en kort, ärlig "reality check" på svenska. Max 3 meningar. Var specifik om den största vinsten och den svåraste uppoffringen. Ingen bullshit.`,
+  const rows = profile.finance.items
+    .filter(i => i.label !== 'Inkomst (CSN + jobb)')
+    .map(item => {
+      const newAmount = Math.round((item.pct / 100) * userIncome);
+      const currentKey = Object.keys(userFinancialProfile?.budgetLimits || {})
+        .find(k => item.label.toLowerCase().includes(k.replace(/_/g, ' ')));
+      const currentAmount = currentKey ? (userFinancialProfile.budgetLimits[currentKey] || 0) : null;
+      const maxBar = Math.max(newAmount, currentAmount || 0, 1);
+      const diff = currentAmount !== null ? newAmount - currentAmount : null;
+      return { ...item, newAmount, currentAmount, diff, maxBar };
     });
-
-    setSimulation({ rows, aiComment: aiResult });
-    setLoading(false);
-  };
 
   const activateLifestyle = async () => {
     if (!userFinancialProfile?.id || !userIncome) return;
@@ -275,7 +248,7 @@ Ge en kort, ärlig "reality check" på svenska. Max 3 meningar. Var specifik om 
 
   return (
     <div className="px-6">
-      <button onClick={runSimulation}
+      <button onClick={() => setOpen(o => !o)}
         className="w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all"
         style={{
           background: open ? 'rgba(246,173,85,0.1)' : 'rgba(255,255,255,0.04)',
@@ -287,99 +260,78 @@ Ge en kort, ärlig "reality check" på svenska. Max 3 meningar. Var specifik om 
             SIMULERA PÅ MIN EKONOMI
           </span>
         </div>
-        {open ? <ChevronUp className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.3)' }} /> : <ChevronDown className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.3)' }} />}
+        <span className="text-[10px] font-black" style={{ color: 'rgba(255,255,255,0.25)' }}>{open ? '▲' : '▼'}</span>
       </button>
 
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
+          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
             <div className="pt-3 space-y-3">
-              {loading ? (
-                <div className="flex items-center gap-2 py-4 justify-center">
-                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                    <Zap className="w-4 h-4" style={{ color: '#F6AD55' }} />
-                  </motion.div>
-                  <span className="text-xs" style={{ color: 'rgba(255,255,255,0.35)' }}>Räknar ut din alternativa framtid...</span>
-                </div>
-              ) : simulation?.noIncome ? (
-                <p className="text-xs text-center py-3" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                  Ange din inkomst i inställningar för att simulera.
-                </p>
-              ) : simulation && (
+              {!userIncome ? (
+                <p className="text-xs text-center py-3" style={{ color: 'rgba(255,255,255,0.3)' }}>Ange din inkomst i inställningar.</p>
+              ) : (
                 <>
-                  {/* Income context */}
-                  <div className="p-3 rounded-xl text-center" style={{ background: 'rgba(246,173,85,0.08)', border: '1px solid rgba(246,173,85,0.2)' }}>
-                    <p className="text-[9px] font-black tracking-widest mb-1" style={{ color: 'rgba(246,173,85,0.6)' }}>DIN INKOMST</p>
-                    <p className="text-lg font-black" style={{ color: '#F6AD55' }}>{fmt(userIncome)} kr/mån</p>
+                  <div className="text-center pb-1">
+                    <span className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.2)' }}>DIN INKOMST: </span>
+                    <span className="text-xs font-black" style={{ color: '#F6AD55' }}>{fmt(userIncome)} kr/mån</span>
                   </div>
 
-                  {/* Projection table */}
-                  <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
-                    <div className="grid grid-cols-3 px-3 py-2" style={{ background: 'rgba(255,255,255,0.04)' }}>
-                      <p className="text-[9px] font-black" style={{ color: 'rgba(255,255,255,0.3)' }}>KATEGORI</p>
-                      <p className="text-[9px] font-black text-right" style={{ color: 'rgba(255,255,255,0.3)' }}>IDAG</p>
-                      <p className="text-[9px] font-black text-right" style={{ color: 'rgba(255,255,255,0.3)' }}>NY MALL</p>
-                    </div>
-                    {simulation.rows.map((row, i) => {
-                      const diffColor = row.diff === null ? 'rgba(255,255,255,0.3)'
-                        : row.diff > 0 ? '#FF4466' : row.diff < 0 ? '#0FDEBD' : 'rgba(255,255,255,0.3)';
+                  {/* Visual swap bars */}
+                  <div className="space-y-3">
+                    {rows.map((row, i) => {
+                      const diffColor = row.diff === null ? 'rgba(255,255,255,0.3)' : row.diff > 0 ? '#FF4466' : '#0FDEBD';
+                      const diffLabel = row.diff === null ? null : `${row.diff > 0 ? '+' : ''}${fmt(row.diff)} kr`;
                       return (
-                        <div key={i} className="grid grid-cols-3 px-3 py-2.5 items-center"
-                          style={{ borderTop: i > 0 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-sm">{row.icon}</span>
-                            <p className="text-[9px] font-semibold leading-tight" style={{ color: 'rgba(255,255,255,0.45)' }}>{row.label}</p>
-                          </div>
-                          <p className="text-[10px] font-black text-right" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                            {row.currentAmount !== null ? `${fmt(row.currentAmount)} kr` : '—'}
-                          </p>
-                          <div className="text-right">
-                            <p className="text-[10px] font-black" style={{ color: row.color }}>{fmt(row.newAmount)} kr</p>
-                            {row.diff !== null && (
-                              <p className="text-[8px] font-black" style={{ color: diffColor }}>
-                                {row.diff > 0 ? '+' : ''}{fmt(row.diff)} kr
-                              </p>
+                        <div key={i} className="space-y-1.5">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-sm">{row.icon}</span>
+                              <span className="text-[10px] font-bold" style={{ color: 'rgba(255,255,255,0.5)' }}>{row.label}</span>
+                            </div>
+                            {diffLabel && (
+                              <span className="text-[10px] font-black" style={{ color: diffColor }}>{diffLabel}</span>
                             )}
+                          </div>
+                          {/* Du bar */}
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[8px] w-6" style={{ color: 'rgba(255,255,255,0.25)' }}>DU</span>
+                              <div className="flex-1 h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                                <motion.div initial={{ width: 0 }} animate={{ width: row.currentAmount !== null ? `${(row.currentAmount / row.maxBar) * 100}%` : '0%' }}
+                                  transition={{ duration: 0.7, delay: i * 0.06 }}
+                                  className="h-full rounded-full" style={{ background: 'rgba(255,255,255,0.2)' }} />
+                              </div>
+                              <span className="text-[9px] font-black w-16 text-right" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                                {row.currentAmount !== null ? `${fmt(row.currentAmount)} kr` : '—'}
+                              </span>
+                            </div>
+                            {/* Mall bar */}
+                            <div className="flex items-center gap-2">
+                              <span className="text-[8px] w-6" style={{ color: row.color }}>MALL</span>
+                              <div className="flex-1 h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                                <motion.div initial={{ width: 0 }} animate={{ width: `${(row.newAmount / row.maxBar) * 100}%` }}
+                                  transition={{ duration: 0.7, delay: i * 0.06 + 0.15 }}
+                                  className="h-full rounded-full"
+                                  style={{ background: row.color, boxShadow: `0 0 6px ${row.color}60` }} />
+                              </div>
+                              <span className="text-[9px] font-black w-16 text-right" style={{ color: row.color }}>
+                                {fmt(row.newAmount)} kr
+                              </span>
+                            </div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
 
-                  {/* AI Reality check */}
-                  {simulation.aiComment && (
-                    <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Brain className="w-3 h-3" style={{ color: accentColor }} />
-                        <p className="text-[9px] font-black tracking-widest" style={{ color: `${accentColor}70` }}>REALITY CHECK</p>
-                      </div>
-                      <p className="text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.6)' }}>{simulation.aiComment}</p>
-                    </div>
-                  )}
-
-                  {/* Activate button */}
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={activateLifestyle}
-                    disabled={activated}
-                    className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2"
+                  <motion.button whileTap={{ scale: 0.97 }} onClick={activateLifestyle} disabled={activated}
+                    className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2 mt-2"
                     style={{
-                      background: activated
-                        ? 'linear-gradient(135deg, rgba(15,222,189,0.2), rgba(15,222,189,0.1))'
-                        : 'linear-gradient(135deg, rgba(246,173,85,0.25), rgba(246,173,85,0.1))',
+                      background: activated ? 'rgba(15,222,189,0.15)' : 'rgba(246,173,85,0.15)',
                       color: activated ? '#0FDEBD' : '#F6AD55',
-                      border: `1.5px solid ${activated ? 'rgba(15,222,189,0.5)' : 'rgba(246,173,85,0.4)'}`,
-                      boxShadow: activated ? '0 0 20px rgba(15,222,189,0.15)' : '0 0 20px rgba(246,173,85,0.1)',
+                      border: `1.5px solid ${activated ? 'rgba(15,222,189,0.4)' : 'rgba(246,173,85,0.35)'}`,
                     }}>
-                    {activated
-                      ? <><Check className="w-4 h-4" /> Livsstil aktiverad från @{profile.username}</>
-                      : <><Zap className="w-4 h-4" /> AKTIVERA DENNA LIVSSTIL</>
-                    }
+                    {activated ? <><Check className="w-4 h-4" /> Livsstil aktiverad!</> : <><Zap className="w-4 h-4" /> AKTIVERA DENNA LIVSSTIL</>}
                   </motion.button>
                 </>
               )}
@@ -391,11 +343,15 @@ Ge en kort, ärlig "reality check" på svenska. Max 3 meningar. Var specifik om 
   );
 }
 
-// ── Main ExpandedProfile ───────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────
 export default function ExpandedProfile({ profile, onClose, userFinancialProfile }) {
   const [adopted, setAdopted] = useState(false);
   const isHybrid = profile.privacy_level === 'hybrid';
   const accentColor = profile.avatar_style?.bg || '#4B7CF3';
+
+  // Load persona on mount
+  const personaHook = EconomicPersona({ profile, accentColor });
+  const { persona, loading: personaLoading, radarAxes, sacrificeLabel, sacrificeColor } = personaHook;
 
   const handleAdopt = async (e) => {
     e.stopPropagation();
@@ -416,129 +372,171 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 overflow-hidden"
       style={{ background: 'rgba(2,4,12,0.92)', backdropFilter: 'blur(16px)' }}
       onClick={onClose}
     >
       <motion.div
-        initial={{ y: 60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 40, opacity: 0 }}
+        initial={{ y: 60, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 40, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 320, damping: 32 }}
         className="relative h-full overflow-y-auto"
         onClick={e => e.stopPropagation()}
-        style={{
-          background: 'linear-gradient(180deg, rgba(5,8,20,0.99) 0%, rgba(8,12,28,0.99) 100%)',
-          borderTop: `1px solid ${accentColor}25`,
-        }}
+        style={{ background: 'linear-gradient(180deg, rgba(5,8,20,0.99) 0%, rgba(8,12,28,0.99) 100%)', borderTop: `1px solid ${accentColor}25` }}
       >
         {/* Close */}
-        <button onClick={onClose}
-          className="absolute top-5 right-5 z-20 w-9 h-9 rounded-full flex items-center justify-center"
+        <button onClick={onClose} className="absolute top-5 right-5 z-20 w-9 h-9 rounded-full flex items-center justify-center"
           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
           <X className="w-4 h-4 text-white" />
         </button>
 
-        {/* Header */}
-        <div className="px-6 pt-8 pb-4 flex items-center gap-4">
+        {/* ── Header ── */}
+        <div className="px-6 pt-8 pb-3 flex items-center gap-4">
           <div className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0"
             style={{ background: `${accentColor}20`, border: `2px solid ${accentColor}50`, boxShadow: `0 0 20px ${accentColor}30` }}>
             <AvatarSVG style={profile.avatar_style} size={56} />
           </div>
-          <div>
-            <div className="flex items-center gap-2 mb-1">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
               <h2 className="text-lg font-black text-white">@{profile.username}</h2>
               <span className="px-2 py-0.5 rounded-full text-[9px] font-black"
                 style={{ background: `${accentColor}20`, color: accentColor, border: `1px solid ${accentColor}35` }}>
                 {isHybrid ? '% PROCENT' : '🔓 KRONOR'}
               </span>
             </div>
-            <p className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>
-              {profile.display_name}, {profile.age}
-            </p>
-            <div className="flex items-center gap-3 mt-1">
+            <div className="flex items-center gap-3 flex-wrap">
               <div className="flex items-center gap-1">
-                <Briefcase className="w-3 h-3" style={{ color: accentColor }} />
+                <Briefcase className="w-3 h-3 flex-shrink-0" style={{ color: accentColor }} />
                 <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{profile.occupation}</span>
               </div>
               <div className="flex items-center gap-1">
-                <MapPin className="w-3 h-3" style={{ color: accentColor }} />
+                <MapPin className="w-3 h-3 flex-shrink-0" style={{ color: accentColor }} />
                 <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{profile.city}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bio + trait */}
-        <div className="px-6 mb-4 space-y-2">
-          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{profile.bio}</p>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black"
-            style={{ background: `${accentColor}15`, color: accentColor, border: `1px solid ${accentColor}30` }}>
-            <Sparkles className="w-3 h-3" /> {profile.trait}
-          </span>
+        {/* ── Economic DNA Persona ── */}
+        <div className="px-6 mb-4">
+          {personaLoading ? (
+            <div className="flex items-center gap-2 py-3">
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
+                <Sparkles className="w-3.5 h-3.5" style={{ color: accentColor }} />
+              </motion.div>
+              <span className="text-xs" style={{ color: 'rgba(255,255,255,0.25)' }}>Analyserar ekonomisk DNA...</span>
+            </div>
+          ) : persona ? (
+            <div className="rounded-2xl p-4 space-y-3" style={{ background: `${accentColor}08`, border: `1px solid ${accentColor}20` }}>
+              {/* Style name */}
+              <div>
+                <p className="text-[9px] font-black tracking-widest mb-0.5" style={{ color: `${accentColor}60` }}>EKONOMISK DNA</p>
+                <p className="text-base font-black text-white">"{persona.style_name}"</p>
+                <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(255,255,255,0.4)' }}>{persona.tagline}</p>
+              </div>
+
+              {/* Score badges */}
+              <div className="grid grid-cols-4 gap-2">
+                {Object.entries(persona.scores || {}).map(([key, val]) => (
+                  <div key={key} className="text-center">
+                    <div className="w-full h-1 rounded-full mb-1" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                      <div className="h-full rounded-full" style={{ width: `${(val / 10) * 100}%`, background: accentColor }} />
+                    </div>
+                    <p className="text-[8px] font-black uppercase" style={{ color: 'rgba(255,255,255,0.3)' }}>{key}</p>
+                    <p className="text-[10px] font-black" style={{ color: accentColor }}>{val}/10</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Badges */}
+              <div className="flex flex-wrap gap-1.5">
+                {persona.badges_pos?.map((b, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-[9px] font-black"
+                    style={{ background: 'rgba(15,222,189,0.12)', color: '#0FDEBD', border: '1px solid rgba(15,222,189,0.25)' }}>
+                    ✓ {b}
+                  </span>
+                ))}
+                {persona.badges_neg?.map((b, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded-full text-[9px] font-black"
+                    style={{ background: 'rgba(255,68,102,0.1)', color: '#FF4466', border: '1px solid rgba(255,68,102,0.2)' }}>
+                    ⚠ {b}
+                  </span>
+                ))}
+              </div>
+
+              {/* Sacrifice meter */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-[9px] font-black" style={{ color: 'rgba(255,255,255,0.25)' }}>UPPOFFRINGSNIVÅ</p>
+                  <p className="text-[9px] font-black" style={{ color: sacrificeColor }}>{sacrificeLabel}</p>
+                </div>
+                <div className="relative h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${persona.sacrifice_score}%` }}
+                    transition={{ duration: 1, ease: 'easeOut' }}
+                    className="absolute h-full rounded-full"
+                    style={{ background: `linear-gradient(90deg, #0FDEBD, ${sacrificeColor})`, boxShadow: `0 0 8px ${sacrificeColor}60` }} />
+                  <div className="absolute inset-0 flex items-center justify-end pr-1">
+                    <span className="text-[8px] font-black" style={{ color: sacrificeColor }}>{persona.sacrifice_score}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* AI punchline */}
+              {persona.ai_punchline && (
+                <div className="pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                  <p className="text-[11px] font-bold leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                    💬 "{persona.ai_punchline}"
+                  </p>
+                </div>
+              )}
+            </div>
+          ) : null}
         </div>
 
-        {/* Orbit */}
-        <p className="px-6 text-[9px] font-black tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.18)' }}>
+        {/* ── Orbit + Radar aura ── */}
+        <p className="px-6 text-[9px] font-black tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.15)' }}>
           EKONOMISKT SOLSYSTEM — TRYCK PÅ EN PLANET FÖR DETALJER
         </p>
-        <OrbitSystem profile={profile} accentColor={accentColor} />
+        <OrbitSystem profile={profile} accentColor={accentColor} radarAxes={radarAxes} />
 
-        {/* Budget legend */}
-        <div className="px-6 space-y-2 mt-2 mb-5">
-          <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.18)' }}>BUDGETFÖRDELNING</p>
+        {/* ── Budget bars ── */}
+        <div className="px-6 space-y-2 mt-1 mb-5">
+          <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.15)' }}>BUDGETFÖRDELNING</p>
           {profile.finance.items.map((item, i) => (
             <div key={i} className="flex items-center gap-3">
               <span className="text-base">{item.icon}</span>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>{item.label}</p>
+                  <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>{item.label}</p>
                   <p className="text-xs font-black" style={{ color: item.color }}>
                     {isHybrid || !item.amount ? `${item.pct}%` : `${fmt(item.amount)} kr`}
                   </p>
                 </div>
                 <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${item.pct}%` }}
+                  <motion.div initial={{ width: 0 }} animate={{ width: `${item.pct}%` }}
                     transition={{ duration: 0.9, delay: i * 0.08 }}
                     className="h-full rounded-full"
-                    style={{ background: item.color, boxShadow: `0 0 6px ${item.color}` }}
-                  />
+                    style={{ background: item.color, boxShadow: `0 0 6px ${item.color}` }} />
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Divider */}
-        <div className="mx-6 mb-5" style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
+        <div className="mx-6 mb-4" style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
 
-        {/* AI Strategy Breakdown */}
-        <AIStrategyBreakdown profile={profile} accentColor={accentColor} />
+        {/* ── Swap Comparison ── */}
+        <SwapComparison profile={profile} userFinancialProfile={userFinancialProfile} accentColor={accentColor} />
 
-        <div className="my-3 mx-6" style={{ height: 1, background: 'rgba(255,255,255,0.04)' }} />
-
-        {/* Mirror Effect */}
-        <MirrorEffect profile={profile} userFinancialProfile={userFinancialProfile} accentColor={accentColor} />
-
-        {/* Quick adopt */}
-        <div className="px-6 pt-5 pb-12">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            whileHover={{ scale: 1.02 }}
-            onClick={handleAdopt}
+        {/* ── Quick Adopt ── */}
+        <div className="px-6 pt-5 pb-14">
+          <motion.button whileTap={{ scale: 0.97 }} whileHover={{ scale: 1.02 }} onClick={handleAdopt}
             className="w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2"
             style={{
-              background: adopted
-                ? 'linear-gradient(135deg, rgba(15,222,189,0.2), rgba(15,222,189,0.1))'
-                : `linear-gradient(135deg, ${accentColor}30, ${accentColor}15)`,
+              background: adopted ? 'rgba(15,222,189,0.15)' : `${accentColor}20`,
               color: adopted ? '#0FDEBD' : accentColor,
-              border: `1.5px solid ${adopted ? 'rgba(15,222,189,0.5)' : `${accentColor}50`}`,
-              boxShadow: adopted ? '0 0 24px rgba(15,222,189,0.2)' : `0 0 24px ${accentColor}15`,
+              border: `1.5px solid ${adopted ? 'rgba(15,222,189,0.4)' : `${accentColor}45`}`,
+              boxShadow: adopted ? '0 0 24px rgba(15,222,189,0.15)' : `0 0 20px ${accentColor}10`,
             }}>
             {adopted
               ? <><Check className="w-4 h-4" /> Budget adopterad från @{profile.username}</>
