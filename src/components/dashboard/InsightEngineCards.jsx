@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { AlertTriangle, Info, AlertCircle, TrendingUp, ChevronRight, Brain, RefreshCw } from 'lucide-react';
 import { runInsightEngine, calcLiquidityForecast } from '@/lib/insightEngine';
+import InsightDetailModal from './InsightDetailModal';
 
 const SEVERITY_STYLES = {
   danger:  { bg: 'rgba(229,62,62,0.08)',   border: 'rgba(229,62,62,0.22)',   icon: AlertCircle,   iconColor: '#E53E3E', label: 'Kritiskt' },
@@ -11,8 +11,7 @@ const SEVERITY_STYLES = {
   success: { bg: 'rgba(13,115,119,0.06)',  border: 'rgba(13,115,119,0.18)',  icon: TrendingUp,    iconColor: '#0D7377', label: 'Bra' },
 };
 
-function InsightCard({ insight, index }) {
-  const [expanded, setExpanded] = useState(false);
+function InsightCard({ insight, index, onOpen }) {
   const style = SEVERITY_STYLES[insight.type] || SEVERITY_STYLES.info;
   const Icon = style.icon;
 
@@ -21,66 +20,27 @@ function InsightCard({ insight, index }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="rounded-2xl overflow-hidden"
+      className="rounded-2xl overflow-hidden cursor-pointer active:scale-[0.98] transition-transform"
       style={{ background: style.bg, border: `1px solid ${style.border}` }}
+      onClick={() => onOpen(insight)}
     >
-      {/* Header row */}
-      <button
-        onClick={() => setExpanded(v => !v)}
-        className="w-full flex items-start gap-3 p-4 text-left"
-      >
+      <div className="w-full flex items-start gap-3 p-4 text-left">
         <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: `${style.iconColor}20` }}>
           <Icon className="w-4 h-4" style={{ color: style.iconColor }} />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider"
-              style={{ color: style.iconColor }}>{style.label}</span>
-          </div>
-          <p className="text-sm font-bold leading-snug" style={{ color: 'var(--color-text-primary)' }}>
+          <span className="text-[10px] font-bold uppercase tracking-wider"
+            style={{ color: style.iconColor }}>{style.label}</span>
+          <p className="text-sm font-bold leading-snug mt-0.5" style={{ color: 'var(--color-text-primary)' }}>
             {insight.title}
           </p>
-          <p className="text-xs mt-1 leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+          <p className="text-xs mt-1 leading-relaxed line-clamp-2" style={{ color: 'var(--color-text-secondary)' }}>
             {insight.description}
           </p>
         </div>
-        <ChevronRight
-          className="w-4 h-4 flex-shrink-0 mt-1 transition-transform"
-          style={{ color: 'var(--color-text-muted)', transform: expanded ? 'rotate(90deg)' : 'none' }}
-        />
-      </button>
-
-      {/* Expanded: consequence + action */}
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="px-4 pb-4 space-y-3">
-              {insight.consequence && (
-                <div className="p-3 rounded-xl" style={{ background: 'rgba(0,0,0,0.04)' }}>
-                  <p className="text-xs font-semibold mb-1" style={{ color: 'var(--color-text-muted)' }}>Konsekvens</p>
-                  <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                    {insight.consequence}
-                  </p>
-                </div>
-              )}
-              {insight.action && insight.actionLink && (
-                <Link to={insight.actionLink}>
-                  <button className="w-full py-2.5 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1.5"
-                    style={{ background: style.iconColor }}>
-                    {insight.action} <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </Link>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <ChevronRight className="w-4 h-4 flex-shrink-0 mt-1" style={{ color: 'var(--color-text-muted)' }} />
+      </div>
     </motion.div>
   );
 }
@@ -132,6 +92,7 @@ function LiquidityCard({ forecast }) {
 
 export default function InsightEngineCards({ profile, transactions }) {
   const [showAll, setShowAll] = useState(false);
+  const [activeInsight, setActiveInsight] = useState(null);
 
   const insights = useMemo(() => runInsightEngine(profile, transactions), [profile, transactions]);
   const forecast = useMemo(() => calcLiquidityForecast(profile, transactions), [profile, transactions]);
@@ -180,8 +141,19 @@ export default function InsightEngineCards({ profile, transactions }) {
 
         <AnimatePresence>
           {visible.map((ins, i) => (
-            <InsightCard key={ins.id} insight={ins} index={i} />
+            <InsightCard key={ins.id} insight={ins} index={i} onOpen={setActiveInsight} />
           ))}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {activeInsight && (
+            <InsightDetailModal
+              insight={activeInsight}
+              transactions={transactions}
+              profile={profile}
+              onClose={() => setActiveInsight(null)}
+            />
+          )}
         </AnimatePresence>
 
         {hasMore && (
