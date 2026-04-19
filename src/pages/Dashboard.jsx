@@ -26,7 +26,7 @@ import InsightCards from '@/components/import/InsightCards';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import DemoToggle from '@/components/demo/DemoToggle';
 import { useDemoMode } from '@/components/demo/DemoMode';
-import { FileUp, Zap, TrendingUp } from 'lucide-react';
+import { FileUp, Zap } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function Dashboard() {
       const profiles = await base44.entities.FinancialProfile.list();
       if (profiles.length > 0) {
         const newBadges = await checkAndUnlockBadges(profiles[0]);
-        if (newBadges.length > 0) { setUnlockedBadge(newBadges[0]); setShowBadgeUnlock(true); }
+        if (newBadges.length > 0) {setUnlockedBadge(newBadges[0]);setShowBadgeUnlock(true);}
       }
       return profiles[0] || null;
     }
@@ -67,7 +67,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (profile?.onboardingCompleted) {
       const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-      if (!hasSeenWelcome) { setShowWelcome(true); localStorage.setItem('hasSeenWelcome', 'true'); }
+      if (!hasSeenWelcome) {setShowWelcome(true);localStorage.setItem('hasSeenWelcome', 'true');}
     }
   }, [profile]);
 
@@ -88,7 +88,7 @@ export default function Dashboard() {
     const margin = profile.income - totalFixedCosts;
     const newInsights = [];
     if (margin < profile.income * 0.1) {
-      newInsights.push({ type: 'warning', title: 'Liten marginal', description: 'Din marginal är under 10% av inkomsten.', impact: `${Math.round((margin / profile.income) * 100)}% marginal`, action: 'Se kostnadsförslag' });
+      newInsights.push({ type: 'warning', title: 'Liten marginal', description: 'Din marginal är under 10% av inkomsten.', impact: `${Math.round(margin / profile.income * 100)}% marginal`, action: 'Se kostnadsförslag' });
     }
     const monthsOfBuffer = profile.buffer / totalFixedCosts;
     if (monthsOfBuffer < 3) {
@@ -106,8 +106,8 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />
-      </div>
-    );
+      </div>);
+
   }
 
   if (!profile) {
@@ -116,12 +116,12 @@ export default function Dashboard() {
         <div>
           <p className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Välkommen till Anchor</p>
           <button onClick={() => navigate(createPageUrl('Onboarding'))}
-            className="mt-4 px-8 py-3 rounded-full text-white font-semibold" style={{ background: 'var(--color-accent)' }}>
+          className="mt-4 px-8 py-3 rounded-full text-white font-semibold" style={{ background: 'var(--color-accent)' }}>
             Kom igång
           </button>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   return (
@@ -158,11 +158,11 @@ export default function Dashboard() {
             style={{
               background: 'linear-gradient(135deg, #2d1f6e 0%, #1a2f5e 100%)',
               border: '1px solid rgba(139,92,246,0.35)',
-              boxShadow: '0 4px 20px rgba(75,124,243,0.18)',
-            }}
-          >
+              boxShadow: '0 4px 20px rgba(75,124,243,0.18)'
+            }}>
+            
             <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(139,92,246,0.25)', border: '1px solid rgba(139,92,246,0.4)' }}>
+            style={{ background: 'rgba(139,92,246,0.25)', border: '1px solid rgba(139,92,246,0.4)' }}>
               <span className="text-xl">✦</span>
             </div>
             <div className="flex-1 min-w-0">
@@ -172,7 +172,7 @@ export default function Dashboard() {
               </p>
             </div>
             <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: 'rgba(139,92,246,0.3)' }}>
+            style={{ background: 'rgba(139,92,246,0.3)' }}>
               <ChevronRight className="w-4 h-4" style={{ color: '#c4b5fd' }} />
             </div>
           </motion.div>
@@ -198,30 +198,21 @@ export default function Dashboard() {
 
         {/* Quick action row */}
         <div className="flex gap-3">
-          <Link to="/Insights" className="flex-1">
-            <motion.div whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-4 py-3 rounded-2xl"
-              style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
-              <TrendingUp className="w-4 h-4" style={{ color: '#0D7377' }} />
-              <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Insikter</span>
-            </motion.div>
-          </Link>
           <Link to="/Import" className="flex-1">
             <motion.div whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 px-4 py-3 rounded-2xl"
-              style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
+            className="flex items-center gap-2 px-4 py-3 rounded-2xl"
+            style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
               <FileUp className="w-4 h-4" style={{ color: '#0D7377' }} />
-              <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Importera CSV</span>
+              <span className="text-[hsl(var(--background))] text-xs font-bold" style={{ color: '#1A2332' }}>Importera CSV</span>
             </motion.div>
           </Link>
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => setShowMagicEntry(true)}
-            className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl"
-            style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
+          className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl"
+          style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
             <Zap className="w-4 h-4" style={{ color: '#0D7377' }} />
             <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Magisk inmatning</span>
           </motion.button>
         </div>
-
 
 
       </div>
@@ -231,13 +222,13 @@ export default function Dashboard() {
         isOpen={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
         profile={profile}
-        onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['financialProfile'] }); setShowExpenseModal(false); }}
-      />
+        onSuccess={() => {queryClient.invalidateQueries({ queryKey: ['financialProfile'] });setShowExpenseModal(false);}} />
+      
       <TransactionHub
         isOpen={showTransactionHub}
         onClose={() => setShowTransactionHub(false)}
-        profile={profile}
-      />
+        profile={profile} />
+      
       <AnimatePresence>
         {showWelcome && <WelcomeAnalysis profile={profile} onClose={() => setShowWelcome(false)} />}
       </AnimatePresence>
@@ -245,8 +236,8 @@ export default function Dashboard() {
       <MagicEntryBox
         isOpen={showMagicEntry}
         onClose={() => setShowMagicEntry(false)}
-        onSaved={() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] })}
-      />
-    </div>
-  );
+        onSaved={() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] })} />
+      
+    </div>);
+
 }
