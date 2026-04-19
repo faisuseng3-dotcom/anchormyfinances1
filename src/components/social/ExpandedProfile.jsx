@@ -7,7 +7,8 @@ import { base44 } from '@/api/base44Client';
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 // ── Radar Chart (Spider/Aura) ──────────────────────────────────────────────
-function RadarChart({ axes, size = 200 }) {
+// ghostAxes = optional second dataset rendered as grey shadow (user's own profile)
+function RadarChart({ axes, ghostAxes, accentColor = '#0FDEBD', size = 200 }) {
   const cx = size / 2, cy = size / 2;
   const levels = 4;
   const maxR = size / 2 - 24;
@@ -26,16 +27,22 @@ function RadarChart({ axes, size = 200 }) {
   const dataPoints = axes.map((ax, i) => {
     const r = (ax.value / 100) * maxR;
     const a = angleOf(i);
-    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), label: ax.label, value: ax.value, color: ax.color };
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a), label: ax.label };
   });
   const dataPolygon = dataPoints.map(p => `${p.x},${p.y}`).join(' ');
+
+  const ghostPoints = ghostAxes ? ghostAxes.map((ax, i) => {
+    const r = (ax.value / 100) * maxR;
+    const a = angleOf(i);
+    return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  }) : null;
+  const ghostPolygon = ghostPoints ? ghostPoints.map(p => `${p.x},${p.y}`).join(' ') : null;
 
   return (
     <svg width={size} height={size} style={{ overflow: 'visible' }}>
       {/* Grid rings */}
       {gridPolygons.map((pts, l) => (
-        <polygon key={l} points={pts} fill="none"
-          stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+        <polygon key={l} points={pts} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
       ))}
       {/* Axes */}
       {axes.map((_, i) => {
@@ -44,22 +51,26 @@ function RadarChart({ axes, size = 200 }) {
           x2={cx + maxR * Math.cos(a)} y2={cy + maxR * Math.sin(a)}
           stroke="rgba(255,255,255,0.05)" strokeWidth="1" />;
       })}
-      {/* Data fill */}
-      <polygon points={dataPolygon} fill="rgba(15,222,189,0.08)" stroke="rgba(15,222,189,0.35)" strokeWidth="1.5" />
-      {/* Data points */}
+      {/* Ghost shadow (user's own profile) */}
+      {ghostPolygon && (
+        <polygon points={ghostPolygon} fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.18)" strokeWidth="1" strokeDasharray="3,3" />
+      )}
+      {/* Data fill — uses accentColor */}
+      <polygon points={dataPolygon} fill={`${accentColor}18`} stroke={`${accentColor}80`} strokeWidth="2" />
+      {/* Data dots */}
       {dataPoints.map((p, i) => (
-        <circle key={i} cx={p.x} cy={p.y} r={3} fill={p.color || '#0FDEBD'}
-          style={{ filter: `drop-shadow(0 0 4px ${p.color || '#0FDEBD'})` }} />
+        <circle key={i} cx={p.x} cy={p.y} r={3.5} fill={accentColor}
+          style={{ filter: `drop-shadow(0 0 5px ${accentColor})` }} />
       ))}
       {/* Labels */}
       {dataPoints.map((p, i) => {
         const a = angleOf(i);
-        const lx = cx + (maxR + 14) * Math.cos(a);
-        const ly = cy + (maxR + 14) * Math.sin(a);
+        const lx = cx + (maxR + 16) * Math.cos(a);
+        const ly = cy + (maxR + 16) * Math.sin(a);
         return (
           <text key={i} x={lx} y={ly} textAnchor="middle" dominantBaseline="middle"
-            fontSize="8" fontWeight="800" fill="rgba(255,255,255,0.35)">
-            {p.label}
+            fontSize="8" fontWeight="800" fill="rgba(255,255,255,0.3)">
+            {axes[i].label}
           </text>
         );
       })}
@@ -68,7 +79,7 @@ function RadarChart({ axes, size = 200 }) {
 }
 
 // ── Orbit System with Radar aura ──────────────────────────────────────────
-function OrbitSystem({ profile, accentColor, radarAxes }) {
+function OrbitSystem({ profile, accentColor, radarAxes, ghostAxes }) {
   const [hoveredItem, setHoveredItem] = useState(null);
   const isHybrid = profile.privacy_level === 'hybrid';
   const items = profile.finance.items;
@@ -79,7 +90,7 @@ function OrbitSystem({ profile, accentColor, radarAxes }) {
       {/* Radar aura behind everything */}
       {radarAxes && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 1 }}>
-          <RadarChart axes={radarAxes} size={260} />
+          <RadarChart axes={radarAxes} ghostAxes={ghostAxes} accentColor={accentColor} size={260} />
         </div>
       )}
 
@@ -144,6 +155,64 @@ function OrbitSystem({ profile, accentColor, radarAxes }) {
           </React.Fragment>
         );
       })}
+    </div>
+  );
+}
+
+// ── Tension Gauge (circular pressure meter) ────────────────────────────────
+function TensionGauge({ score, punchline }) {
+  const isHardcore = score >= 70;
+  const isMedium = score >= 40;
+  const gaugeColor = isHardcore ? '#FF4466' : isMedium ? '#F6AD55' : '#0FDEBD';
+  const label = isHardcore ? 'HARDCORE 🔒' : isMedium ? 'KRÄVER PLANERING' : 'ENKEL OMSTÄLLNING';
+
+  // SVG arc parameters
+  const R = 38, cx = 50, cy = 50;
+  const startAngle = -210; // degrees, left side
+  const sweepDeg = 240;    // total sweep
+  const endAngle = startAngle + sweepDeg * (score / 100);
+  const toRad = (d) => (d * Math.PI) / 180;
+  const arcX = (a) => cx + R * Math.cos(toRad(a));
+  const arcY = (a) => cy + R * Math.sin(toRad(a));
+  const large = sweepDeg * (score / 100) > 180 ? 1 : 0;
+
+  const trackPath = `M ${arcX(startAngle)} ${arcY(startAngle)} A ${R} ${R} 0 1 1 ${arcX(startAngle + sweepDeg - 0.1)} ${arcY(startAngle + sweepDeg - 0.1)}`;
+  const fillPath = score > 1
+    ? `M ${arcX(startAngle)} ${arcY(startAngle)} A ${R} ${R} 0 ${large} 1 ${arcX(endAngle)} ${arcY(endAngle)}`
+    : '';
+
+  return (
+    <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 10 }}>
+      <div className="flex items-center gap-4">
+        {/* Arc gauge */}
+        <motion.div
+          animate={isHardcore ? { x: [0, -1.5, 1.5, -1, 1, 0] } : {}}
+          transition={isHardcore ? { duration: 0.5, repeat: Infinity, repeatDelay: 2 } : {}}
+        >
+          <svg viewBox="0 0 100 80" width="90" height="72">
+            {/* Track */}
+            <path d={trackPath} fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth="7" strokeLinecap="round" />
+            {/* Fill */}
+            {fillPath && (
+              <path d={fillPath} fill="none" stroke={gaugeColor} strokeWidth="7" strokeLinecap="round"
+                style={{ filter: isHardcore ? `drop-shadow(0 0 6px ${gaugeColor})` : 'none' }} />
+            )}
+            {/* Center score */}
+            <text x="50" y="50" textAnchor="middle" dominantBaseline="middle"
+              fontSize="14" fontWeight="900" fill={gaugeColor}>{score}%</text>
+          </svg>
+        </motion.div>
+
+        {/* Label + micro-insight */}
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-black mb-1" style={{ color: gaugeColor }}>{label}</p>
+          {punchline && (
+            <p className="text-[10px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              ⚡ {punchline}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -351,7 +420,23 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
 
   // Load persona on mount
   const personaHook = EconomicPersona({ profile, accentColor });
-  const { persona, loading: personaLoading, radarAxes, sacrificeLabel, sacrificeColor } = personaHook;
+  const { persona, loading: personaLoading, radarAxes } = personaHook;
+
+  // Ghost axes — user's own budget mapped to same 4 dimensions (rough heuristic)
+  const userGhostAxes = radarAxes && userFinancialProfile?.budgetLimits ? (() => {
+    const limits = userFinancialProfile.budgetLimits;
+    const inc = userFinancialProfile.income || 1;
+    const totalSpend = Object.values(limits).reduce((a, b) => a + b, 0);
+    const savePct = Math.max(0, Math.round(((inc - totalSpend) / inc) * 100));
+    const housingPct = Math.round(((limits.hyra || limits.boende || 0) / inc) * 100);
+    const leisurePct = Math.round(((limits.nöje || limits.livsstil || limits.övrigt || 0) / inc) * 100);
+    return [
+      { label: 'TRYGGHET', value: Math.min(100, savePct * 3) },
+      { label: 'TILLVÄXT', value: Math.min(100, savePct * 2) },
+      { label: 'FOKUS',    value: Math.min(100, Math.max(10, 60 - leisurePct * 2)) },
+      { label: 'FRIHET',   value: Math.min(100, leisurePct * 3) },
+    ];
+  })() : null;
 
   const handleAdopt = async (e) => {
     e.stopPropagation();
@@ -435,60 +520,35 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                 <p className="text-xs mt-0.5 italic" style={{ color: 'rgba(255,255,255,0.4)' }}>{persona.tagline}</p>
               </div>
 
-              {/* Score badges */}
-              <div className="grid grid-cols-4 gap-2">
-                {Object.entries(persona.scores || {}).map(([key, val]) => (
-                  <div key={key} className="text-center">
-                    <div className="w-full h-1 rounded-full mb-1" style={{ background: 'rgba(255,255,255,0.08)' }}>
-                      <div className="h-full rounded-full" style={{ width: `${(val / 10) * 100}%`, background: accentColor }} />
-                    </div>
-                    <p className="text-[8px] font-black uppercase" style={{ color: 'rgba(255,255,255,0.3)' }}>{key}</p>
-                    <p className="text-[10px] font-black" style={{ color: accentColor }}>{val}/10</p>
-                  </div>
-                ))}
+              {/* The Power Graph — Radar DNA (with ghost overlay of user's own profile) */}
+              <div className="flex justify-center my-1">
+                <RadarChart
+                  axes={radarAxes}
+                  ghostAxes={userGhostAxes}
+                  accentColor={accentColor}
+                  size={180}
+                />
               </div>
 
-              {/* Badges */}
+              {/* Vibe Tags — solid green strengths / outline amber risks */}
               <div className="flex flex-wrap gap-1.5">
                 {persona.badges_pos?.map((b, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-[9px] font-black"
-                    style={{ background: 'rgba(15,222,189,0.12)', color: '#0FDEBD', border: '1px solid rgba(15,222,189,0.25)' }}>
+                  <span key={i} className="px-2.5 py-1 rounded-full text-[9px] font-black"
+                    style={{ background: 'rgba(15,222,189,0.18)', color: '#fff', boxShadow: '0 0 8px rgba(15,222,189,0.2)' }}>
                     ✓ {b}
                   </span>
                 ))}
                 {persona.badges_neg?.map((b, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded-full text-[9px] font-black"
-                    style={{ background: 'rgba(255,68,102,0.1)', color: '#FF4466', border: '1px solid rgba(255,68,102,0.2)' }}>
+                  <span key={i} className="px-2.5 py-1 rounded-full text-[9px] font-black"
+                    style={{ background: 'transparent', color: '#F6AD55', border: '1px solid rgba(246,173,85,0.45)', boxShadow: '0 0 8px rgba(246,173,85,0.15)' }}>
                     ⚠ {b}
                   </span>
                 ))}
               </div>
 
-              {/* Sacrifice meter */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <p className="text-[9px] font-black" style={{ color: 'rgba(255,255,255,0.25)' }}>UPPOFFRINGSNIVÅ</p>
-                  <p className="text-[9px] font-black" style={{ color: sacrificeColor }}>{sacrificeLabel}</p>
-                </div>
-                <div className="relative h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <motion.div initial={{ width: 0 }} animate={{ width: `${persona.sacrifice_score}%` }}
-                    transition={{ duration: 1, ease: 'easeOut' }}
-                    className="absolute h-full rounded-full"
-                    style={{ background: `linear-gradient(90deg, #0FDEBD, ${sacrificeColor})`, boxShadow: `0 0 8px ${sacrificeColor}60` }} />
-                  <div className="absolute inset-0 flex items-center justify-end pr-1">
-                    <span className="text-[8px] font-black" style={{ color: sacrificeColor }}>{persona.sacrifice_score}%</span>
-                  </div>
-                </div>
-              </div>
+              {/* Tension Gauge — circular pressure meter */}
+              <TensionGauge score={persona.sacrifice_score} punchline={persona.ai_punchline} />
 
-              {/* AI punchline */}
-              {persona.ai_punchline && (
-                <div className="pt-1" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-                  <p className="text-[11px] font-bold leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
-                    💬 "{persona.ai_punchline}"
-                  </p>
-                </div>
-              )}
             </div>
           ) : null}
         </div>
@@ -497,7 +557,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
         <p className="px-6 text-[9px] font-black tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.15)' }}>
           EKONOMISKT SOLSYSTEM — TRYCK PÅ EN PLANET FÖR DETALJER
         </p>
-        <OrbitSystem profile={profile} accentColor={accentColor} radarAxes={radarAxes} />
+        <OrbitSystem profile={profile} accentColor={accentColor} radarAxes={radarAxes} ghostAxes={userGhostAxes} />
 
         {/* ── Budget bars ── */}
         <div className="px-6 space-y-2 mt-1 mb-5">
