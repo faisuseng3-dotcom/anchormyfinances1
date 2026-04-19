@@ -20,6 +20,7 @@ import BudgetDashboard from './pages/BudgetDashboard';
 import SavingsGoals from './pages/SavingsGoals';
 import InsightsPage from './pages/InsightsPage';
 import { DemoProvider } from '@/components/demo/DemoMode';
+import Social from './pages/Social';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -92,6 +93,11 @@ const AuthenticatedApp = () => {
       <Route path="/SavingsGoals" element={
         <LayoutWrapper currentPageName="SavingsGoals">
           <SavingsGoals />
+        </LayoutWrapper>
+      } />
+      <Route path="/Social" element={
+        <LayoutWrapper currentPageName="Social">
+          <Social />
         </LayoutWrapper>
       } />
       <Route path="/Insights" element={

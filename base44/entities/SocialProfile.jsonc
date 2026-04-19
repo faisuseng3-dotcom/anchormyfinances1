@@ -1,0 +1,91 @@
+{
+  "name": "SocialProfile",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Kopplad anv\u00e4ndar-ID"
+    },
+    "username": {
+      "type": "string",
+      "description": "Unikt Anchor-anv\u00e4ndarnamn (t.ex. @alice)"
+    },
+    "bio": {
+      "type": "string",
+      "description": "Kort bio/status"
+    },
+    "occupation": {
+      "type": "string",
+      "description": "Yrke eller studier"
+    },
+    "age": {
+      "type": "integer",
+      "description": "\u00c5lder"
+    },
+    "interests": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Intressen"
+    },
+    "avatar_style": {
+      "type": "object",
+      "description": "Avatar-utseende",
+      "properties": {
+        "skin": {
+          "type": "string"
+        },
+        "hair": {
+          "type": "string"
+        },
+        "hairColor": {
+          "type": "string"
+        },
+        "top": {
+          "type": "string"
+        },
+        "topColor": {
+          "type": "string"
+        },
+        "bg": {
+          "type": "string"
+        }
+      }
+    },
+    "privacy_level": {
+      "type": "string",
+      "enum": [
+        "full",
+        "hybrid",
+        "ghost"
+      ],
+      "default": "hybrid",
+      "description": "Niv\u00e5 1=full (kr+%), Niv\u00e5 2=hybrid (%), Niv\u00e5 3=ghost (ingen data)"
+    },
+    "shared_categories": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Kategorier som delas med v\u00e4nner (tom = alla)"
+    },
+    "friends": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista av v\u00e4n-user_ids"
+    },
+    "squad_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Squads anv\u00e4ndaren \u00e4r med i"
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}

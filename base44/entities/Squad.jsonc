@@ -1,0 +1,43 @@
+{
+  "name": "Squad",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Squad-namn"
+    },
+    "description": {
+      "type": "string"
+    },
+    "emoji": {
+      "type": "string",
+      "default": "\ud83d\ude80"
+    },
+    "goal_name": {
+      "type": "string",
+      "description": "Gemensamt sparm\u00e5l-namn"
+    },
+    "goal_amount": {
+      "type": "number",
+      "description": "Gemensamt sparm\u00e5l-belopp"
+    },
+    "member_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "user_ids p\u00e5 medlemmar"
+    },
+    "admin_id": {
+      "type": "string",
+      "description": "Squad-\u00e4garens user_id"
+    },
+    "invite_code": {
+      "type": "string",
+      "description": "Unik inbjudningskod"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

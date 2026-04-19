@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
@@ -290,6 +290,21 @@ export default function Settings() {
             )}
           </div>
         </Section>
+
+        {/* Social link */}
+        <Link to="/Social">
+          <div className="flex items-center justify-between p-4 rounded-2xl cursor-pointer"
+            style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.1), rgba(15,222,189,0.08))', border: '1px solid rgba(167,139,250,0.2)' }}>
+            <div className="flex items-center gap-3">
+              <Users className="w-5 h-5" style={{ color: '#A78BFA' }} />
+              <div>
+                <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>Anchor Social</p>
+                <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Profil, avatar, vänner & integritet</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+          </div>
+        </Link>
 
         {/* Insights link */}
         <Link to="/Insights">
