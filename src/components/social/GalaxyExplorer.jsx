@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, Copy, Check } from 'lucide-react';
+import { Search, Sparkles, Check, X, MapPin, Briefcase } from 'lucide-react';
 import { AvatarSVG } from './AvatarBuilder';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -14,19 +14,23 @@ const DEMO_PROFILES = [
     username: 'elias_kth',
     display_name: 'Elias',
     age: 22,
-    occupation: 'Student, KTH',
+    occupation: 'Student',
+    city: 'Stockholm',
     bio: 'Lever på CSN och extrajobb. Sparar till en resa efter examen.',
+    trait: 'Spar-expert',
     tags: ['Student', 'Stockholm'],
     privacy_level: 'full',
+    savings_rate: 8,
+    main_stat: '1 200 kr/mån sparande',
     avatar_style: { skin: '#FDBCB4', hair: 'short', hairColor: '#3D2B1F', top: 'tshirt', topColor: '#4B7CF3', bg: '#4B7CF3' },
     finance: {
       income: 14500,
       items: [
-        { label: 'Inkomst (CSN + jobb)', amount: 14500, pct: 100, color: '#0FDEBD', icon: '💰' },
-        { label: 'Hyra',                 amount: 5200,  pct: 36,  color: '#FF4466', icon: '🏠' },
-        { label: 'Mat & Livsmedel',      amount: 3100,  pct: 21,  color: '#F6AD55', icon: '🛒' },
-        { label: 'Sparande (resa)',       amount: 1200,  pct: 8,   color: '#A78BFA', icon: '✈️' },
-        { label: 'Övrigt',               amount: 5000,  pct: 35,  color: '#4B7CF3', icon: '📦' },
+        { label: 'Inkomst (CSN + jobb)', amount: 14500, pct: 100, color: '#0FDEBD', icon: '💰', detail: 'CSN 9 000 kr + extrajobb 5 500 kr' },
+        { label: 'Hyra',                 amount: 5200,  pct: 36,  color: '#FF4466', icon: '🏠', detail: 'Korridor på Lappis, allt inkl.' },
+        { label: 'Mat & Livsmedel',      amount: 3100,  pct: 21,  color: '#F6AD55', icon: '🛒', detail: 'Mestadels matlådor och billigt kaffe.' },
+        { label: 'Sparande (resa)',       amount: 1200,  pct: 8,   color: '#A78BFA', icon: '✈️', detail: 'Autopilot till Savelyst varje månad.' },
+        { label: 'Övrigt',               amount: 5000,  pct: 35,  color: '#4B7CF3', icon: '📦', detail: 'Transport, nöje, kläder, prylar.' },
       ],
     },
   },
@@ -35,218 +39,414 @@ const DEMO_PROFILES = [
     username: 'sarah_design',
     display_name: 'Sarah',
     age: 31,
-    occupation: 'Egenföretagare, Design',
+    occupation: 'Egenföretagare',
+    city: 'Göteborg',
     bio: 'Bygger min designbyrå. Optimerar för låga fasta kostnader.',
+    trait: 'Bolag-builder',
     tags: ['Egenföretagare', 'Göteborg'],
     privacy_level: 'hybrid',
+    savings_rate: 20,
+    main_stat: '20% Marginal',
     avatar_style: { skin: '#C68642', hair: 'bun', hairColor: '#1A0A00', top: 'blazer', topColor: '#A78BFA', bg: '#A78BFA' },
     finance: {
-      income: null, // hidden
+      income: null,
       items: [
-        { label: 'Boende',                pct: 25, color: '#FF4466', icon: '🏠' },
-        { label: 'Investering i bolaget', pct: 40, color: '#0FDEBD', icon: '🚀' },
-        { label: 'Livsstil',              pct: 15, color: '#F6AD55', icon: '☕' },
-        { label: 'Buffert',               pct: 20, color: '#A78BFA', icon: '🛡️' },
+        { label: 'Boende',                pct: 25, color: '#FF4466', icon: '🏠', detail: 'Andrahand centralt i Göteborg.' },
+        { label: 'Investering i bolaget', pct: 40, color: '#0FDEBD', icon: '🚀', detail: 'Design-verktyg, kurser, marknadsföring.' },
+        { label: 'Livsstil',              pct: 15, color: '#F6AD55', icon: '☕', detail: 'Mat, nöje och träning — budgetvänligt.' },
+        { label: 'Buffert',               pct: 20, color: '#A78BFA', icon: '🛡️', detail: '3 månaders buffert som prioritet.' },
+      ],
+    },
+  },
+  {
+    id: 'demo_marcus',
+    username: 'marcus_tech',
+    display_name: 'Marcus',
+    age: 34,
+    occupation: 'Programmerare',
+    city: 'Stockholm',
+    bio: 'Senior dev. Maxar pensionssparandet och lever enkelt.',
+    trait: 'FIRE-fokuserad',
+    tags: ['Programmerare', 'Stockholm', 'Höginkomsttagare'],
+    privacy_level: 'hybrid',
+    savings_rate: 40,
+    main_stat: '40% Sparkvot',
+    avatar_style: { skin: '#8D5524', hair: 'short', hairColor: '#1C1C1C', top: 'hoodie', topColor: '#0FDEBD', bg: '#0FDEBD' },
+    finance: {
+      income: null,
+      items: [
+        { label: 'Boende',       pct: 20, color: '#FF4466', icon: '🏠', detail: 'Äger bostadsrätt, liten månadsavgift.' },
+        { label: 'Sparande',     pct: 40, color: '#0FDEBD', icon: '📈', detail: 'ISK + IPS för tidig pension.' },
+        { label: 'Levnadskostn.', pct: 25, color: '#F6AD55', icon: '🛒', detail: 'Enkel livsstil, matlagning hemma.' },
+        { label: 'Övrigt',      pct: 15, color: '#A78BFA', icon: '📦', detail: 'Teknikprylar och semesterfond.' },
       ],
     },
   },
 ];
 
-const ALL_TAGS = ['Student', 'Egenföretagare', 'Småbarnsförälder', 'Höginkomsttagare', 'Stockholm', 'Göteborg', 'Malmö', 'Programmerare', 'Designer'];
+const ALL_TAGS = ['Student', 'Egenföretagare', 'Programmerare', 'Designer', 'Höginkomsttagare', 'Stockholm', 'Göteborg', 'Malmö'];
 
-// ── Mini orbit ring chart ──────────────────────────────────────────────────
-function OrbitRing({ items, privacyLevel, size = 80 }) {
-  const cx = size / 2, cy = size / 2, r = size / 2 - 8;
+// ── Mini Donut for grid card ───────────────────────────────────────────────
+function MiniDonut({ items, size = 64 }) {
+  const cx = size / 2, cy = size / 2, r = size / 2 - 7;
   let angle = -90;
-  const arcs = items.map(item => {
-    const deg = (item.pct / 100) * 360;
-    const start = angle;
-    angle += deg;
-    return { ...item, start, deg };
-  });
-
   const toRad = (d) => (d * Math.PI) / 180;
-  const arc = (start, deg, radius) => {
-    const x1 = cx + radius * Math.cos(toRad(start));
-    const y1 = cy + radius * Math.sin(toRad(start));
-    const x2 = cx + radius * Math.cos(toRad(start + deg));
-    const y2 = cy + radius * Math.sin(toRad(start + deg));
+
+  const arcs = items.map(item => {
+    const deg = Math.max((item.pct / 100) * 360, 2);
+    const x1 = cx + r * Math.cos(toRad(angle));
+    const y1 = cy + r * Math.sin(toRad(angle));
+    const x2 = cx + r * Math.cos(toRad(angle + deg - 1));
+    const y2 = cy + r * Math.sin(toRad(angle + deg - 1));
     const large = deg > 180 ? 1 : 0;
-    return `M ${x1} ${y1} A ${radius} ${radius} 0 ${large} 1 ${x2} ${y2}`;
-  };
+    const path = `M ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2}`;
+    angle += deg;
+    return { ...item, path };
+  });
 
   return (
     <svg width={size} height={size}>
-      {/* Track */}
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
-      {/* Segments */}
-      {arcs.map((item, i) => (
-        <path key={i} d={arc(item.start, item.deg - 2, r)}
-          fill="none" stroke={item.color} strokeWidth="6" strokeLinecap="round"
-          style={{ filter: `drop-shadow(0 0 3px ${item.color}80)` }} />
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="5" />
+      {arcs.map((a, i) => (
+        <path key={i} d={a.path} fill="none" stroke={a.color} strokeWidth="5" strokeLinecap="round"
+          style={{ filter: `drop-shadow(0 0 4px ${a.color}80)` }} />
       ))}
-      {/* Center privacy indicator */}
-      {privacyLevel === 'hybrid' && (
-        <text x={cx} y={cy + 4} textAnchor="middle" fontSize="12" fill="rgba(255,255,255,0.4)">%</text>
-      )}
     </svg>
   );
 }
 
-// ── Profile card (planet) ──────────────────────────────────────────────────
-function GalaxyProfileCard({ profile, onAdopt, userFinancialProfile, index }) {
-  const [expanded, setExpanded] = useState(false);
+// ── Full Orbit system for expanded view ────────────────────────────────────
+function OrbitSystem({ profile, accentColor }) {
+  const [hoveredItem, setHoveredItem] = useState(null);
+  const isHybrid = profile.privacy_level === 'hybrid';
+  const items = profile.finance.items;
+
+  const orbitRadii = [60, 95, 128, 158, 185];
+
+  return (
+    <div className="relative flex items-center justify-center" style={{ height: 320 }}>
+      {/* Planet (income / center) */}
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+        className="absolute inset-0 pointer-events-none"
+        style={{ borderRadius: '50%' }}
+      />
+
+      {/* Center orb */}
+      <div className="absolute z-10 w-16 h-16 rounded-full flex items-center justify-center"
+        style={{
+          background: `radial-gradient(circle, ${accentColor}40, ${accentColor}10)`,
+          border: `2px solid ${accentColor}60`,
+          boxShadow: `0 0 24px ${accentColor}40, 0 0 48px ${accentColor}15`,
+        }}>
+        <AvatarSVG style={profile.avatar_style} size={52} />
+      </div>
+
+      {/* Orbit rings + moons */}
+      {items.map((item, i) => {
+        const rad = orbitRadii[i] || 185 + i * 20;
+        const isHovered = hoveredItem === i;
+        // Place moons at various fixed angles for visual spread
+        const moonAngle = (i * 72 - 90) * (Math.PI / 180);
+        const mx = Math.cos(moonAngle) * rad;
+        const my = Math.sin(moonAngle) * rad;
+
+        return (
+          <React.Fragment key={i}>
+            {/* Orbit track */}
+            <div className="absolute rounded-full pointer-events-none"
+              style={{
+                width: rad * 2, height: rad * 2,
+                border: `1px solid rgba(255,255,255,0.04)`,
+                transform: 'translate(-50%, -50%)',
+                left: '50%', top: '50%',
+                marginLeft: -(rad), marginTop: -(rad),
+              }} />
+
+            {/* Moon */}
+            <motion.div
+              className="absolute cursor-pointer z-20"
+              style={{ left: '50%', top: '50%', transform: `translate(${mx - 16}px, ${my - 16}px)` }}
+              animate={{ scale: isHovered ? 1.15 : 1 }}
+              onMouseEnter={() => setHoveredItem(i)}
+              onMouseLeave={() => setHoveredItem(null)}
+              onClick={(e) => { e.stopPropagation(); setHoveredItem(isHovered ? null : i); }}
+            >
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
+                style={{
+                  background: `${item.color}20`,
+                  border: `1.5px solid ${item.color}60`,
+                  boxShadow: isHovered ? `0 0 12px ${item.color}80` : `0 0 5px ${item.color}30`,
+                }}>
+                {item.icon}
+              </div>
+
+              {/* Tooltip on hover */}
+              <AnimatePresence>
+                {isHovered && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8, y: -8 }}
+                    animate={{ opacity: 1, scale: 1, y: -12 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 w-44 p-2.5 rounded-xl text-center pointer-events-none"
+                    style={{
+                      background: 'rgba(5,8,20,0.95)',
+                      border: `1px solid ${item.color}40`,
+                      boxShadow: `0 8px 24px rgba(0,0,0,0.5)`,
+                    }}>
+                    <p className="text-[10px] font-black mb-0.5" style={{ color: item.color }}>{item.label}</p>
+                    <p className="text-base font-black text-white">
+                      {isHybrid || !item.amount ? `${item.pct}%` : `${fmt(item.amount)} kr`}
+                    </p>
+                    {item.detail && (
+                      <p className="text-[9px] mt-1 leading-tight" style={{ color: 'rgba(255,255,255,0.4)' }}>{item.detail}</p>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          </React.Fragment>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Expanded fullscreen overlay ────────────────────────────────────────────
+function ExpandedProfile({ profile, onClose, onAdopt, userFinancialProfile }) {
   const [adopted, setAdopted] = useState(false);
   const isHybrid = profile.privacy_level === 'hybrid';
+  const accentColor = profile.avatar_style?.bg || '#4B7CF3';
 
-  const handleAdopt = async () => {
-    if (!userFinancialProfile?.id || !profile.finance?.income) return;
-    const income = userFinancialProfile.income || 14000;
+  const handleAdopt = async (e) => {
+    e.stopPropagation();
+    const income = userFinancialProfile?.income || 14000;
     const newLimits = {};
     for (const item of profile.finance.items) {
       if (item.label !== 'Inkomst (CSN + jobb)') {
-        const catKey = item.label.toLowerCase().replace(/\s+/g, '_');
+        const catKey = item.label.toLowerCase().replace(/[\s&()\/]/g, '_').replace(/_+/g, '_');
         newLimits[catKey] = Math.round((item.pct / 100) * income);
       }
     }
-    await base44.entities.FinancialProfile.update(userFinancialProfile.id, { budgetLimits: newLimits });
+    if (userFinancialProfile?.id) {
+      await base44.entities.FinancialProfile.update(userFinancialProfile.id, { budgetLimits: newLimits });
+    }
     setAdopted(true);
     setTimeout(() => setAdopted(false), 3000);
   };
 
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex flex-col overflow-hidden"
+      style={{ background: 'rgba(2,4,12,0.92)', backdropFilter: 'blur(16px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 40, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 320, damping: 32 }}
+        className="relative flex flex-col h-full overflow-y-auto"
+        onClick={e => e.stopPropagation()}
+        style={{
+          background: `linear-gradient(180deg, rgba(5,8,20,0.98) 0%, rgba(8,12,28,0.98) 100%)`,
+          borderTop: `1px solid ${accentColor}25`,
+        }}
+      >
+        {/* Close */}
+        <button onClick={onClose}
+          className="absolute top-5 right-5 z-20 w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}>
+          <X className="w-4 h-4 text-white" />
+        </button>
+
+        {/* Header */}
+        <div className="px-6 pt-8 pb-4 flex items-center gap-4">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0"
+            style={{ background: `${accentColor}20`, border: `2px solid ${accentColor}50`, boxShadow: `0 0 20px ${accentColor}30` }}>
+            <AvatarSVG style={profile.avatar_style} size={56} />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <h2 className="text-lg font-black text-white">@{profile.username}</h2>
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-black"
+                style={{ background: `${accentColor}20`, color: accentColor, border: `1px solid ${accentColor}35` }}>
+                {isHybrid ? '% PROCENT' : '🔓 KRONOR'}
+              </span>
+            </div>
+            <p className="text-sm font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              {profile.display_name}, {profile.age}
+            </p>
+            <div className="flex items-center gap-3 mt-1">
+              <div className="flex items-center gap-1">
+                <Briefcase className="w-3 h-3" style={{ color: accentColor }} />
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{profile.occupation}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <MapPin className="w-3 h-3" style={{ color: accentColor }} />
+                <span className="text-xs" style={{ color: 'rgba(255,255,255,0.4)' }}>{profile.city}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bio */}
+        <div className="px-6 mb-2">
+          <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.45)' }}>{profile.bio}</p>
+        </div>
+
+        {/* Trait badge */}
+        <div className="px-6 mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black"
+            style={{ background: `${accentColor}15`, color: accentColor, border: `1px solid ${accentColor}30` }}>
+            <Sparkles className="w-3 h-3" /> {profile.trait}
+          </span>
+        </div>
+
+        {/* Orbit label */}
+        <p className="px-6 text-[9px] font-black tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.18)' }}>
+          EKONOMISKT SOLSYSTEM — TRYCK PÅ EN PLANET FÖR DETALJER
+        </p>
+
+        {/* Orbit system */}
+        <div className="px-2">
+          <OrbitSystem profile={profile} accentColor={accentColor} />
+        </div>
+
+        {/* Legend */}
+        <div className="px-6 space-y-2 mt-2">
+          <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.18)' }}>
+            BUDGETFÖRDELNING
+          </p>
+          {profile.finance.items.map((item, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <span className="text-base">{item.icon}</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>{item.label}</p>
+                  <p className="text-xs font-black" style={{ color: item.color }}>
+                    {isHybrid || !item.amount ? `${item.pct}%` : `${fmt(item.amount)} kr`}
+                  </p>
+                </div>
+                <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${item.pct}%` }}
+                    transition={{ duration: 0.9, delay: i * 0.08, ease: 'easeOut' }}
+                    className="h-full rounded-full"
+                    style={{ background: item.color, boxShadow: `0 0 6px ${item.color}` }}
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Adopt button */}
+        <div className="px-6 pt-6 pb-10">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            whileHover={{ scale: 1.02 }}
+            onClick={handleAdopt}
+            className="w-full py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 transition-all"
+            style={{
+              background: adopted
+                ? 'linear-gradient(135deg, rgba(15,222,189,0.2), rgba(15,222,189,0.1))'
+                : `linear-gradient(135deg, ${accentColor}30, ${accentColor}15)`,
+              color: adopted ? '#0FDEBD' : accentColor,
+              border: `1.5px solid ${adopted ? 'rgba(15,222,189,0.5)' : `${accentColor}50`}`,
+              boxShadow: adopted
+                ? '0 0 24px rgba(15,222,189,0.2)'
+                : `0 0 24px ${accentColor}15`,
+            }}>
+            {adopted
+              ? <><Check className="w-4 h-4" /> Budget adopterad från @{profile.username}</>
+              : <><Sparkles className="w-4 h-4" /> HÄRMA DENNA BUDGET</>
+            }
+          </motion.button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ── Vinted-style grid card ─────────────────────────────────────────────────
+function MarketplaceCard({ profile, onOpen, index }) {
+  const isHybrid = profile.privacy_level === 'hybrid';
   const accentColor = profile.avatar_style?.bg || '#4B7CF3';
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      initial={{ opacity: 0, y: 16, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: index * 0.1, type: 'spring', stiffness: 280, damping: 28 }}
-      className="relative overflow-hidden rounded-3xl cursor-pointer"
+      transition={{ delay: index * 0.07, type: 'spring', stiffness: 300, damping: 28 }}
+      whileTap={{ scale: 0.97 }}
+      onClick={() => onOpen(profile)}
+      className="cursor-pointer overflow-hidden rounded-2xl flex flex-col"
       style={{
-        background: 'rgba(6,8,18,0.85)',
-        backdropFilter: 'blur(20px)',
-        border: `1px solid ${accentColor}25`,
-        boxShadow: `0 0 32px ${accentColor}12, inset 0 1px 0 rgba(255,255,255,0.06)`,
+        background: 'rgba(6,9,22,0.9)',
+        border: `1px solid ${accentColor}20`,
+        boxShadow: `0 4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04)`,
       }}
-      onClick={() => setExpanded(e => !e)}
     >
-      {/* Prismatic sweep */}
-      <motion.div
-        animate={{ x: ['-120%', '120%'] }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: index * 0.8 }}
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: `linear-gradient(105deg, transparent 30%, ${accentColor}12 50%, transparent 70%)` }}
-      />
-
-      <div className="p-4">
-        {/* Top row */}
-        <div className="flex items-center gap-3">
-          {/* Space Pod avatar */}
-          <div className="relative flex-shrink-0">
-            <motion.div
-              animate={{ y: [-2, 2, -2] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-              className="w-14 h-14 rounded-full flex items-center justify-center"
-              style={{
-                background: `radial-gradient(circle, ${accentColor}25 0%, ${accentColor}08 100%)`,
-                border: `2px solid ${accentColor}50`,
-                boxShadow: `0 0 16px ${accentColor}30`,
-              }}
-            >
-              <AvatarSVG style={profile.avatar_style} size={48} />
-            </motion.div>
-            {/* Privacy badge */}
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[8px]"
-              style={{ background: accentColor, boxShadow: `0 0 6px ${accentColor}` }}>
-              {isHybrid ? '%' : '👁️'}
-            </div>
-          </div>
-
-          {/* Info */}
-          <div className="flex-1 min-w-0">
-            <p className="font-black text-white text-sm">@{profile.username}</p>
-            <p className="text-[10px] font-semibold" style={{ color: `${accentColor}cc` }}>
-              {profile.display_name}, {profile.age} — {profile.occupation}
-            </p>
-            <p className="text-[10px] mt-0.5 truncate" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              {profile.bio}
-            </p>
-          </div>
-
-          {/* Orbit mini-chart */}
-          <OrbitRing items={profile.finance.items} privacyLevel={profile.privacy_level} size={56} />
+      {/* Hero avatar area */}
+      <div className="relative flex items-center justify-center py-6"
+        style={{ background: `radial-gradient(ellipse at 50% 80%, ${accentColor}18 0%, transparent 70%)` }}>
+        {/* Privacy badge top-right */}
+        <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[8px] font-black"
+          style={{
+            background: isHybrid ? 'rgba(167,139,250,0.15)' : 'rgba(15,222,189,0.15)',
+            color: isHybrid ? '#A78BFA' : '#0FDEBD',
+            border: `1px solid ${isHybrid ? 'rgba(167,139,250,0.3)' : 'rgba(15,222,189,0.3)'}`,
+          }}>
+          {isHybrid ? '% PROCENT' : '🔓 KRONOR'}
         </div>
 
-        {/* Tags */}
-        <div className="flex gap-1.5 flex-wrap mt-3">
-          {profile.tags.map(tag => (
-            <span key={tag} className="px-2 py-0.5 rounded-full text-[9px] font-black"
-              style={{ background: `${accentColor}15`, color: `${accentColor}cc`, border: `1px solid ${accentColor}25` }}>
-              {tag}
-            </span>
-          ))}
-          <span className="px-2 py-0.5 rounded-full text-[9px] font-black"
-            style={{ background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.3)', border: '1px solid rgba(255,255,255,0.08)' }}>
-            {isHybrid ? '% Visning' : '🔓 Full Transparens'}
+        {/* Floating avatar */}
+        <motion.div
+          animate={{ y: [-3, 3, -3] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: index * 0.5 }}
+          className="w-16 h-16 rounded-full flex items-center justify-center"
+          style={{
+            background: `${accentColor}20`,
+            border: `2px solid ${accentColor}45`,
+            boxShadow: `0 0 20px ${accentColor}30`,
+          }}>
+          <AvatarSVG style={profile.avatar_style} size={54} />
+        </motion.div>
+
+        {/* Mini donut bottom-left */}
+        <div className="absolute bottom-1 left-1">
+          <MiniDonut items={profile.finance.items} size={44} />
+        </div>
+      </div>
+
+      {/* Info */}
+      <div className="px-3 pt-2 pb-3 flex-1 flex flex-col gap-1">
+        <p className="text-xs font-black text-white">@{profile.username}</p>
+        <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          {profile.display_name}, {profile.age} · {profile.city}
+        </p>
+        <p className="text-[9px] font-semibold truncate" style={{ color: 'rgba(255,255,255,0.25)' }}>
+          {profile.occupation}
+        </p>
+
+        {/* Trait chip */}
+        <div className="mt-1">
+          <span className="px-1.5 py-0.5 rounded-full text-[8px] font-black"
+            style={{ background: `${accentColor}15`, color: `${accentColor}cc`, border: `1px solid ${accentColor}25` }}>
+            {profile.trait}
           </span>
         </div>
 
-        {/* Expanded detail */}
-        <AnimatePresence>
-          {expanded && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="mt-4 pt-4 space-y-2"
-                style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                {profile.finance.items.map((item, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <span className="text-sm">{item.icon}</span>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-[10px] font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>{item.label}</p>
-                        <p className="text-[10px] font-black" style={{ color: item.color }}>
-                          {isHybrid || !item.amount
-                            ? `${item.pct}%`
-                            : `${fmt(item.amount)} kr`}
-                        </p>
-                      </div>
-                      <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${item.pct}%` }}
-                          transition={{ duration: 0.8, delay: i * 0.08 }}
-                          className="h-full rounded-full"
-                          style={{ background: item.color, boxShadow: `0 0 4px ${item.color}` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-                {/* Adopt button */}
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={(e) => { e.stopPropagation(); handleAdopt(); }}
-                  className="w-full mt-3 py-2.5 rounded-2xl text-xs font-black flex items-center justify-center gap-2"
-                  style={{
-                    background: adopted ? 'rgba(15,222,189,0.15)' : `${accentColor}20`,
-                    color: adopted ? '#0FDEBD' : accentColor,
-                    border: `1px solid ${adopted ? 'rgba(15,222,189,0.35)' : `${accentColor}35`}`,
-                  }}
-                >
-                  {adopted
-                    ? <><Check className="w-3.5 h-3.5" /> Budget kopierad!</>
-                    : <><Sparkles className="w-3.5 h-3.5" /> Härma denna budget</>
-                  }
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* "Price tag" = main stat */}
+        <div className="mt-auto pt-2" style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <p className="text-xs font-black" style={{ color: accentColor }}>{profile.main_stat}</p>
+        </div>
       </div>
     </motion.div>
   );
@@ -256,12 +456,12 @@ function GalaxyProfileCard({ profile, onAdopt, userFinancialProfile, index }) {
 export default function GalaxyExplorer({ userFinancialProfile }) {
   const [searchText, setSearchText] = useState('');
   const [activeTags, setActiveTags] = useState([]);
+  const [selectedProfile, setSelectedProfile] = useState(null);
 
   const { data: realProfiles = [] } = useQuery({
     queryKey: ['galaxyProfiles'],
     queryFn: async () => {
       const all = await base44.entities.SocialProfile.list();
-      // Only show profiles that are NOT in ghost mode
       return all.filter(p => p.privacy_level !== 'ghost' && p.username);
     }
   });
@@ -270,7 +470,6 @@ export default function GalaxyExplorer({ userFinancialProfile }) {
     setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   };
 
-  // Merge demo + real profiles
   const allProfiles = useMemo(() => {
     const real = realProfiles.map(p => ({
       id: p.id,
@@ -278,10 +477,14 @@ export default function GalaxyExplorer({ userFinancialProfile }) {
       display_name: p.username,
       age: p.age,
       occupation: p.occupation || '',
+      city: '',
       bio: p.bio || '',
+      trait: p.occupation || 'Ekonom',
       tags: [p.occupation || ''].filter(Boolean),
       privacy_level: p.privacy_level || 'hybrid',
       avatar_style: p.avatar_style || {},
+      main_stat: '',
+      savings_rate: 0,
       finance: { items: [] },
     }));
     return [...DEMO_PROFILES, ...real];
@@ -298,7 +501,7 @@ export default function GalaxyExplorer({ userFinancialProfile }) {
 
   return (
     <div className="space-y-4">
-      {/* Search input */}
+      {/* Search */}
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'rgba(255,255,255,0.25)' }} />
         <input
@@ -306,43 +509,43 @@ export default function GalaxyExplorer({ userFinancialProfile }) {
           onChange={e => setSearchText(e.target.value)}
           placeholder="Sök efter yrke, stad, livsstil..."
           className="w-full rounded-2xl pl-10 pr-4 py-3 text-sm font-semibold outline-none"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            border: '1px solid rgba(255,255,255,0.1)',
-            color: '#fff',
-          }}
+          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff' }}
         />
       </div>
 
-      {/* Tag filters */}
+      {/* Neon filter chips */}
       <div className="flex gap-2 flex-wrap">
-        {ALL_TAGS.map(tag => (
-          <motion.button key={tag} whileTap={{ scale: 0.9 }}
-            onClick={() => toggleTag(tag)}
-            className="px-3 py-1 rounded-full text-[10px] font-black transition-all"
-            style={{
-              background: activeTags.includes(tag) ? 'rgba(15,222,189,0.15)' : 'rgba(255,255,255,0.04)',
-              color: activeTags.includes(tag) ? '#0FDEBD' : 'rgba(255,255,255,0.35)',
-              border: activeTags.includes(tag) ? '1px solid rgba(15,222,189,0.35)' : '1px solid rgba(255,255,255,0.07)',
-            }}>
-            {tag}
-          </motion.button>
-        ))}
+        {ALL_TAGS.map(tag => {
+          const active = activeTags.includes(tag);
+          return (
+            <motion.button key={tag} whileTap={{ scale: 0.88 }}
+              onClick={() => toggleTag(tag)}
+              className="px-3 py-1 rounded-full text-[10px] font-black transition-all"
+              style={{
+                background: active ? 'rgba(15,222,189,0.12)' : 'rgba(255,255,255,0.04)',
+                color: active ? '#0FDEBD' : 'rgba(255,255,255,0.3)',
+                border: active ? '1px solid rgba(15,222,189,0.4)' : '1px solid rgba(255,255,255,0.07)',
+                boxShadow: active ? '0 0 10px rgba(15,222,189,0.2)' : 'none',
+              }}>
+              {tag}
+            </motion.button>
+          );
+        })}
       </div>
 
       {/* Count */}
-      <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.22)' }}>
-        {filtered.length} STJÄRNSYSTEM FUNNA
+      <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.18)' }}>
+        {filtered.length} EKONOMISKA PROFILER HITTADE
       </p>
 
-      {/* Profile cards */}
-      <div className="space-y-3">
+      {/* Vinted 2-column grid */}
+      <div className="grid grid-cols-2 gap-3">
         {filtered.map((profile, i) => (
-          <GalaxyProfileCard
+          <MarketplaceCard
             key={profile.id}
             profile={profile}
             index={i}
-            userFinancialProfile={userFinancialProfile}
+            onOpen={setSelectedProfile}
           />
         ))}
       </div>
@@ -354,6 +557,17 @@ export default function GalaxyExplorer({ userFinancialProfile }) {
           <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.15)' }}>Prova att ändra filter</p>
         </div>
       )}
+
+      {/* Expanded fullscreen overlay */}
+      <AnimatePresence>
+        {selectedProfile && (
+          <ExpandedProfile
+            profile={selectedProfile}
+            onClose={() => setSelectedProfile(null)}
+            userFinancialProfile={userFinancialProfile}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
