@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Settings, ChevronUp, FileUp, Zap, PiggyBank, TrendingUp, Sparkles } from 'lucide-react';
+import { Settings, ChevronUp, Zap, PiggyBank, TrendingUp } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import OrbitCore from './OrbitCore';
 import LiquidGoal from './LiquidGoal';
 import DataStrip from './DataStrip';
 import AIStoryBar from './AIStoryBar';
 import SparklineWidget from './SparklineWidget';
+import IncomeStar from './IncomeStar';
+import CrystalArtifact from './CrystalArtifact';
+import ForceFieldBudget from './ForceFieldBudget';
+import CommandCenter from './CommandCenter';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
@@ -125,97 +129,20 @@ export default function FutureDashboard({
         {/* Data Strip — Marginal & Skulder scanner */}
         <DataStrip profile={profile} />
 
-        {/* Row: Sparkline + Income star */}
+        {/* Row: Sparkline + Income Star */}
         <div className="grid grid-cols-2 gap-3">
           <SparklineWidget transactions={transactions} />
-
-          {/* Income star tile */}
-          <motion.div
-            whileTap={{ scale: 0.97 }}
-            className="rounded-3xl p-4 flex flex-col justify-between relative overflow-hidden"
-            style={{
-              background: 'rgba(10,12,22,0.9)',
-              border: '1px solid rgba(246,173,85,0.25)',
-              height: 110,
-            }}
-          >
-            <div className="absolute top-2 right-2 text-base opacity-60">⭐</div>
-            <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>INKOMST</p>
-            <div>
-              <p className="text-lg font-black leading-tight" style={{ color: '#FED7AA' }}>{fmt(profile.income)}</p>
-              <p className="text-[10px]" style={{ color: 'rgba(246,173,85,0.6)' }}>kr / månad</p>
-            </div>
-            <div className="w-2 h-2 rounded-full" style={{ background: '#F6AD55', boxShadow: '0 0 8px rgba(246,173,85,0.8)' }} />
-          </motion.div>
+          <IncomeStar income={profile.income} />
         </div>
 
-        {/* Row: Superkrafter crystal + Budget */}
+        {/* Row: Crystal Artifact + Force Field Budget */}
         <div className="grid grid-cols-2 gap-3">
-          <Link to={createPageUrl('ProTools')}>
-            <motion.div
-              whileTap={{ scale: 0.97 }}
-              className="rounded-3xl p-4 flex flex-col justify-between relative overflow-hidden"
-              style={{
-                height: 96,
-                background: 'linear-gradient(135deg, rgba(45,31,110,0.9) 0%, rgba(26,47,94,0.9) 100%)',
-                border: '1px solid rgba(139,92,246,0.35)',
-              }}
-            >
-              {/* Crystal glow */}
-              <motion.div
-                animate={{ opacity: [0.4, 0.9, 0.4], scale: [1, 1.15, 1] }}
-                transition={{ duration: 2.5, repeat: Infinity }}
-                className="absolute top-3 right-3 text-xl"
-              >
-                💎
-              </motion.div>
-              <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(180,168,255,0.5)' }}>SUPERKRAFTER</p>
-              <p className="text-sm font-black" style={{ color: '#e0d8ff' }}>Pro Verktyg</p>
-            </motion.div>
-          </Link>
-
-          <Link to="/Budget">
-            <motion.div
-              whileTap={{ scale: 0.97 }}
-              className="rounded-3xl p-4 flex flex-col justify-between"
-              style={{
-                height: 96,
-                background: 'rgba(10,12,22,0.9)',
-                border: '1px solid rgba(246,173,85,0.22)',
-              }}
-            >
-              <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(246,173,85,0.55)' }}>BUDGET</p>
-              <div>
-                <p className="text-sm font-black" style={{ color: '#FED7AA' }}>Budgetgränser</p>
-                <p className="text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.3)' }}>Hantera kategorier</p>
-              </div>
-            </motion.div>
-          </Link>
+          <CrystalArtifact />
+          <ForceFieldBudget profile={profile} />
         </div>
 
-        {/* Row: CSV Import + Magic Entry */}
-        <div className="grid grid-cols-2 gap-3">
-          <Link to="/Import">
-            <motion.div whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-3 px-4 py-3 rounded-2xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <FileUp className="w-4 h-4" style={{ color: '#0FDEBD' }} />
-              <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.6)' }}>Importera CSV</span>
-            </motion.div>
-          </Link>
-
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleMagicEntry}
-            className="flex items-center gap-3 px-4 py-3 rounded-2xl w-full text-left relative overflow-hidden"
-            style={{ background: 'rgba(167,139,250,0.08)', border: '1px solid rgba(167,139,250,0.25)' }}
-          >
-            <motion.div animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 3, repeat: Infinity, delay: 2 }}>
-              <Sparkles className="w-4 h-4" style={{ color: '#A78BFA' }} />
-            </motion.div>
-            <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.7)' }}>Magisk inmatning</span>
-          </motion.button>
-        </div>
+        {/* Command Center — Input Portal */}
+        <CommandCenter onMagicEntry={handleMagicEntry} />
       </div>
 
       {/* Pull-up Drawer handle */}
