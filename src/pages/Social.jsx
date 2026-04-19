@@ -8,11 +8,13 @@ import { createPageUrl } from '@/utils';
 import AvatarBuilder, { AvatarSVG } from '@/components/social/AvatarBuilder';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
+import GalaxyExplorer from '@/components/social/GalaxyExplorer';
 import { Input } from '@/components/ui/input';
 
 const TABS = [
   { id: 'profile', label: 'Profil',      Icon: User },
   { id: 'friends', label: 'Vänner',      Icon: Users },
+  { id: 'galaxy',  label: 'Galaxy',      Icon: Rocket },
   { id: 'privacy', label: 'Integritet',  Icon: Shield },
 ];
 
@@ -100,6 +102,14 @@ export default function Social() {
     setForm(f => ({ ...f, friends: updatedFriends }));
     saveMutation.mutate({ ...form, friends: updatedFriends });
   };
+
+  const { data: financialProfile } = useQuery({
+    queryKey: ['financialProfile'],
+    queryFn: async () => {
+      const profiles = await base44.entities.FinancialProfile.list();
+      return profiles[0] || null;
+    }
+  });
 
   const { data: friendProfiles = [] } = useQuery({
     queryKey: ['friendProfiles', form.friends],
@@ -334,6 +344,33 @@ export default function Social() {
                     ))}
                   </div>
                 )}
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── TAB: Galaxy Explorer ── */}
+          {activeTab === 'galaxy' && (
+            <motion.div key="galaxy"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="rounded-3xl p-4 relative overflow-hidden"
+              style={{ background: 'linear-gradient(160deg, #050a15 0%, #090e1e 100%)', border: '1px solid rgba(167,139,250,0.15)' }}>
+              {/* Stars */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl">
+                {[...Array(16)].map((_, i) => (
+                  <motion.div key={i} className="absolute rounded-full"
+                    style={{ width: 1, height: 1, top: `${(i * 43 + 7) % 100}%`, left: `${(i * 67 + 13) % 100}%`, background: '#fff', opacity: 0.15 }}
+                    animate={{ opacity: [0.08, 0.3, 0.08] }}
+                    transition={{ duration: 2 + (i % 3), repeat: Infinity, delay: (i * 0.3) % 4 }}
+                  />
+                ))}
+              </div>
+              <div className="relative z-10">
+                <p className="text-[9px] font-black tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.22)' }}>
+                  GALAXY EXPLORER — HITTA EKONOMISKA TVILLINGAR
+                </p>
+                <GalaxyExplorer userFinancialProfile={financialProfile} />
               </div>
             </motion.div>
           )}
