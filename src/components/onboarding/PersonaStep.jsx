@@ -8,7 +8,6 @@ const PERSONAS = [
   {
     id: 'basic',
     badge: 'BUDGET',
-    emoji: '🧘',
     title: 'Budget',
     subtitle: 'Sluta oroa dig. Ha koll.',
     description: 'Perfekt om du vill ha ett enkelt verktyg som håller koll på dina pengar utan krångel.',
@@ -27,7 +26,6 @@ const PERSONAS = [
   {
     id: 'smart',
     badge: 'SMART',
-    emoji: '🎯',
     title: 'Smart',
     subtitle: 'Optimera. Hitta gratispengar.',
     description: 'För dig som vill förbättra din ekonomi och låta AI:n hitta möjligheter du inte sett.',
@@ -47,7 +45,6 @@ const PERSONAS = [
   {
     id: 'pro',
     badge: 'PRO',
-    emoji: '🏛️',
     title: 'Pro',
     subtitle: 'Total kontroll. CFO-nivå.',
     description: 'En hel ledningsgrupp av AI-experter i fickan. För den som vill ha alla verktyg.',
@@ -97,7 +94,7 @@ export default function PersonaStep({ data, onChange, onNext, onBack }) {
               }}
             >
               <div className="flex items-start gap-4">
-                <div className="text-3xl flex-shrink-0 mt-0.5">{p.emoji}</div>
+                <div className="w-8 h-8 rounded-xl flex-shrink-0 mt-0.5" style={{ background: p.bg, border: `1px solid ${p.border}` }} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-black px-2 py-0.5 rounded-full"

@@ -1,34 +1,35 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
+import { Star, Flame, Target, Shield, Trophy } from 'lucide-react';
 
 const BADGE_CONFIGS = {
   first_thousand: {
-    icon: '💰',
+    Icon: Star,
     title: 'Första tusenlappen!',
     description: 'Du sparade första 1000 kr',
     color: 'from-yellow-500 to-amber-600'
   },
   debt_destroyer: {
-    icon: '🔥',
+    Icon: Flame,
     title: 'Skuld-Slayer!',
     description: 'Du betalade av ett helt lån',
     color: 'from-red-500 to-pink-600'
   },
   streak_master: {
-    icon: '🔥',
+    Icon: Flame,
     title: 'Streak Master!',
     description: '7 dagars inloggningsstreak',
     color: 'from-orange-500 to-red-600'
   },
   expense_tracker: {
-    icon: '🎯',
+    Icon: Target,
     title: 'Spenderbjörn!',
     description: 'Du registrerade 20 utgifter',
     color: 'from-cyan-500 to-blue-600'
   },
   buffer_builder: {
-    icon: '🏰',
+    Icon: Shield,
     title: 'Buffer Builder!',
     description: 'Din buffert är 3+ månaders lön',
     color: 'from-purple-500 to-indigo-600'
@@ -48,7 +49,7 @@ export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
     }
   }, [isVisible, badgeId]);
 
-  const badge = BADGE_CONFIGS[badgeId];
+  const badge = badgeId ? BADGE_CONFIGS[badgeId] : null;
 
   if (!badge || !isVisible) return null;
 
@@ -86,7 +87,7 @@ export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
               }}
               className={`w-32 h-32 mx-auto rounded-full bg-gradient-to-br ${badge.color} shadow-2xl flex items-center justify-center mb-6`}
             >
-              <span className="text-6xl">{badge.icon}</span>
+              <badge.Icon className="w-14 h-14 text-white" />
             </motion.div>
 
             {/* Text */}

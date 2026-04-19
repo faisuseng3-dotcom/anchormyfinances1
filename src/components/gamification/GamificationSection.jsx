@@ -7,7 +7,7 @@ const CHALLENGES = [
     id: 'no_restaurant_3d',
     title: 'Ingen restaurang 3 dagar',
     description: 'Ät hemma 3 dagar i rad',
-    icon: '🍳',
+    icon: null,
     points: 50,
     category: 'entertainment',
     targetDays: 3,
@@ -16,7 +16,7 @@ const CHALLENGES = [
     id: 'save_500_week',
     title: 'Spara 500 kr denna vecka',
     description: 'Registrera en insättning på minst 500 kr',
-    icon: '🐷',
+    icon: null,
     points: 80,
     category: 'savings',
     targetAmount: 500,
@@ -25,7 +25,7 @@ const CHALLENGES = [
     id: 'no_shopping_week',
     title: 'Shoppingpaus 1 vecka',
     description: 'Inga köp i kategorin Shopping denna vecka',
-    icon: '🛒',
+    icon: null,
     points: 60,
     category: 'shopping',
     targetDays: 7,
@@ -95,7 +95,7 @@ function ChallengeRow({ challenge, transactions }) {
   return (
     <div className="px-5 py-4 border-b last:border-0" style={{ borderColor: 'rgba(0,0,0,0.05)' }}>
       <div className="flex items-start gap-3">
-        <span className="text-2xl mt-0.5">{challenge.icon}</span>
+        <div className="w-2 h-2 rounded-full flex-shrink-0 mt-2" style={{ background: done ? '#0D7377' : '#4B7CF3' }} />
         <div className="flex-1">
           <div className="flex items-center justify-between mb-0.5">
             <p className="text-sm font-bold" style={{ color: done ? '#0D7377' : 'var(--color-text-primary)' }}>{challenge.title}</p>
@@ -112,7 +112,7 @@ function ChallengeRow({ challenge, transactions }) {
             </div>
             <p className="text-xs font-semibold flex-shrink-0" style={{ color: 'var(--color-text-muted)' }}>{progress.label}</p>
           </div>
-          {done && <p className="text-xs font-bold mt-1" style={{ color: '#0D7377' }}>✅ Utmaning klar!</p>}
+          {done && <p className="text-xs font-bold mt-1" style={{ color: '#0D7377' }}>Utmaning klar!</p>}
         </div>
       </div>
     </div>
@@ -124,11 +124,7 @@ export default function GamificationSection({ profile, transactions = [] }) {
   const { level, progress, xpToNext } = getLevelInfo(xp);
   const badges = profile?.unlockedBadges || [];
 
-  const BADGE_MAP = {
-    first_login: '🎉', budget_beginner: '📊', streak_3: '🔥',
-    first_thousand: '💰', buffer_builder: '🏰', expense_tracker: '🎯',
-    debt_destroyer: '⚔️', streak_master: '🏅',
-  };
+  const BADGE_MAP = {};
 
   return (
     <div className="space-y-4">
@@ -158,10 +154,10 @@ export default function GamificationSection({ profile, transactions = [] }) {
           <div className="flex flex-wrap gap-3">
             {badges.map(b => (
               <div key={b} className="flex flex-col items-center gap-1">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl"
-                  style={{ background: 'rgba(13,115,119,0.1)', border: '1px solid rgba(13,115,119,0.2)' }}>
-                  {BADGE_MAP[b] || '🏅'}
-                </div>
+               <div className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                 style={{ background: 'rgba(13,115,119,0.1)', border: '1px solid rgba(13,115,119,0.2)' }}>
+                 <Star className="w-5 h-5" style={{ color: '#0D7377' }} />
+               </div>
                 <p className="text-xs text-center max-w-12 leading-tight" style={{ color: 'var(--color-text-muted)' }}>{b.replace(/_/g, ' ')}</p>
               </div>
             ))}
@@ -230,10 +226,10 @@ function SelfLeaderboard({ transactions, profile }) {
       </div>
       <p className="text-sm font-semibold" style={{ color: better ? '#0D7377' : 'var(--color-danger)' }}>
         {better
-          ? `🎉 Bra jobbat! Du spenderar ${diff.toLocaleString('sv-SE')} kr mindre än förra månaden!`
+          ? `Bra jobbat! Du spenderar ${diff.toLocaleString('sv-SE')} kr mindre än förra månaden.`
           : diff < 0
-            ? `⚠️ Du spenderar ${Math.abs(diff).toLocaleString('sv-SE')} kr mer än förra månaden.`
-            : '↔️ Lika mycket som förra månaden.'}
+            ? `Du spenderar ${Math.abs(diff).toLocaleString('sv-SE')} kr mer än förra månaden.`
+            : 'Lika mycket som förra månaden.'}
       </p>
     </div>
   );

@@ -299,7 +299,7 @@ export default function TransactionHistory() {
       {/* Empty state */}
       {!isLoading && transactions.length === 0 && (
         <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-          <p className="text-5xl mb-4">📋</p>
+          <FileUp className="w-12 h-12 mb-4" style={{ color: 'var(--color-text-muted)' }} />
           <p className="font-bold text-xl mb-1" style={{ color: 'var(--color-text-primary)' }}>Inga transaktioner än</p>
           <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Importera en CSV-fil från din bank eller lägg till ett köp manuellt.</p>
           <div className="flex flex-col gap-3 w-full max-w-xs">
@@ -319,7 +319,7 @@ export default function TransactionHistory() {
       {/* No search results */}
       {!isLoading && transactions.length > 0 && filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <p className="text-4xl mb-3">🔍</p>
+          <Search className="w-10 h-10 mb-3" style={{ color: 'var(--color-text-muted)' }} />
           <p className="font-bold" style={{ color: 'var(--color-text-primary)' }}>Inga resultat</p>
           <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Prova ett annat sökord eller filter.</p>
         </div>

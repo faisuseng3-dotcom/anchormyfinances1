@@ -64,7 +64,7 @@ export default function Onboarding() {
       .then(res => {
         if (res?.data?.points > 0) {
           import('sonner').then(({ toast }) => {
-            toast.success(`+${res.data.points} poäng! Välkommen till Anchor Challenge! 🏆`, { duration: 5000 });
+            toast.success(`+${res.data.points} poäng! Välkommen till Anchor Challenge!`, { duration: 5000 });
           });
         }
       })

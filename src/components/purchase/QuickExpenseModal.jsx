@@ -113,7 +113,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
     base44.functions.invoke('awardPoints', { event_type: 'expense_register' })
       .then(r => {
         if (r?.data?.points > 0) {
-          toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
+          toast.success(`+${r.data.points} poäng till tävlingen!`, {
             description: 'Köp registrerat',
             duration: 3000,
             style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
@@ -212,7 +212,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                   className="p-2 rounded-lg text-xs text-emerald-300 flex items-center gap-2"
                   style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)' }}
                 >
-                  💡 Förslag: {categories.find(c => c.id === suggestedCategory)?.label}
+                  Förslag: {categories.find(c => c.id === suggestedCategory)?.label}
                   <button
                     onClick={() => {
                       setCategory(suggestedCategory);
@@ -249,7 +249,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                   className="p-3 rounded-xl text-xs leading-relaxed"
                   style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.3)' }}
                 >
-                  ⚠️ <strong className="text-amber-300">Kommande räkningar:</strong>
+                  <strong className="text-amber-300">Kommande räkningar:</strong>
                   <span className="text-amber-400"> Du har {safeToSpend.toLocaleString('sv-SE')} kr kvar att spendera säkert denna månad. Det här köpet överstiger den gränsen.</span>
                 </motion.div>
               )}
@@ -281,7 +281,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2 }}
-                className="text-3xl"
+                className="text-3xl text-emerald-600"
               >
                 ✓
               </motion.div>

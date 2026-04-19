@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const COMPETITION_START = new Date('2026-03-24T00:00:00+01:00');
 const COMPETITION_END   = new Date('2026-03-31T23:59:59+02:00');
 
-const MEDAL = ['🥇', '🥈', '🥉'];
+const MEDAL = ['#1', '#2', '#3'];
 const MEDAL_COLORS = ['#eab308', '#94a3b8', '#b45309'];
 
 const EVENT_LABELS = {
@@ -118,8 +118,8 @@ export default function AdminScoreboard() {
 
   const statusConfig = {
     upcoming: { label: 'Startar 24 mars', color: 'text-yellow-400', bg: 'rgba(234,179,8,0.12)', border: 'rgba(234,179,8,0.3)' },
-    active:   { label: '🟢 LIVE – 24/3 → 31/3', color: 'text-emerald-400', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.3)' },
-    ended:    { label: '🏁 Avslutad 31/3', color: 'text-slate-400', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.1)' },
+    active:   { label: 'LIVE – 24/3 → 31/3', color: 'text-emerald-400', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.3)' },
+    ended:    { label: 'Avslutad 31/3', color: 'text-slate-400', bg: 'rgba(255,255,255,0.04)', border: 'rgba(255,255,255,0.1)' },
   }[status];
 
   return (
@@ -217,7 +217,7 @@ export default function AdminScoreboard() {
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-xl w-8 text-center flex-shrink-0">
-                        {i < 3 ? MEDAL[i] : <span className="text-slate-500 text-sm font-bold">#{i + 1}</span>}
+                        <span className="text-slate-400 text-sm font-bold">{i < 3 ? MEDAL[i] : `#${i + 1}`}</span>
                       </span>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-white truncate">{entry.user_name || 'Okänd'}</p>

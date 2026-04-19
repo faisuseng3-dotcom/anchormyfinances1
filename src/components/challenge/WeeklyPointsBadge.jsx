@@ -51,7 +51,7 @@ export default function WeeklyPointsBadge() {
         title="Anchor Challenge startar 24 mars!"
       >
         <Trophy className="w-3.5 h-3.5 text-yellow-400" />
-        <span className="text-xs font-bold text-yellow-300">Startar 24/3 🏆</span>
+        <span className="text-xs font-bold text-yellow-300">Startar 24/3</span>
       </motion.div>
     );
   }
@@ -66,7 +66,7 @@ export default function WeeklyPointsBadge() {
         title="Tävlingen är avslutad"
       >
         <Trophy className="w-3.5 h-3.5 text-indigo-400" />
-        <span className="text-xs font-bold text-indigo-300">{points.toLocaleString('sv-SE')} p 🏁</span>
+        <span className="text-xs font-bold text-indigo-300">{points.toLocaleString('sv-SE')} p</span>
       </motion.div>
     );
   }
