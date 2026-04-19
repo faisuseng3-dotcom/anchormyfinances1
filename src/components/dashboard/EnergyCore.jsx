@@ -76,9 +76,7 @@ export default function EnergyCore({ profile }) {
             className="text-3xl font-black tracking-tight"
             style={{ color: '#ffffff', lineHeight: 1 }}
           >
-            {safeToSpend >= 1000
-              ? `${Math.round(safeToSpend / 1000).toLocaleString('sv-SE')}k`
-              : safeToSpend.toLocaleString('sv-SE')}
+            {Math.round(safeToSpend).toLocaleString('sv-SE')}
           </motion.p>
           <p className="text-[10px] font-semibold tracking-widest mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
             KR KVAR
@@ -102,7 +100,7 @@ export default function EnergyCore({ profile }) {
           <div key={s.label} className="text-center">
             <p className="text-[9px] font-bold tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>{s.label}</p>
             <p className="text-xs font-black mt-0.5" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              {s.value >= 1000 ? `${Math.round(s.value / 1000)}k` : s.value?.toLocaleString('sv-SE')}
+              {Math.round(s.value || 0).toLocaleString('sv-SE')}
             </p>
           </div>
         ))}

@@ -21,7 +21,7 @@ export default function QuickStatOrb({ label, value, sub, color = '#0FDEBD', hre
     >
       <p className="text-[9px] font-black tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>{label}</p>
       <div>
-        <p className="text-xl font-black leading-none" style={{ color: '#fff' }}>{value}</p>
+        <p className="text-base font-black leading-none" style={{ color: '#fff' }}>{value}</p>
         {sub && <p className="text-[10px] mt-1" style={{ color: `${color}aa` }}>{sub}</p>}
       </div>
       {/* Accent dot */}
