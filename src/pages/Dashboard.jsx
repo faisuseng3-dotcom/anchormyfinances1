@@ -203,7 +203,7 @@ export default function Dashboard() {
             className="flex items-center gap-2 px-4 py-3 rounded-2xl"
             style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
               <FileUp className="w-4 h-4" style={{ color: '#0D7377' }} />
-              <span className="text-[hsl(var(--background))] text-xs font-bold" style={{ color: '#1A2332' }}>Importera CSV</span>
+              <span className="text-xs font-bold" style={{ color: '#ffffff' }}>Importera CSV</span>
             </motion.div>
           </Link>
           <motion.button whileTap={{ scale: 0.97 }} onClick={() => setShowMagicEntry(true)}
