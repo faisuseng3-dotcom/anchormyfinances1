@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy, Rocket } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import AvatarBuilder, { AvatarSVG } from '@/components/social/AvatarBuilder';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
@@ -18,6 +18,7 @@ const TABS = [
 
 export default function Social() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('profile');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
@@ -143,6 +144,22 @@ export default function Social() {
           className="px-5 py-2 rounded-full text-sm font-semibold text-white disabled:opacity-60"
           style={{ background: 'var(--color-accent)' }}>
           {saving ? 'Sparar...' : 'Spara'}
+        </button>
+      </div>
+
+      {/* Squads CTA */}
+      <div className="px-5 mb-4">
+        <button onClick={() => navigate('/Squads')}
+          className="w-full flex items-center justify-between p-4 rounded-2xl"
+          style={{ background: 'linear-gradient(135deg, rgba(75,124,243,0.12), rgba(167,139,250,0.12))', border: '1px solid rgba(75,124,243,0.25)' }}>
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🚀</span>
+            <div className="text-left">
+              <p className="text-sm font-black" style={{ color: 'var(--color-text-primary)' }}>Savings Squads</p>
+              <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Spara ihop med vänner mot gemensamma mål</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
         </button>
       </div>
 
