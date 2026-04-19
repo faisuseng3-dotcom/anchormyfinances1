@@ -55,6 +55,55 @@ const AnchorIcons = {
       <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke={color} strokeWidth="1.5"/>
     </svg>
   ),
+  // ── Budget Category Icons ────────────────────────────────────────────────
+  MoneyStack: ({ color = '#0FDEBD', size = 18, glow = false }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"
+      style={glow ? { filter: `drop-shadow(0 0 5px ${color})` } : {}}>
+      <ellipse cx="12" cy="6" rx="8" ry="3" stroke={color} strokeWidth="1.5"/>
+      <path d="M4 6v4c0 1.66 3.58 3 8 3s8-1.34 8-3V6" stroke={color} strokeWidth="1.5"/>
+      <path d="M4 10v4c0 1.66 3.58 3 8 3s8-1.34 8-3v-4" stroke={color} strokeWidth="1.5"/>
+    </svg>
+  ),
+  Residence: ({ color = '#FF4466', size = 18, glow = false }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"
+      style={glow ? { filter: `drop-shadow(0 0 5px ${color})` } : {}}>
+      <path d="M3 11L12 3l9 8" stroke={color} strokeWidth="1.5"/>
+      <path d="M5 9.5V20h4v-5h6v5h4V9.5" stroke={color} strokeWidth="1.5"/>
+    </svg>
+  ),
+  Basket: ({ color = '#F6AD55', size = 18, glow = false }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"
+      style={glow ? { filter: `drop-shadow(0 0 5px ${color})` } : {}}>
+      <path d="M6 2L3 7h18l-3-5" stroke={color} strokeWidth="1.5"/>
+      <path d="M3 7l1.5 9A2 2 0 0 0 6.5 18h11a2 2 0 0 0 1.97-2L21 7" stroke={color} strokeWidth="1.5"/>
+      <path d="M9 11v4M12 11v4M15 11v4" stroke={color} strokeWidth="1.5"/>
+    </svg>
+  ),
+  Departure: ({ color = '#A78BFA', size = 18, glow = false }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"
+      style={glow ? { filter: `drop-shadow(0 0 5px ${color})` } : {}}>
+      <path d="M21 3L3 10.5l7.5 3L14 21l7-18z" stroke={color} strokeWidth="1.5"/>
+      <path d="M10.5 13.5L14 21" stroke={color} strokeWidth="1.5"/>
+    </svg>
+  ),
+  Package: ({ color = '#4B7CF3', size = 18, glow = false }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"
+      style={glow ? { filter: `drop-shadow(0 0 5px ${color})` } : {}}>
+      <path d="M21 8L12 3 3 8v8l9 5 9-5V8z" stroke={color} strokeWidth="1.5"/>
+      <path d="M3 8l9 5 9-5" stroke={color} strokeWidth="1.5"/>
+      <path d="M12 13v8" stroke={color} strokeWidth="1.5"/>
+      <path d="M7.5 5.5L16.5 10.5" stroke={color} strokeWidth="1.3" strokeDasharray="1 2"/>
+    </svg>
+  ),
+};
+
+// Maps legacy emoji keys → Anchor SVG icons
+const BUDGET_ICON_MAP = {
+  '💰': AnchorIcons.MoneyStack,
+  '🏠': AnchorIcons.Residence,
+  '🛒': AnchorIcons.Basket,
+  '✈️': AnchorIcons.Departure,
+  '📦': AnchorIcons.Package,
 };
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
@@ -461,10 +510,17 @@ Profil: ${profile.display_name || profile.username}, ${profile.age} år, ${profi
 
         {/* ── Budget bars ── */}
         <div className="px-6 space-y-2 mb-5">
-          <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.15)' }}>BUDGETFÖRDELNING</p>
-          {profile.finance.items.map((item, i) => (
+          <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.15)' }}>DETALJERAD BUDGET</p>
+          {profile.finance.items.map((item, i) => {
+            const BudgetIcon = BUDGET_ICON_MAP[item.icon] || null;
+            return (
             <div key={i} className="flex items-center gap-3">
-              <span className="text-base">{item.icon}</span>
+              <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
+                {BudgetIcon
+                  ? <BudgetIcon color={item.color} size={18} glow />
+                  : <span className="text-base">{item.icon}</span>
+                }
+              </div>
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>{item.label}</p>
@@ -480,7 +536,8 @@ Profil: ${profile.display_name || profile.username}, ${profile.age} år, ${profi
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="mx-6 mb-4" style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
