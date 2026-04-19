@@ -210,7 +210,7 @@ export default function Dashboard() {
           className="flex-1 flex items-center gap-2 px-4 py-3 rounded-2xl"
           style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
             <Zap className="w-4 h-4" style={{ color: '#0D7377' }} />
-            <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Magisk inmatning</span>
+            <span className="text-xs font-bold" style={{ color: '#ffffff' }}>Magisk inmatning</span>
           </motion.button>
         </div>
 
