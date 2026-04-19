@@ -26,7 +26,7 @@ import InsightCards from '@/components/import/InsightCards';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import DemoToggle from '@/components/demo/DemoToggle';
 import { useDemoMode } from '@/components/demo/DemoMode';
-import { FileUp, Zap } from 'lucide-react';
+import { FileUp, Zap, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -198,6 +198,14 @@ export default function Dashboard() {
 
         {/* Quick action row */}
         <div className="flex gap-3">
+          <Link to="/Insights" className="flex-1">
+            <motion.div whileTap={{ scale: 0.97 }}
+              className="flex items-center gap-2 px-4 py-3 rounded-2xl"
+              style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              <TrendingUp className="w-4 h-4" style={{ color: '#0D7377' }} />
+              <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Insikter</span>
+            </motion.div>
+          </Link>
           <Link to="/Import" className="flex-1">
             <motion.div whileTap={{ scale: 0.97 }}
               className="flex items-center gap-2 px-4 py-3 rounded-2xl"
@@ -213,6 +221,7 @@ export default function Dashboard() {
             <span className="text-xs font-bold" style={{ color: '#1A2332' }}>Magisk inmatning</span>
           </motion.button>
         </div>
+
 
 
       </div>

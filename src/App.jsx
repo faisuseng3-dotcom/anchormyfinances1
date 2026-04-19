@@ -18,6 +18,7 @@ import LedgerVault from './pages/LedgerVault';
 import ImportPage from './pages/ImportPage';
 import BudgetDashboard from './pages/BudgetDashboard';
 import SavingsGoals from './pages/SavingsGoals';
+import InsightsPage from './pages/InsightsPage';
 import { DemoProvider } from '@/components/demo/DemoMode';
 
 const { Pages, Layout, mainPage } = pagesConfig;
@@ -91,6 +92,11 @@ const AuthenticatedApp = () => {
       <Route path="/SavingsGoals" element={
         <LayoutWrapper currentPageName="SavingsGoals">
           <SavingsGoals />
+        </LayoutWrapper>
+      } />
+      <Route path="/Insights" element={
+        <LayoutWrapper currentPageName="InsightsPage">
+          <InsightsPage />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />

@@ -4,10 +4,11 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Save, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
+import GamificationSection from '@/components/gamification/GamificationSection';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -61,6 +62,11 @@ export default function Settings() {
       const profiles = await base44.entities.FinancialProfile.list();
       return profiles[0] || null;
     }
+  });
+
+  const { data: transactions = [] } = useQuery({
+    queryKey: ['transactions'],
+    queryFn: () => base44.entities.Transaction.list('-created_date', 500)
   });
 
   useEffect(() => { if (profile) setFormData({ ...profile }); }, [profile]);
@@ -284,6 +290,27 @@ export default function Settings() {
             )}
           </div>
         </Section>
+
+        {/* Insights link */}
+        <Link to="/Insights">
+          <div className="flex items-center justify-between p-4 rounded-2xl cursor-pointer"
+            style={{ background: 'linear-gradient(135deg, rgba(13,115,119,0.1), rgba(75,124,243,0.1))', border: '1px solid rgba(13,115,119,0.2)' }}>
+            <div className="flex items-center gap-3">
+              <TrendingUp className="w-5 h-5" style={{ color: '#0D7377' }} />
+              <div>
+                <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>Ekonomiska insikter</p>
+                <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Grafer & analys av din ekonomi</p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+          </div>
+        </Link>
+
+        {/* Gamification */}
+        <div className="rounded-2xl p-5 space-y-3" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Utmaningar & Poäng</p>
+          <GamificationSection profile={profile} transactions={transactions} />
+        </div>
 
         {/* Account */}
         <Section title="Konto">
