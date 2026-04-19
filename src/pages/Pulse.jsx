@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
-import { AlertTriangle } from 'lucide-react';
 import {
   buildUpcomingExpenses,
   getUpcomingDates,
@@ -13,11 +12,9 @@ import {
   getNextDangerEvent,
   getSafeToSpend,
 } from '@/components/pulse/pulseEngine';
-import LiquidityCell from '@/components/pulse/LiquidityCell';
-import HorizonScroll from '@/components/pulse/HorizonScroll';
-import WhatIfSimulator from '@/components/pulse/WhatIfSimulator';
-import CountdownCard from '@/components/pulse/CountdownCard';
-import DangerZoneList from '@/components/pulse/DangerZoneList';
+import MarginGauge from '@/components/pulse/MarginGauge';
+import HorizonPath from '@/components/pulse/HorizonPath';
+import ImpactSlider from '@/components/pulse/ImpactSlider';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -98,100 +95,27 @@ export default function Pulse() {
         ))}
       </div>
 
-      {/* Hero cockpit header */}
-      <div className="relative z-10 px-5 pt-10 pb-4">
+      <div className="relative z-10 px-4 pt-10 space-y-3">
+
+        {/* 1. Margin Gauge — speedometer + status */}
         <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
-          <p className="text-[9px] font-black tracking-widest mb-1" style={{ color: 'rgba(255,255,255,0.22)' }}>
-            REALTIDSPULS — COCKPIT
-          </p>
-
-          {/* Hero row: big number + LiquidityCell side by side */}
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <motion.p
-                key={safeToSpend}
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="font-black leading-none"
-                style={{ color: '#fff', fontSize: 44, letterSpacing: '-0.03em' }}
-              >
-                {fmt(safeToSpend)}
-              </motion.p>
-              <p className="text-sm mt-1" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                kr säkert att spendera
-              </p>
-
-              {/* Verdict pill */}
-              <motion.div
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-black"
-                style={hasDanger
-                  ? { background: 'rgba(255,68,102,0.12)', color: '#FF4466', border: '1px solid rgba(255,68,102,0.3)' }
-                  : { background: 'rgba(15,222,189,0.1)', color: '#0FDEBD', border: '1px solid rgba(15,222,189,0.25)' }}
-              >
-                {hasDanger
-                  ? <><AlertTriangle className="w-3 h-3" /> {dangerEvents.length} riskhändelse{dangerEvents.length > 1 ? 'r' : ''}</>
-                  : <><span>⚡</span> Du är i kontroll</>
-                }
-              </motion.div>
-
-              {/* AI human verdict */}
-              <p className="text-xs mt-2 max-w-[220px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                {safeToSpend <= 0
-                  ? 'Prioritera buffert och undvik icke-nödvändiga köp.'
-                  : nextCritical
-                    ? `Marginalen är smal – ${fmt(guiltFree)} kr kvar innan ${nextCritical.name} om ${nextCritical.dayOffset} dagar.`
-                    : `Inga hinder på horisonten. ${fmt(guiltFree)} kr guilt-free.`}
-              </p>
-            </div>
-
-            {/* Battery gauge */}
-            <LiquidityCell safeToSpend={safeToSpend} />
-          </div>
+          <MarginGauge safeToSpend={safeToSpend} nextCritical={nextCritical} />
         </motion.div>
-      </div>
 
-      <div className="relative z-10 px-4 space-y-3">
-
-        {/* Horizon scroll timeline */}
+        {/* 2. Horizon Path — the road with pits and portal */}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-          <HorizonScroll eventsWithBalance={eventsWithBalance} whatIfAmount={whatIfAmount} />
+          <HorizonPath eventsWithBalance={eventsWithBalance} whatIfAmount={whatIfAmount} />
         </motion.div>
 
-        {/* Countdown + Danger side by side */}
-        {nextCritical && (
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <CountdownCard nextEvent={nextCritical} currentBalance={currentBalance} />
-          </motion.div>
-        )}
-
-        {/* Danger zone list */}
-        {hasDanger && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="rounded-3xl p-4"
-            style={{ background: 'rgba(255,68,102,0.07)', border: '1px solid rgba(255,68,102,0.2)' }}
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <motion.div animate={{ opacity: [1, 0.4, 1] }} transition={{ duration: 1.2, repeat: Infinity }}>
-                <AlertTriangle className="w-4 h-4" style={{ color: '#FF4466' }} />
-              </motion.div>
-              <p className="text-xs font-black tracking-widest" style={{ color: '#FF4466' }}>RISKHÄNDELSER</p>
-            </div>
-            <DangerZoneList events={eventsWithBalance} />
-          </motion.div>
-        )}
-
-        {/* What-If holographic projector */}
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
-          <WhatIfSimulator
+        {/* 3. Impact Slider — what-if with real-time path update */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
+          <ImpactSlider
             events={eventsWithBalance}
             currentBalance={currentBalance + whatIfAmount}
             onWhatIfChange={setWhatIfAmount}
           />
         </motion.div>
+
       </div>
     </div>
   );
