@@ -11,9 +11,10 @@ import { Settings, ChevronRight } from 'lucide-react';
 import SafeToSpendWidget from '@/components/dashboard/SafeToSpendWidget';
 import RecentTransactions from '@/components/dashboard/RecentTransactions';
 import ExpensesCard from '@/components/dashboard/ExpensesCard';
-import ForecastChart from '@/components/dashboard/ForecastChart';
+import SmartForecast from '@/components/dashboard/SmartForecast';
 import DebtAlert from '@/components/dashboard/DebtAlert';
 import InsightsSection from '@/components/dashboard/InsightsSection';
+import InsightEngineCards from '@/components/dashboard/InsightEngineCards';
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import TransactionHub from '@/components/transactions/TransactionHub';
 import BadgeUnlock from '@/components/gamification/BadgeUnlock';
@@ -52,6 +53,11 @@ export default function Dashboard() {
       }
       return profiles[0] || null;
     }
+  });
+
+  const { data: allTransactions = [] } = useQuery({
+    queryKey: ['transactions'],
+    queryFn: () => base44.entities.Transaction.list('-created_date', 500)
   });
 
   const profile = isDemoMode ? demoProfile : profileData;
@@ -187,14 +193,17 @@ export default function Dashboard() {
         {/* 3 recent transactions */}
         <RecentTransactions />
 
-        {/* Forecast */}
-        <ForecastChart profile={profile} />
+        {/* Smart Forecast */}
+        <SmartForecast profile={profile} transactions={isDemoMode ? demoTransactions : allTransactions} />
 
-        {/* Insights */}
+        {/* Insight Engine — mönsterigenkänning */}
+        <InsightEngineCards profile={profile} transactions={isDemoMode ? demoTransactions : allTransactions} />
+
+        {/* Klassiska insikter */}
         <InsightsSection insights={insights} profile={profile} />
 
         {/* AI Coach Insight Cards */}
-        <InsightCards profile={profile} transactions={isDemoMode ? demoTransactions : []} />
+        <InsightCards profile={profile} transactions={isDemoMode ? demoTransactions : allTransactions} />
 
         {/* Quick action row */}
         <div className="flex gap-3">

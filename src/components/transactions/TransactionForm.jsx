@@ -1,20 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { X, Check, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
+import { enrichCategory, saveOverride } from '@/lib/enrichmentEngine';
+import { suggestCategory } from '@/lib/smartCategorization';
+import CategoryOverridePrompt from './CategoryOverridePrompt';
 
 const CATEGORIES = [
-  { value: 'food', label: 'Mat', icon: '🍔' },
-  { value: 'transport', label: 'Transport', icon: '🚌' },
-  { value: 'entertainment', label: 'Nöje', icon: '🎮' },
-  { value: 'travel', label: 'Resa', icon: '✈️' },
-  { value: 'health', label: 'Hälsa', icon: '💊' },
-  { value: 'home', label: 'Hem', icon: '🏠' },
-  { value: 'shopping', label: 'Shopping', icon: '🛍️' },
-  { value: 'income', label: 'Inkomst', icon: '💰' },
-  { value: 'savings', label: 'Sparande', icon: '🏦' },
-  { value: 'other', label: 'Övrigt', icon: '📦' },
+  { value: 'food', label: 'Mat' },
+  { value: 'transport', label: 'Transport' },
+  { value: 'entertainment', label: 'Nöje' },
+  { value: 'travel', label: 'Resa' },
+  { value: 'health', label: 'Hälsa' },
+  { value: 'home', label: 'Hem' },
+  { value: 'shopping', label: 'Shopping' },
+  { value: 'income', label: 'Inkomst' },
+  { value: 'savings', label: 'Sparande' },
+  { value: 'other', label: 'Övrigt' },
 ];
 
 const PAYMENT_METHODS = ['Konto', 'Kredit', 'Klarna', 'Swish', 'Kontant'];
@@ -28,6 +31,27 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
   const [paymentMethod, setPaymentMethod] = useState(existingTx?.paymentMethod || 'Konto');
   const [note, setNote] = useState(existingTx?.note || '');
   const [saving, setSaving] = useState(false);
+  const [overridePrompt, setOverridePrompt] = useState(null); // { vendor, newCategory, categoryLabel }
+  const [aiConfidence, setAiConfidence] = useState(null); // 'high'|'medium'|'low'
+
+  const handleVendorBlur = () => {
+    if (!vendor) return;
+    const enriched = enrichCategory(vendor, 'other', suggestCategory);
+    if (enriched.category !== category) {
+      setCategory(enriched.category);
+    }
+    setAiConfidence(enriched.confidence);
+  };
+
+  const handleCategoryChange = (newCat) => {
+    const prev = category;
+    setCategory(newCat);
+    // If user manually overrides and there's a vendor, offer to remember
+    if (vendor && newCat !== prev && existingTx) {
+      const catLabel = CATEGORIES.find(c => c.value === newCat)?.label || newCat;
+      setOverridePrompt({ vendor, newCategory: newCat, categoryLabel: catLabel });
+    }
+  };
 
   const handleSave = async () => {
     if (!amount || !label) return;
@@ -113,6 +137,7 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
             placeholder="Butik / Plats (t.ex. Hemköp, Steam)"
             value={vendor}
             onChange={e => setVendor(e.target.value)}
+            onBlur={handleVendorBlur}
             className="w-full rounded-2xl px-4 py-3 text-sm"
             style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
           />
@@ -129,19 +154,33 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
 
           {/* Category picker */}
           <div>
-            <p className="text-xs text-slate-500 mb-2 px-1">Kategori</p>
+            <div className="flex items-center gap-2 mb-2 px-1">
+              <p className="text-xs text-slate-500">Kategori</p>
+              {aiConfidence === 'high' && (
+                <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(13,115,119,0.2)', color: '#0D7377' }}>
+                  <Sparkles className="w-2.5 h-2.5" /> Säker
+                </span>
+              )}
+              {aiConfidence === 'low' && (
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                  style={{ background: 'rgba(214,158,46,0.2)', color: '#D69E2E' }}>
+                  ? Osäker
+                </span>
+              )}
+            </div>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map(c => (
                 <button
                   key={c.value}
-                  onClick={() => setCategory(c.value)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
+                  onClick={() => handleCategoryChange(c.value)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                     category === c.value
                       ? 'bg-indigo-500 border-indigo-400 text-white'
                       : 'bg-white/5 border-white/10 text-slate-400'
                   }`}
                 >
-                  {c.icon} {c.label}
+                  {c.label}
                 </button>
               ))}
             </div>
@@ -177,6 +216,16 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
             style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
           />
         </div>
+
+        {/* Override prompt */}
+        {overridePrompt && (
+          <CategoryOverridePrompt
+            vendor={overridePrompt.vendor}
+            newCategory={overridePrompt.newCategory}
+            categoryLabel={overridePrompt.categoryLabel}
+            onDismiss={() => setOverridePrompt(null)}
+          />
+        )}
 
         {/* Save button */}
         <motion.button

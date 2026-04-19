@@ -48,12 +48,12 @@ export function suggestCategory(text) {
 
 // Quick-action kategorier (snabbgenvägar)
 export const QUICK_ACTIONS = [
-  { label: 'Mat 🍔', category: 'food', icon: '🍔' },
-  { label: 'Transport 🚌', category: 'transport', icon: '🚌' },
-  { label: 'Nöje 🎬', category: 'entertainment', icon: '🎬' },
-  { label: 'Hälsa 💪', category: 'health', icon: '💪' },
-  { label: 'Kläder 👕', category: 'shopping', icon: '👕' },
-  { label: 'Resor ✈️', category: 'travel', icon: '✈️' },
-  { label: 'Försäkring 🛡️', category: 'insurance', icon: '🛡️' },
-  { label: 'Övrigt ➕', category: 'other', icon: '➕' }
+  { label: 'Mat', category: 'food' },
+  { label: 'Transport', category: 'transport' },
+  { label: 'Nöje', category: 'entertainment' },
+  { label: 'Hälsa', category: 'health' },
+  { label: 'Kläder', category: 'shopping' },
+  { label: 'Resor', category: 'travel' },
+  { label: 'Försäkring', category: 'insurance' },
+  { label: 'Övrigt', category: 'other' }
 ];
