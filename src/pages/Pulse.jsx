@@ -2,7 +2,9 @@ import React, { useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
+import { useModeContext } from '@/components/modes/ModeContext';
 import {
   buildUpcomingExpenses,
   getUpcomingDates,
@@ -16,6 +18,14 @@ import PaydayCountdown from '@/components/pulse/PaydayCountdown';
 import PurchaseCheck from '@/components/pulse/PurchaseCheck';
 
 export default function Pulse() {
+  const navigate = useNavigate();
+  const { isBusiness } = useModeContext();
+
+  // Redirect business users away from personal Pulse
+  useEffect(() => {
+    if (isBusiness) navigate('/BusinessDashboard', { replace: true });
+  }, [isBusiness]);
+
   useEffect(() => {
     base44.functions.invoke('awardPoints', { event_type: 'pulse_open' }).catch(() => {});
   }, []);
