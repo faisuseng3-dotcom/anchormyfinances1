@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, TrendingUp, Settings, Mic, ClipboardList, Activity, Plus, PlusCircle, ArrowLeftRight, PiggyBank } from 'lucide-react';
+import { Home, TrendingUp, Settings, Mic, ClipboardList, Globe, Plus, PlusCircle, ArrowLeftRight, PiggyBank } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
-  { icon: Activity, page: 'Pulse' },
+  { icon: Globe, page: 'Social' },
   null, // placeholder for center FAB
   { icon: ClipboardList, page: 'TransactionHistory' },
   { icon: Settings, page: 'Settings' },
