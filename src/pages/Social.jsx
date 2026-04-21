@@ -48,6 +48,7 @@ export default function Social() {
     age: '',
     interests: [],
     avatar_style: {},
+    avatar_config: null,
     privacy_level: 'hybrid',
     shared_categories: [],
     friends: [],
@@ -199,8 +200,8 @@ export default function Social() {
               <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div className="flex items-center gap-4 mb-5">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center"
-                    style={{ background: `${form.avatar_style?.bg || '#0D7377'}20`, border: `2px solid ${form.avatar_style?.bg || '#0D7377'}` }}>
-                    <AvatarSVG style={form.avatar_style} size={56} />
+                    style={{ background: `${(form.avatar_config || form.avatar_style)?.bg || '#0D7377'}20`, border: `2px solid ${(form.avatar_config || form.avatar_style)?.bg || '#0D7377'}` }}>
+                    <AvatarSVG config={form.avatar_config} style={form.avatar_style} size={56} />
                   </div>
                   <div className="flex-1">
                     <p className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>
@@ -248,11 +249,13 @@ export default function Social() {
               </div>
 
               {/* Avatar builder */}
-              <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--color-text-muted)' }}>Bygg din avatar</p>
+              <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                <div className="px-5 pt-4">
+                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Bygg din avatar</p>
+                </div>
                 <AvatarBuilder
-                  value={form.avatar_style}
-                  onChange={style => setForm(f => ({ ...f, avatar_style: style }))}
+                  value={form.avatar_config || form.avatar_style}
+                  onChange={cfg => setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
                 />
               </div>
             </motion.div>
