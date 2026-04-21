@@ -22,6 +22,7 @@ import InsightsPage from './pages/InsightsPage';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import Social from './pages/Social';
 import Squads from './pages/Squads';
+import Galaxy from './pages/Galaxy';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -99,6 +100,11 @@ const AuthenticatedApp = () => {
       <Route path="/Social" element={
         <LayoutWrapper currentPageName="Social">
           <Social />
+        </LayoutWrapper>
+      } />
+      <Route path="/Galaxy" element={
+        <LayoutWrapper currentPageName="Galaxy">
+          <Galaxy />
         </LayoutWrapper>
       } />
       <Route path="/Squads" element={

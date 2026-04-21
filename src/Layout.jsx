@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
-  { icon: Globe, page: 'Social' },
+  { icon: Globe, page: 'Galaxy' },
   null, // placeholder for center FAB
   { icon: ClipboardList, page: 'TransactionHistory' },
   { icon: Settings, page: 'Settings' },
