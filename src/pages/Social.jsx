@@ -250,9 +250,6 @@ export default function Social() {
 
               {/* Avatar builder */}
               <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <div className="px-5 pt-4">
-                  <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Bygg din avatar</p>
-                </div>
                 <AvatarBuilder
                   value={form.avatar_config || form.avatar_style}
                   onChange={cfg => { setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg })); setSaving(false); }}

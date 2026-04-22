@@ -180,7 +180,8 @@ export default function AvatarBuilder({ value, onChange, onSave, saved }) {
     setConfig(prev => {
       let next = deepSet(prev, path, val);
       if (path === 'hair.style') next = deepSet(next, 'hair.isLong', LONG_STYLES.includes(val));
-      onChange?.(next);
+      // Call onChange outside of setState to avoid "setState during render" warning
+      setTimeout(() => onChange?.(next), 0);
       return next;
     });
   }, [onChange]);

@@ -1,7 +1,7 @@
 // AvatarDisplay — High-fidelity 3D Stylized render
 // PBR lighting: Key + Fill + Rim + SSS skin + AO
 
-import React from 'react';
+import React, { useId } from 'react';
 import { motion } from 'framer-motion';
 import { HAIR_LONG_STYLES } from './AvatarConfig';
 import {
@@ -22,14 +22,15 @@ function blendHex(hex1, hex2, t) {
 
 // ─── Core SVG — the render pipeline ─────────────────────────────────────────
 export function AvatarSVG({ config, size = 100, expression }) {
+  const reactId = useId().replace(/:/g, '_');
   const c = config || {};
   const bg = c.bg || '#0D7377';
   const skinColor = c.skinColor || '#FFDBAC';
   const isLong = HAIR_LONG_STYLES.includes(c.hair?.style);
   const expr = expression || c.expression || 'neutral';
 
-  // Unique gradient IDs scoped per instance (avoid collisions when many avatars render)
-  const uid = `av_${size}_${(bg + skinColor).replace(/[^a-z0-9]/gi, '').slice(0, 12)}`;
+  // Each instance gets a unique ID via React's useId to prevent gradient collisions
+  const uid = `av${reactId}`;
 
   // SSS warm blush color derived from skin
   const sssColor = blendHex(skinColor, '#FF7755', 0.20);
