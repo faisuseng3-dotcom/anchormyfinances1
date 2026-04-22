@@ -57,7 +57,7 @@ export default function BusinessDashboard() {
   const allTransactions = [...manualTransactions, ...biz.recentTransactions];
 
   return (
-    <div className="min-h-screen" style={{ background: '#F4F6F8' }}>
+    <div className="min-h-screen" style={{ background: '#F9F8F6' }}>
       {/* Modals */}
       <AnimatePresence>
         {showScanner && (

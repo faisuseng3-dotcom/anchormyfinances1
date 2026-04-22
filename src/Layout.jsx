@@ -55,8 +55,8 @@ export default function Layout({ children, currentPageName }) {
       <style>{`
         :root {
           /* Premium Teal — Starling/Revolut inspiration */
-          --color-background-primary: #F4F6F8;
-          --color-background-secondary: #ECEEF1;
+          --color-background-primary: #F9F8F6;
+          --color-background-secondary: #F0EEE9;
           --color-surface: #FFFFFF;
           --color-card: #FFFFFF;
           
