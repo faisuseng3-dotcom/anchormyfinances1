@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, X, ArrowRight, CheckCircle2 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import MoveExpensesModal from '@/components/business/tax/MoveExpensesModal';
 import PensionSliderModal from '@/components/business/tax/PensionSliderModal';
 import HomeOfficeModal from '@/components/business/tax/HomeOfficeModal';
@@ -41,8 +42,11 @@ export default function TaxOptimizer() {
   const handleConfirm = (id, actualSaving) => {
     setSecured(prev => ({ ...prev, [id]: actualSaving }));
     setActiveModal(null);
-    // remove from list after short delay to show the "secured" feedback
-    setTimeout(() => setSuggestions(prev => prev.filter(s => s.id !== id)), 1400);
+    // confetti burst from TaxOptimizer card level too
+    setTimeout(() => {
+      confetti({ particleCount: 60, spread: 50, origin: { y: 0.7 }, colors: ['#0D7377', '#3DAA7A', '#D4AF37', '#fff'] });
+    }, 100);
+    setTimeout(() => setSuggestions(prev => prev.filter(s => s.id !== id)), 1800);
   };
 
   const handleDismiss = (id) => setSuggestions(prev => prev.filter(s => s.id !== id));
@@ -92,11 +96,22 @@ export default function TaxOptimizer() {
                 style={{ background: '#F4F6F8' }}
               >
                 {secured[s.id] ? (
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                    className="flex items-center gap-2 py-1">
-                    <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: '#0D7377' }} />
-                    <p className="text-xs font-bold" style={{ color: '#0D7377' }}>
-                      Klart! Sparar {secured[s.id].toLocaleString('sv-SE')} kr — säkrat
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex flex-col items-center gap-2 py-4"
+                  >
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: [0, 1.2, 1] }}
+                      transition={{ duration: 0.4, ease: 'backOut' }}
+                      className="w-12 h-12 rounded-full flex items-center justify-center"
+                      style={{ background: 'rgba(61,170,122,0.15)', border: '2px solid rgba(61,170,122,0.4)' }}
+                    >
+                      <CheckCircle2 className="w-6 h-6" style={{ color: '#3DAA7A' }} />
+                    </motion.div>
+                    <p className="text-xs font-black text-center" style={{ color: '#3DAA7A' }}>
+                      ✅ Aktiverat — sparar {secured[s.id].toLocaleString('sv-SE')} kr
                     </p>
                   </motion.div>
                 ) : (
