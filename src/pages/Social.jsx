@@ -255,7 +255,9 @@ export default function Social() {
                 </div>
                 <AvatarBuilder
                   value={form.avatar_config || form.avatar_style}
-                  onChange={cfg => setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
+                  onChange={cfg => { setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg })); setSaving(false); }}
+                  onSave={handleSave}
+                  saved={saveMutation.isSuccess}
                 />
               </div>
             </motion.div>
