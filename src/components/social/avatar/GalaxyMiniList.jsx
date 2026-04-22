@@ -15,10 +15,18 @@ export default function GalaxyMiniList({ realProfiles = [] }) {
   const profiles = [...DEMO, ...realProfiles.slice(0, 3)];
 
   return (
-    <div className="flex flex-col gap-0">
-      <div className="flex items-center justify-between px-3 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-        <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>GALAXY EXPLORER</p>
-        <Users className="w-3.5 h-3.5" style={{ color: 'rgba(255,255,255,0.2)' }} />
+    <div
+      className="flex flex-col gap-0 h-full"
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderLeft: '1px solid rgba(255,255,255,0.07)',
+      }}
+    >
+      <div className="flex items-center justify-between px-3 py-2.5" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <p className="text-[8px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.28)' }}>GALAXY</p>
+        <Users className="w-3 h-3" style={{ color: 'rgba(255,255,255,0.18)' }} />
       </div>
 
       {profiles.map((p, i) => {
@@ -29,38 +37,36 @@ export default function GalaxyMiniList({ realProfiles = [] }) {
             initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.06, type: 'spring', stiffness: 300 }}
-            className="flex items-center gap-2.5 px-3 py-2.5 cursor-pointer transition-all hover:bg-white/[0.03]"
-            style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}
+            className="flex flex-col items-center gap-1 px-2 py-2.5 cursor-pointer transition-all"
+            style={{
+              borderBottom: '1px solid rgba(255,255,255,0.04)',
+              background: 'rgba(255,255,255,0)',
+            }}
+            whileHover={{ background: 'rgba(255,255,255,0.04)' }}
           >
-            {/* Avatar thumbnail */}
+            {/* Avatar thumbnail — glassmorphism circle */}
             <div
-              className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center"
+              className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center"
               style={{
-                background: `${bg}25`,
-                border: `1.5px solid ${bg}50`,
-                boxShadow: `0 0 10px ${bg}30`,
+                background: `${bg}22`,
+                border: `1.5px solid ${bg}55`,
+                boxShadow: `0 0 14px ${bg}38, inset 0 1px 0 rgba(255,255,255,0.12)`,
+                backdropFilter: 'blur(6px)',
               }}
             >
-              <AvatarSVG style={p.avatar_style} size={34} />
+              <AvatarSVG style={p.avatar_style} size={38} />
             </div>
 
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-black text-white truncate">@{p.username}</p>
-              <div className="flex items-center gap-2.5 mt-0.5">
-                <span className="flex items-center gap-1 text-[9px]" style={{ color: 'rgba(255,255,255,0.3)' }}>
-                  <Users className="w-2.5 h-2.5" />
-                  {p.followers?.toLocaleString()}
-                </span>
-                <span className="flex items-center gap-1 text-[9px]" style={{ color: 'rgba(255,100,100,0.5)' }}>
-                  <Heart className="w-2.5 h-2.5" />
-                  {p.likes}
-                </span>
-              </div>
+            {/* Username */}
+            <p className="text-[8px] font-black text-center truncate w-full" style={{ color: 'rgba(255,255,255,0.65)' }}>
+              @{p.username.split('_')[0]}
+            </p>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[7px]" style={{ color: 'rgba(255,255,255,0.28)' }}>
+                {(p.followers / 1000).toFixed(1)}k
+              </span>
+              <div className="w-1 h-1 rounded-full" style={{ background: bg, boxShadow: `0 0 4px ${bg}` }}/>
             </div>
-
-            {/* Color dot */}
-            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: bg, boxShadow: `0 0 6px ${bg}` }} />
           </motion.div>
         );
       })}

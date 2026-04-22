@@ -205,11 +205,6 @@ export default function AvatarBuilder({ value, onChange, onSave, saved }) {
       className="flex flex-col rounded-2xl overflow-hidden"
       style={{ background: '#111827', minHeight: 500 }}
     >
-      {/* ── HEADER ── */}
-      <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-        <p className="text-xs font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.3)' }}>BYGG DIN AVATAR</p>
-      </div>
-
       {/* ── MAIN AREA: Avatar + Galaxy sidebar ── */}
       <div className="flex gap-0">
 
@@ -403,17 +398,25 @@ export default function AvatarBuilder({ value, onChange, onSave, saved }) {
               </div>
             ))}
 
-            {/* Color wheel for categories without avatar_preview */}
+            {/* Color wheel — large centrepiece for non-preview categories */}
             {currentCat?.colorKey && !currentCat.sections.some(s => s.type === 'avatar_preview') && (
-              <div className="flex flex-col items-center py-4 gap-3">
-                <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>
+              <div className="flex flex-col items-center py-6 gap-4">
+                <p className="text-[8px] font-black uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.22)' }}>
                   {currentCat.colorLabel}
                 </p>
-                <ColorWheel
-                  value={wheelColor}
-                  onChange={val => update(currentCat.colorKey, val)}
-                  size={180}
-                />
+                <div style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  borderRadius: 9999,
+                  padding: 12,
+                  boxShadow: '0 0 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.07)',
+                }}>
+                  <ColorWheel
+                    value={wheelColor}
+                    onChange={val => update(currentCat.colorKey, val)}
+                    size={210}
+                  />
+                </div>
               </div>
             )}
 
