@@ -1,107 +1,138 @@
-// AvatarDisplay — Composites all layers in correct Z-order with animations
+// AvatarDisplay — Composites all layers in correct Z-order
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { HAIR_LONG_STYLES } from './AvatarConfig';
 import {
-  HairBack, BodyLayer, FaceLayer, EyeLayer, NoseLayer,
-  MouthLayer, HairFront, OutfitLayer, AccessoryLayer, CheeksLayer,
+  HairBack, BodyLayer, OutfitLayer, FaceLayer, EyeLayer,
+  NoseLayer, CheeksLayer, MouthLayer, HairFront, AccessoryLayer,
 } from './AvatarLayers';
 
-const SPRING = { type: 'spring', stiffness: 340, damping: 24 };
+const SPRING = { type: 'spring', stiffness: 360, damping: 26 };
 
+// ─── Core SVG compositor — used everywhere in the app ──────────────────────
 export function AvatarSVG({ config, size = 100, expression }) {
   const c = config || {};
   const bg = c.bg || '#0D7377';
   const skinColor = c.skinColor || '#FFDBAC';
   const isLong = HAIR_LONG_STYLES.includes(c.hair?.style);
   const expr = expression || c.expression || 'neutral';
+  const uid = `av_${size}_${bg.replace('#', '')}`;
 
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 100 120"
+      viewBox="0 0 100 124"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ overflow: 'visible' }}
     >
       <defs>
-        <radialGradient id={`avatarBg_${size}`} cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stopColor={bg} stopOpacity="0.35" />
-          <stop offset="100%" stopColor={bg} stopOpacity="0.08" />
+        <radialGradient id={`${uid}_bg`} cx="50%" cy="38%" r="62%">
+          <stop offset="0%" stopColor={bg} stopOpacity="0.3" />
+          <stop offset="100%" stopColor={bg} stopOpacity="0.06" />
+        </radialGradient>
+        <radialGradient id={`${uid}_glow`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={bg} stopOpacity="0.15" />
+          <stop offset="100%" stopColor={bg} stopOpacity="0" />
         </radialGradient>
       </defs>
 
-      {/* Background circle */}
-      <circle cx="50" cy="55" r="52" fill={`url(#avatarBg_${size})`} />
+      {/* BG soft glow */}
+      <circle cx="50" cy="56" r="54" fill={`url(#${uid}_bg)`} />
 
-      {/* Z=0: Hair back (long styles behind face) */}
+      {/* LAYER 0 — Back hair (long styles only) */}
       {isLong && <HairBack style={c.hair?.style} color={c.hair?.color} />}
 
-      {/* Z=1: Body parts (neck, ears) */}
+      {/* LAYER 1 — Body: neck, ears, shoulders */}
       <BodyLayer skinColor={skinColor} />
 
-      {/* Z=2: Face shape */}
+      {/* LAYER 2 — Outfit: rendered before face so collar is behind jaw */}
+      <OutfitLayer outfitConfig={c.outfit} />
+
+      {/* LAYER 3 — Face shape */}
       <FaceLayer skinColor={skinColor} faceShape={c.faceShape} />
 
-      {/* Z=3: Eyes, brows, lashes */}
+      {/* LAYER 4 — Eyes + brows + lashes */}
       <EyeLayer
         eyeConfig={c.eyes}
         eyebrowConfig={c.eyebrows}
         eyelashConfig={c.eyelashes}
       />
 
-      {/* Z=3.5: Nose */}
+      {/* LAYER 5 — Nose */}
       <NoseLayer noseConfig={c.nose} />
 
-      {/* Z=3.6: Cheeks (expression-driven) */}
+      {/* LAYER 6 — Cheeks (expression-reactive) */}
       <CheeksLayer expression={expr} />
 
-      {/* Z=3.7: Mouth (expression-driven) */}
+      {/* LAYER 7 — Mouth (expression-reactive) */}
       <MouthLayer mouthConfig={c.mouth} expression={expr} />
 
-      {/* Z=4: Outfit */}
-      <OutfitLayer outfitConfig={c.outfit} />
-
-      {/* Z=5: Hair front */}
+      {/* LAYER 8 — Front hair / bangs */}
       <HairFront style={c.hair?.style} color={c.hair?.color} />
 
-      {/* Z=6: Accessory */}
+      {/* LAYER 9 — Accessories */}
       <AccessoryLayer accessory={c.accessory} />
     </svg>
   );
 }
 
-// Animated preview used in the builder — springs into place when config changes
+// ─── Animated builder preview ──────────────────────────────────────────────
 export default function AvatarDisplay({ config, size = 160, expression }) {
   const bg = config?.bg || '#0D7377';
+  const animKey = [
+    config?.hair?.style, config?.hair?.color,
+    config?.outfit?.style, config?.outfit?.color,
+    config?.skinColor, config?.faceShape,
+    config?.accessory, config?.eyes?.type,
+  ].join('|');
+
   return (
-    <div className="flex flex-col items-center justify-center py-4"
-      style={{ background: `radial-gradient(ellipse at 50% 100%, ${bg}18 0%, transparent 70%)` }}>
+    <div
+      className="flex items-center justify-center py-5 relative"
+      style={{
+        background: `radial-gradient(ellipse at 50% 80%, ${bg}22 0%, transparent 65%)`,
+        minHeight: size + 32,
+      }}
+    >
+      {/* Ambient ring */}
+      <div
+        className="absolute rounded-full pointer-events-none"
+        style={{
+          width: size + 24,
+          height: size + 24,
+          background: `radial-gradient(circle, ${bg}18 0%, transparent 70%)`,
+          boxShadow: `0 0 40px ${bg}30`,
+        }}
+      />
+
       <motion.div
-        layout
-        key={config?.hair?.style + config?.outfit?.style + config?.skinColor}
-        initial={{ scale: 0.85, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
+        key={animKey}
+        initial={{ scale: 0.82, opacity: 0, y: 8 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
         transition={SPRING}
-        className="relative"
+        className="relative z-10"
       >
+        {/* Avatar circle */}
         <div
           className="rounded-full flex items-center justify-center"
           style={{
-            width: size, height: size,
-            background: `radial-gradient(circle, ${bg}28 0%, ${bg}0a 100%)`,
-            boxShadow: `0 8px 32px ${bg}28, 0 0 0 2px ${bg}38`,
+            width: size,
+            height: size,
+            background: `radial-gradient(circle at 40% 35%, ${bg}28 0%, ${bg}0a 100%)`,
+            boxShadow: `0 12px 40px ${bg}35, 0 0 0 2px ${bg}40`,
           }}
         >
-          <AvatarSVG config={config} size={size * 0.95} expression={expression} />
+          <AvatarSVG config={config} size={Math.round(size * 0.92)} expression={expression} />
         </div>
-        <motion.div
-          animate={{ y: [-4, 4, -4], rotate: [0, 8, -8, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-1 -right-1 text-xl select-none"
-        >✨</motion.div>
+
+        {/* Floating sparkle */}
+        <motion.span
+          animate={{ y: [-3, 4, -3], rotate: [0, 12, -12, 0], scale: [1, 1.15, 1] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute -top-2 -right-2 text-lg select-none pointer-events-none"
+        >✨</motion.span>
       </motion.div>
     </div>
   );
