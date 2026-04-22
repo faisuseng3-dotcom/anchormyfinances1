@@ -2,18 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy } from 'lucide-react';
+import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy, Smile } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { AvatarSVG } from '@/components/social/AvatarBuilder';
+import AvatarBuilder, { AvatarSVG } from '@/components/social/AvatarBuilder';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
 import { Input } from '@/components/ui/input';
 
 const TABS = [
-  { id: 'profile', label: 'Profil',      Icon: User },
-  { id: 'friends', label: 'Vänner',      Icon: Users },
-  { id: 'privacy', label: 'Integritet',  Icon: Shield },
+  { id: 'profile',  label: 'Profil',    Icon: User },
+  { id: 'avatar',   label: 'Avatar',    Icon: Smile },
+  { id: 'friends',  label: 'Vänner',    Icon: Users },
+  { id: 'privacy',  label: 'Integritet',Icon: Shield },
 ];
 
 export default function Social() {
@@ -249,6 +250,23 @@ export default function Social() {
               </div>
 
 
+            </motion.div>
+          )}
+
+          {/* ── TAB: Avatar ── */}
+          {activeTab === 'avatar' && (
+            <motion.div key="avatar"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+                <AvatarBuilder
+                  value={form.avatar_config || form.avatar_style}
+                  onChange={cfg => setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
+                  onSave={handleSave}
+                  saved={saveMutation.isSuccess}
+                />
+              </div>
             </motion.div>
           )}
 
