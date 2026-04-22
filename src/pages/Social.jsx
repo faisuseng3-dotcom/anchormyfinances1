@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import AvatarBuilder, { AvatarSVG } from '@/components/social/AvatarBuilder';
+import { AvatarSVG } from '@/components/social/AvatarBuilder';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
 import { Input } from '@/components/ui/input';
@@ -248,15 +248,7 @@ export default function Social() {
                 </div>
               </div>
 
-              {/* Avatar builder */}
-              <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <AvatarBuilder
-                  value={form.avatar_config || form.avatar_style}
-                  onChange={cfg => { setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg })); setSaving(false); }}
-                  onSave={handleSave}
-                  saved={saveMutation.isSuccess}
-                />
-              </div>
+
             </motion.div>
           )}
 
