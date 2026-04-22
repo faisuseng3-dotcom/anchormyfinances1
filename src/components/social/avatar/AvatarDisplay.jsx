@@ -37,7 +37,7 @@ export function AvatarSVG({ config, size = 100, expression }) {
   const sssOuter = blendHex(skinColor, '#FF6644', 0.28);
 
   return (
-    <svg width={size} height={size} viewBox="0 0 100 124" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 100 124" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ filter: `drop-shadow(0 0 ${Math.round(size*0.06)}px rgba(255,255,255,0.55)) drop-shadow(0 ${Math.round(size*0.04)}px ${Math.round(size*0.08)}px rgba(0,0,0,0.5))` }}>
       <defs>
         {/* ══ BG ambient ══ */}
         <radialGradient id={`${uid}_bg`} cx="50%" cy="38%" r="65%">
@@ -97,16 +97,43 @@ export function AvatarSVG({ config, size = 100, expression }) {
           <stop offset="100%" stopColor="rgba(0,0,0,0)"/>
         </radialGradient>
 
+        {/* ══ RIM LIGHT FILTER — white glowing silhouette edge ══ */}
+        <filter id={`${uid}_rim_filter`} x="-20%" y="-20%" width="140%" height="140%">
+          <feMorphology operator="dilate" radius="1.8" in="SourceAlpha" result="dilated"/>
+          <feGaussianBlur stdDeviation="2.5" in="dilated" result="blurred"/>
+          <feFlood floodColor="white" floodOpacity="0.85" result="white_light"/>
+          <feComposite in="white_light" in2="blurred" operator="in" result="rim_glow"/>
+          <feMerge>
+            <feMergeNode in="rim_glow"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        {/* ══ FABRIC TEXTURE — feTurbulence for clothing ══ */}
+        <filter id={`${uid}_fabric`} x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" result="noise"/>
+          <feColorMatrix type="saturate" values="0" in="noise" result="gray_noise"/>
+          <feBlend in="SourceGraphic" in2="gray_noise" mode="multiply" result="textured"/>
+          <feComposite in="textured" in2="SourceGraphic" operator="in"/>
+        </filter>
+
+        {/* ══ FABRIC SUBTLE — very low frequency weave ══ */}
+        <filter id={`${uid}_weave`} x="0%" y="0%" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.008" numOctaves="2" seed="4" result="wave"/>
+          <feDisplacementMap in="SourceGraphic" in2="wave" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+
         {/* ══ DROP SHADOW filter ══ */}
         <filter id={`${uid}_shad`} x="-15%" y="-10%" width="130%" height="140%">
           <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="rgba(0,0,0,0.30)"/>
         </filter>
 
-        {/* ══ BLOOM filter — soft glow ══ */}
-        <filter id={`${uid}_bloom`} x="-25%" y="-25%" width="150%" height="150%">
-          <feGaussianBlur stdDeviation="1.5" result="blur"/>
-          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-        </filter>
+        {/* ══ SKIN RADIAL — key light at 30% 30% with bone structure ══ */}
+        <radialGradient id={`${uid}_skinKey`} cx="35%" cy="30%" r="60%">
+          <stop offset="0%"   stopColor="rgba(255,255,255,0.22)"/>
+          <stop offset="50%"  stopColor="rgba(255,255,255,0.06)"/>
+          <stop offset="100%" stopColor="rgba(0,0,0,0.18)"/>
+        </radialGradient>
       </defs>
 
       {/* ── AMBIENT BG glow ── */}
@@ -124,8 +151,10 @@ export function AvatarSVG({ config, size = 100, expression }) {
       <ellipse cx="26" cy="56" rx="6" ry="8"  fill={`url(#${uid}_sss)`}/>
       <ellipse cx="74" cy="56" rx="6" ry="8"  fill={`url(#${uid}_sss)`}/>
 
-      {/* L2: Outfit */}
-      <OutfitLayer outfitConfig={c.outfit} uid={uid}/>
+      {/* L2: Outfit — wrapped with subtle fabric weave displacement */}
+      <g filter={`url(#${uid}_weave)`}>
+        <OutfitLayer outfitConfig={c.outfit} uid={uid}/>
+      </g>
 
       {/* L3: Face */}
       <FaceLayer skinColor={skinColor} faceShape={c.faceShape} uid={uid}/>
@@ -168,6 +197,9 @@ export function AvatarSVG({ config, size = 100, expression }) {
 
       {/* ── LIGHTING PASSES (rendered last, over everything) ── */}
 
+      {/* GLOBAL SKIN KEY LIGHT — bone structure (cheekbones/brow) */}
+      <ellipse cx="50" cy="54" rx="25" ry="28" fill={`url(#${uid}_skinKey)`}/>
+
       {/* RIM LIGHT — top edge: creates glowing silhouette */}
       <ellipse cx="50" cy="18" rx="40" ry="20" fill={`url(#${uid}_rim)`}/>
 
@@ -193,28 +225,28 @@ export default function AvatarDisplay({ config, size = 170, expression }) {
   return (
     <div className="flex items-center justify-center relative" style={{ minHeight: size + 20 }}>
 
-      {/* Outer ambient glow — far ring */}
+      {/* Outer ambient aura — slow breathe */}
       <motion.div
-        animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.55, 0.35] }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ scale: [1, 1.05, 1], opacity: [0.28, 0.48, 0.28] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: size + 80,
-          height: size + 80,
-          background: `radial-gradient(circle, ${bg}28 0%, transparent 62%)`,
+          width: size + 90,
+          height: size + 90,
+          background: `radial-gradient(circle, ${bg}30 0%, transparent 60%)`,
         }}
       />
 
-      {/* Middle glow ring */}
+      {/* Inner aura ring — tighter pulse */}
       <motion.div
-        animate={{ scale: [1, 1.05, 1], opacity: [0.55, 0.75, 0.55] }}
-        transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut', delay: 0.4 }}
+        animate={{ scale: [1, 1.05, 1], opacity: [0.50, 0.80, 0.50] }}
+        transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
         className="absolute rounded-full pointer-events-none"
         style={{
-          width: size + 44,
-          height: size + 44,
-          background: `radial-gradient(circle, ${bg}35 0%, transparent 65%)`,
-          boxShadow: `0 0 40px ${bg}45, 0 0 80px ${bg}20`,
+          width: size + 36,
+          height: size + 36,
+          background: `radial-gradient(circle, ${bg}40 0%, transparent 68%)`,
+          boxShadow: `0 0 50px ${bg}50, 0 0 90px ${bg}25`,
         }}
       />
 
