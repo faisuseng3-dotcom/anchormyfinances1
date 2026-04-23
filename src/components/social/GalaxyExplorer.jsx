@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
-import { AvatarSVG } from './AvatarBuilder';
+import { AvatarSVG } from './avatar/PBREngine';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import ExpandedProfile from './ExpandedProfile';
@@ -20,7 +20,7 @@ const DEMO_PROFILES = [
     privacy_level: 'full',
     savings_rate: 8,
     main_stat: '1 200 kr/mån sparande',
-    avatar_style: { skin: '#FDBCB4', hair: 'short', hairColor: '#3D2B1F', top: 'tshirt', topColor: '#4B7CF3', bg: '#4B7CF3' },
+    avatar_config: { skinColor:'#FDBCB4', hair:{style:'short_clean',color:'#3D2B1F'}, outfit:{style:'tshirt',color:'#4B7CF3'}, bg:'#4B7CF3', eyes:{type:'almond',color:'#2D3436'}, eyebrows:{type:'natural'}, eyelashes:{type:'natural'}, nose:{type:'button'}, mouth:{type:'smile',lipColor:'#C48A8A'}, faceShape:'oval', accessory:'none', expression:'neutral' },
     finance: {
       income: 14500,
       items: [
@@ -45,7 +45,7 @@ const DEMO_PROFILES = [
     privacy_level: 'hybrid',
     savings_rate: 20,
     main_stat: '20% Marginal',
-    avatar_style: { skin: '#C68642', hair: 'bun', hairColor: '#1A0A00', top: 'blazer', topColor: '#A78BFA', bg: '#A78BFA' },
+    avatar_config: { skinColor:'#C68642', hair:{style:'bun_top',color:'#1A0A00'}, outfit:{style:'blazer',color:'#A78BFA'}, bg:'#A78BFA', eyes:{type:'round',color:'#4A7C59'}, eyebrows:{type:'arched'}, eyelashes:{type:'dramatic'}, nose:{type:'narrow'}, mouth:{type:'pouty',lipColor:'#E91E63'}, faceShape:'heart', accessory:'earrings', expression:'happy' },
     finance: {
       income: null,
       items: [
@@ -69,7 +69,7 @@ const DEMO_PROFILES = [
     privacy_level: 'hybrid',
     savings_rate: 40,
     main_stat: '40% Sparkvot',
-    avatar_style: { skin: '#8D5524', hair: 'short', hairColor: '#1C1C1C', top: 'hoodie', topColor: '#0FDEBD', bg: '#0FDEBD' },
+    avatar_config: { skinColor:'#8D5524', hair:{style:'short_clean',color:'#1C1C1C'}, outfit:{style:'hoodie',color:'#0FDEBD'}, bg:'#0FDEBD', eyes:{type:'hooded',color:'#3B2314'}, eyebrows:{type:'thick'}, eyelashes:{type:'none'}, nose:{type:'wide'}, mouth:{type:'smile',lipColor:'#C48A8A'}, faceShape:'square', accessory:'glasses_round', expression:'neutral' },
     finance: {
       income: null,
       items: [
@@ -111,7 +111,7 @@ function MiniDonut({ items, size = 44 }) {
 
 function MarketplaceCard({ profile, onOpen, index }) {
   const isHybrid = profile.privacy_level === 'hybrid';
-  const accentColor = profile.avatar_style?.bg || '#4B7CF3';
+  const accentColor = (profile.avatar_config || profile.avatar_style)?.bg || '#4B7CF3';
 
   return (
     <motion.div
@@ -144,7 +144,7 @@ function MarketplaceCard({ profile, onOpen, index }) {
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: index * 0.5 }}
           className="w-16 h-16 rounded-full flex items-center justify-center"
           style={{ background: `${accentColor}20`, border: `2px solid ${accentColor}45`, boxShadow: `0 0 20px ${accentColor}30` }}>
-          <AvatarSVG style={profile.avatar_style} size={54} />
+          <AvatarSVG config={profile.avatar_config || profile.avatar_style} size={54} />
         </motion.div>
 
         <div className="absolute bottom-1 left-1">
@@ -204,7 +204,7 @@ export default function GalaxyExplorer({ userFinancialProfile }) {
       trait: p.occupation || 'Ekonom',
       tags: [p.occupation || ''].filter(Boolean),
       privacy_level: p.privacy_level || 'hybrid',
-      avatar_style: p.avatar_style || {},
+      avatar_config: p.avatar_config || p.avatar_style || {},
       main_stat: '',
       savings_rate: 0,
       finance: { items: [] },

@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy, Smile } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import AvatarBuilder, { AvatarSVG } from '@/components/social/AvatarBuilder';
+import AvatarBuilder from '@/components/social/AvatarBuilder';
+import { AvatarSVG } from '@/components/social/avatar/PBREngine';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
 import { Input } from '@/components/ui/input';
@@ -202,7 +203,7 @@ export default function Social() {
                 <div className="flex items-center gap-4 mb-5">
                   <div className="w-16 h-16 rounded-full flex items-center justify-center"
                     style={{ background: `${(form.avatar_config || form.avatar_style)?.bg || '#0D7377'}20`, border: `2px solid ${(form.avatar_config || form.avatar_style)?.bg || '#0D7377'}` }}>
-                    <AvatarSVG config={form.avatar_config} style={form.avatar_style} size={56} />
+                    <AvatarSVG config={form.avatar_config || form.avatar_style} size={56} />
                   </div>
                   <div className="flex-1">
                     <p className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>
@@ -313,7 +314,7 @@ export default function Social() {
                     className="mt-3 flex items-center gap-3 p-3 rounded-2xl"
                     style={{ background: 'var(--color-surface)', border: '1px solid rgba(13,115,119,0.3)' }}>
                     <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${searchResult.avatar_style?.bg || '#0D7377'}20` }}>
-                      <AvatarSVG style={searchResult.avatar_style} size={44} />
+                      <AvatarSVG config={searchResult.avatar_config || searchResult.avatar_style} size={44} />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>@{searchResult.username}</p>

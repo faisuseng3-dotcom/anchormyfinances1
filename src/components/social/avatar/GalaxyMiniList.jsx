@@ -2,13 +2,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, Heart } from 'lucide-react';
-import { AvatarSVG } from '../AvatarBuilder';
+import { AvatarSVG } from '../avatar/PBREngine';
 
 const DEMO = [
-  { id: 'd1', username: 'elias_kth',    followers: 2334, likes: 177, bg: '#4B7CF3', avatar_style: { skin: '#FDBCB4', hair: 'short_clean', hairColor: '#3D2B1F', top: 'tshirt', topColor: '#4B7CF3', bg: '#4B7CF3' } },
-  { id: 'd2', username: 'sarah_design', followers: 2383, likes: 15,  bg: '#A78BFA', avatar_style: { skin: '#C68642', hair: 'bun_top',    hairColor: '#1A0A00', top: 'blazer', topColor: '#A78BFA', bg: '#A78BFA' } },
-  { id: 'd3', username: 'marcus_tech',  followers: 2084, likes: 385, bg: '#0FDEBD', avatar_style: { skin: '#8D5524', hair: 'short_clean', hairColor: '#1C1C1C', top: 'hoodie', topColor: '#0FDEBD', bg: '#0FDEBD' } },
-  { id: 'd4', username: 'name_lumis',   followers: 2676, likes: 372, bg: '#F6AD55', avatar_style: { skin: '#FFDBAC', hair: 'medium_wave', hairColor: '#8B4513', top: 'blazer', topColor: '#F6AD55', bg: '#F6AD55' } },
+  { id: 'd1', username: 'elias_kth',    followers: 2334, bg: '#4B7CF3', avatar_config: { skinColor: '#FDBCB4', hair: { style:'short_clean', color:'#3D2B1F' }, outfit: { style:'tshirt', color:'#4B7CF3' }, bg:'#4B7CF3', eyes:{type:'almond',color:'#2D3436'}, eyebrows:{type:'natural'}, eyelashes:{type:'natural'}, nose:{type:'button'}, mouth:{type:'smile',lipColor:'#C48A8A'}, faceShape:'oval', accessory:'none', expression:'neutral' } },
+  { id: 'd2', username: 'sarah_design', followers: 2383, bg: '#A78BFA', avatar_config: { skinColor: '#C68642', hair: { style:'bun_top',    color:'#1A0A00' }, outfit: { style:'blazer', color:'#A78BFA' }, bg:'#A78BFA', eyes:{type:'round',color:'#4A7C59'},  eyebrows:{type:'arched'}, eyelashes:{type:'dramatic'}, nose:{type:'narrow'}, mouth:{type:'pouty',lipColor:'#E91E63'}, faceShape:'heart', accessory:'earrings', expression:'happy' } },
+  { id: 'd3', username: 'marcus_tech',  followers: 2084, bg: '#0FDEBD', avatar_config: { skinColor: '#8D5524', hair: { style:'short_clean', color:'#1C1C1C' }, outfit: { style:'hoodie', color:'#0FDEBD' }, bg:'#0FDEBD', eyes:{type:'hooded',color:'#3B2314'}, eyebrows:{type:'thick'},  eyelashes:{type:'none'}, nose:{type:'wide'}, mouth:{type:'smile',lipColor:'#C48A8A'}, faceShape:'square', accessory:'glasses_round', expression:'neutral' } },
+  { id: 'd4', username: 'name_lumis',   followers: 2676, bg: '#F6AD55', avatar_config: { skinColor: '#FFDBAC', hair: { style:'medium_wave', color:'#8B4513' }, outfit: { style:'blazer', color:'#F6AD55' }, bg:'#F6AD55', eyes:{type:'cat',color:'#7B68EE'},    eyebrows:{type:'arched'}, eyelashes:{type:'natural'}, nose:{type:'button'}, mouth:{type:'smirk',lipColor:'#F06292'}, faceShape:'oval', accessory:'sunglasses', expression:'focused' } },
 ];
 
 export default function GalaxyMiniList({ realProfiles = [] }) {
@@ -54,7 +54,7 @@ export default function GalaxyMiniList({ realProfiles = [] }) {
                 backdropFilter: 'blur(6px)',
               }}
             >
-              <AvatarSVG style={p.avatar_style} size={38} />
+              <AvatarSVG config={p.avatar_config} size={38} />
             </div>
 
             {/* Username */}
