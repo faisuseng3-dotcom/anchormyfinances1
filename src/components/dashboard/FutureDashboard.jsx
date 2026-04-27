@@ -113,7 +113,7 @@ export default function FutureDashboard({
       <div className="relative z-10 mx-4 mt-4">
         <motion.button
           whileTap={{ scale: 0.97 }}
-          onClick={onOpenExpense}
+          onClick={handleMagicEntry}
           className="w-full py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
           style={{
             background: 'linear-gradient(135deg, rgba(15,222,189,0.15), rgba(75,124,243,0.10))',
@@ -122,7 +122,7 @@ export default function FutureDashboard({
           }}
         >
           <Zap className="w-4 h-4" />
-          REGISTRERA UTGIFT
+          MAGISK INMATNING
         </motion.button>
       </div>
 
