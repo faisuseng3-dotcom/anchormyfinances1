@@ -3,18 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Settings, ChevronUp, Zap, PiggyBank, TrendingUp } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import OrbitCore from './OrbitCore';
-import LiquidGoal from './LiquidGoal';
-import DataStrip from './DataStrip';
 import AIStoryBar from './AIStoryBar';
-import SparklineWidget from './SparklineWidget';
-import IncomeStar from './IncomeStar';
-import CrystalArtifact from './CrystalArtifact';
-import ForceFieldBudget from './ForceFieldBudget';
-import CommandCenter from './CommandCenter';
-import { getTotalFixedCosts } from '@/lib/financialUtils';
-
-const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
+import SpendableHero from './SpendableHero';
+import MoneyOverview from './MoneyOverview';
+import DebtCheck from './DebtCheck';
+import SavingsAndBudget from './SavingsAndBudget';
+import MagicEntryBox from '@/components/import/MagicEntryBox';
 
 export default function FutureDashboard({
   profile,
@@ -24,14 +18,8 @@ export default function FutureDashboard({
   onOpenTransactionHub,
   user,
 }) {
-  const [drawerOpen, setDrawerOpen]         = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [magicSpotlight, setMagicSpotlight] = useState(false);
-
-  const totalFixed     = getTotalFixedCosts(profile);
-  const monthlyMargin  = profile.income - totalFixed;
-  const savingsPct     = profile.savingsGoal
-    ? Math.min(100, Math.round(((profile.savingsCurrentBalance || 0) / profile.savingsGoal) * 100))
-    : 0;
 
   const handleMagicEntry = () => {
     setMagicSpotlight(true);
@@ -43,38 +31,34 @@ export default function FutureDashboard({
 
   return (
     <div
-      className="min-h-screen pb-28 relative"
+      className="min-h-screen pb-32 relative"
       style={{ background: 'linear-gradient(160deg, #050a15 0%, #090e1e 55%, #07101c 100%)' }}
     >
-      {/* Deep space background */}
+      {/* Background stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        {/* Nebula clouds */}
         <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(15,222,189,0.06) 0%, transparent 65%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(15,222,189,0.05) 0%, transparent 65%)' }} />
         <div className="absolute bottom-40 left-[-80px] w-72 h-72 rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.06) 0%, transparent 65%)' }} />
-        <div className="absolute top-1/3 right-[-60px] w-64 h-64 rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(75,124,243,0.05) 0%, transparent 65%)' }} />
-        {/* Stars */}
-        {[...Array(28)].map((_, i) => (
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 65%)' }} />
+        {[...Array(22)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full"
             style={{
               width: i % 5 === 0 ? 2 : 1,
               height: i % 5 === 0 ? 2 : 1,
-              top:  `${(i * 37 + 5) % 100}%`,
+              top: `${(i * 37 + 5) % 100}%`,
               left: `${(i * 61 + 7) % 100}%`,
               background: '#fff',
-              opacity: 0.15 + (i % 4) * 0.08,
+              opacity: 0.10 + (i % 4) * 0.07,
             }}
-            animate={{ opacity: [0.1, 0.4, 0.1] }}
+            animate={{ opacity: [0.06, 0.3, 0.06] }}
             transition={{ duration: 2 + (i % 3), repeat: Infinity, delay: (i * 0.3) % 4 }}
           />
         ))}
       </div>
 
-      {/* Spotlight dim overlay */}
+      {/* Spotlight overlay */}
       <AnimatePresence>
         {magicSpotlight && (
           <motion.div
@@ -91,23 +75,17 @@ export default function FutureDashboard({
       {/* Header */}
       <div className="relative z-10 px-5 pt-10 pb-2 flex items-center justify-between">
         <div>
-          <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.22)' }}>ANCHOR</p>
+          <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.20)' }}>ANCHOR</p>
           <h1 className="text-xl font-black" style={{ color: '#fff', letterSpacing: '-0.02em' }}>
             {user?.full_name?.split(' ')[0] || 'Din ekonomi'}
           </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="text-right mr-1">
-            <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.25)' }}>INKOMST</p>
-            <p className="text-xs font-black" style={{ color: 'rgba(255,255,255,0.6)' }}>{fmt(profile.income)} kr</p>
-          </div>
-          <Link to={createPageUrl('Settings')}>
-            <button className="w-9 h-9 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}>
-              <Settings className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.4)' }} />
-            </button>
-          </Link>
-        </div>
+        <Link to={createPageUrl('Settings')}>
+          <button className="w-9 h-9 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}>
+            <Settings className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.4)' }} />
+          </button>
+        </Link>
       </div>
 
       {/* AI Story Bar */}
@@ -115,34 +93,37 @@ export default function FutureDashboard({
         <AIStoryBar profile={profile} transactions={transactions} />
       </div>
 
-      {/* THE ORBIT CORE */}
-      <div className="relative z-10 mt-1">
-        <OrbitCore profile={profile} />
+      {/* ─── KAPITEL 1: SANNINGEN ─── */}
+      <div className="relative z-10 mt-3">
+        <SpendableHero profile={profile} />
       </div>
 
-      {/* Bento Grid */}
-      <div className="relative z-10 px-4 space-y-3">
+      {/* ─── KAPITEL 2: FLÖDE ─── */}
+      <div className="relative z-10 mt-3 space-y-3">
+        <MoneyOverview profile={profile} />
+        <DebtCheck profile={profile} />
+      </div>
 
-        {/* Liquid Goal — full width */}
-        <LiquidGoal profile={profile} />
+      {/* ─── KAPITEL 3: HINKARNA ─── */}
+      <div className="relative z-10 mt-3">
+        <SavingsAndBudget profile={profile} />
+      </div>
 
-        {/* Data Strip — Marginal & Skulder scanner */}
-        <DataStrip profile={profile} />
-
-        {/* Row: Sparkline + Income Star */}
-        <div className="grid grid-cols-2 gap-3">
-          <SparklineWidget transactions={transactions} />
-          <IncomeStar income={profile.income} />
-        </div>
-
-        {/* Row: Crystal Artifact + Force Field Budget */}
-        <div className="grid grid-cols-2 gap-3">
-          <CrystalArtifact />
-          <ForceFieldBudget profile={profile} />
-        </div>
-
-        {/* Command Center — Input Portal */}
-        <CommandCenter onMagicEntry={handleMagicEntry} />
+      {/* Quick add button */}
+      <div className="relative z-10 mx-4 mt-4">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={onOpenExpense}
+          className="w-full py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
+          style={{
+            background: 'linear-gradient(135deg, rgba(15,222,189,0.15), rgba(75,124,243,0.10))',
+            border: '1px solid rgba(15,222,189,0.28)',
+            color: '#0FDEBD',
+          }}
+        >
+          <Zap className="w-4 h-4" />
+          REGISTRERA UTGIFT
+        </motion.button>
       </div>
 
       {/* Pull-up Drawer handle */}
@@ -152,7 +133,7 @@ export default function FutureDashboard({
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           className="flex flex-col items-center gap-1 px-6 py-2 rounded-t-2xl pointer-events-auto"
-          style={{ background: 'rgba(15,222,189,0.1)', border: '1px solid rgba(15,222,189,0.18)', borderBottom: 'none' }}
+          style={{ background: 'rgba(15,222,189,0.08)', border: '1px solid rgba(15,222,189,0.15)', borderBottom: 'none' }}
         >
           <ChevronUp className="w-4 h-4" style={{ color: '#0FDEBD' }} />
           <span className="text-[8px] font-black tracking-widest" style={{ color: '#0FDEBD' }}>TRANSAKTIONER</span>
@@ -170,13 +151,13 @@ export default function FutureDashboard({
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 32, stiffness: 300 }}
               className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl overflow-hidden"
-              style={{ background: '#080c1a', border: '1px solid rgba(15,222,189,0.18)', maxHeight: '70vh' }}>
+              style={{ background: '#080c1a', border: '1px solid rgba(15,222,189,0.15)', maxHeight: '70vh' }}>
               <div className="flex justify-center pt-3 pb-2">
                 <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.12)' }} />
               </div>
-              <div className="px-5 pb-6">
+              <div className="px-5 pb-8">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>KONTROLLPANEL</p>
+                  <p className="text-xs font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>SNABBVAL</p>
                   <button onClick={() => setDrawerOpen(false)} className="text-xs font-bold" style={{ color: '#0FDEBD' }}>Stäng</button>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
