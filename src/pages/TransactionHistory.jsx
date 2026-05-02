@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
 import { Link } from 'react-router-dom';
 
@@ -30,46 +30,54 @@ const CATEGORY_OPTIONS = [
   ...Object.entries(CATEGORY_LABELS).map(([v, l]) => ({ value: v, label: l }))
 ];
 
-const DATE_OPTIONS = [
-  { value: '', label: 'All tid' },
-  { value: 'week', label: 'Denna vecka' },
-  { value: 'month', label: 'Denna månad' },
-];
-
-function isInRange(dateStr, range) {
-  if (!range) return true;
-  const d = new Date(dateStr);
-  const now = new Date();
-  if (range === 'week') {
-    const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - now.getDay());
-    weekStart.setHours(0, 0, 0, 0);
-    return d >= weekStart;
-  }
-  if (range === 'month') {
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-  }
-  return true;
+// Get the best available date for a transaction (prefer explicit date field, fallback to created_date)
+function getTxDate(tx) {
+  // Transactions imported from bank may have a date string stored in label-adjacent fields
+  // Try created_date as primary source
+  return new Date(tx.created_date);
 }
 
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
+function isTodayDate(d) {
   const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-  if (d.toDateString() === today.toDateString()) return 'Idag';
-  if (d.toDateString() === yesterday.toDateString()) return 'Igår';
-  return d.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' });
+  return d.toDateString() === today.toDateString();
 }
 
-function groupByDay(transactions) {
-  const groups = {};
+// Group into: "Idag", then by month (e.g. "April 2026", "Mars 2026")
+function groupByMonth(transactions) {
+  const today = new Date();
+  const todayStr = today.toDateString();
+
+  const todayTxs = [];
+  const monthMap = {};
+
   transactions.forEach(tx => {
-    const day = new Date(tx.created_date).toDateString();
-    if (!groups[day]) groups[day] = [];
-    groups[day].push(tx);
+    const d = getTxDate(tx);
+    if (d.toDateString() === todayStr) {
+      todayTxs.push(tx);
+    } else {
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      if (!monthMap[key]) monthMap[key] = { label: d.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' }), txs: [] };
+      monthMap[key].txs.push(tx);
+    }
   });
-  return Object.entries(groups).map(([day, txs]) => ({ day, txs }));
+
+  const groups = [];
+  if (todayTxs.length > 0) {
+    groups.push({ key: 'today', label: 'Idag', txs: todayTxs });
+  }
+  // Sort months descending
+  Object.entries(monthMap)
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .forEach(([key, val]) => groups.push({ key, label: val.label, txs: val.txs }));
+
+  return groups;
+}
+
+function netAmount(txs) {
+  return txs.reduce((s, t) => {
+    const isPositive = t.amount > 0 || ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type);
+    return s + (isPositive ? Math.abs(t.amount) : -Math.abs(t.amount));
+  }, 0);
 }
 
 function TransactionRow({ tx, onDelete, onEdit }) {
@@ -94,7 +102,7 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>{tx.vendor || tx.label}</p>
           <p className="text-xs truncate mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
-            {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {new Date(tx.created_date).toLocaleDateString('sv-SE')}
+            {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {getTxDate(tx).toLocaleDateString('sv-SE')}
           </p>
         </div>
         <p className="text-sm font-bold flex-shrink-0" style={{ color: isPositive ? 'var(--color-success)' : 'var(--color-danger)' }}>
@@ -123,18 +131,70 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         )}
       </AnimatePresence>
 
-      {(tx.note || tx.aiNote) && (
-        <AnimatePresence>
-          <div className="mx-5 mb-3">
-            {tx.aiNote && (
-              <div className="flex gap-2 p-2.5 rounded-lg" style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.15)' }}>
-                <Bot className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
-                <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{tx.aiNote}</p>
-              </div>
-            )}
+      {tx.aiNote && (
+        <div className="mx-5 mb-3">
+          <div className="flex gap-2 p-2.5 rounded-lg" style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.15)' }}>
+            <Bot className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
+            <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{tx.aiNote}</p>
           </div>
-        </AnimatePresence>
+        </div>
       )}
+    </div>
+  );
+}
+
+function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
+  const [open, setOpen] = useState(defaultOpen);
+  const net = netAmount(group.txs);
+  const totalOut = group.txs.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
+  const totalIn = group.txs.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+
+  return (
+    <div className="mb-3">
+      {/* Month header — tappable to expand/collapse */}
+      <button
+        onClick={() => setOpen(v => !v)}
+        className="w-full flex items-center justify-between px-5 py-3"
+      >
+        <div className="flex items-center gap-3">
+          <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+            <ChevronDown className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+          </motion.div>
+          <div className="text-left">
+            <p className="text-sm font-black capitalize" style={{ color: 'var(--color-text-primary)' }}>{group.label}</p>
+            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{group.txs.length} transaktioner</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-bold" style={{ color: net >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+            {net >= 0 ? '+' : ''}{net.toLocaleString('sv-SE')} kr
+          </p>
+          <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+            <span style={{ color: 'var(--color-success)' }}>+{totalIn.toLocaleString('sv-SE')}</span>
+            {' / '}
+            <span style={{ color: 'var(--color-danger)' }}>-{totalOut.toLocaleString('sv-SE')}</span>
+          </p>
+        </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            key="content"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.22 }}
+            className="overflow-hidden"
+          >
+            <div className="mx-5 rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+              {group.txs.map(tx => (
+                <TransactionRow key={tx.id} tx={tx} onDelete={onDelete} onEdit={onEdit} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -146,7 +206,6 @@ export default function TransactionHistory() {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
-  const [filterDate, setFilterDate] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: transactions = [], isLoading } = useQuery({
@@ -159,15 +218,14 @@ export default function TransactionHistory() {
       if (search && !`${tx.label} ${tx.vendor || ''}`.toLowerCase().includes(search.toLowerCase())) return false;
       if (filterType && tx.type !== filterType) return false;
       if (filterCategory && tx.category !== filterCategory) return false;
-      if (!isInRange(tx.created_date, filterDate)) return false;
       return true;
     });
-  }, [transactions, search, filterType, filterCategory, filterDate]);
+  }, [transactions, search, filterType, filterCategory]);
 
-  const groups = groupByDay(filtered);
+  const groups = useMemo(() => groupByMonth(filtered), [filtered]);
 
-  const totalIn = filtered.filter(t => ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type)).reduce((s, t) => s + t.amount, 0);
-  const totalOut = filtered.filter(t => !['income', 'savings_withdrawal', 'transfer_to_spending'].includes(t.type)).reduce((s, t) => s + Math.abs(t.amount), 0);
+  const totalIn = filtered.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
+  const totalOut = filtered.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
   const handleDelete = async (id) => {
     await base44.entities.Transaction.delete(id);
@@ -177,7 +235,7 @@ export default function TransactionHistory() {
   const handleEdit = (tx) => { setEditingTx(tx); setShowForm(true); };
   const handleFormSuccess = () => { setShowForm(false); setEditingTx(null); queryClient.invalidateQueries({ queryKey: ['transactions'] }); };
 
-  const activeFilterCount = [filterType, filterCategory, filterDate].filter(Boolean).length;
+  const activeFilterCount = [filterType, filterCategory].filter(Boolean).length;
 
   return (
     <div className="min-h-screen pb-32" style={{ background: 'var(--color-background-primary)' }}>
@@ -224,20 +282,6 @@ export default function TransactionHistory() {
             className="px-5 mt-2 overflow-hidden"
           >
             <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-              {/* Date filter */}
-              <div>
-                <p className="text-xs font-bold mb-2 uppercase tracking-wide" style={{ color: 'var(--color-text-muted)' }}>Period</p>
-                <div className="flex gap-2 flex-wrap">
-                  {DATE_OPTIONS.map(o => (
-                    <button key={o.value} onClick={() => setFilterDate(o.value)}
-                      className="px-3 py-1.5 rounded-xl text-xs font-semibold"
-                      style={{ background: filterDate === o.value ? 'var(--color-accent)' : 'var(--color-surface)', color: filterDate === o.value ? '#fff' : 'var(--color-text-secondary)' }}>
-                      {o.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {/* Type filter */}
               <div>
                 <p className="text-xs font-bold mb-2 uppercase tracking-wide" style={{ color: 'var(--color-text-muted)' }}>Typ</p>
                 <div className="flex gap-2 flex-wrap">
@@ -250,7 +294,6 @@ export default function TransactionHistory() {
                   ))}
                 </div>
               </div>
-              {/* Category filter */}
               <div>
                 <p className="text-xs font-bold mb-2 uppercase tracking-wide" style={{ color: 'var(--color-text-muted)' }}>Kategori</p>
                 <div className="flex gap-2 flex-wrap">
@@ -301,11 +344,11 @@ export default function TransactionHistory() {
         <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
           <FileUp className="w-12 h-12 mb-4" style={{ color: 'var(--color-text-muted)' }} />
           <p className="font-bold text-xl mb-1" style={{ color: 'var(--color-text-primary)' }}>Inga transaktioner än</p>
-          <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Importera en CSV-fil från din bank eller lägg till ett köp manuellt.</p>
+          <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Importera från din bank eller lägg till ett köp manuellt.</p>
           <div className="flex flex-col gap-3 w-full max-w-xs">
             <Link to="/Import">
               <button className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm text-white" style={{ background: 'var(--color-accent)' }}>
-                <FileUp className="w-4 h-4" /> Ladda upp CSV
+                <FileUp className="w-4 h-4" /> Importera bank-data
               </button>
             </Link>
             <button onClick={() => setShowForm(true)} className="w-full py-3.5 rounded-2xl font-semibold text-sm"
@@ -325,24 +368,16 @@ export default function TransactionHistory() {
         </div>
       )}
 
-      {/* Transaction groups */}
+      {/* Month groups */}
       <div className="mt-2">
-        {groups.map(({ day, txs }) => (
-          <div key={day} className="mb-3">
-            <div className="flex items-center justify-between px-5 py-2">
-              <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>
-                {formatDate(txs[0].created_date)}
-              </p>
-              <p className="text-xs font-semibold" style={{ color: txs.reduce((s, t) => s + (t.amount > 0 ? t.amount : -Math.abs(t.amount)), 0) >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
-                {txs.reduce((s, t) => s + (t.amount > 0 ? t.amount : -Math.abs(t.amount)), 0).toLocaleString('sv-SE')} kr
-              </p>
-            </div>
-            <div className="mx-5 rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-              {txs.map(tx => (
-                <TransactionRow key={tx.id} tx={tx} onDelete={handleDelete} onEdit={handleEdit} />
-              ))}
-            </div>
-          </div>
+        {groups.map((group, i) => (
+          <MonthGroup
+            key={group.key}
+            group={group}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
+            defaultOpen={i === 0} // Only today/latest month open by default
+          />
         ))}
       </div>
 
