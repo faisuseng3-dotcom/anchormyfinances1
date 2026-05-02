@@ -30,10 +30,27 @@ const CATEGORY_OPTIONS = [
   ...Object.entries(CATEGORY_LABELS).map(([v, l]) => ({ value: v, label: l }))
 ];
 
-// Get the best available date for a transaction (prefer explicit date field, fallback to created_date)
+// Extract real date from bank transaction labels like "Kortköp 260414 ICA" → 2026-04-14
+// Format: YYMMDD
+function extractDateFromLabel(label) {
+  if (!label) return null;
+  const m = label.match(/\b(\d{6})\b/);
+  if (!m) return null;
+  const s = m[1];
+  const yy = parseInt(s.slice(0, 2), 10);
+  const mm = parseInt(s.slice(2, 4), 10);
+  const dd = parseInt(s.slice(4, 6), 10);
+  if (mm < 1 || mm > 12 || dd < 1 || dd > 31) return null;
+  const year = 2000 + yy;
+  const d = new Date(year, mm - 1, dd);
+  if (isNaN(d.getTime())) return null;
+  return d;
+}
+
+// Get the best available date for a transaction
 function getTxDate(tx) {
-  // Transactions imported from bank may have a date string stored in label-adjacent fields
-  // Try created_date as primary source
+  const fromLabel = extractDateFromLabel(tx.label) || extractDateFromLabel(tx.vendor);
+  if (fromLabel) return fromLabel;
   return new Date(tx.created_date);
 }
 
