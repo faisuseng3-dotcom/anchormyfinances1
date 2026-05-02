@@ -244,6 +244,23 @@ export default function TransactionHistory() {
   const totalIn = filtered.filter(t => t.amount > 0).reduce((s, t) => s + t.amount, 0);
   const totalOut = filtered.filter(t => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
+  // Category breakdown for current month (expenses only)
+  const thisMonthCategories = useMemo(() => {
+    const now = new Date();
+    const thisMonth = transactions.filter(tx => {
+      const d = getTxDate(tx);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && tx.amount < 0;
+    });
+    const map = {};
+    thisMonth.forEach(tx => {
+      const cat = tx.category || 'other';
+      map[cat] = (map[cat] || 0) + Math.abs(tx.amount);
+    });
+    return Object.entries(map)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat, amount]) => ({ cat, amount }));
+  }, [transactions]);
+
   const handleDelete = async (id) => {
     await base44.entities.Transaction.delete(id);
     queryClient.invalidateQueries({ queryKey: ['transactions'] });
@@ -327,6 +344,43 @@ export default function TransactionHistory() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Current month category breakdown */}
+      {thisMonthCategories.length > 0 && (
+        <div className="mx-5 mt-3 rounded-2xl p-4" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+          <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-muted)' }}>
+            Utgifter denna månad per kategori
+          </p>
+          <div className="space-y-2">
+            {thisMonthCategories.map(({ cat, amount }) => {
+              const max = thisMonthCategories[0].amount;
+              const pct = (amount / max) * 100;
+              const color = CATEGORY_COLORS[cat] || '#8B97A8';
+              return (
+                <div key={cat}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>
+                      {CATEGORY_LABELS[cat] || 'Övrigt'}
+                    </span>
+                    <span className="text-xs font-bold" style={{ color: 'var(--color-text-primary)' }}>
+                      {amount.toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${pct}%` }}
+                      transition={{ duration: 0.5, ease: 'easeOut' }}
+                      className="h-full rounded-full"
+                      style={{ background: color }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Summary */}
       {filtered.length > 0 && (
