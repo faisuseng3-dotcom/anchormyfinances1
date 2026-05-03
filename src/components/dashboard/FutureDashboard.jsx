@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Settings, ChevronUp, Zap, PiggyBank, TrendingUp } from 'lucide-react';
+import { Settings, ChevronUp, Zap, PiggyBank, TrendingUp, Calculator } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import AIStoryBar from './AIStoryBar';
 import SpendableHero from './SpendableHero';
@@ -9,6 +9,7 @@ import MoneyOverview from './MoneyOverview';
 import DebtCheck from './DebtCheck';
 import SavingsAndBudget from './SavingsAndBudget';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
+import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 
 export default function FutureDashboard({
   profile,
@@ -20,6 +21,7 @@ export default function FutureDashboard({
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [magicSpotlight, setMagicSpotlight] = useState(false);
+  const [kalkylatornOpen, setKalkylatornOpen] = useState(false);
 
   const handleMagicEntry = () => {
     setMagicSpotlight(true);
@@ -109,12 +111,13 @@ export default function FutureDashboard({
         <SavingsAndBudget profile={profile} />
       </div>
 
-      {/* Quick add button */}
-      <div className="relative z-10 mx-4 mt-4">
+      {/* Action buttons row */}
+      <div className="relative z-10 mx-4 mt-4 flex gap-3">
+        {/* Magic entry */}
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleMagicEntry}
-          className="w-full py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
+          className="flex-1 py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
           style={{
             background: 'linear-gradient(135deg, rgba(15,222,189,0.15), rgba(75,124,243,0.10))',
             border: '1px solid rgba(15,222,189,0.28)',
@@ -124,7 +127,25 @@ export default function FutureDashboard({
           <Zap className="w-4 h-4" />
           MAGISK INMATNING
         </motion.button>
+
+        {/* Kalkylator — gateway to pro tools */}
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setKalkylatornOpen(true)}
+          className="py-4 px-5 rounded-2xl flex items-center justify-center gap-2"
+          style={{
+            background: 'linear-gradient(135deg, rgba(167,139,250,0.18), rgba(96,165,250,0.12))',
+            border: '1px solid rgba(167,139,250,0.35)',
+            color: '#a78bfa',
+            flexShrink: 0,
+          }}
+        >
+          <Calculator className="w-4 h-4" />
+          <span className="text-sm font-black tracking-wide">KALKYLATOR</span>
+        </motion.button>
       </div>
+
+      <KalkylatornSheet isOpen={kalkylatornOpen} onClose={() => setKalkylatornOpen(false)} />
 
       {/* Pull-up Drawer handle */}
       <div className="fixed bottom-[72px] left-0 right-0 z-40 flex justify-center pointer-events-none">
