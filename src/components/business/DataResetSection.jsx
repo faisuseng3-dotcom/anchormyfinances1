@@ -35,6 +35,10 @@ export default function DataResetSection() {
         });
       }
 
+      // Clear the simulated/demo data flag so BusinessDashboard shows empty state
+      localStorage.setItem('anchor_biz_reset', 'true');
+      localStorage.removeItem('anchor_biz_manual_txs');
+
       setStep('done');
     } catch {
       setStep('error');

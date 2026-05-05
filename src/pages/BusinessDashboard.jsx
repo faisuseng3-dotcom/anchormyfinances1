@@ -43,6 +43,7 @@ export default function BusinessDashboard() {
   const [showManual, setShowManual] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isReset, setIsReset] = useState(() => localStorage.getItem('anchor_biz_reset') === 'true');
 
   // Persist business mode on refresh
   useEffect(() => {
@@ -51,10 +52,23 @@ export default function BusinessDashboard() {
     return () => clearTimeout(t);
   }, []);
 
+  // Listen for reset events within the same session
+  useEffect(() => {
+    const checkReset = () => setIsReset(localStorage.getItem('anchor_biz_reset') === 'true');
+    window.addEventListener('storage', checkReset);
+    // Also poll briefly after mount in case reset happened in same tab
+    const interval = setInterval(checkReset, 500);
+    const stop = setTimeout(() => clearInterval(interval), 10000);
+    return () => { window.removeEventListener('storage', checkReset); clearInterval(interval); clearTimeout(stop); };
+  }, []);
+
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const legalLabel = legalEntity === 'ab' ? 'Aktiebolag (AB)' : 'Enskild firma';
-  const { safeToSpend, label } = calcSafeToSpend(biz.bankBalance, biz.vatReserved, legalEntity);
-  const allTransactions = [...manualTransactions, ...biz.recentTransactions];
+
+  // After reset: show empty data instead of simulated demo data
+  const activeBiz = isReset ? { ...biz, bankBalance: 0, vatReserved: 0, recentTransactions: [], unpaidInvoices: [], runwayMonths: 0, runwayData: [] } : biz;
+  const { safeToSpend, label } = calcSafeToSpend(activeBiz.bankBalance, activeBiz.vatReserved, legalEntity);
+  const allTransactions = isReset ? manualTransactions : [...manualTransactions, ...biz.recentTransactions];
 
   return (
     <div className="min-h-screen" style={{ background: '#F4F6F8' }}>
@@ -112,7 +126,7 @@ export default function BusinessDashboard() {
         <AnimatePresence mode="wait">
           {!loading && activeTab === 'home' && (
             <motion.div key="home" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <HomeTab safeToSpend={safeToSpend} label={label} onScannerOpen={() => setShowScanner(true)} />
+              <HomeTab safeToSpend={safeToSpend} label={label} onScannerOpen={() => setShowScanner(true)} recentTransactions={isReset ? allTransactions : activeBiz.recentTransactions} />
             </motion.div>
           )}
           {!loading && activeTab === 'skatt' && (
@@ -122,7 +136,7 @@ export default function BusinessDashboard() {
           )}
           {!loading && activeTab === 'rapporter' && (
             <motion.div key="rapporter" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <RapporterTab runwayMonths={biz.runwayMonths} runwayData={biz.runwayData} monthlyBurn={monthlyBurn} invoices={biz.unpaidInvoices} transactions={biz.recentTransactions} />
+              <RapporterTab runwayMonths={activeBiz.runwayMonths} runwayData={activeBiz.runwayData} monthlyBurn={monthlyBurn} invoices={activeBiz.unpaidInvoices} transactions={allTransactions} />
             </motion.div>
           )}
           {!loading && activeTab === 'arkiv' && (

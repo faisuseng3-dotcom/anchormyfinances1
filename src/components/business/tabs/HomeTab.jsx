@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Camera, ArrowUpRight, ArrowDownLeft, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from 'recharts';
-const RECENT_TX = [
+const DEFAULT_RECENT_TX = [
   { vendor: 'Adobe Creative Cloud', amount: -599, date: 'Idag', category: 'Programvara' },
   { vendor: 'Kund: Eriksson AB', amount: 18500, date: 'Igår', category: 'Inkomst' },
   { vendor: 'SJ AB', amount: -1240, date: '10 apr', category: 'Resor' },
@@ -14,8 +14,10 @@ const FLOW_DATA = [
   { m: 'Feb', v: 44000 }, { m: 'Mar', v: 56000 }, { m: 'Apr', v: 48000 },
 ];
 
-export default function HomeTab({ safeToSpend, label, onScannerOpen }) {
+export default function HomeTab({ safeToSpend, label, onScannerOpen, recentTransactions }) {
   const fileRef = useRef();
+  // Use passed transactions if provided, otherwise fall back to demo data
+  const txList = recentTransactions !== undefined ? recentTransactions : DEFAULT_RECENT_TX;
 
   const handleCamera = () => {
     if (onScannerOpen) { onScannerOpen(); return; }
@@ -72,7 +74,12 @@ export default function HomeTab({ safeToSpend, label, onScannerOpen }) {
           <button className="text-xs font-semibold" style={{ color: '#0D7377' }}>Se alla</button>
         </div>
         <div className="divide-y" style={{ borderColor: '#F0F2F5' }}>
-          {RECENT_TX.map((tx, i) => (
+          {txList.length === 0 && (
+            <div className="px-5 py-6 text-center text-sm" style={{ color: '#9AA5B4' }}>
+              Inga transaktioner ännu. Börja med att scanna ett kvitto.
+            </div>
+          )}
+          {txList.map((tx, i) => (
             <div key={i} className="px-5 py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
@@ -82,7 +89,7 @@ export default function HomeTab({ safeToSpend, label, onScannerOpen }) {
                     : <ArrowUpRight className="w-4 h-4" style={{ color: '#9AA5B4' }} />}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold" style={{ color: '#1A2332' }}>{tx.vendor}</p>
+                  <p className="text-sm font-semibold" style={{ color: '#1A2332' }}>{tx.vendor || tx.label}</p>
                   <p className="text-xs" style={{ color: '#9AA5B4' }}>{tx.category} · {tx.date}</p>
                 </div>
               </div>
