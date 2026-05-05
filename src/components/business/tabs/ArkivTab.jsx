@@ -2,10 +2,11 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ReceiptVault from '@/components/business/ReceiptVault';
 import ActivityStream from '@/components/business/ActivityStream';
+import SmartPasteImport from '@/components/business/SmartPasteImport';
 import { Link } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 
-export default function ArkivTab({ transactions }) {
+export default function ArkivTab({ transactions, onBooked }) {
   return (
     <div className="px-5 space-y-4">
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -13,6 +14,7 @@ export default function ArkivTab({ transactions }) {
         Arkiv
       </motion.p>
       <p className="text-sm -mt-2" style={{ color: '#9AA5B4' }}>Kvitton, verifikat och din huvudbok</p>
+      <SmartPasteImport onBooked={onBooked} />
       <ReceiptVault transactions={transactions} />
       <ActivityStream />
       <Link to="/LedgerVault">

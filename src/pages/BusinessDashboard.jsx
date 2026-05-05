@@ -141,7 +141,19 @@ export default function BusinessDashboard() {
           )}
           {!loading && activeTab === 'arkiv' && (
             <motion.div key="arkiv" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <ArkivTab transactions={allTransactions} />
+              <ArkivTab
+                transactions={allTransactions}
+                onBooked={txs => setManualTransactions(p => [
+                  ...txs.map(t => ({
+                    vendor: t.vendor || t.description,
+                    amount: t.amount,
+                    date: t.date || 'Nyligen',
+                    category: t.category || 'other',
+                    label: t.description,
+                  })),
+                  ...p,
+                ])}
+              />
             </motion.div>
           )}
           {!loading && activeTab === 'profil' && (
