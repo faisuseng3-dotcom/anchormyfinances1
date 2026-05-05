@@ -5,6 +5,7 @@ import { useModeContext } from '@/components/modes/ModeContext';
 import SwipeApprove from '@/components/business/SwipeApprove';
 import AuditorAccess from '@/components/business/AuditorAccess';
 import CrisisMode from '@/components/business/CrisisMode';
+import DataResetSection from '@/components/business/DataResetSection';
 
 export default function ProfilTab({ companyName, orgNr, legalLabel, monthlyBurn }) {
   const { toggleMode } = useModeContext();
@@ -26,6 +27,8 @@ export default function ProfilTab({ companyName, orgNr, legalLabel, monthlyBurn 
       <SwipeApprove />
       <AuditorAccess />
       <CrisisMode monthlyBurn={monthlyBurn} />
+
+      <DataResetSection />
 
       <motion.button whileTap={{ scale: 0.97 }} onClick={toggleMode}
         className="w-full rounded-3xl p-4 flex items-center justify-center gap-3 font-bold text-sm"
