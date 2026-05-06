@@ -91,10 +91,10 @@ export default function KalkylatornSheet({ isOpen, onClose }) {
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-3">
+            <div className="flex items-center justify-between px-6 py-3 bg-[hsl(var(--foreground))] text-[hsl(var(--background))]">
               <div>
                 <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(0,0,0,0.3)' }}>ANCHOR</p>
-                <h2 className="text-xl font-black" style={{ color: '#1A2332', letterSpacing: '-0.02em' }}>
+                <h2 className="text-xl font-black text-[hsl(var(--background))] bg-[hsl(var(--background))]" style={{ color: '#1A2332', letterSpacing: '-0.02em' }}>
                   Pro-verktyg
                 </h2>
               </div>
