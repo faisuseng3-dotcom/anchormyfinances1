@@ -39,6 +39,9 @@ export default function DataResetSection() {
       localStorage.setItem('anchor_biz_reset', 'true');
       localStorage.removeItem('anchor_biz_manual_txs');
 
+      // Fire a custom event so all tabs react instantly in the same tab
+      window.dispatchEvent(new CustomEvent('anchor:biz_reset'));
+
       setStep('done');
     } catch {
       setStep('error');

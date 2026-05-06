@@ -52,14 +52,19 @@ export default function BusinessDashboard() {
     return () => clearTimeout(t);
   }, []);
 
-  // Listen for reset events within the same session
+  // Listen for reset events (both same-tab custom event and cross-tab storage event)
   useEffect(() => {
-    const checkReset = () => setIsReset(localStorage.getItem('anchor_biz_reset') === 'true');
+    const checkReset = () => {
+      const flag = localStorage.getItem('anchor_biz_reset') === 'true';
+      setIsReset(flag);
+      if (flag) setManualTransactions([]);
+    };
     window.addEventListener('storage', checkReset);
-    // Also poll briefly after mount in case reset happened in same tab
-    const interval = setInterval(checkReset, 500);
-    const stop = setTimeout(() => clearInterval(interval), 10000);
-    return () => { window.removeEventListener('storage', checkReset); clearInterval(interval); clearTimeout(stop); };
+    window.addEventListener('anchor:biz_reset', checkReset);
+    return () => {
+      window.removeEventListener('storage', checkReset);
+      window.removeEventListener('anchor:biz_reset', checkReset);
+    };
   }, []);
 
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
@@ -131,12 +136,12 @@ export default function BusinessDashboard() {
           )}
           {!loading && activeTab === 'skatt' && (
             <motion.div key="skatt" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <SkattMomsTab vatReserved={biz.vatReserved} vatDeadlines={biz.vatDeadlines} entityType={legalEntity} totalBalance={biz.bankBalance} />
+              <SkattMomsTab vatReserved={activeBiz.vatReserved} vatDeadlines={activeBiz.vatDeadlines} entityType={legalEntity} totalBalance={activeBiz.bankBalance} isReset={isReset} />
             </motion.div>
           )}
           {!loading && activeTab === 'rapporter' && (
             <motion.div key="rapporter" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <RapporterTab runwayMonths={activeBiz.runwayMonths} runwayData={activeBiz.runwayData} monthlyBurn={monthlyBurn} invoices={activeBiz.unpaidInvoices} transactions={allTransactions} />
+              <RapporterTab runwayMonths={activeBiz.runwayMonths} runwayData={activeBiz.runwayData} monthlyBurn={monthlyBurn} invoices={activeBiz.unpaidInvoices} transactions={allTransactions} isReset={isReset} />
             </motion.div>
           )}
           {!loading && activeTab === 'arkiv' && (

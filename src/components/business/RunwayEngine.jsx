@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { TrendingUp, AlertTriangle } from 'lucide-react';
 
-export default function RunwayEngine({ runwayMonths, runwayData, monthlyBurn }) {
-  const isWarning = runwayMonths < 3;
+export default function RunwayEngine({ runwayMonths, runwayData, monthlyBurn, isReset }) {
+  const safeData = runwayData || [];
+  const isWarning = !isReset && runwayMonths < 3;
 
   const fmt = (v) => `${(v / 1000).toFixed(0)}k`;
 
@@ -30,16 +31,22 @@ export default function RunwayEngine({ runwayMonths, runwayData, monthlyBurn }) 
           </div>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-black" style={{ color: isWarning ? '#E53E3E' : '#0D7377', letterSpacing: '-1px' }}>
-            {runwayMonths.toFixed(1)}
+          <p className="text-2xl font-black" style={{ color: isReset ? '#C0C8D2' : isWarning ? '#E53E3E' : '#0D7377', letterSpacing: '-1px' }}>
+            {isReset ? '—' : runwayMonths.toFixed(1)}
           </p>
           <p className="text-xs" style={{ color: '#9AA5B4' }}>månader kvar</p>
         </div>
       </div>
 
       <div className="px-2 py-3 h-36">
+        {isReset || safeData.length === 0 ? (
+          <div className="h-full flex items-center justify-center">
+            <p className="text-xs" style={{ color: '#C0C8D2' }}>Ingen data — bokför transaktioner för att se prognos</p>
+          </div>
+        ) : null}
+        {!isReset && safeData.length > 0 && (
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={runwayData} margin={{ top: 4, right: 8, bottom: 0, left: -10 }}>
+          <AreaChart data={safeData} margin={{ top: 4, right: 8, bottom: 0, left: -10 }}>
             <defs>
               <linearGradient id="runwayGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor={isWarning ? '#E53E3E' : '#0D7377'} stopOpacity={0.2} />
@@ -58,13 +65,14 @@ export default function RunwayEngine({ runwayMonths, runwayData, monthlyBurn }) 
             />
           </AreaChart>
         </ResponsiveContainer>
+        )}
       </div>
 
       <div className="mx-5 mb-4 flex items-center justify-between rounded-2xl px-4 py-3"
         style={{ background: '#F4F6F8' }}>
         <p className="text-xs font-semibold" style={{ color: '#4A5568' }}>Månadsutgifter</p>
-        <p className="text-sm font-black" style={{ color: '#1A2332' }}>
-          {monthlyBurn.toLocaleString('sv-SE')} kr/mån
+        <p className="text-sm font-black" style={{ color: isReset ? '#C0C8D2' : '#1A2332' }}>
+          {isReset ? '0 kr/mån' : `${monthlyBurn.toLocaleString('sv-SE')} kr/mån`}
         </p>
       </div>
     </motion.div>

@@ -121,10 +121,10 @@ const statusConfig = {
   error: { icon: AlertTriangle, color: '#D95F5F', label: 'Fel', bg: 'rgba(217,95,95,0.12)' },
 };
 
-const exportSIE = () => {
+const exportSIE = (entries) => {
   const now = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   let sie = `#FLAGGA 0\n#PROGRAM "Anchor Business" 1.0\n#GEN ${now}\n#FNAMN "Mitt F\u00f6retag AB"\n#RAR 0 ${now.slice(0,4)}0101 ${now.slice(0,4)}1231\n\n`;
-  LEDGER_ENTRIES.forEach(e => {
+  entries.forEach(e => {
     sie += `#VER "A" ${e.id.split('-')[1]} ${e.date.replace(/-/g,'')} "${e.description}"\n{\n`;
     e.lines.forEach(l => {
       const amt = l.debit ? l.debit.toFixed(2) : (-l.credit).toFixed(2);
@@ -139,9 +139,9 @@ const exportSIE = () => {
   URL.revokeObjectURL(url);
 };
 
-const exportCSV = () => {
+const exportCSV = (entries) => {
   const rows = ['Verifikat,Datum,Leverantör,Beskrivning,Belopp,Status,Synkad'];
-  LEDGER_ENTRIES.forEach(e => {
+  entries.forEach(e => {
     rows.push(`${e.id},${e.date},"${e.vendor}","${e.description}",${e.amount},${e.status},${e.synced}`);
   });
   const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
@@ -154,15 +154,18 @@ const exportCSV = () => {
 export default function LedgerVault() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
+  const isReset = localStorage.getItem('anchor_biz_reset') === 'true';
 
-  const filtered = LEDGER_ENTRIES.filter(e =>
+  const sourceEntries = isReset ? [] : LEDGER_ENTRIES;
+
+  const filtered = sourceEntries.filter(e =>
     e.vendor.toLowerCase().includes(search.toLowerCase()) ||
     e.description.toLowerCase().includes(search.toLowerCase()) ||
     e.id.toLowerCase().includes(search.toLowerCase())
   );
 
-  const bookedCount = LEDGER_ENTRIES.filter(e => e.status === 'booked').length;
-  const pendingCount = LEDGER_ENTRIES.filter(e => e.status === 'pending').length;
+  const bookedCount = sourceEntries.filter(e => e.status === 'booked').length;
+  const pendingCount = sourceEntries.filter(e => e.status === 'pending').length;
 
   return (
     <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
@@ -185,12 +188,12 @@ export default function LedgerVault() {
           </div>
         </div>
         <div className="flex gap-2">
-          <button onClick={exportCSV}
+          <button onClick={() => exportCSV(sourceEntries)}
             className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
             style={{ background: 'rgba(75,124,243,0.12)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.3)' }}>
             <Download className="w-3.5 h-3.5" /> CSV
           </button>
-          <button onClick={exportSIE}
+          <button onClick={() => exportSIE(sourceEntries)}
             className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold"
             style={{ background: 'rgba(212,175,55,0.12)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
             <Download className="w-3.5 h-3.5" /> SIE
@@ -288,9 +291,16 @@ export default function LedgerVault() {
         })}
 
         {filtered.length === 0 && (
-          <div className="py-12 text-center">
-            <p className="text-2xl mb-2">📭</p>
-            <p className="text-sm" style={{ color: 'rgba(155,173,184,0.5)' }}>Inga verifikat hittades</p>
+          <div className="py-16 text-center">
+            <p className="text-4xl mb-3">📭</p>
+            <p className="text-base font-bold mb-1" style={{ color: 'rgba(155,173,184,0.7)' }}>
+              {isReset ? 'Inga verifikat än' : 'Inga verifikat hittades'}
+            </p>
+            {isReset && (
+              <p className="text-sm" style={{ color: 'rgba(155,173,184,0.4)' }}>
+                Bokför transaktioner via Arkiv-fliken för att se dem här.
+              </p>
+            )}
           </div>
         )}
       </div>

@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, AlertCircle, Clock, ChevronRight } from 'lucide-react';
 import InvoiceDetailSheet from '@/components/business/details/InvoiceDetailSheet';
 
 export default function InvoiceList({ invoices: initialInvoices }) {
-  const [invoices, setInvoices] = useState(initialInvoices);
+  const [invoices, setInvoices] = useState(initialInvoices || []);
+
+  useEffect(() => {
+    setInvoices(initialInvoices || []);
+  }, [initialInvoices]);
   const [selected, setSelected] = useState(null);
   const total = invoices.reduce((s, i) => s + i.amount, 0);
 
