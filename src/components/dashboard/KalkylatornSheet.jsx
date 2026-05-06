@@ -108,7 +108,7 @@ export default function KalkylatornSheet({ isOpen, onClose }) {
             </div>
 
             {/* Tools grid */}
-            <div className="px-5 pb-8 overflow-y-auto text-[hsl(var(--foreground))] bg-[#080707]" style={{ maxHeight: 'calc(80vh - 110px)' }}>
+            <div className="px-5 pb-8 overflow-y-auto text-[hsl(var(--foreground))] bg-[#0d0d0d]" style={{ maxHeight: 'calc(80vh - 110px)' }}>
               <div className="grid grid-cols-2 gap-3">
                 {PRO_TOOLS.map((tool, i) =>
               <Link key={tool.id} to={createPageUrl(tool.page)} onClick={onClose}>
@@ -125,7 +125,7 @@ export default function KalkylatornSheet({ isOpen, onClose }) {
                   
                       <span style={{ fontSize: 24 }}>{tool.emoji}</span>
                       <div>
-                        <p className="text-sm font-black" style={{ color: '#1A2332' }}>{tool.label}</p>
+                        <p className="text-sm font-black text-[hsl(var(--background))]" style={{ color: '#1A2332' }}>{tool.label}</p>
                         <p className="text-[10px] mt-0.5" style={{ color: '#8896A5' }}>{tool.desc}</p>
                       </div>
                       <div className="w-1.5 h-1.5 rounded-full mt-1" style={{ background: tool.color }} />
