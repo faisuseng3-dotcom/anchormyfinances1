@@ -91,7 +91,7 @@ export default function KalkylatornSheet({ isOpen, onClose }) {
             </div>
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-3 bg-[#100f0f] text-[hsl(var(--sidebar-border))]">
+            <div className="flex items-center justify-between px-6 py-3 text-[hsl(var(--sidebar-border))] bg-[#fdf7f7]">
               <div>
                 <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(0,0,0,0.3)' }}>ANCHOR</p>
                 <h2 className="text-xl font-black opacity-100 bg-[hsl(var(--background))] text-[hsl(var(--card))]" style={{ color: '#1A2332', letterSpacing: '-0.02em' }}>
@@ -108,7 +108,7 @@ export default function KalkylatornSheet({ isOpen, onClose }) {
             </div>
 
             {/* Tools grid */}
-            <div className="px-5 pb-8 overflow-y-auto text-[hsl(var(--foreground))] bg-[#0d0d0d]" style={{ maxHeight: 'calc(80vh - 110px)' }}>
+            <div className="px-5 pb-8 overflow-y-auto text-[hsl(var(--foreground))] bg-[#ffffff]" style={{ maxHeight: 'calc(80vh - 110px)' }}>
               <div className="grid grid-cols-2 gap-3">
                 {PRO_TOOLS.map((tool, i) =>
               <Link key={tool.id} to={createPageUrl(tool.page)} onClick={onClose}>
