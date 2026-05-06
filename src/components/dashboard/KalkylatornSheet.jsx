@@ -108,7 +108,7 @@ export default function KalkylatornSheet({ isOpen, onClose }) {
             </div>
 
             {/* Tools grid */}
-            <div className="px-5 pb-8 overflow-y-auto text-[hsl(var(--foreground))] bg-[hsl(var(--foreground))]" style={{ maxHeight: 'calc(80vh - 110px)' }}>
+            <div className="px-5 pb-8 overflow-y-auto text-[hsl(var(--foreground))] bg-[#080707]" style={{ maxHeight: 'calc(80vh - 110px)' }}>
               <div className="grid grid-cols-2 gap-3">
                 {PRO_TOOLS.map((tool, i) =>
               <Link key={tool.id} to={createPageUrl(tool.page)} onClick={onClose}>
