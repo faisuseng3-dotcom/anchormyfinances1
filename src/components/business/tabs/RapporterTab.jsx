@@ -4,6 +4,7 @@ import RunwayEngine from '@/components/business/RunwayEngine';
 import InvoiceList from '@/components/business/InvoiceList';
 import DeductibleTransactions from '@/components/business/DeductibleTransactions';
 import WarningBanner from '@/components/business/WarningBanner';
+import FinancialReports from '@/components/business/FinancialReports';
 
 export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, invoices, transactions, isReset, unprocessedCount, onReviewUnprocessed }) {
   const safeInvoices = isReset ? [] : (invoices || []);
@@ -31,6 +32,7 @@ export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, in
       />
       <InvoiceList invoices={safeInvoices} />
       {safeTransactions.length > 0 && <DeductibleTransactions transactions={safeTransactions} />}
+      <FinancialReports transactions={safeTransactions} isReset={isReset} />
       {isReset && safeTransactions.length === 0 && (
         <div className="rounded-3xl p-8 text-center" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
           <p className="text-3xl mb-3">📊</p>

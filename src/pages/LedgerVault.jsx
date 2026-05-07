@@ -1,119 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2, Clock, AlertTriangle, Search, BookOpen, Download } from 'lucide-react';
 import LedgerEntryDetail from '@/components/business/LedgerEntryDetail';
+import { base44 } from '@/api/base44Client';
 
-const LEDGER_ENTRIES = [
-  {
-    id: 'A-0051',
-    icon: '🎨',
-    vendor: 'Adobe Inc',
-    description: 'Inköp av programvara (Adobe CC)',
-    date: '2026-04-11',
-    amount: -699,
-    vatRate: 25,
-    hasReceipt: true,
-    status: 'booked',
-    synced: true,
-    lines: [
-      { account: '5420', accountLabel: 'Programvaror & IT', debit: 559.20, credit: null },
-      { account: '2641', accountLabel: 'Ingående moms 25%', debit: 139.80, credit: null },
-      { account: '1930', accountLabel: 'Företagskonto', debit: null, credit: 699.00 },
-    ],
-    auditLog: [
-      { time: '2026-04-11 14:22', text: 'Transaktion identifierad via Bank-API.' },
-      { time: '2026-04-11 14:23', text: 'Kvitto matchat via AI (Sannolikhet: 99%).' },
-      { time: '2026-04-11 15:10', text: 'Affärshändelse godkänd av användare via Swipe.' },
-      { time: '2026-04-11 15:11', text: 'Synkroniserad till Fortnox. Verifikat A-0051 skapat.' },
-    ],
-  },
-  {
-    id: 'A-0050',
-    icon: '🚆',
-    vendor: 'SJ AB',
-    description: 'Tågresa Stockholm–Göteborg',
-    date: '2026-04-11',
-    amount: -580,
-    vatRate: 10,
-    hasReceipt: true,
-    status: 'booked',
-    synced: true,
-    lines: [
-      { account: '5800', accountLabel: 'Resekostnader', debit: 527.27, credit: null },
-      { account: '2640', accountLabel: 'Ingående moms 12%', debit: 52.73, credit: null },
-      { account: '1930', accountLabel: 'Företagskonto', debit: null, credit: 580.00 },
-    ],
-    auditLog: [
-      { time: '2026-04-11 09:15', text: 'Transaktion identifierad via Bank-API.' },
-      { time: '2026-04-11 09:16', text: 'Kvitto matchat via AI (Sannolikhet: 97%).' },
-      { time: '2026-04-11 10:30', text: 'Affärshändelse godkänd av användare via Swipe.' },
-    ],
-  },
-  {
-    id: 'A-0049',
-    icon: '💸',
-    vendor: 'Kund: Acme AB',
-    description: 'Faktura #2024-18 betald',
-    date: '2026-04-10',
-    amount: 24500,
-    vatRate: 0,
+// Convert a Transaction entity record into a ledger entry format
+const toEntry = (tx, idx) => {
+  const noteMatch = tx.note?.match(/Konto:\s*(\d+)\s*—\s*(.+?)(?:\.|$)/);
+  const vatMatch = tx.note?.match(/Moms:\s*(\d+)%/);
+  const accountCode = noteMatch?.[1] || (tx.type === 'income' ? '3000' : '6990');
+  const accountName = noteMatch?.[2]?.trim() || (tx.type === 'income' ? 'Försäljning' : 'Diverse kostnader');
+  const vatRate = vatMatch ? parseInt(vatMatch[1]) : 25;
+  const gross = Math.abs(tx.amount || 0);
+  const vat = Math.round((gross / (1 + vatRate / 100)) * (vatRate / 100) * 100) / 100;
+  const net = parseFloat((gross - vat).toFixed(2));
+  const vatAccount = vatRate === 25 ? '2641' : vatRate === 12 ? '2640' : vatRate === 6 ? '2645' : null;
+  const isIncome = tx.type === 'income';
+  const verNum = String(idx + 1).padStart(4, '0');
+
+  const lines = isIncome
+    ? [
+        { account: '1930', accountLabel: 'Företagskonto', debit: gross, credit: null },
+        { account: accountCode, accountLabel: accountName, debit: null, credit: net },
+        ...(vat > 0 && vatAccount ? [{ account: '2610', accountLabel: 'Utgående moms', debit: null, credit: vat }] : []),
+      ]
+    : [
+        { account: accountCode, accountLabel: accountName, debit: net, credit: null },
+        ...(vat > 0 && vatAccount ? [{ account: vatAccount, accountLabel: `Ingående moms ${vatRate}%`, debit: vat, credit: null }] : []),
+        { account: '1930', accountLabel: 'Företagskonto', debit: null, credit: gross },
+      ];
+
+  return {
+    id: `V-${verNum}`,
+    icon: isIncome ? '💰' : '🧾',
+    vendor: tx.vendor || tx.label,
+    description: tx.label,
+    date: tx.created_date?.slice(0, 10) || new Date().toISOString().slice(0, 10),
+    amount: tx.amount,
+    vatRate,
     hasReceipt: false,
     status: 'booked',
     synced: false,
-    lines: [
-      { account: '1930', accountLabel: 'Företagskonto', debit: 24500, credit: null },
-      { account: '1510', accountLabel: 'Kundfordringar', debit: null, credit: 24500 },
-    ],
+    aiAgent: tx.aiAgent,
+    lines,
     auditLog: [
-      { time: '2026-04-10 12:00', text: 'Inbetalning identifierad via Bank-API.' },
-      { time: '2026-04-10 12:01', text: 'Matchad mot faktura #2024-18 (Acme AB) via AI.' },
-      { time: '2026-04-10 12:05', text: 'Kundfordring bokförd som betald.' },
+      { time: tx.created_date?.slice(0, 16)?.replace('T', ' ') || '', text: `Bokförd via ${tx.aiAgent || 'Manuell'}. ${tx.aiNote || ''}` },
     ],
-  },
-  {
-    id: 'A-0048',
-    icon: '💻',
-    vendor: 'Webhallen',
-    description: 'IT-utrustning',
-    date: '2026-04-09',
-    amount: -4990,
-    vatRate: 25,
-    hasReceipt: false,
-    status: 'pending',
-    synced: false,
-    lines: [
-      { account: '5410', accountLabel: 'Förbrukningsinventarier', debit: 3992, credit: null },
-      { account: '2641', accountLabel: 'Ingående moms 25%', debit: 998, credit: null },
-      { account: '1930', accountLabel: 'Företagskonto', debit: null, credit: 4990 },
-    ],
-    auditLog: [
-      { time: '2026-04-09 18:40', text: 'Transaktion identifierad via Bank-API.' },
-      { time: '2026-04-09 18:40', text: 'AI förslag: Konto 5410. Kvitto saknas — bokföring pausad.' },
-    ],
-  },
-  {
-    id: 'A-0047',
-    icon: '🍽️',
-    vendor: 'Restaurang PM & Vänner',
-    description: 'Representation — kundlunch',
-    date: '2026-04-08',
-    amount: -1840,
-    vatRate: 12,
-    hasReceipt: false,
-    status: 'pending',
-    synced: false,
-    lines: [
-      { account: '5900', accountLabel: 'Representation', debit: 1619.20, credit: null },
-      { account: '2640', accountLabel: 'Ingående moms 12%', debit: 220.80, credit: null },
-      { account: '1930', accountLabel: 'Företagskonto', debit: null, credit: 1840 },
-    ],
-    auditLog: [
-      { time: '2026-04-08 20:10', text: 'Transaktion identifierad via Bank-API.' },
-      { time: '2026-04-08 20:11', text: 'AI kategoriserade som Representation. Kvitto krävs enligt Skatteverket.' },
-    ],
-  },
-];
+  };
+};
 
 const statusConfig = {
   booked: { icon: CheckCircle2, color: '#3DAA7A', label: 'Bokförd', bg: 'rgba(61,170,122,0.12)' },
@@ -121,13 +56,15 @@ const statusConfig = {
   error: { icon: AlertTriangle, color: '#D95F5F', label: 'Fel', bg: 'rgba(217,95,95,0.12)' },
 };
 
-const exportSIE = (entries) => {
+const exportSIE = (ents) => {
   const now = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  let sie = `#FLAGGA 0\n#PROGRAM "Anchor Business" 1.0\n#GEN ${now}\n#FNAMN "Mitt F\u00f6retag AB"\n#RAR 0 ${now.slice(0,4)}0101 ${now.slice(0,4)}1231\n\n`;
-  entries.forEach(e => {
-    sie += `#VER "A" ${e.id.split('-')[1]} ${e.date.replace(/-/g,'')} "${e.description}"\n{\n`;
-    e.lines.forEach(l => {
-      const amt = l.debit ? l.debit.toFixed(2) : (-l.credit).toFixed(2);
+  const companyName = localStorage.getItem('anchor_biz_company') || 'Mitt Företag AB';
+  let sie = `#FLAGGA 0\n#PROGRAM "Anchor Business" 2.0\n#GEN ${now}\n#FNAMN "${companyName}"\n#RAR 0 ${now.slice(0,4)}0101 ${now.slice(0,4)}1231\n\n`;
+  ents.forEach(e => {
+    const verNr = e.id.replace(/\D/g, '') || '1';
+    sie += `#VER "A" ${verNr} ${(e.date || '').replace(/-/g,'')} "${e.description || e.vendor}"\n{\n`;
+    (e.lines || []).forEach(l => {
+      const amt = l.debit != null ? l.debit.toFixed(2) : (-(l.credit || 0)).toFixed(2);
       sie += `  #TRANS ${l.account} {} ${amt}\n`;
     });
     sie += `}\n`;
@@ -135,28 +72,43 @@ const exportSIE = (entries) => {
   const blob = new Blob([sie], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url;
-  a.download = `anchor_export_${now}.se`; a.click();
+  a.download = `anchor_sie_${now}.se`; a.click();
   URL.revokeObjectURL(url);
 };
 
-const exportCSV = (entries) => {
-  const rows = ['Verifikat,Datum,Leverantör,Beskrivning,Belopp,Status,Synkad'];
-  entries.forEach(e => {
-    rows.push(`${e.id},${e.date},"${e.vendor}","${e.description}",${e.amount},${e.status},${e.synced}`);
+const exportCSV = (ents) => {
+  const rows = ['Verifikat,Datum,Leverantör,Beskrivning,Belopp,Moms%,Status'];
+  ents.forEach(e => {
+    rows.push(`${e.id},${e.date},"${e.vendor}","${e.description}",${e.amount},${e.vatRate || 0},${e.status}`);
   });
   const blob = new Blob([rows.join('\n')], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url;
-  a.download = 'anchor_ledger.csv'; a.click();
+  a.download = `anchor_ledger_${new Date().toISOString().slice(0,10)}.csv`; a.click();
   URL.revokeObjectURL(url);
 };
 
 export default function LedgerVault() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
+  const [entries, setEntries] = useState([]);
   const isReset = localStorage.getItem('anchor_biz_reset') === 'true';
 
-  const sourceEntries = isReset ? [] : LEDGER_ENTRIES;
+  useEffect(() => {
+    if (isReset) { setEntries([]); return; }
+    base44.entities.Transaction.list('-created_date', 100).then(txs => {
+      setEntries((txs || []).filter(t => t.aiAgent).map((t, i) => toEntry(t, i)));
+    }).catch(() => setEntries([]));
+  }, [isReset]);
+
+  // Reset sync
+  useEffect(() => {
+    const handler = () => setEntries([]);
+    window.addEventListener('anchor:biz_reset', handler);
+    return () => window.removeEventListener('anchor:biz_reset', handler);
+  }, []);
+
+  const sourceEntries = entries;
 
   const filtered = sourceEntries.filter(e =>
     e.vendor.toLowerCase().includes(search.toLowerCase()) ||

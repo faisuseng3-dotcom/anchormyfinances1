@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clipboard, Sparkles, Check, X, Loader2, ChevronRight, Bot, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import VerifikatConfirmModal from '@/components/business/VerifikatConfirmModal';
 
 const VAT_BADGE = {
   25: { label: '25% moms', color: '#E53E3E' },
@@ -14,9 +15,10 @@ const ACCOUNT_COLOR = '#0D7377';
 
 export default function SmartPasteImport({ onBooked }) {
   const [text, setText] = useState('');
-  const [phase, setPhase] = useState('idle'); // idle | parsing | review | booking | done
+  const [phase, setPhase] = useState('idle'); // idle | parsing | review | confirm | booking | done
   const [parsed, setParsed] = useState([]);
   const [aiInsight, setAiInsight] = useState('');
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleParse = async () => {
     if (!text.trim()) return;
@@ -83,6 +85,14 @@ export default function SmartPasteImport({ onBooked }) {
   };
 
   return (
+    <>
+    {showConfirm && (
+      <VerifikatConfirmModal
+        transactions={parsed}
+        onConfirm={() => { setShowConfirm(false); handleBookAll(); }}
+        onCancel={() => setShowConfirm(false)}
+      />
+    )}
     <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
       {/* Header */}
       <div className="px-5 pt-5 pb-4 flex items-center gap-3 border-b" style={{ borderColor: '#F0F2F5' }}>
@@ -224,13 +234,13 @@ export default function SmartPasteImport({ onBooked }) {
             <div className="px-5 py-4">
               <motion.button
                 whileTap={{ scale: 0.97 }}
-                onClick={handleBookAll}
+                onClick={() => setShowConfirm(true)}
                 disabled={parsed.length === 0}
                 className="w-full py-3.5 rounded-2xl font-black text-sm flex items-center justify-center gap-2"
                 style={{ background: 'linear-gradient(135deg, #0D7377, #0a5f63)', color: '#fff' }}
               >
                 <Check className="w-4 h-4" />
-                Bokför alla ({parsed.length})
+                Granska & bokför ({parsed.length})
                 <ChevronRight className="w-4 h-4" />
               </motion.button>
             </div>
@@ -274,5 +284,6 @@ export default function SmartPasteImport({ onBooked }) {
         )}
       </AnimatePresence>
     </div>
+    </>
   );
 }
