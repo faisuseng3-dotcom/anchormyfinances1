@@ -51,6 +51,7 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
       type,
       receiptUrl,
       date: new Date().toLocaleDateString('sv-SE'),
+      context: 'BUSINESS',
     });
     setSaved(true);
     setTimeout(() => { setSaved(false); onClose(); }, 1200);

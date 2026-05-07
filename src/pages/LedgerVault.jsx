@@ -96,8 +96,8 @@ export default function LedgerVault() {
 
   useEffect(() => {
     if (isReset) { setEntries([]); return; }
-    base44.entities.Transaction.list('-created_date', 100).then(txs => {
-      setEntries((txs || []).filter(t => t.aiAgent).map((t, i) => toEntry(t, i)));
+    base44.entities.Transaction.filter({ context: 'BUSINESS' }, '-created_date', 200).then(txs => {
+      setEntries((txs || []).map((t, i) => toEntry(t, i)));
     }).catch(() => setEntries([]));
   }, [isReset]);
 

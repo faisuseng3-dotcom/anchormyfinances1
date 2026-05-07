@@ -23,8 +23,11 @@ function formatRelativeDate(dateStr) {
 
 export default function RecentTransactions() {
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 3),
+    queryKey: ['transactions', 'personal', 'recent'],
+    queryFn: async () => {
+      const all = await base44.entities.Transaction.list('-created_date', 20);
+      return (all || []).filter(t => t.context !== 'BUSINESS').slice(0, 3);
+    },
   });
 
   if (isLoading) {

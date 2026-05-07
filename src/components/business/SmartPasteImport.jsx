@@ -25,7 +25,7 @@ export default function SmartPasteImport({ onBooked }) {
     setPhase('parsing');
     try {
       // Pass recent transactions as context for better categorization
-      const recentTxs = await base44.entities.Transaction.list('-created_date', 10).catch(() => []);
+      const recentTxs = await base44.entities.Transaction.filter({ context: 'BUSINESS' }, '-created_date', 10).catch(() => []);
       const result = await base44.functions.invoke('parseBankText', {
         rawText: text,
         recentTransactions: recentTxs.map(t => ({ label: t.label, vendor: t.vendor, amount: t.amount, category: t.category })),
@@ -55,6 +55,7 @@ export default function SmartPasteImport({ onBooked }) {
           note: `Konto: ${tx.accountCode} — ${tx.accountName}`,
           aiNote: `AI-bokfört: ${tx.accountCode} ${tx.accountName}. Moms: ${tx.vatRate}%`,
           aiAgent: 'SmartPaste',
+          context: 'BUSINESS',
         });
       }
 

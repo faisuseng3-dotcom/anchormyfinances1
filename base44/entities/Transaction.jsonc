@@ -1,0 +1,83 @@
+{
+  "name": "Transaction",
+  "type": "object",
+  "properties": {
+    "context": {
+      "type": "string",
+      "enum": [
+        "PERSONAL",
+        "BUSINESS"
+      ],
+      "default": "PERSONAL",
+      "description": "Dataisolering: PERSONAL = privat ekonomi, BUSINESS = f\u00f6retagsbokf\u00f6ring. F\u00e5r aldrig blandas."
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "income",
+        "expense",
+        "savings_deposit",
+        "savings_withdrawal",
+        "transfer_to_savings",
+        "transfer_to_spending"
+      ],
+      "description": "Typ av transaktion"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Belopp i kr (negativt = utgift, positivt = inkomst)"
+    },
+    "label": {
+      "type": "string",
+      "description": "Beskrivning, t.ex. L\u00f6n, Swish, Uttag"
+    },
+    "vendor": {
+      "type": "string",
+      "description": "Butik eller plats (t.ex. Hemk\u00f6p, Steam, SJ)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "food",
+        "transport",
+        "entertainment",
+        "travel",
+        "health",
+        "home",
+        "shopping",
+        "income",
+        "savings",
+        "other"
+      ],
+      "description": "Kategori"
+    },
+    "paymentMethod": {
+      "type": "string",
+      "enum": [
+        "Konto",
+        "Kredit",
+        "Klarna",
+        "Swish",
+        "Kontant"
+      ],
+      "description": "Betalningsmetod"
+    },
+    "note": {
+      "type": "string",
+      "description": "Valfri anteckning"
+    },
+    "aiNote": {
+      "type": "string",
+      "description": "AI-agentens analys av transaktionen"
+    },
+    "aiAgent": {
+      "type": "string",
+      "description": "Vilken AI-agent som analyserade k\u00f6pet"
+    }
+  },
+  "required": [
+    "type",
+    "amount",
+    "label"
+  ]
+}

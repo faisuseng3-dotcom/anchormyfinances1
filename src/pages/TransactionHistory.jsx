@@ -226,8 +226,11 @@ export default function TransactionHistory() {
   const [showFilters, setShowFilters] = useState(false);
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 500)
+    queryKey: ['transactions', 'personal'],
+    queryFn: async () => {
+      const all = await base44.entities.Transaction.list('-created_date', 500);
+      return (all || []).filter(t => t.context !== 'BUSINESS');
+    },
   });
 
   const filtered = useMemo(() => {
