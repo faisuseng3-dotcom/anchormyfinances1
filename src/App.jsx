@@ -23,6 +23,7 @@ import { DemoProvider } from '@/components/demo/DemoMode';
 import Social from './pages/Social';
 import Squads from './pages/Squads';
 import Galaxy from './pages/Galaxy';
+import YearEndClosing from './pages/YearEndClosing';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -112,6 +113,7 @@ const AuthenticatedApp = () => {
           <Squads />
         </LayoutWrapper>
       } />
+      <Route path="/YearEndClosing" element={<YearEndClosing />} />
       <Route path="/Insights" element={
         <LayoutWrapper currentPageName="InsightsPage">
           <InsightsPage />
