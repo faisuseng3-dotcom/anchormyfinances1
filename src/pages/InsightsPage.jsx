@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import SavingsBudgetConflictAlert from '@/components/insights/SavingsBudgetConflictAlert';
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
@@ -53,8 +54,11 @@ export default function InsightsPage() {
   const navigate = useNavigate();
 
   const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 1000)
+    queryKey: ['transactions', 'PERSONAL', 'insights'],
+    queryFn: async () => {
+      const all = await base44.entities.Transaction.list('-created_date', 1000);
+      return (all || []).filter(t => t.context !== 'BUSINESS');
+    }
   });
 
   // Pie: current month expenses by category
@@ -95,6 +99,14 @@ export default function InsightsPage() {
   const topCategory = pieData[0];
   const totalExpenses = pieData.reduce((s, d) => s + d.value, 0);
 
+  const { data: profile } = useQuery({
+    queryKey: ['financialProfile'],
+    queryFn: async () => {
+      const profiles = await base44.entities.FinancialProfile.list();
+      return profiles[0] || null;
+    }
+  });
+
   return (
     <div className="min-h-screen pb-32" style={{ background: 'var(--color-background-primary)' }}>
       <div className="px-5 pt-8 pb-4">
@@ -105,6 +117,8 @@ export default function InsightsPage() {
         <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>Analys</p>
         <h1 className="text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Ekonomiska insikter</h1>
       </div>
+
+      <SavingsBudgetConflictAlert profile={profile} />
 
       {isLoading ? (
         <div className="space-y-3 px-5 mt-2">

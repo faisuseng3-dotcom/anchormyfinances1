@@ -162,6 +162,7 @@ ${text}`,
       amount:   r._amount,
       label:    r._description,
       category: r._category,
+      context:  'PERSONAL',
     }));
     await base44.entities.Transaction.bulkCreate(toCreate);
     toast.success(`${toCreate.length} transaktioner importerade!`);
