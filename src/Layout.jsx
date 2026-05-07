@@ -15,6 +15,7 @@ import PushNotificationManager from '@/components/notifications/PushNotification
 import ModeSwitch from '@/components/modes/ModeSwitch';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { useNavigate } from 'react-router-dom';
+import { isAlexMode } from '@/lib/alexMode';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
@@ -31,7 +32,15 @@ export default function Layout({ children, currentPageName }) {
   const { isBusiness, toggleMode } = useModeContext();
   const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth } = useAuth();
+  const [alexActive, setAlexActive] = React.useState(() => isAlexMode());
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
+
+  // Lyssna på Alex Mode-event för att dölja business-element
+  React.useEffect(() => {
+    const handler = (e) => setAlexActive(e.detail.active);
+    window.addEventListener('anchor:alex_mode', handler);
+    return () => window.removeEventListener('anchor:alex_mode', handler);
+  }, []);
 
   // Route to business or personal dashboard based on mode
   React.useEffect(() => {

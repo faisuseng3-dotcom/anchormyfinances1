@@ -4,24 +4,46 @@ const ModeContext = createContext(null);
 
 export function ModeProvider({ children }) {
   const [mode, setMode] = useState(() => {
+    // Alex Mode tvingar personal
+    if (localStorage.getItem('anchor_alex_mode') === 'true') return 'personal';
     return localStorage.getItem('anchor_mode') || 'personal';
   });
 
+  // Lyssna på Alex Mode-events för att låsa till personal
+  useEffect(() => {
+    const handler = (e) => {
+      if (e.detail.active) {
+        setMode('personal');
+        localStorage.setItem('anchor_mode', 'personal');
+      }
+    };
+    window.addEventListener('anchor:alex_mode', handler);
+    return () => window.removeEventListener('anchor:alex_mode', handler);
+  }, []);
+
+  const isAlexLocked = localStorage.getItem('anchor_alex_mode') === 'true';
+
   const toggleMode = () => {
+    // Blockera byte till business under Alex Mode
+    if (isAlexLocked) return;
     const next = mode === 'personal' ? 'business' : 'personal';
     setMode(next);
     localStorage.setItem('anchor_mode', next);
   };
 
   const setPersonal = () => { setMode('personal'); localStorage.setItem('anchor_mode', 'personal'); };
-  const setBusiness = () => { setMode('business'); localStorage.setItem('anchor_mode', 'business'); };
+  const setBusiness = () => {
+    if (isAlexLocked) return;
+    setMode('business');
+    localStorage.setItem('anchor_mode', 'business');
+  };
 
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
   }, [mode]);
 
   return (
-    <ModeContext.Provider value={{ mode, toggleMode, setPersonal, setBusiness, isBusiness: mode === 'business' }}>
+    <ModeContext.Provider value={{ mode, toggleMode, setPersonal, setBusiness, isBusiness: mode === 'business', isPersonalLocked: isAlexLocked }}>
       {children}
     </ModeContext.Provider>
   );

@@ -21,6 +21,8 @@ import { getTotalFixedCosts } from '@/lib/financialUtils';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import DemoToggle from '@/components/demo/DemoToggle';
 import { useDemoMode } from '@/components/demo/DemoMode';
+import AlexModeHUD from '@/components/demo/AlexModeHUD';
+import AlexConflictAlert from '@/components/demo/AlexConflictAlert';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ export default function Dashboard() {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showMagicEntry, setShowMagicEntry] = useState(false);
-  const { isDemoMode, demoProfile, demoTransactions } = useDemoMode();
+  const { isDemoMode, isAlexMode: isAlex, demoProfile, demoTransactions } = useDemoMode();
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
@@ -127,14 +129,17 @@ export default function Dashboard() {
 
   return (
     <>
+      <AlexModeHUD active={isAlex} />
       <FutureDashboard
         profile={profile}
         transactions={txs}
-        user={undefined}
+        user={isAlex ? { full_name: 'Alex Lindqvist' } : undefined}
         onOpenExpense={() => setShowExpenseModal(true)}
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
+        alexMode={isAlex}
       />
+      {isAlex && <AlexConflictAlert />}
 
       {/* Modals */}
       <QuickExpenseModal

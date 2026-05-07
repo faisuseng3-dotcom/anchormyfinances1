@@ -1,7 +1,9 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { ALEX_PROFILE, ALEX_TRANSACTIONS, isAlexMode, toggleAlexMode, registerAlexModeShortcut } from '@/lib/alexMode';
 
 const DemoContext = createContext(null);
 
+// ── Gammalt demo-dataset (behålls för bakåtkompatibilitet) ──
 export const DEMO_PROFILE = {
   income: 42000,
   housingCost: 9500,
@@ -52,10 +54,38 @@ export const DEMO_TRANSACTIONS = [
 
 export function DemoProvider({ children }) {
   const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isAlex, setIsAlex] = useState(() => isAlexMode());
+
+  // Lyssna på Alex Mode-events (dispatcha från tangentbordsgenväg)
+  useEffect(() => {
+    const handler = (e) => setIsAlex(e.detail.active);
+    window.addEventListener('anchor:alex_mode', handler);
+
+    // Registrera Cmd+§ genväg globalt
+    const cleanup = registerAlexModeShortcut(() => {
+      toggleAlexMode();
+    });
+
+    return () => {
+      window.removeEventListener('anchor:alex_mode', handler);
+      cleanup();
+    };
+  }, []);
+
   const toggleDemo = () => setIsDemoMode(v => !v);
 
+  // Alex Mode åsidosätter vanlig demo
+  const activeProfile = isAlex ? ALEX_PROFILE : (isDemoMode ? DEMO_PROFILE : null);
+  const activeTransactions = isAlex ? ALEX_TRANSACTIONS : (isDemoMode ? DEMO_TRANSACTIONS : null);
+
   return (
-    <DemoContext.Provider value={{ isDemoMode, toggleDemo, demoProfile: DEMO_PROFILE, demoTransactions: DEMO_TRANSACTIONS }}>
+    <DemoContext.Provider value={{
+      isDemoMode: isDemoMode || isAlex,
+      isAlexMode: isAlex,
+      toggleDemo,
+      demoProfile: activeProfile || DEMO_PROFILE,
+      demoTransactions: activeTransactions || DEMO_TRANSACTIONS,
+    }}>
       {children}
     </DemoContext.Provider>
   );

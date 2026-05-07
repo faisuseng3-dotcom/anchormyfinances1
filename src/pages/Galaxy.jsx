@@ -3,8 +3,11 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import GalaxyExplorer from '@/components/social/GalaxyExplorer';
+import { useDemoMode } from '@/components/demo/DemoMode';
+import AlexGalaxyBadge from '@/components/demo/AlexGalaxyBadge';
 
 export default function Galaxy() {
+  const { isAlexMode } = useDemoMode();
   const { data: financialProfile } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
@@ -46,6 +49,13 @@ export default function Galaxy() {
           Utforska hur andra med liknande livssituation hanterar sin ekonomi
         </p>
       </div>
+
+      {/* Alex Galaxy Badge */}
+      {isAlexMode && (
+        <div className="relative z-10">
+          <AlexGalaxyBadge />
+        </div>
+      )}
 
       {/* Explorer */}
       <div className="relative z-10 px-4">
