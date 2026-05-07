@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Settings, ChevronUp, Zap, PiggyBank, TrendingUp, Calculator } from 'lucide-react';
@@ -10,6 +10,8 @@ import DebtCheck from './DebtCheck';
 import SavingsAndBudget from './SavingsAndBudget';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
+import MLIBanner from '@/components/dashboard/MLIBanner';
+import { calculateMLI, getMLIToneConfig, resetActionDensity } from '@/lib/mliEngine';
 
 export default function FutureDashboard({
   profile,
@@ -22,6 +24,14 @@ export default function FutureDashboard({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [magicSpotlight, setMagicSpotlight] = useState(false);
   const [kalkylatornOpen, setKalkylatornOpen] = useState(false);
+
+  // Beräkna MLI vid varje render (körs en gång per session via resetActionDensity)
+  const mli = useMemo(() => {
+    resetActionDensity();
+    return calculateMLI(transactions || [], profile);
+  }, [transactions, profile]);
+
+  const toneConfig = useMemo(() => getMLIToneConfig(mli), [mli]);
 
   const handleMagicEntry = () => {
     setMagicSpotlight(true);
@@ -88,6 +98,11 @@ export default function FutureDashboard({
             <Settings className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.4)' }} />
           </button>
         </Link>
+      </div>
+
+      {/* MLI Banner — kontextuellt meddelande */}
+      <div className="relative z-10 mt-2">
+        <MLIBanner mli={mli} greeting={toneConfig.greeting} />
       </div>
 
       {/* AI Story Bar */}
