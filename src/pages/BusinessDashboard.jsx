@@ -44,6 +44,7 @@ export default function BusinessDashboard() {
   const [manualTransactions, setManualTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isReset, setIsReset] = useState(() => localStorage.getItem('anchor_biz_reset') === 'true');
+  const [unprocessedCount, setUnprocessedCount] = useState(0);
 
   // Persist business mode on refresh
   useEffect(() => {
@@ -57,7 +58,7 @@ export default function BusinessDashboard() {
     const checkReset = () => {
       const flag = localStorage.getItem('anchor_biz_reset') === 'true';
       setIsReset(flag);
-      if (flag) setManualTransactions([]);
+      if (flag) { setManualTransactions([]); setUnprocessedCount(0); }
     };
     window.addEventListener('storage', checkReset);
     window.addEventListener('anchor:biz_reset', checkReset);
@@ -141,23 +142,38 @@ export default function BusinessDashboard() {
           )}
           {!loading && activeTab === 'rapporter' && (
             <motion.div key="rapporter" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <RapporterTab runwayMonths={activeBiz.runwayMonths} runwayData={activeBiz.runwayData} monthlyBurn={monthlyBurn} invoices={activeBiz.unpaidInvoices} transactions={allTransactions} isReset={isReset} />
+              <RapporterTab
+                runwayMonths={activeBiz.runwayMonths}
+                runwayData={activeBiz.runwayData}
+                monthlyBurn={monthlyBurn}
+                invoices={activeBiz.unpaidInvoices}
+                transactions={allTransactions}
+                isReset={isReset}
+                unprocessedCount={unprocessedCount}
+                onReviewUnprocessed={() => setActiveTab('arkiv')}
+              />
             </motion.div>
           )}
           {!loading && activeTab === 'arkiv' && (
             <motion.div key="arkiv" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
               <ArkivTab
                 transactions={allTransactions}
-                onBooked={txs => setManualTransactions(p => [
-                  ...txs.map(t => ({
-                    vendor: t.vendor || t.description,
-                    amount: t.amount,
-                    date: t.date || 'Nyligen',
-                    category: t.category || 'other',
-                    label: t.description,
-                  })),
-                  ...p,
-                ])}
+                onBooked={txs => {
+                  // Count needs_review transactions from this batch
+                  const reviewCount = txs.filter(t => t.needs_review).length;
+                  setUnprocessedCount(prev => prev + reviewCount);
+                  setManualTransactions(p => [
+                    ...txs.map(t => ({
+                      vendor: t.vendor || t.description,
+                      amount: t.amount,
+                      date: t.date || 'Nyligen',
+                      category: t.category || 'other',
+                      label: t.description,
+                      needs_review: t.needs_review,
+                    })),
+                    ...p,
+                  ]);
+                }}
               />
             </motion.div>
           )}

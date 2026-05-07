@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clipboard, Sparkles, Check, X, Loader2, ChevronRight, Bot } from 'lucide-react';
+import { Clipboard, Sparkles, Check, X, Loader2, ChevronRight, Bot, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const VAT_BADGE = {
@@ -22,7 +22,12 @@ export default function SmartPasteImport({ onBooked }) {
     if (!text.trim()) return;
     setPhase('parsing');
     try {
-      const result = await base44.functions.invoke('parseBankText', { rawText: text });
+      // Pass recent transactions as context for better categorization
+      const recentTxs = await base44.entities.Transaction.list('-created_date', 10).catch(() => []);
+      const result = await base44.functions.invoke('parseBankText', {
+        rawText: text,
+        recentTransactions: recentTxs.map(t => ({ label: t.label, vendor: t.vendor, amount: t.amount, category: t.category })),
+      });
       setParsed(result.data.transactions || []);
       setPhase('review');
     } catch (e) {
@@ -144,17 +149,40 @@ export default function SmartPasteImport({ onBooked }) {
               <button onClick={reset} className="text-xs font-semibold" style={{ color: '#9AA5B4' }}>Rensa</button>
             </div>
 
+            {/* needs_review summary bar */}
+            {parsed.some(t => t.needs_review) && (
+              <div className="mx-5 mb-2 mt-1 flex items-center gap-2 px-3 py-2 rounded-xl"
+                style={{ background: 'rgba(220,38,38,0.07)', border: '1px solid rgba(220,38,38,0.25)' }}>
+                <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#dc2626' }} />
+                <p className="text-xs font-semibold" style={{ color: '#dc2626' }}>
+                  {parsed.filter(t => t.needs_review).length} rad{parsed.filter(t => t.needs_review).length > 1 ? 'er' : ''} markerade för granskning (AI-konfidens &lt;90%)
+                </p>
+              </div>
+            )}
+
             <div className="divide-y" style={{ borderColor: '#F0F2F5' }}>
               {parsed.map((tx, i) => (
-                <div key={i} className="px-5 py-3 flex items-start gap-3">
+                <div key={i} className="px-5 py-3 flex items-start gap-3"
+                  style={tx.needs_review ? { background: 'rgba(220,38,38,0.03)' } : {}}>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-sm font-semibold truncate" style={{ color: '#1A2332' }}>{tx.description}</p>
+                      <p className="text-sm font-semibold truncate" style={{ color: '#1A2332' }}>{tx.vendor || tx.description}</p>
                       {tx.date && <p className="text-xs" style={{ color: '#9AA5B4' }}>{tx.date}</p>}
+                      {tx.needs_review && (
+                        <span className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-bold"
+                          style={{ background: 'rgba(220,38,38,0.12)', color: '#dc2626' }}>
+                          <AlertTriangle className="w-3 h-3" />
+                          Granska
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                        style={{ background: 'rgba(13,115,119,0.1)', color: ACCOUNT_COLOR }}>
+                        style={{
+                          background: tx.needs_review ? 'rgba(214,158,46,0.12)' : 'rgba(13,115,119,0.1)',
+                          color: tx.needs_review ? '#D69E2E' : ACCOUNT_COLOR,
+                          border: tx.needs_review ? '1px solid rgba(214,158,46,0.3)' : 'none',
+                        }}>
                         {tx.accountCode} {tx.accountName}
                       </span>
                       {tx.vatRate != null && (
@@ -166,12 +194,22 @@ export default function SmartPasteImport({ onBooked }) {
                           {VAT_BADGE[tx.vatRate]?.label || `${tx.vatRate}% moms`}
                         </span>
                       )}
+                      {tx.confidence != null && (
+                        <span className="text-xs" style={{ color: '#9AA5B4' }}>
+                          {Math.round(tx.confidence * 100)}% säker
+                        </span>
+                      )}
                     </div>
+                    {tx.vatAmount != null && tx.netAmount != null && (
+                      <p className="text-xs mt-0.5" style={{ color: '#9AA5B4' }}>
+                        Netto: {tx.netAmount.toLocaleString('sv-SE')} kr · Moms: {tx.vatAmount.toLocaleString('sv-SE')} kr
+                      </p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <p className="text-sm font-bold"
-                      style={{ color: tx.amount > 0 ? '#0D7377' : '#E53E3E' }}>
-                      {tx.amount > 0 ? '+' : ''}{tx.amount.toLocaleString('sv-SE')} kr
+                      style={{ color: (tx.amount ?? tx.grossAmount) > 0 ? '#0D7377' : '#E53E3E' }}>
+                      {(tx.amount ?? tx.grossAmount) > 0 ? '+' : ''}{Math.abs(tx.amount ?? tx.grossAmount).toLocaleString('sv-SE')} kr
                     </p>
                     <button onClick={() => removeRow(i)}
                       className="w-6 h-6 rounded-full flex items-center justify-center"

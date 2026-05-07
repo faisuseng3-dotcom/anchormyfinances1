@@ -3,8 +3,9 @@ import { motion } from 'framer-motion';
 import RunwayEngine from '@/components/business/RunwayEngine';
 import InvoiceList from '@/components/business/InvoiceList';
 import DeductibleTransactions from '@/components/business/DeductibleTransactions';
+import WarningBanner from '@/components/business/WarningBanner';
 
-export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, invoices, transactions, isReset }) {
+export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, invoices, transactions, isReset, unprocessedCount, onReviewUnprocessed }) {
   const safeInvoices = isReset ? [] : (invoices || []);
   const safeTransactions = isReset ? [] : (transactions || []);
   const safeRunwayMonths = isReset ? 0 : runwayMonths;
@@ -12,7 +13,9 @@ export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, in
   const safeBurn = isReset ? 0 : monthlyBurn;
 
   return (
-    <div className="px-5 space-y-4">
+    <div className="space-y-4">
+      <WarningBanner count={isReset ? 0 : (unprocessedCount || 0)} onReview={onReviewUnprocessed} />
+      <div className="px-5">
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         className="text-2xl font-black pt-4" style={{ color: '#1A2332', letterSpacing: '-0.5px' }}>
         Rapporter
@@ -28,6 +31,7 @@ export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, in
           <p className="text-xs mt-1" style={{ color: '#9AA5B4' }}>Bokför transaktioner via Arkiv för att se rapporter här.</p>
         </div>
       )}
+      </div>
     </div>
   );
 }
