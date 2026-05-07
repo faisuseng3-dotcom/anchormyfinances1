@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ChevronRight } from 'lucide-react';
+import { useDemoMode } from '@/components/demo/DemoMode';
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -22,12 +23,14 @@ function formatRelativeDate(dateStr) {
 }
 
 export default function RecentTransactions() {
+  const { isDemoMode } = useDemoMode();
   const { data: transactions = [], isLoading } = useQuery({
     queryKey: ['transactions', 'personal', 'recent'],
     queryFn: async () => {
       const all = await base44.entities.Transaction.list('-created_date', 20);
       return (all || []).filter(t => t.context !== 'BUSINESS').slice(0, 3);
     },
+    enabled: !isDemoMode, // Blockera DB-anrop i demo/alex-läge
   });
 
   if (isLoading) {

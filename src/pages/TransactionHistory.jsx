@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
 import { Link } from 'react-router-dom';
+import { useDemoMode } from '@/components/demo/DemoMode';
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -218,6 +219,7 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
 
 export default function TransactionHistory() {
   const queryClient = useQueryClient();
+  const { isDemoMode, demoTransactions } = useDemoMode();
   const [showForm, setShowForm] = useState(false);
   const [editingTx, setEditingTx] = useState(null);
   const [search, setSearch] = useState('');
@@ -225,13 +227,17 @@ export default function TransactionHistory() {
   const [filterCategory, setFilterCategory] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data: transactions = [], isLoading } = useQuery({
+  const { data: dbTransactions = [], isLoading } = useQuery({
     queryKey: ['transactions', 'personal'],
     queryFn: async () => {
       const all = await base44.entities.Transaction.list('-created_date', 500);
       return (all || []).filter(t => t.context !== 'BUSINESS');
     },
+    enabled: !isDemoMode, // Blockera DB-anrop i demo-läge
   });
+
+  // I demo-läge: använd hårdkodat Alex-data, annars riktig DB
+  const transactions = isDemoMode ? demoTransactions : dbTransactions;
 
   const filtered = useMemo(() => {
     return transactions.filter((tx) => {

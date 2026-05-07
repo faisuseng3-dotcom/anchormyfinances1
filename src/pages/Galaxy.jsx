@@ -13,7 +13,8 @@ export default function Galaxy() {
     queryFn: async () => {
       const profiles = await base44.entities.FinancialProfile.list();
       return profiles[0] || null;
-    }
+    },
+    enabled: !isAlexMode,
   });
 
   return (

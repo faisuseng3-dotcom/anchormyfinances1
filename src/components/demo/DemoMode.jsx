@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ALEX_PROFILE, ALEX_TRANSACTIONS, isAlexMode, toggleAlexMode, registerAlexModeShortcut } from '@/lib/alexMode';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { ALEX_PROFILE, ALEX_TRANSACTIONS } from '@/lib/alexDemoData';
+import { isAlexMode, toggleAlexMode, registerAlexModeShortcut } from '@/lib/alexMode';
+import { queryClientInstance } from '@/lib/query-client';
 
 const DemoContext = createContext(null);
 
-// ── Gammalt demo-dataset (behålls för bakåtkompatibilitet) ──
+// ── Gammalt demo-dataset (bakåtkompatibilitet) ──
 export const DEMO_PROFILE = {
   income: 42000,
   housingCost: 9500,
@@ -40,28 +42,38 @@ export const DEMO_PROFILE = {
 };
 
 export const DEMO_TRANSACTIONS = [
-  { id: 'd1', label: 'ICA Maxi', amount: -890, category: 'food', type: 'expense', created_date: '2026-04-15' },
-  { id: 'd2', label: 'Lön April', amount: 42000, category: 'income', type: 'income', created_date: '2026-04-25' },
-  { id: 'd3', label: 'SL Månadskort', amount: -890, category: 'transport', type: 'expense', created_date: '2026-04-01' },
-  { id: 'd4', label: 'Restaurang K25', amount: -345, category: 'entertainment', type: 'expense', created_date: '2026-04-13' },
-  { id: 'd5', label: 'Apoteket', amount: -189, category: 'health', type: 'expense', created_date: '2026-04-10' },
-  { id: 'd6', label: 'H&M', amount: -499, category: 'shopping', type: 'expense', created_date: '2026-04-08' },
-  { id: 'd7', label: 'Transferring till sparande', amount: -2000, category: 'savings', type: 'savings_deposit', created_date: '2026-04-05' },
-  { id: 'd8', label: 'Pressbyrån', amount: -49, category: 'food', type: 'expense', created_date: '2026-04-04' },
-  { id: 'd9', label: 'Spotify', amount: -129, category: 'entertainment', type: 'expense', created_date: '2026-04-01' },
-  { id: 'd10', label: 'Steam', amount: -249, category: 'entertainment', type: 'expense', created_date: '2026-04-09' },
+  { id: 'd1', label: 'ICA Maxi', amount: -890, category: 'food', type: 'expense', paymentMethod: 'Konto', context: 'PERSONAL', created_date: '2026-04-15' },
+  { id: 'd2', label: 'Lön April', amount: 42000, category: 'income', type: 'income', paymentMethod: 'Konto', context: 'PERSONAL', created_date: '2026-04-25' },
+  { id: 'd3', label: 'SL Månadskort', amount: -890, category: 'transport', type: 'expense', paymentMethod: 'Konto', context: 'PERSONAL', created_date: '2026-04-01' },
+  { id: 'd4', label: 'Restaurang K25', amount: -345, category: 'entertainment', type: 'expense', paymentMethod: 'Kredit', context: 'PERSONAL', created_date: '2026-04-13' },
+  { id: 'd5', label: 'Apoteket', amount: -189, category: 'health', type: 'expense', paymentMethod: 'Kredit', context: 'PERSONAL', created_date: '2026-04-10' },
 ];
 
 export function DemoProvider({ children }) {
   const [isDemoMode, setIsDemoMode] = useState(false);
+  // Initialisera synkront från localStorage – viktigt för att undvika flash
   const [isAlex, setIsAlex] = useState(() => isAlexMode());
 
-  // Lyssna på Alex Mode-events (dispatcha från tangentbordsgenväg)
   useEffect(() => {
-    const handler = (e) => setIsAlex(e.detail.active);
+    // Om Alex Mode redan är aktivt vid mount, rensa cachen direkt
+    if (isAlexMode()) {
+      queryClientInstance.clear();
+    }
+
+    const handler = (e) => {
+      const active = e.detail.active;
+      setIsAlex(active);
+
+      // KRITISKT: Rensa HELA TanStack Query-cachen synkront
+      // så att ingen riktig användardata finns kvar i minnet
+      queryClientInstance.clear();
+
+      // Stoppa alla pågående queries omedelbart
+      queryClientInstance.cancelQueries();
+    };
+
     window.addEventListener('anchor:alex_mode', handler);
 
-    // Registrera Cmd+§ genväg globalt
     const cleanup = registerAlexModeShortcut(() => {
       toggleAlexMode();
     });
@@ -75,12 +87,13 @@ export function DemoProvider({ children }) {
   const toggleDemo = () => setIsDemoMode(v => !v);
 
   // Alex Mode åsidosätter vanlig demo
+  const effectiveDemoMode = isDemoMode || isAlex;
   const activeProfile = isAlex ? ALEX_PROFILE : (isDemoMode ? DEMO_PROFILE : null);
   const activeTransactions = isAlex ? ALEX_TRANSACTIONS : (isDemoMode ? DEMO_TRANSACTIONS : null);
 
   return (
     <DemoContext.Provider value={{
-      isDemoMode: isDemoMode || isAlex,
+      isDemoMode: effectiveDemoMode,
       isAlexMode: isAlex,
       toggleDemo,
       demoProfile: activeProfile || DEMO_PROFILE,

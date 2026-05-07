@@ -1,18 +1,10 @@
 /**
  * Alex Mode — Demo Dataset
- * Alla datum är relativa till "idag" för att alltid se aktuella ut.
+ * Fasta datum baserade på maj 2026 för att se äkta och konsekventa ut.
  */
 
-function daysAgo(n) {
-  const d = new Date();
-  d.setDate(d.getDate() - n);
-  return d.toISOString();
-}
-
-function daysAhead(n) {
-  const d = new Date();
-  d.setDate(d.getDate() + n);
-  return d.toISOString();
+function fixedDate(year, month, day) {
+  return new Date(year, month - 1, day).toISOString();
 }
 
 export const ALEX_PROFILE = {
@@ -27,15 +19,14 @@ export const ALEX_PROFILE = {
   // Ekonomi
   income: 32500,
   housingCost: 9500,
-  buffer: 28500,          // 3 månader täckta
+  buffer: 28500,
   savingsGoal: 40000,
   savingsGoalName: 'Japan-resa',
   savingsGoalEmoji: '✈️',
   savingsCurrentBalance: 25000,
 
-  // Sparmål #2 (konflikt)
   secondaryGoalName: 'Ny Macbook',
-  secondaryGoalAmount: 3000, // kr/mån extra = konflikttrigger
+  secondaryGoalAmount: 3000,
 
   onboardingCompleted: true,
   userGoals: ['save', 'control', 'improve'],
@@ -74,46 +65,55 @@ export const ALEX_PROFILE = {
   level: 5,
   dailyLoginStreak: 12,
   unlockedBadges: ['first_login', 'budget_beginner', 'streak_3', 'streak_7', 'saver_start'],
-  // Galaxy: "Star Cadet"
   galaxyLevel: 'Star Cadet',
   nextAchievement: { name: 'Buffert-kungen', remaining: 500 },
 
-  // MLI override
   _mliOverride: 72,
-
-  // Safe-to-spend override
   _safeToSpend: 3840,
-
-  // Hyra kommer fredag
   _upcomingRent: { amount: 9500, daysUntil: 3 },
 };
 
 export const ALEX_TRANSACTIONS = [
-  // ── Fasta kostnader ──
+  // ── Inkomst ──
+  {
+    id: 'ax_income',
+    label: 'Lön — Marknadskoordinator',
+    vendor: 'Arbetsgivare AB',
+    amount: 32500,
+    category: 'income',
+    type: 'income',
+    paymentMethod: 'Konto',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 25),
+  },
+
+  // ── Hyra (schemalagd/kommande) ──
   {
     id: 'ax_rent',
-    label: 'Hyra',
-    vendor: 'Hyresvärd Stockholm',
+    label: 'Hyra — Hyresvärd AB',
+    vendor: 'Hyresvärd AB',
     amount: -9500,
     category: 'home',
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
     _pending: true,
-    _dueDate: daysAhead(3),
-    created_date: daysAhead(3),
-    aiNote: 'Kommande – dras automatiskt fredag',
+    _dueDate: fixedDate(2026, 6, 1),
+    created_date: fixedDate(2026, 6, 1),
+    aiNote: 'Schemalagd — dras automatiskt 1 juni',
   },
+
+  // ── Fasta kostnader ──
   {
     id: 'ax_sl',
     label: 'SL Månadskort',
-    vendor: 'SL',
+    vendor: 'SL Stockholm',
     amount: -1020,
     category: 'transport',
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
-    created_date: daysAgo(1),
+    created_date: fixedDate(2026, 5, 28),
   },
   {
     id: 'ax_insurance',
@@ -124,7 +124,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
-    created_date: daysAgo(3),
+    created_date: fixedDate(2026, 5, 27),
   },
   {
     id: 'ax_csn',
@@ -135,32 +135,21 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
-    created_date: daysAgo(5),
+    created_date: fixedDate(2026, 5, 26),
   },
 
-  // ── Vardagsutgifter ──
+  // ── Vardagsutgifter (exakt enligt spec) ──
   {
     id: 'ax_ica',
     label: 'ICA Kvantum',
     vendor: 'ICA Kvantum',
-    amount: -642,
+    amount: -642.50,
     category: 'food',
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(2),
+    created_date: fixedDate(2026, 5, 28),
     aiNote: 'Söndagslyx – något över veckosnittet',
-  },
-  {
-    id: 'ax_wolt',
-    label: 'Wolt',
-    vendor: 'Wolt',
-    amount: -245,
-    category: 'food',
-    type: 'expense',
-    paymentMethod: 'Kredit',
-    context: 'PERSONAL',
-    created_date: daysAgo(4),
   },
   {
     id: 'ax_coffee',
@@ -171,8 +160,48 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Swish',
     context: 'PERSONAL',
-    created_date: daysAgo(1),
+    created_date: fixedDate(2026, 5, 29),
   },
+  {
+    id: 'ax_bolt',
+    label: 'Bolt Technology',
+    vendor: 'Bolt Technology',
+    amount: -145,
+    category: 'transport',
+    type: 'expense',
+    paymentMethod: 'Kredit',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 30),
+  },
+  {
+    id: 'ax_urban_deli',
+    label: 'Urban Deli',
+    vendor: 'Urban Deli',
+    amount: -890,
+    category: 'food',
+    type: 'expense',
+    paymentMethod: 'Kredit',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 30),
+    aiNote: 'Restaurangbesök – lite lyxigare än snitt',
+  },
+
+  // ── Manuell inmatning (röststyrning-demo) ──
+  {
+    id: 'ax_swish_erik',
+    label: 'Swish till Erik (Lunch)',
+    vendor: 'Swish',
+    amount: -120,
+    category: 'food',
+    type: 'expense',
+    paymentMethod: 'Swish',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 30),
+    aiNote: 'Manuell inmatning via röststyrning',
+    _manual: true,
+  },
+
+  // ── Shopping ──
   {
     id: 'ax_gymshark',
     label: 'Gymshark',
@@ -182,19 +211,8 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(3),
+    created_date: fixedDate(2026, 5, 27),
     aiNote: 'Köpångest-skydd triggades – Alex bekräftade köpet',
-  },
-  {
-    id: 'ax_okq8',
-    label: 'OKQ8',
-    vendor: 'OKQ8',
-    amount: -420,
-    category: 'transport',
-    type: 'expense',
-    paymentMethod: 'Kredit',
-    context: 'PERSONAL',
-    created_date: daysAgo(6),
   },
 
   // ── Abonnemang ──
@@ -207,7 +225,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(7),
+    created_date: fixedDate(2026, 5, 26),
   },
   {
     id: 'ax_spotify',
@@ -218,7 +236,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(7),
+    created_date: fixedDate(2026, 5, 26),
   },
   {
     id: 'ax_disney',
@@ -229,7 +247,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(7),
+    created_date: fixedDate(2026, 5, 26),
     aiNote: 'Ej använt på 2 månader — AI: "Vill du att jag avslutar prenumerationen?"',
     _aiSuggestion: 'cancel_subscription',
   },
@@ -244,7 +262,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(2),
+    created_date: fixedDate(2026, 5, 29),
     _uncategorized: true,
   },
   {
@@ -256,7 +274,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(2),
+    created_date: fixedDate(2026, 5, 28),
     _uncategorized: true,
   },
   {
@@ -268,7 +286,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kontant',
     context: 'PERSONAL',
-    created_date: daysAgo(3),
+    created_date: fixedDate(2026, 5, 27),
     _uncategorized: true,
   },
   {
@@ -280,22 +298,9 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: daysAgo(4),
+    created_date: fixedDate(2026, 5, 26),
     _uncategorized: true,
     aiNote: 'AI: "Hittade ett Amazon-köp — ska jag kategorisera det som Shopping?"',
-  },
-
-  // ── Inkomst ──
-  {
-    id: 'ax_income',
-    label: 'Lön — Marknadskoordinator',
-    vendor: 'Arbetsgivare',
-    amount: 32500,
-    category: 'income',
-    type: 'income',
-    paymentMethod: 'Konto',
-    context: 'PERSONAL',
-    created_date: daysAgo(10),
   },
 
   // ── Sparinsättning ──
@@ -308,6 +313,6 @@ export const ALEX_TRANSACTIONS = [
     type: 'savings_deposit',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
-    created_date: daysAgo(9),
+    created_date: fixedDate(2026, 5, 25),
   },
 ];

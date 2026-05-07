@@ -47,12 +47,14 @@ export default function Dashboard() {
         if (newBadges.length > 0) {setUnlockedBadge(newBadges[0]);setShowBadgeUnlock(true);}
       }
       return profiles[0] || null;
-    }
+    },
+    enabled: !isDemoMode, // Blockera DB-anrop helt i demo-läge
   });
 
   const { data: allTransactions = [] } = useQuery({
     queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 500)
+    queryFn: () => base44.entities.Transaction.list('-created_date', 500),
+    enabled: !isDemoMode, // Blockera DB-anrop helt i demo-läge
   });
 
   const profile = isDemoMode ? demoProfile : profileData;
