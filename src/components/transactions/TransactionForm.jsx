@@ -69,7 +69,7 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
     if (existingTx) {
       await base44.entities.Transaction.update(existingTx.id, data);
     } else {
-      await base44.entities.Transaction.create(data);
+      await base44.entities.Transaction.create({ ...data, context: 'PERSONAL' });
     }
     setSaving(false);
     onSuccess();

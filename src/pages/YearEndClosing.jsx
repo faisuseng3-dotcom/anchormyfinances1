@@ -133,7 +133,7 @@ function ReconcileStep({ onComplete }) {
   const [result, setResult] = useState(null);
 
   useEffect(() => {
-    base44.entities.Transaction.list('-created_date', 200).then(txs => {
+    base44.entities.Transaction.filter({ context: 'BUSINESS' }, '-created_date', 500).then(txs => {
       const sum = (txs || []).reduce((a, t) => a + (t.amount || 0), 0);
       setBookBalance(Math.round(sum));
     }).catch(() => setBookBalance(0));
@@ -214,7 +214,7 @@ function CleanupStep({ onComplete }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.Transaction.list('-created_date', 200).then(txs => {
+    base44.entities.Transaction.filter({ context: 'BUSINESS' }, '-created_date', 200).then(txs => {
       setPending((txs || []).filter(t => !t.aiAgent));
     }).finally(() => setLoading(false));
   }, []);
@@ -277,7 +277,7 @@ function TaxMapStep({ isAB, companyName, onComplete }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    base44.entities.Transaction.list('-created_date', 500).then(txs => {
+    base44.entities.Transaction.filter({ context: 'BUSINESS' }, '-created_date', 500).then(txs => {
       const income = (txs || []).filter(t => t.type === 'income').reduce((a, t) => a + (t.amount || 0), 0);
       const expenses = (txs || []).filter(t => t.type === 'expense' || t.amount < 0).reduce((a, t) => a + Math.abs(t.amount || 0), 0);
       const result = income - expenses;
@@ -367,7 +367,7 @@ function ClosingStep({ isAB, companyName, locked, onLock }) {
   const [meetingDate, setMeetingDate] = useState('');
 
   useEffect(() => {
-    base44.entities.Transaction.list('-created_date', 500).then(txs => {
+    base44.entities.Transaction.filter({ context: 'BUSINESS' }, '-created_date', 500).then(txs => {
       const income = (txs || []).filter(t => t.type === 'income').reduce((a, t) => a + (t.amount || 0), 0);
       const expenses = (txs || []).filter(t => t.type === 'expense' || t.amount < 0).reduce((a, t) => a + Math.abs(t.amount || 0), 0);
       setData({ income: Math.round(income), expenses: Math.round(expenses), result: Math.round(income - expenses) });
