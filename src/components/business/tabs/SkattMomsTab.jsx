@@ -20,7 +20,12 @@ export default function SkattMomsTab({ vatReserved, vatDeadlines, entityType, to
       <LiquidityGauge totalBalance={safeBalance} vatReserved={safeVat} grossIncome={safeBalance} entityType={entityType} />
       <VATShield vatReserved={safeVat} vatDeadlines={safeDeadlines} />
       <NetSalaryCalculator entityType={entityType} />
-      <TaxOptimizer />
+      <TaxOptimizer
+        entityType={entityType}
+        annualRevenue={safeBalance * 12}
+        annualExpenses={safeBalance * 12 * 0.6}
+        isReset={isReset}
+      />
     </div>
   );
 }

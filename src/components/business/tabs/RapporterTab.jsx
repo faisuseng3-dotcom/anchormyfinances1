@@ -21,7 +21,14 @@ export default function RapporterTab({ runwayMonths, runwayData, monthlyBurn, in
         Rapporter
       </motion.p>
       <p className="text-sm -mt-2" style={{ color: '#9AA5B4' }}>Kassaflöde, runway och fakturor</p>
-      <RunwayEngine runwayMonths={safeRunwayMonths} runwayData={safeRunwayData} monthlyBurn={safeBurn} isReset={isReset} />
+      <RunwayEngine
+        runwayMonths={safeRunwayMonths}
+        runwayData={safeRunwayData}
+        monthlyBurn={safeBurn}
+        isReset={isReset}
+        cashflowHistory={safeRunwayData}
+        totalLiquidity={safeRunwayData.length > 0 ? safeRunwayData[safeRunwayData.length - 1]?.balance : 0}
+      />
       <InvoiceList invoices={safeInvoices} />
       {safeTransactions.length > 0 && <DeductibleTransactions transactions={safeTransactions} />}
       {isReset && safeTransactions.length === 0 && (
