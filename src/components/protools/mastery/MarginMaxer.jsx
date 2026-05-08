@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 import { Scissors, Check } from 'lucide-react';
+import { isAlexMode } from '@/lib/alexMode';
+import MarginMaxerAlexView from './MarginMaxerAlexView';
 
 const CATEGORY_LABELS = {
   entertainment: 'Underhållning',
@@ -18,6 +20,8 @@ export default function MarginMaxer({ profile }) {
   const queryClient = useQueryClient();
   const [killed, setKilled] = useState([]);
   const [loading, setLoading] = useState(null);
+
+  if (isAlexMode()) return <MarginMaxerAlexView />;
 
   const subs = (profile?.subscriptions || []).filter((_, i) => !killed.includes(i));
   const killedSubs = (profile?.subscriptions || []).filter((_, i) => killed.includes(i));
