@@ -43,8 +43,9 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-export default function DualPathChart({ currentMonthlyNet, brusSavings }) {
-  const data = buildChartData(currentMonthlyNet, brusSavings);
+export default function DualPathChart({ currentMonthlyNet, brusSavings, sliderPct = 50 }) {
+  const activeBrus = brusSavings * (sliderPct / 100);
+  const data = buildChartData(currentMonthlyNet, activeBrus);
   const diff = data[data.length - 1]?.['Anchor-vägen'] - data[data.length - 1]?.['Status Quo'];
 
   return (

@@ -57,6 +57,7 @@ export default function AnchorAnalysis() {
   const { transactions, profile } = useAnalysisData(isAlexMode);
   const [optimized, setOptimized] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
+  const [sliderPct, setSliderPct] = useState(50);
 
   // Calculate brus total
   const brusTxs = useMemo(() =>
@@ -169,6 +170,7 @@ export default function AnchorAnalysis() {
           <DualPathChart
             currentMonthlyNet={alexProfile.income * 0.18}
             brusSavings={brusSavings}
+            sliderPct={sliderPct}
           />
         </motion.div>
 
@@ -178,7 +180,12 @@ export default function AnchorAnalysis() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <ScenarioCards profile={alexProfile} brusSavings={brusSavings} />
+          <ScenarioCards
+            profile={alexProfile}
+            brusSavings={brusSavings}
+            brusTotal={brusTotal}
+            onSliderChange={setSliderPct}
+          />
         </motion.div>
 
         {/* r/PrivatEkonomi verdict */}
