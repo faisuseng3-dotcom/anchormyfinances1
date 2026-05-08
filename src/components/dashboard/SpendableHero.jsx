@@ -1,10 +1,13 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Anchor } from 'lucide-react';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import AnchorNarrativeModal from './AnchorNarrativeModal';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 export default function SpendableHero({ profile }) {
+  const [narrativeOpen, setNarrativeOpen] = useState(false);
   if (!profile) return null;
 
   const totalFixed = getTotalFixedCosts(profile);
@@ -32,9 +35,27 @@ export default function SpendableHero({ profile }) {
       />
 
       <div className="relative z-10 px-6 pt-6 pb-5 text-center">
-        <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.28)' }}>
-          PENGAR ATT SPENDERA
-        </p>
+        {/* Header row with "min ekonomi" button in Alex Mode */}
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.28)' }}>
+            PENGAR ATT SPENDERA
+          </p>
+          {profile._alexMode && (
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setNarrativeOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold"
+              style={{
+                background: 'rgba(15,222,189,0.08)',
+                border: '1px solid rgba(15,222,189,0.25)',
+                color: '#0FDEBD',
+              }}
+            >
+              <Anchor className="w-3 h-3" />
+              min ekonomi
+            </motion.button>
+          )}
+        </div>
 
         <motion.p
           key={safeToSpend}
@@ -66,6 +87,8 @@ export default function SpendableHero({ profile }) {
           Av {fmt(profile.income)} kr i inkomst, efter att räkningarna är betalda.
         </p>
       </div>
+
+      <AnchorNarrativeModal isOpen={narrativeOpen} onClose={() => setNarrativeOpen(false)} />
     </div>
   );
 }
