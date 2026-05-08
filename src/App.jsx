@@ -24,6 +24,7 @@ import Social from './pages/Social';
 import Squads from './pages/Squads';
 import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
+import AnchorAnalysis from './pages/AnchorAnalysis';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -114,6 +115,7 @@ const AuthenticatedApp = () => {
         </LayoutWrapper>
       } />
       <Route path="/YearEndClosing" element={<YearEndClosing />} />
+      <Route path="/AnchorAnalysis" element={<AnchorAnalysis />} />
       <Route path="/Insights" element={
         <LayoutWrapper currentPageName="InsightsPage">
           <InsightsPage />

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Anchor } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
-import AnchorNarrativeModal from './AnchorNarrativeModal';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 export default function SpendableHero({ profile }) {
-  const [narrativeOpen, setNarrativeOpen] = useState(false);
+  const navigate = useNavigate();
   if (!profile) return null;
 
   const totalFixed = getTotalFixedCosts(profile);
@@ -43,7 +43,7 @@ export default function SpendableHero({ profile }) {
           {profile._alexMode && (
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={() => setNarrativeOpen(true)}
+              onClick={() => navigate('/AnchorAnalysis')}
               className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold"
               style={{
                 background: 'rgba(15,222,189,0.08)',
@@ -88,7 +88,6 @@ export default function SpendableHero({ profile }) {
         </p>
       </div>
 
-      <AnchorNarrativeModal isOpen={narrativeOpen} onClose={() => setNarrativeOpen(false)} />
     </div>
   );
 }
