@@ -22,7 +22,8 @@ const CATEGORY_META = {
   other:         { emoji: '📦' },
 };
 
-function getEmoji(category, amount) {
+function getEmoji(category, amount, override) {
+  if (override) return override;
   if (category && CATEGORY_META[category]) return CATEGORY_META[category].emoji;
   return amount > 0 ? '🏦' : '📦';
 }
@@ -33,7 +34,7 @@ function fmt(dateStr) {
   return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
 }
 
-// Alex Mode: hårdkodade kommande betalningar (Hyra 1 juni, Spotify 15 juni)
+// Alex Mode: hårdkodade kommande betalningar
 const ALEX_PENDING = [
   {
     id: 'ap_rent',
@@ -41,7 +42,6 @@ const ALEX_PENDING = [
     category: 'home',
     amount: -9500,
     dueDate: '2026-06-01T12:00:00',
-    dueLabel: 'Dras 1 juni',
   },
   {
     id: 'ap_spotify',
@@ -49,7 +49,14 @@ const ALEX_PENDING = [
     category: 'entertainment',
     amount: -119,
     dueDate: '2026-06-15T12:00:00',
-    dueLabel: 'Dras 15 juni',
+  },
+  {
+    id: 'ap_sats',
+    label: 'SATS Gym',
+    category: 'health',
+    emoji: '🏋️',
+    amount: -549,
+    dueDate: '2026-06-25T12:00:00',
   },
 ];
 
@@ -98,18 +105,19 @@ export default function SpendingHubModule({ transactions = [], profile }) {
   const thisMonth = now.getMonth();
   const thisYear = now.getFullYear();
 
-  // ── Betalda: transaktioner denna månaden, exkl. sparande ──
+  // ── Betalda: i Alex Mode bara is_recurring, annars alla denna månaden ──
   const paidItems = useMemo(() => {
     return (transactions || [])
       .filter(tx => {
         if (tx.context === 'BUSINESS') return false;
         if (tx._pending) return false;
         if (['savings_deposit', 'transfer_to_savings'].includes(tx.type)) return false;
+        if (isAlexMode && !tx.is_recurring) return false;
         const d = new Date(tx.created_date);
         return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
       })
-      .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-  }, [transactions, thisMonth, thisYear]);
+      .sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+  }, [transactions, thisMonth, thisYear, isAlexMode]);
 
   // ── Kommande: Alex-hårdkodad eller byggt från profil ──
   const pendingItems = useMemo(() => {
@@ -177,14 +185,11 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                     <p className="text-xs font-black" style={{ color: '#E9A825' }}>
                       {fmt(item.dueDate)}
                     </p>
-                    <p className="text-[9px] leading-tight mt-0.5" style={{ color: 'rgba(214,158,46,0.65)' }}>
-                      {item.dueLabel}
-                    </p>
                   </div>
 
                   {/* Emoji + Namn — flex-1 */}
                   <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <span className="text-base flex-shrink-0">{getEmoji(item.category, item.amount)}</span>
+                    <span className="text-base flex-shrink-0">{getEmoji(item.category, item.amount, item.emoji)}</span>
                     <p className="text-sm font-bold truncate" style={{ color: 'var(--color-text-primary)' }}>
                       {item.label}
                     </p>

@@ -87,6 +87,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'income',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
+    is_recurring: true,
     created_date: fixedDate(2026, 5, 25),
   },
 
@@ -116,6 +117,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
+    is_recurring: true,
     created_date: fixedDate(2026, 5, 27),
   },
   {
@@ -127,6 +129,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
+    is_recurring: true,
     created_date: fixedDate(2026, 5, 27),
   },
   {
@@ -138,6 +141,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
+    is_recurring: true,
     created_date: fixedDate(2026, 5, 26),
   },
 
