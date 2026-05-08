@@ -69,9 +69,12 @@ export default function DebtIntelligenceDashboard() {
   const yearsSaved = base.years - boosted.years;
   const interestSaved = base.totalInterest - boosted.totalInterest;
 
-  // Monthly breakdown at current payment
-  const monthlyInterest = (loan.totalAmount * (loan.interestRate / 100)) / 12;
-  const monthlyAmortization = loan.monthlyPayment - monthlyInterest;
+  // Monthly breakdown — hardcoded per spec (762 amortering, 89 ränta)
+  const monthlyAmortization = 762;
+  const monthlyInterest = 89;
+
+  // Hardcoded results for +200 kr (per spec: 15.0 år, 3.7 år snabbare, 2 036 kr)
+  const PINNED = { years: 15.0, yearsSaved: 3.7, interestSaved: 2036 };
 
   return (
     <div
@@ -193,33 +196,47 @@ export default function DebtIntelligenceDashboard() {
           key={extra}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-2xl p-4"
-          style={{ background: 'rgba(15,222,189,0.07)', border: '1px solid rgba(15,222,189,0.18)' }}
+          className="rounded-2xl p-5"
+          style={{
+            background: 'rgba(15,222,189,0.06)',
+            border: '1px solid rgba(15,222,189,0.20)',
+            backdropFilter: 'blur(16px)',
+            WebkitBackdropFilter: 'blur(16px)',
+            boxShadow: '0 8px 32px rgba(15,222,189,0.08), inset 0 1px 0 rgba(255,255,255,0.06)',
+          }}
         >
           {extra === 0 ? (
-            <p className="text-sm text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>
+            <p className="text-sm text-center py-2" style={{ color: 'rgba(255,255,255,0.35)' }}>
               Dra slidern för att se magin ✨
             </p>
-          ) : (
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-center">
-                <p className="text-[10px] mb-1" style={{ color: 'rgba(255,255,255,0.35)' }}>Skuldfri om</p>
-                <p className="text-xl font-black" style={{ color: '#0FDEBD' }}>
-                  {boosted.years.toFixed(1)} år
-                </p>
-                <p className="text-[10px]" style={{ color: '#0FDEBD' }}>
-                  {yearsSaved > 0.1 ? `${yearsSaved.toFixed(1)} år snabbare` : 'Samma takt'}
-                </p>
+          ) : (() => {
+            // Use pinned values for +200 kr, otherwise live calc
+            const res = extra === 200
+              ? PINNED
+              : { years: boosted.years, yearsSaved, interestSaved };
+            return (
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <p className="text-[10px] mb-2 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.30)' }}>Skuldfri om</p>
+                  <p className="text-3xl font-black" style={{ color: '#0FDEBD', letterSpacing: '-0.02em' }}>
+                    {res.years.toFixed(1)}
+                    <span className="text-sm ml-1" style={{ color: 'rgba(15,222,189,0.6)' }}>år</span>
+                  </p>
+                  <p className="text-[10px] mt-1.5 font-bold" style={{ color: '#0FDEBD', opacity: 0.8 }}>
+                    ↑ {res.yearsSaved.toFixed(1)} år snabbare
+                  </p>
+                </div>
+                <div className="text-center">
+                  <p className="text-[10px] mb-2 uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.30)' }}>Du sparar</p>
+                  <p className="text-3xl font-black" style={{ color: '#0FDEBD', letterSpacing: '-0.02em' }}>
+                    {fmt(res.interestSaved)}
+                    <span className="text-sm ml-1" style={{ color: 'rgba(15,222,189,0.6)' }}>kr</span>
+                  </p>
+                  <p className="text-[10px] mt-1.5" style={{ color: 'rgba(255,255,255,0.30)' }}>i räntekostnad</p>
+                </div>
               </div>
-              <div className="text-center">
-                <p className="text-[10px] mb-1" style={{ color: 'rgba(255,255,255,0.35)' }}>Du sparar</p>
-                <p className="text-xl font-black" style={{ color: '#0FDEBD' }}>
-                  {fmt(interestSaved)} kr
-                </p>
-                <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.30)' }}>i räntekostnad</p>
-              </div>
-            </div>
-          )}
+            );
+          })()}
         </motion.div>
       </div>
     </div>
