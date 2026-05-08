@@ -56,19 +56,6 @@ export default function Settings() {
   const [newLoan, setNewLoan] = useState({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
   const [showAddLoan, setShowAddLoan] = useState(false);
 
-  // Auto-prefill CSN loan when navigated from Alex Mode DebtCheck
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('prefill') === 'csn') {
-      setShowAddLoan(true);
-      setNewLoan({ name: 'CSN-lån', totalAmount: '180000', interestRate: '0.59', monthlyPayment: '850' });
-      // Scroll to loans section after a tick
-      setTimeout(() => {
-        document.getElementById('loans-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 400);
-    }
-  }, []);
-
   const { data: profile, isLoading } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
@@ -262,7 +249,6 @@ export default function Settings() {
         </Section>
 
         {/* Loans */}
-        <div id="loans-section">
         <Section title="Lån">
           <div className="space-y-2">
             {(formData.loans || []).map((loan, i) => (
@@ -304,8 +290,6 @@ export default function Settings() {
             )}
           </div>
         </Section>
-
-        </div>
 
         {/* Social link */}
         <Link to="/Social">
