@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Sparkles } from 'lucide-react';
+import { Shield, Sparkles, Anchor } from 'lucide-react';
 
 /**
  * Visar ett kontextuellt meddelande baserat på MLI-poäng.
@@ -30,13 +30,15 @@ export default function MLIBanner({ mli, greeting }) {
             : '1px solid rgba(167,139,250,0.25)',
         }}
       >
-        {isHigh
-          ? <Shield className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#0FDEBD' }} />
-          : <Sparkles className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#a78bfa' }} />
-        }
-        <p className="text-xs leading-relaxed" style={{ color: isHigh ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.80)' }}>
-          {greeting}
-        </p>
+        <Anchor className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: isHigh ? '#0FDEBD' : '#a78bfa' }} />
+        <div>
+          <p className="text-[9px] font-black uppercase tracking-widest mb-0.5" style={{ color: isHigh ? 'rgba(15,222,189,0.6)' : 'rgba(167,139,250,0.6)' }}>
+            Anchor
+          </p>
+          <p className="text-xs leading-relaxed" style={{ color: isHigh ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.80)' }}>
+            {greeting}
+          </p>
+        </div>
       </motion.div>
     </AnimatePresence>
   );

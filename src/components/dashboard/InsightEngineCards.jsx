@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, Info, AlertCircle, TrendingUp, ChevronRight, Brain, RefreshCw } from 'lucide-react';
+import { AlertTriangle, Info, AlertCircle, TrendingUp, ChevronRight, Anchor, Brain, RefreshCw } from 'lucide-react';
 import { runInsightEngine, calcLiquidityForecast } from '@/lib/insightEngine';
 import InsightDetailModal from './InsightDetailModal';
 
@@ -107,12 +107,12 @@ export default function InsightEngineCards({ profile, transactions }) {
       {/* Header */}
       <div className="px-5 pt-4 pb-3 flex items-center gap-3" style={{ borderBottom: '1px solid #F0F2F5' }}>
         <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(13,115,119,0.1)' }}>
-          <Brain className="w-4 h-4" style={{ color: '#0D7377' }} />
+          <Anchor className="w-4 h-4" style={{ color: '#0D7377' }} />
         </div>
         <div className="flex-1">
-          <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Insiktsmotor</p>
+          <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Anchor</p>
           <p className="text-xs" style={{ color: '#9AA5B4' }}>
-            {insights.length > 0 ? `${insights.length} mönster hittade` : 'Analyserar din ekonomi...'}
+            {insights.length > 0 ? `${insights.length} insikter om din ekonomi` : 'Analyserar din ekonomi...'}
           </p>
         </div>
         {insights.length > 0 && (
