@@ -7,10 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Plane, Landmark, ScanLine, Brain, GitBranch, Calculator, BarChart2, Rocket, User, Scissors, Users, Bot } from 'lucide-react';
 
 import DecisionEngine from '@/components/protools/DecisionEngine';
-import StrategyCenter from '@/components/protools/mastery/StrategyCenter';
 import AIGuru from '@/components/protools/mastery/AIGuru';
 import FutureSimulator from '@/components/protools/mastery/FutureSimulator';
-import EconomicSelf from '@/components/protools/mastery/EconomicSelf';
 import MarginMaxer from '@/components/protools/mastery/MarginMaxer';
 import LifePuzzle from '@/components/protools/mastery/LifePuzzle';
 
@@ -29,10 +27,8 @@ const TOOLS = [
 ];
 
 const MODULES = [
-  { id: 'strategy', title: 'Strategi-Center',       hook: 'Se din ekonomi uppifrån.',          accent: '#a78bfa', emoji: '🔭', component: StrategyCenter },
   { id: 'ai_guru',  title: 'AI-Gurun',              hook: 'Bättre beslut på sekunder.',        accent: '#60a5fa', emoji: '🧠', component: AIGuru },
   { id: 'future',   title: 'Framtids-Simulatorn',   hook: 'Se resultatet av dina beslut.',     accent: '#34d399', emoji: '⚡', component: FutureSimulator },
-  { id: 'self',     title: 'Ditt Ekonomiska Jag',   hook: 'Förstå ditt ekonomibeteende.',      accent: '#fbbf24', emoji: '🪞', component: EconomicSelf },
   { id: 'margin',   title: 'Marginal-Maxaren',      hook: 'Återta din frihet.',                accent: '#fb7185', emoji: '🛡️', component: MarginMaxer },
   { id: 'puzzle',   title: 'Livspusslet',           hook: 'Bygg ekonomisk trygghet tillsammans.', accent: '#22d3ee', emoji: '🌍', component: LifePuzzle },
 ];
