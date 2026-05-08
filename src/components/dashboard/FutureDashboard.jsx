@@ -12,6 +12,7 @@ import MagicEntryBox from '@/components/import/MagicEntryBox';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import MLIBanner from '@/components/dashboard/MLIBanner';
 import { calculateMLI, getMLIToneConfig, resetActionDensity } from '@/lib/mliEngine';
+import SpendingHubModule from '@/components/dashboard/SpendingHubModule';
 
 export default function FutureDashboard({
   profile,
@@ -20,6 +21,7 @@ export default function FutureDashboard({
   onOpenMagicEntry,
   onOpenTransactionHub,
   user,
+  alexMode,
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [magicSpotlight, setMagicSpotlight] = useState(false);
@@ -124,6 +126,11 @@ export default function FutureDashboard({
       {/* ─── KAPITEL 3: HINKARNA ─── */}
       <div className="relative z-10 mt-3">
         <SavingsAndBudget profile={profile} />
+      </div>
+
+      {/* ─── KAPITEL 4: VART PENGARNA GÅR ─── */}
+      <div className="relative z-10 mt-3">
+        <SpendingHubModule transactions={transactions || []} profile={profile} />
       </div>
 
       {/* Action buttons row */}

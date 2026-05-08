@@ -1,11 +1,12 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDemoMode } from '@/components/demo/DemoMode';
+import { createPageUrl } from '@/utils';
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -219,6 +220,7 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
 
 export default function TransactionHistory() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const { isDemoMode, demoTransactions } = useDemoMode();
   const [showForm, setShowForm] = useState(false);
   const [editingTx, setEditingTx] = useState(null);
@@ -226,6 +228,16 @@ export default function TransactionHistory() {
   const [filterType, setFilterType] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+
+  // Läs förinställt kategorifilter från URL (deep-dive från "Vart pengarna går")
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('category');
+    if (cat) {
+      setFilterCategory(cat);
+      setShowFilters(true);
+    }
+  }, []);
 
   const { data: dbTransactions = [], isLoading } = useQuery({
     queryKey: ['transactions', 'personal'],
@@ -284,7 +296,19 @@ export default function TransactionHistory() {
     <div className="min-h-screen pb-32" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
       <div className="px-5 pt-8 pb-2">
-        <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>Historik</p>
+        {filterCategory && (
+          <button
+            onClick={() => { setFilterCategory(''); navigate(createPageUrl('TransactionHistory')); }}
+            className="flex items-center gap-1.5 mb-3 text-xs font-semibold"
+            style={{ color: 'var(--color-accent)' }}
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Tillbaka till översikt
+          </button>
+        )}
+        <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>
+          {filterCategory ? `Filtrerat: ${CATEGORY_LABELS[filterCategory] || filterCategory}` : 'Historik'}
+        </p>
         <h1 className="text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Transaktioner</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{filtered.length} poster</p>
       </div>

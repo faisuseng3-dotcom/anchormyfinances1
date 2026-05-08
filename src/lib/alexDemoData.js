@@ -214,6 +214,42 @@ export const ALEX_TRANSACTIONS = [
     created_date: fixedDate(2026, 5, 27),
     aiNote: 'Köpångest-skydd triggades – Alex bekräftade köpet',
   },
+  {
+    id: 'ax_hm',
+    label: 'H&M',
+    vendor: 'H&M',
+    amount: -350,
+    category: 'shopping',
+    type: 'expense',
+    paymentMethod: 'Kredit',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 24),
+  },
+
+  // ── Extra mat ──
+  {
+    id: 'ax_hemkop',
+    label: 'Hemköp',
+    vendor: 'Hemköp',
+    amount: -120,
+    category: 'food',
+    type: 'expense',
+    paymentMethod: 'Konto',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 26),
+  },
+  {
+    id: 'ax_foodora',
+    label: 'Foodora',
+    vendor: 'Foodora',
+    amount: -220,
+    category: 'food',
+    type: 'expense',
+    paymentMethod: 'Kredit',
+    context: 'PERSONAL',
+    created_date: fixedDate(2026, 5, 23),
+    aiNote: 'Matleverans — tredje gången denna månad',
+  },
 
   // ── Abonnemang ──
   {
