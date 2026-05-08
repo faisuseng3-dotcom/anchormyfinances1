@@ -1,11 +1,18 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { isAlexMode } from '@/lib/alexMode';
+import DebtIntelligenceDashboard from './DebtIntelligenceDashboard';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 export default function DebtCheck({ profile }) {
   if (!profile) return null;
+
+  // Alex Mode: always show the intelligence dashboard
+  if (isAlexMode()) {
+    return <DebtIntelligenceDashboard />;
+  }
 
   const loans = profile.loans || [];
   const totalDebt = loans.reduce((s, l) => s + (l.totalAmount || 0), 0);
@@ -24,7 +31,6 @@ export default function DebtCheck({ profile }) {
         </p>
 
         <div className="flex items-center gap-4">
-          {/* Big number */}
           <div className="flex-1">
             <p className="font-black leading-none" style={{ fontSize: 36, color: '#fff', letterSpacing: '-0.02em' }}>
               {fmt(totalDebt)}
@@ -35,7 +41,6 @@ export default function DebtCheck({ profile }) {
             </p>
           </div>
 
-          {/* Visual gauge */}
           <div className="relative flex items-center justify-center" style={{ width: 64, height: 64 }}>
             <svg width="64" height="64" viewBox="0 0 64 64">
               <circle cx="32" cy="32" r="26" fill="none"
