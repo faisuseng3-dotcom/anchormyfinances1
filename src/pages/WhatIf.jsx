@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import WhatIfEngine from '@/components/whatif/WhatIfEngine';
-import PrecisionWizard from '@/components/whatif/PrecisionWizard';
-import PrecisionTaxResult from '@/components/whatif/PrecisionTaxResult';
 import ModeGate from '@/components/ModeGate';
 import AnchorOracle from '@/components/whatif/AnchorOracle';
 
 export default function WhatIf() {
-  const [incomeChange, setIncomeChange] = useState(0);
-  const [sickDays, setSickDays] = useState(0);
-  const [wizardData, setWizardData] = useState(null);
-
   const { data: profile } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
@@ -25,25 +18,6 @@ export default function WhatIf() {
   });
 
   const currentMode = profile?.mode || 'basic';
-
-  const handleWhatIfChange = ({ incomeChange: ic, sickDays: sd }) => {
-    if (ic !== undefined) setIncomeChange(ic);
-    if (sd !== undefined) setSickDays(sd);
-    // Award points for running a simulation
-    base44.functions.invoke('awardPoints', { event_type: 'whatif_simulation' })
-      .then(r => {
-        if (r?.data?.points > 0) {
-          import('sonner').then(({ toast }) => {
-            toast.success(`+${r.data.points} poäng till tävlingen! 🏆`, {
-              description: 'What-If simulering körd',
-              duration: 3000,
-              style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
-            });
-          });
-        }
-      })
-      .catch(() => {});
-  };
 
   return (
     <div className="min-h-screen pb-24">
@@ -61,20 +35,7 @@ export default function WhatIf() {
             </div>
           </div>
 
-          <div className="space-y-4">
-            <AnchorOracle profile={profile} />
-            <WhatIfEngine
-              profile={profile}
-              incomeChange={incomeChange}
-              sickDays={sickDays}
-              onChange={handleWhatIfChange}
-            />
-            {wizardData ? (
-              <PrecisionTaxResult wizardData={wizardData} onReset={() => setWizardData(null)} />
-            ) : (
-              <PrecisionWizard onComplete={setWizardData} />
-            )}
-          </div>
+          <AnchorOracle profile={profile} />
         </div>
       </ModeGate>
     </div>
