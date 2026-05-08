@@ -2,16 +2,16 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { isAlexMode } from '@/lib/alexMode';
-import DebtIntelligenceDashboard from './DebtIntelligenceDashboard';
+import DebtDashboardCard from './DebtDashboardCard';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 export default function DebtCheck({ profile }) {
   if (!profile) return null;
 
-  // Alex Mode: always show the intelligence dashboard
+  // Alex Mode: compact card with click-to-expand full analysis
   if (isAlexMode()) {
-    return <DebtIntelligenceDashboard />;
+    return <DebtDashboardCard />;
   }
 
   const loans = profile.loans || [];
@@ -49,8 +49,7 @@ export default function DebtCheck({ profile }) {
               <motion.circle
                 cx="32" cy="32" r="26" fill="none"
                 stroke={isDebtFree ? '#0FDEBD' : '#FF4466'}
-                strokeWidth="6"
-                strokeLinecap="round"
+                strokeWidth="6" strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 26}`}
                 initial={{ strokeDashoffset: 2 * Math.PI * 26 }}
                 animate={{ strokeDashoffset: isDebtFree ? 2 * Math.PI * 26 : 2 * Math.PI * 26 * 0.3 }}
