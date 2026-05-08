@@ -75,15 +75,21 @@ export default function SpendingHubModule({ transactions = [], profile }) {
   const thisYear = now.getFullYear();
 
   // Aggregera utgifter per kategori för aktuell månad
+  // OBS: Använd lokal tid (inte UTC) för månadsfilter — undviker timezone-bug
   const categoryTotals = useMemo(() => {
     const map = {};
-    transactions.forEach(tx => {
+    (transactions || []).forEach(tx => {
       if (tx.context === 'BUSINESS') return;
       if (tx.amount >= 0) return; // bara utgifter
-      if (['savings_deposit', 'transfer_to_savings'].includes(tx.type)) return;
+      if (['savings_deposit', 'transfer_to_savings', 'income'].includes(tx.type)) return;
 
-      const d = new Date(tx.created_date);
-      if (d.getMonth() !== thisMonth || d.getFullYear() !== thisYear) return;
+      // Lokal tid — viktigt för att undvika UTC-offsetfel (t.ex. +02:00 Stockholm)
+      const dateStr = tx.created_date || tx.date || '';
+      const localDate = new Date(dateStr);
+      const txMonth = localDate.getMonth();  // lokal tid
+      const txYear = localDate.getFullYear(); // lokal tid
+
+      if (txMonth !== thisMonth || txYear !== thisYear) return;
 
       const cat = tx.category || 'other';
       map[cat] = (map[cat] || 0) + Math.abs(tx.amount);

@@ -3,8 +3,11 @@
  * Fasta datum baserade på maj 2026 för att se äkta och konsekventa ut.
  */
 
+// Returnerar lokal ISO-sträng (YYYY-MM-DDTHH:mm:ss) — undviker UTC-offsetfel
+// t.ex. Stockholm +02:00: new Date(2026,4,8).toISOString() = "2026-05-07T22:00:00Z" (fel månad!)
 function fixedDate(year, month, day) {
-  return new Date(year, month - 1, day).toISOString();
+  const pad = n => String(n).padStart(2, '0');
+  return `${year}-${pad(month)}-${pad(day)}T12:00:00`;
 }
 
 export const ALEX_PROFILE = {
