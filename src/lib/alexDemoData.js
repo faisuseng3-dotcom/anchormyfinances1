@@ -116,7 +116,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Konto',
     context: 'PERSONAL',
-    created_date: fixedDate(2026, 5, 28),
+    created_date: fixedDate(2026, 5, 27),
   },
   {
     id: 'ax_insurance',
@@ -286,7 +286,7 @@ export const ALEX_TRANSACTIONS = [
     type: 'expense',
     paymentMethod: 'Kredit',
     context: 'PERSONAL',
-    created_date: fixedDate(2026, 5, 26),
+    created_date: fixedDate(2026, 5, 30),
     aiNote: 'Ej använt på 2 månader — AI: "Vill du att jag avslutar prenumerationen?"',
     _aiSuggestion: 'cancel_subscription',
   },

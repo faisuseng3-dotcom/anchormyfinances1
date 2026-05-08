@@ -103,6 +103,7 @@ export default function SpendingHubModule({ transactions = [], profile }) {
     return (transactions || [])
       .filter(tx => {
         if (tx.context === 'BUSINESS') return false;
+        if (tx._pending) return false;
         if (['savings_deposit', 'transfer_to_savings'].includes(tx.type)) return false;
         const d = new Date(tx.created_date);
         return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
