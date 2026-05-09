@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ChevronRight, Clock, CheckCircle2 } from 'lucide-react';
 import { createPageUrl } from '@/utils';
+import { dashboardGlassSurface, dashboardSectionLabelClass } from '@/components/dashboard/dashboardGlass';
 
 const CATEGORY_META = {
   food:          { emoji: '🍽️' },
@@ -132,24 +133,24 @@ export default function SpendingHubModule({ transactions = [], profile }) {
 
   return (
     <div
-      className="mx-5 mt-3 rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}
+      className="mx-4 sm:mx-5 mt-3 rounded-[26px] overflow-hidden"
+      style={dashboardGlassSurface()}
     >
       {/* ── Header ── */}
       <div
         className="flex items-center justify-between px-5 pt-4 pb-3"
-        style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
       >
-        <p className="text-xs font-black uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>
-          💳 Betalningslinje
+        <p className="text-sm font-semibold text-white/90">
+          Betalningslinje
         </p>
-        <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+        <span className="text-[11px] font-medium text-white/45">
           {paidItems.length} betalda
         </span>
       </div>
 
       {!hasAny && (
-        <p className="text-sm text-center py-8" style={{ color: 'var(--color-text-muted)' }}>
+        <p className="text-sm text-center py-10 px-4 text-white/45">
           Inga transaktioner denna månad.
         </p>
       )}
@@ -159,16 +160,16 @@ export default function SpendingHubModule({ transactions = [], profile }) {
         <div className="px-3 pt-3 pb-2">
           {/* Sektion-label */}
           <div className="flex items-center gap-1.5 mb-2 px-1">
-            <Clock className="w-3 h-3" style={{ color: '#D69E2E' }} />
-            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: '#D69E2E' }}>
+            <Clock className="w-3.5 h-3.5 text-amber-200/80" />
+            <p className={`${dashboardSectionLabelClass} !tracking-[0.16em]`}>
               Kommande
             </p>
           </div>
 
           {/* Kommande-ram */}
           <div
-            className="rounded-xl overflow-hidden"
-            style={{ background: 'rgba(214,158,46,0.07)', border: '1px dashed rgba(214,158,46,0.30)' }}
+            className="rounded-[18px] overflow-hidden"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)' }}
           >
             {[...pendingItems]
               .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
@@ -177,12 +178,12 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                   key={item.id}
                   className="flex items-center px-3 py-3"
                   style={{
-                    borderBottom: i < arr.length - 1 ? '1px solid rgba(214,158,46,0.12)' : 'none',
+                    borderBottom: i < arr.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                   }}
                 >
                   {/* Datum — 20% */}
                   <div className="flex-shrink-0" style={{ width: '22%' }}>
-                    <p className="text-xs font-black" style={{ color: '#E9A825' }}>
+                    <p className="text-xs font-semibold tabular-nums text-white/70">
                       {fmt(item.dueDate)}
                     </p>
                   </div>
@@ -190,15 +191,15 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                   {/* Emoji + Namn — flex-1 */}
                   <div className="flex items-center gap-2 min-w-0 flex-1">
                     <span className="text-base flex-shrink-0">{getEmoji(item.category, item.amount, item.emoji)}</span>
-                    <p className="text-sm font-bold truncate" style={{ color: 'var(--color-text-primary)' }}>
+                    <p className="text-sm font-medium truncate text-white/90">
                       {item.label}
                     </p>
                   </div>
 
                   {/* Belopp — 28% */}
                   <p
-                    className="font-black text-sm text-right flex-shrink-0"
-                    style={{ width: '28%', color: item.amount >= 0 ? '#3DAA7A' : '#E53E3E' }}
+                    className="font-semibold text-sm tabular-nums text-right flex-shrink-0"
+                    style={{ width: '28%', color: item.amount >= 0 ? '#9AE6B4' : '#FCA5A5' }}
                   >
                     {item.amount >= 0 ? '+' : ''}
                     {item.amount.toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
@@ -214,8 +215,8 @@ export default function SpendingHubModule({ transactions = [], profile }) {
         <div className="pb-2">
           {/* Sektion-label */}
           <div className="flex items-center gap-1.5 px-5 pt-3 pb-1">
-            <CheckCircle2 className="w-3 h-3" style={{ color: '#3DAA7A' }} />
-            <p className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-200/80" />
+            <p className={dashboardSectionLabelClass}>
               Denna månad
             </p>
           </div>
@@ -231,12 +232,12 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                 onClick={() => handlePaidClick(tx)}
                 className="w-full flex items-center px-5 py-2.5 text-left active:opacity-70 transition-opacity"
                 style={{
-                  borderBottom: i < paidItems.length - 1 ? '1px solid rgba(0,0,0,0.04)' : 'none',
+                  borderBottom: i < paidItems.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
                 }}
               >
                 {/* Datum — 20% */}
                 <div className="flex-shrink-0" style={{ width: '22%' }}>
-                  <p className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>
+                  <p className="text-xs font-medium tabular-nums text-white/55">
                     {fmt(tx.created_date)}
                   </p>
                 </div>
@@ -244,7 +245,7 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                 {/* Emoji + Namn — flex-1 */}
                 <div className="flex items-center gap-2 min-w-0 flex-1">
                   <span className="text-sm flex-shrink-0">{getEmoji(tx.category, tx.amount)}</span>
-                  <p className="text-xs truncate" style={{ color: 'var(--color-text-secondary)' }}>
+                  <p className="text-xs truncate text-white/75">
                     {tx.vendor || tx.label}
                   </p>
                 </div>
@@ -252,13 +253,13 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                 {/* Belopp — 28% */}
                 <p
                   className="text-xs font-bold flex-shrink-0 text-right"
-                  style={{ width: '28%', color: isPositive ? '#3DAA7A' : '#E53E3E' }}
+                  style={{ width: '28%', color: isPositive ? '#9AE6B4' : '#FCA5A5' }}
                 >
                   {isPositive ? '+' : ''}
                   {Math.abs(tx.amount).toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
                 </p>
 
-                <ChevronRight className="w-3 h-3 ml-1 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
+                <ChevronRight className="w-3.5 h-3.5 ml-1 flex-shrink-0 text-white/30" />
               </motion.button>
             );
           })}

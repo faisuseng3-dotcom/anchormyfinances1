@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { dashboardGlassSurface, dashboardSectionLabelClass } from '@/components/dashboard/dashboardGlass';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -29,13 +30,15 @@ function DonutChart({ expenses }) {
 
   if (total === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-6">
-        <div className="w-24 h-24 rounded-full flex items-center justify-center"
-          style={{ border: '2px dashed rgba(255,255,255,0.10)' }}>
-          <span className="text-2xl">📊</span>
+      <div className="flex flex-col items-center justify-center py-8">
+        <div
+          className="w-24 h-24 rounded-full flex items-center justify-center"
+          style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.04)' }}
+        >
+          <span className="text-2xl opacity-90">📊</span>
         </div>
-        <p className="text-xs mt-3 font-semibold" style={{ color: 'rgba(255,255,255,0.25)' }}>
-          Inga utgifter registrerade än
+        <p className="text-[13px] mt-4 font-medium text-center text-white/45 max-w-[220px]">
+          Inga utgifter registrerade än — lägg till köp eller importera från bank.
         </p>
       </div>
     );
@@ -74,7 +77,7 @@ function DonutChart({ expenses }) {
               d={arc.path}
               fill={arc.color}
               opacity={activeIdx === null ? 1 : activeIdx === i ? 1 : 0.3}
-              style={{ filter: activeIdx === i ? `drop-shadow(0 0 6px ${arc.color})` : 'none', cursor: 'pointer' }}
+              style={{ filter: activeIdx === i ? 'brightness(1.08)' : 'none', cursor: 'pointer' }}
               onMouseEnter={() => setActiveIdx(i)}
               onMouseLeave={() => setActiveIdx(null)}
               onTouchStart={() => setActiveIdx(i)}
@@ -84,7 +87,7 @@ function DonutChart({ expenses }) {
             />
           ))}
           {/* Inner circle */}
-          <circle cx={cx} cy={cy} r={innerR - 2} fill="#080c18" />
+          <circle cx={cx} cy={cy} r={innerR - 2} fill="rgba(8,14,28,0.85)" />
           {/* Center text */}
           <text x={cx} y={cy - 5} textAnchor="middle" fill="white" fontSize="10" fontWeight="900">
             {active ? fmt(active.value) : fmt(total)}
@@ -105,9 +108,9 @@ function DonutChart({ expenses }) {
             className="flex items-center gap-2 cursor-pointer"
             onMouseEnter={() => setActiveIdx(i)}
             onMouseLeave={() => setActiveIdx(null)}>
-            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: s.color, boxShadow: `0 0 5px ${s.color}` }} />
-            <p className="text-[10px] flex-1" style={{ color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.45)' }}>{s.label}</p>
-            <p className="text-[10px] font-black" style={{ color: activeIdx === i ? s.color : 'rgba(255,255,255,0.35)' }}>
+            <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: s.color }} />
+            <p className="text-[10px] flex-1" style={{ color: activeIdx === i ? '#fff' : 'rgba(255,255,255,0.5)' }}>{s.label}</p>
+            <p className="text-[10px] font-semibold tabular-nums" style={{ color: activeIdx === i ? s.color : 'rgba(255,255,255,0.4)' }}>
               {fmt(s.value)} kr
             </p>
           </div>
@@ -129,43 +132,40 @@ function SavingsGoalCard({ profile }) {
 
   return (
     <Link to="/SavingsGoals">
-      <div className="rounded-2xl p-4"
-        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <div
+        className="rounded-[22px] p-4"
+        style={{
+          background: 'rgba(255,255,255,0.06)',
+          border: '1px solid rgba(255,255,255,0.10)',
+        }}
+      >
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
-            style={{ background: 'rgba(246,173,85,0.12)', border: '1px solid rgba(246,173,85,0.25)' }}>
+          <div
+            className="w-11 h-11 rounded-2xl flex items-center justify-center text-xl"
+            style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+          >
             {emoji}
           </div>
-          <div className="flex-1">
-            <p className="text-xs font-black" style={{ color: '#fff' }}>{name}</p>
-            <p className="text-[10px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-white truncate">{name}</p>
+            <p className="text-[11px] text-white/45">
               {fmt(current)} / {fmt(goal)} kr
             </p>
           </div>
-          <p className="text-lg font-black" style={{ color: '#F6AD55' }}>{pct}%</p>
+          <p className="text-lg font-semibold tabular-nums text-white/90">{pct}%</p>
         </div>
 
         {/* Progress bar */}
-        <div className="relative h-2.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+        <div className="relative h-2 rounded-full overflow-hidden bg-white/[0.08]">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: 1.4, ease: 'easeOut' }}
             className="absolute inset-y-0 left-0 rounded-full"
             style={{
-              background: 'linear-gradient(90deg, #D69E2E, #F6AD55, #ECC94B)',
-              boxShadow: '0 0 10px rgba(246,173,85,0.5)',
+              background: 'linear-gradient(90deg, #E8B86B, #F0D090)',
             }}
           />
-          {/* Gold sparkle at tip */}
-          {pct > 5 && (
-            <motion.div
-              animate={{ opacity: [0.6, 1, 0.6] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="absolute top-0 bottom-0 w-3 rounded-full"
-              style={{ left: `calc(${pct}% - 6px)`, background: 'rgba(255,255,255,0.6)', filter: 'blur(2px)' }}
-            />
-          )}
         </div>
       </div>
     </Link>
@@ -179,29 +179,25 @@ export default function SavingsAndBudget({ profile }) {
   const expenses = profile.monthlyExpenses || [];
 
   return (
-    <div className="mx-4 rounded-3xl p-5 space-y-5"
-      style={{
-        background: 'rgba(8,12,22,0.95)',
-        border: '1px solid rgba(255,255,255,0.07)',
-      }}>
+    <div className="mx-4 rounded-[26px] p-5 sm:p-6 space-y-6" style={dashboardGlassSurface()}>
 
       {/* Savings goal */}
       {profile.savingsGoal && (
         <>
           <div>
-            <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.22)' }}>
-              MINA MÅL
+            <p className={`${dashboardSectionLabelClass} mb-3`}>
+              Mina mål
             </p>
             <SavingsGoalCard profile={profile} />
           </div>
-          <div style={{ height: 1, background: 'rgba(255,255,255,0.05)' }} />
+          <div className="h-px bg-white/[0.08]" />
         </>
       )}
 
       {/* Spending donut */}
       <div>
-        <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.22)' }}>
-          VART PENGARNA GÅR
+        <p className={`${dashboardSectionLabelClass} mb-3`}>
+          Vart pengarna går
         </p>
         <DonutChart expenses={expenses} />
       </div>

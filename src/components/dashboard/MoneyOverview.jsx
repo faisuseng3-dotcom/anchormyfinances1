@@ -1,18 +1,22 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import { dashboardGlassSurface, dashboardSectionLabelClass } from '@/components/dashboard/dashboardGlass';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 function PillGauge({ label, value, max, color, sublabel }) {
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
   return (
-    <div className="space-y-2">
-      <div className="flex items-baseline justify-between">
-        <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.28)' }}>{label}</p>
-        <p className="text-sm font-black" style={{ color: '#fff' }}>{fmt(value)} <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)' }}>kr</span></p>
+    <div className="space-y-2.5">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className={dashboardSectionLabelClass}>{label}</p>
+        <p className="text-base font-semibold tabular-nums text-white">
+          {fmt(value)}{' '}
+          <span className="text-xs font-medium text-white/40">kr</span>
+        </p>
       </div>
-      <div className="relative h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+      <div className="relative h-2.5 rounded-full overflow-hidden bg-white/[0.08]">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
@@ -20,12 +24,12 @@ function PillGauge({ label, value, max, color, sublabel }) {
           className="absolute inset-y-0 left-0 rounded-full"
           style={{
             background: color,
-            boxShadow: `0 0 10px ${color.split(',')[0].replace('linear-gradient(90deg,','')}55`,
+            boxShadow: '0 0 12px rgba(255,255,255,0.12)',
           }}
         />
       </div>
       {sublabel && (
-        <p className="text-[9px]" style={{ color: 'rgba(255,255,255,0.22)' }}>{sublabel}</p>
+        <p className="text-[11px] leading-snug text-white/40">{sublabel}</p>
       )}
     </div>
   );
@@ -39,28 +43,24 @@ export default function MoneyOverview({ profile }) {
   const totalOut = totalFixed + expenses;
 
   return (
-    <div className="mx-4 rounded-3xl p-5"
-      style={{
-        background: 'rgba(8,12,22,0.95)',
-        border: '1px solid rgba(255,255,255,0.07)',
-      }}>
-      <p className="text-[9px] font-black tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.22)' }}>
-        DINA PENGAR JUST NU
+    <div className="mx-4 rounded-[26px] p-5 sm:p-6" style={dashboardGlassSurface()}>
+      <p className={`${dashboardSectionLabelClass} mb-5`}>
+        Dina pengar just nu
       </p>
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <PillGauge
-          label="INKOMST"
+          label="Inkomst"
           value={profile.income}
           max={profile.income}
-          color="linear-gradient(90deg, #0D7377, #0FDEBD)"
+          color="linear-gradient(90deg, #6E9BFF, #B8C9FF)"
           sublabel="Månadslön / inkomst"
         />
         <PillGauge
-          label="UTGIFTER"
+          label="Utgifter"
           value={totalOut}
           max={profile.income}
-          color="linear-gradient(90deg, #6B21A8, #A78BFA)"
+          color="linear-gradient(90deg, #7C6AE8, #C4B5FD)"
           sublabel={`Fasta: ${fmt(totalFixed)} kr · Använt: ${fmt(expenses)} kr`}
         />
       </div>

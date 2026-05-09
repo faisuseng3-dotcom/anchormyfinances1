@@ -23,44 +23,31 @@ export default function AIStoryBar({ profile, transactions }) {
 
   return (
     <>
-      <div className="flex items-center gap-3 px-5 py-2 overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-3 px-4 sm:px-5 py-2 overflow-x-auto no-scrollbar">
         {insights.map((ins, i) => {
           const cfg = TYPE_COLORS[ins.type] || TYPE_COLORS.info;
           const Ic = cfg.Icon;
           return (
             <motion.button
               key={ins.id}
-              initial={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.07, type: 'spring', stiffness: 260 }}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.05, type: 'spring', stiffness: 280 }}
               onClick={() => setActiveInsight(ins)}
-              className="flex-shrink-0 flex flex-col items-center gap-1"
+              className="flex-shrink-0 flex flex-col items-center gap-2"
             >
-              {/* Glowing ring */}
               <div
-                className="relative w-14 h-14 rounded-full flex items-center justify-center"
+                className="relative w-12 h-12 rounded-full flex items-center justify-center"
                 style={{
-                  background: cfg.bg,
-                  border: `2px solid ${cfg.ring}`,
-                  boxShadow: `0 0 12px ${cfg.ring}60, 0 0 24px ${cfg.ring}30`,
+                  background: 'rgba(255,255,255,0.08)',
+                  border: '1px solid rgba(255,255,255,0.14)',
                 }}
               >
-                <motion.div
-                  animate={{ scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
-                  transition={{ duration: 2 + i * 0.3, repeat: Infinity }}
-                >
-                  <Ic className="w-5 h-5" style={{ color: cfg.ring }} />
-                </motion.div>
-                {/* Pulse ring */}
-                <motion.div
-                  className="absolute inset-0 rounded-full"
-                  animate={{ scale: [1, 1.4], opacity: [0.4, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }}
-                  style={{ border: `1.5px solid ${cfg.ring}` }}
-                />
+                <Ic className="w-5 h-5" style={{ color: cfg.ring }} />
               </div>
-              <p className="text-[9px] font-bold tracking-wide text-center max-w-[56px] leading-tight"
-                style={{ color: 'rgba(255,255,255,0.5)' }}>
+              <p
+                className="text-[10px] font-medium text-center max-w-[64px] leading-tight text-white/50"
+              >
                 {ins.title.split(' ').slice(0, 2).join(' ')}
               </p>
             </motion.button>

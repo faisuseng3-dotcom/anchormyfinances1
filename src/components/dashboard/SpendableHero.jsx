@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Anchor } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import { dashboardGlassSurface, dashboardSectionLabelClass } from '@/components/dashboard/dashboardGlass';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -16,43 +17,42 @@ export default function SpendableHero({ profile }) {
   const safeToSpend = Math.max(0, monthlyMargin - expenses);
 
   const isCritical = safeToSpend < profile.income * 0.05;
-  const glowColor = isCritical ? '#FF4466' : '#0FDEBD';
+  const accent = isCritical ? '#FF5A6B' : '#B8C9FF';
 
   return (
-    <div className="mx-4 mt-4 rounded-3xl relative overflow-hidden"
-      style={{
-        background: 'linear-gradient(160deg, #08101e 0%, #0a1528 100%)',
-        border: `1px solid ${glowColor}28`,
-        boxShadow: `0 0 40px ${glowColor}14, inset 0 1px 0 rgba(255,255,255,0.06)`,
-      }}>
-
-      {/* Glow orb behind number */}
-      <motion.div
-        animate={{ scale: [1, 1.12, 1], opacity: [0.4, 0.7, 0.4] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at 50% 60%, ${glowColor}18 0%, transparent 65%)` }}
+    <div
+      className="mx-4 mt-4 rounded-[28px] relative overflow-hidden"
+      style={dashboardGlassSurface(
+        isCritical
+          ? { border: '1px solid rgba(255,90,107,0.28)' }
+          : undefined
+      )}
+    >
+      {/* Soft highlight — no harsh neon pulse */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-90"
+        style={{
+          background: `radial-gradient(ellipse 90% 70% at 50% 0%, ${accent}22 0%, transparent 55%)`,
+        }}
       />
 
-      <div className="relative z-10 px-6 pt-6 pb-5 text-center">
+      <div className="relative z-10 px-5 sm:px-6 pt-6 pb-5 text-center">
         {/* Header row with "min ekonomi" button in Alex Mode */}
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.28)' }}>
-            PENGAR ATT SPENDERA
-          </p>
+        <div className="flex items-center justify-between mb-3 gap-2">
+          <p className={dashboardSectionLabelClass}>Pengar att spendera</p>
           {profile._alexMode && (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/AnchorAnalysis')}
-              className="flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0"
               style={{
-                background: 'rgba(15,222,189,0.08)',
-                border: '1px solid rgba(15,222,189,0.25)',
-                color: '#0FDEBD',
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.14)',
+                color: 'rgba(255,255,255,0.92)',
               }}
             >
-              <Anchor className="w-3 h-3" />
-              min ekonomi
+              <Anchor className="w-3.5 h-3.5 opacity-80" />
+              Min ekonomi
             </motion.button>
           )}
         </div>
@@ -62,28 +62,29 @@ export default function SpendableHero({ profile }) {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 260 }}
-          className="font-black leading-none"
-          style={{ fontSize: 52, color: '#fff', letterSpacing: '-0.03em' }}
+          className="font-semibold leading-none tracking-tight text-white"
+          style={{ fontSize: 'clamp(2.25rem, 9vw, 3.15rem)' }}
         >
           {fmt(safeToSpend)}
-          <span className="text-2xl font-black ml-1.5" style={{ color: 'rgba(255,255,255,0.45)' }}>kr</span>
+          <span className="text-xl sm:text-2xl font-medium ml-1 text-white/45">kr</span>
         </motion.p>
 
         {/* Kvar badge */}
-        <div className="mt-2 flex justify-center">
-          <span className="px-3 py-1 rounded-full text-[10px] font-black"
+        <div className="mt-3 flex justify-center">
+          <span
+            className="px-3.5 py-1.5 rounded-full text-[11px] font-medium"
             style={{
-              background: `${glowColor}18`,
-              color: glowColor,
-              border: `1px solid ${glowColor}40`,
-              boxShadow: `0 0 12px ${glowColor}22`,
-            }}>
-            KVAR ATT SPENDERA
+              background: 'rgba(255,255,255,0.10)',
+              color: 'rgba(255,255,255,0.88)',
+              border: '1px solid rgba(255,255,255,0.16)',
+            }}
+          >
+            Kvar att spendera
           </span>
         </div>
 
         {/* Sub-line */}
-        <p className="mt-3 text-xs leading-relaxed" style={{ color: 'rgba(255,255,255,0.30)' }}>
+        <p className="mt-3 text-[13px] leading-relaxed text-white/50">
           Av {fmt(profile.income)} kr i inkomst, efter att räkningarna är betalda.
         </p>
       </div>

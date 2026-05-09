@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { isAlexMode } from '@/lib/alexMode';
 import DebtDashboardCard from './DebtDashboardCard';
+import { dashboardGlassSurface, dashboardSectionLabelClass } from '@/components/dashboard/dashboardGlass';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -21,35 +22,41 @@ export default function DebtCheck({ profile }) {
 
   return (
     <Link to="/Loans">
-      <div className="mx-4 rounded-3xl p-5"
-        style={{
-          background: 'rgba(8,12,22,0.95)',
-          border: `1px solid ${isDebtFree ? 'rgba(15,222,189,0.18)' : 'rgba(255,68,102,0.18)'}`,
-        }}>
-        <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.22)' }}>
-          MIN SKULD-KOLL
+      <div
+        className="mx-4 rounded-[26px] p-5 sm:p-6"
+        style={dashboardGlassSurface(
+          isDebtFree
+            ? { border: '1px solid rgba(120, 200, 180, 0.22)' }
+            : { border: '1px solid rgba(255, 120, 130, 0.22)' }
+        )}
+      >
+        <p className={`${dashboardSectionLabelClass} mb-4`}>
+          Min skuld-koll
         </p>
 
         <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <p className="font-black leading-none" style={{ fontSize: 36, color: '#fff', letterSpacing: '-0.02em' }}>
+          <div className="flex-1 min-w-0">
+            <p
+              className="font-semibold leading-none tracking-tight text-white"
+              style={{ fontSize: 'clamp(1.75rem, 7vw, 2.25rem)' }}
+            >
               {fmt(totalDebt)}
-              <span className="text-lg font-black ml-1" style={{ color: 'rgba(255,255,255,0.35)' }}>kr</span>
+              <span className="text-lg font-medium ml-1 text-white/40">kr</span>
             </p>
-            <p className="text-xs mt-1 font-semibold" style={{ color: isDebtFree ? '#0FDEBD' : 'rgba(255,68,102,0.8)' }}>
-              {isDebtFree ? '🎉 Du är skuldfri!' : `${fmt(monthlyDebt)} kr/mån`}
+            <p className="text-[13px] mt-2 font-medium text-white/55">
+              {isDebtFree ? 'Du har inga aktiva lån registrerade' : `${fmt(monthlyDebt)} kr/mån`}
             </p>
           </div>
 
-          <div className="relative flex items-center justify-center" style={{ width: 64, height: 64 }}>
-            <svg width="64" height="64" viewBox="0 0 64 64">
+          <div className="relative flex items-center justify-center shrink-0" style={{ width: 56, height: 56 }}>
+            <svg width="56" height="56" viewBox="0 0 64 64">
               <circle cx="32" cy="32" r="26" fill="none"
-                stroke={isDebtFree ? 'rgba(15,222,189,0.15)' : 'rgba(255,68,102,0.15)'}
-                strokeWidth="6" />
+                stroke={isDebtFree ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.08)'}
+                strokeWidth="5" />
               <motion.circle
                 cx="32" cy="32" r="26" fill="none"
-                stroke={isDebtFree ? '#0FDEBD' : '#FF4466'}
-                strokeWidth="6" strokeLinecap="round"
+                stroke={isDebtFree ? '#8FD4C8' : '#FF7A85'}
+                strokeWidth="5" strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 26}`}
                 initial={{ strokeDashoffset: 2 * Math.PI * 26 }}
                 animate={{ strokeDashoffset: isDebtFree ? 2 * Math.PI * 26 : 2 * Math.PI * 26 * 0.3 }}
@@ -57,19 +64,18 @@ export default function DebtCheck({ profile }) {
                 style={{
                   transform: 'rotate(-90deg)',
                   transformOrigin: '32px 32px',
-                  filter: `drop-shadow(0 0 6px ${isDebtFree ? '#0FDEBD' : '#FF4466'})`,
                 }}
               />
             </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span style={{ fontSize: 20 }}>{isDebtFree ? '✓' : '!'}</span>
+            <div className="absolute inset-0 flex items-center justify-center text-lg">
+              {isDebtFree ? '✓' : '!'}
             </div>
           </div>
         </div>
 
         {isDebtFree && (
-          <p className="text-[10px] mt-3" style={{ color: 'rgba(255,255,255,0.22)' }}>
-            Inga aktiva lån registrerade. Bra jobbat!
+          <p className="text-[11px] mt-4 text-white/40">
+            Bra jobbat — du kan lägga till lån när som helst under Lån.
           </p>
         )}
       </div>

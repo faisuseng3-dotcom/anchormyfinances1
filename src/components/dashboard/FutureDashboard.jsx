@@ -89,15 +89,17 @@ export default function FutureDashboard({
       {/* Header */}
       <div className="relative z-10 px-4 sm:px-5 pt-8 sm:pt-10 pb-2 flex items-center justify-between">
         <div>
-          <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.20)' }}>ANCHOR</p>
-          <h1 className="text-lg sm:text-xl font-black" style={{ color: '#fff', letterSpacing: '-0.02em' }}>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/45">Anchor</p>
+          <h1 className="text-lg sm:text-xl font-semibold text-white tracking-tight">
             {user?.full_name?.split(' ')[0] || 'Din ekonomi'}
           </h1>
         </div>
         <Link to={createPageUrl('Settings')}>
-          <button className="w-9 h-9 rounded-full flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}>
-            <Settings className="w-4 h-4" style={{ color: 'rgba(255,255,255,0.4)' }} />
+          <button
+            className="w-10 h-10 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.14)' }}
+          >
+            <Settings className="w-4 h-4 text-white/75" />
           </button>
         </Link>
       </div>
@@ -139,31 +141,29 @@ export default function FutureDashboard({
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleMagicEntry}
-          className="w-full sm:flex-1 py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
+          className="w-full sm:flex-1 h-14 rounded-2xl text-sm font-semibold flex items-center justify-center gap-2 text-slate-900"
           style={{
-            background: 'linear-gradient(135deg, rgba(15,222,189,0.15), rgba(75,124,243,0.10))',
-            border: '1px solid rgba(15,222,189,0.28)',
-            color: '#0FDEBD',
+            background: '#fff',
+            boxShadow: '0 14px 32px rgba(0,0,0,0.22)',
           }}
         >
-          <Zap className="w-4 h-4" />
-          MAGISK INMATNING
+          <Zap className="w-4 h-4 text-slate-800" />
+          Magisk inmatning
         </motion.button>
 
         {/* Kalkylator — gateway to pro tools */}
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setKalkylatornOpen(true)}
-          className="w-full sm:w-auto py-4 px-5 rounded-2xl flex items-center justify-center gap-2"
+          className="w-full sm:w-auto h-14 px-6 rounded-2xl flex items-center justify-center gap-2 text-sm font-semibold text-white/90"
           style={{
-            background: 'linear-gradient(135deg, rgba(167,139,250,0.18), rgba(96,165,250,0.12))',
-            border: '1px solid rgba(167,139,250,0.35)',
-            color: '#a78bfa',
+            background: 'rgba(255,255,255,0.08)',
+            border: '1px solid rgba(255,255,255,0.16)',
             flexShrink: 0,
           }}
         >
-          <Calculator className="w-4 h-4" />
-          <span className="text-sm font-black tracking-wide">KALKYLATOR</span>
+          <Calculator className="w-4 h-4 text-white/80" />
+          <span>Kalkylator</span>
         </motion.button>
       </div>
 
@@ -175,11 +175,11 @@ export default function FutureDashboard({
           onClick={() => setDrawerOpen(true)}
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex flex-col items-center gap-1 px-6 py-2 rounded-t-2xl pointer-events-auto"
-          style={{ background: 'rgba(15,222,189,0.08)', border: '1px solid rgba(15,222,189,0.15)', borderBottom: 'none' }}
+          className="flex flex-col items-center gap-1 px-6 py-2.5 rounded-t-[20px] pointer-events-auto"
+          style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.14)', borderBottom: 'none' }}
         >
-          <ChevronUp className="w-4 h-4" style={{ color: '#0FDEBD' }} />
-          <span className="text-[8px] font-black tracking-widest" style={{ color: '#0FDEBD' }}>TRANSAKTIONER</span>
+          <ChevronUp className="w-4 h-4 text-white/70" />
+          <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-white/55">Transaktioner</span>
         </motion.button>
       </div>
 
@@ -193,29 +193,37 @@ export default function FutureDashboard({
             <motion.div key="dw"
               initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 32, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl overflow-hidden"
-              style={{ background: '#080c1a', border: '1px solid rgba(15,222,189,0.15)', maxHeight: '70vh' }}>
+              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[28px] overflow-hidden"
+              style={{
+                background: 'linear-gradient(180deg, rgba(18,28,52,0.98) 0%, rgba(8,12,24,0.98) 100%)',
+                border: '1px solid rgba(255,255,255,0.12)',
+                borderBottom: 'none',
+                maxHeight: '70vh',
+                boxShadow: '0 -20px 48px rgba(2,8,23,0.45)',
+              }}>
               <div className="flex justify-center pt-3 pb-2">
-                <div className="w-10 h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.12)' }} />
+                <div className="w-10 h-1 rounded-full bg-white/20" />
               </div>
               <div className="px-5 pb-8">
                 <div className="flex items-center justify-between mb-4">
-                  <p className="text-xs font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>SNABBVAL</p>
-                  <button onClick={() => setDrawerOpen(false)} className="text-xs font-bold" style={{ color: '#0FDEBD' }}>Stäng</button>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45">Snabbval</p>
+                  <button type="button" onClick={() => setDrawerOpen(false)} className="text-xs font-semibold text-white/70 hover:text-white">
+                    Stäng
+                  </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
-                    { label: 'Registrera', icon: Zap, color: '#0FDEBD', action: () => { setDrawerOpen(false); onOpenExpense(); } },
-                    { label: 'Spara', icon: PiggyBank, color: '#A78BFA', action: () => { setDrawerOpen(false); onOpenTransactionHub(); } },
-                    { label: 'Historia', icon: TrendingUp, color: '#F6AD55', href: createPageUrl('TransactionHistory') },
+                    { label: 'Registrera', icon: Zap, action: () => { setDrawerOpen(false); onOpenExpense(); } },
+                    { label: 'Spara', icon: PiggyBank, action: () => { setDrawerOpen(false); onOpenTransactionHub(); } },
+                    { label: 'Historia', icon: TrendingUp, href: createPageUrl('TransactionHistory') },
                   ].map(item => {
                     const Ic = item.icon;
                     const inner = (
                       <motion.div whileTap={{ scale: 0.93 }} onClick={item.action}
                         className="flex flex-col items-center gap-2 p-4 rounded-2xl cursor-pointer"
-                        style={{ background: `${item.color}10`, border: `1px solid ${item.color}28` }}>
-                        <Ic className="w-5 h-5" style={{ color: item.color }} />
-                        <span className="text-xs font-bold" style={{ color: 'rgba(255,255,255,0.65)' }}>{item.label}</span>
+                        style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                        <Ic className="w-5 h-5 text-white/85" />
+                        <span className="text-xs font-medium text-white/70">{item.label}</span>
                       </motion.div>
                     );
                     return item.href

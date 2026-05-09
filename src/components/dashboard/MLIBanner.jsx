@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Sparkles, Anchor } from 'lucide-react';
+import { Anchor } from 'lucide-react';
 
 /**
  * Visar ett kontextuellt meddelande baserat på MLI-poäng.
@@ -10,8 +10,6 @@ import { Shield, Sparkles, Anchor } from 'lucide-react';
 export default function MLIBanner({ mli, greeting }) {
   if (!greeting) return null;
 
-  const isHigh = mli > 70;
-
   return (
     <AnimatePresence>
       <motion.div
@@ -19,23 +17,27 @@ export default function MLIBanner({ mli, greeting }) {
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        className="mx-4 mb-3 flex items-start gap-3 px-4 py-3 rounded-2xl"
+        transition={{ duration: 0.35 }}
+        className="mx-4 mb-3 flex items-start gap-3 px-4 py-3.5 rounded-[22px]"
         style={{
-          background: isHigh
-            ? 'rgba(15,222,189,0.07)'
-            : 'rgba(167,139,250,0.10)',
-          border: isHigh
-            ? '1px solid rgba(15,222,189,0.18)'
-            : '1px solid rgba(167,139,250,0.25)',
+          background: 'rgba(255,255,255,0.07)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          boxShadow: '0 12px 32px rgba(2,8,23,0.25)',
         }}
       >
-        <Anchor className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: isHigh ? '#0FDEBD' : '#a78bfa' }} />
-        <div>
-          <p className="text-[9px] font-black uppercase tracking-widest mb-0.5" style={{ color: isHigh ? 'rgba(15,222,189,0.6)' : 'rgba(167,139,250,0.6)' }}>
-            Anchor
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.14)' }}
+        >
+          <Anchor className="w-4 h-4 text-white/80" />
+        </div>
+        <div className="min-w-0">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45 mb-1">
+            Meddelande
           </p>
-          <p className="text-xs leading-relaxed" style={{ color: isHigh ? 'rgba(255,255,255,0.75)' : 'rgba(255,255,255,0.80)' }}>
+          <p className="text-[13px] leading-relaxed text-white/80">
             {greeting}
           </p>
         </div>
