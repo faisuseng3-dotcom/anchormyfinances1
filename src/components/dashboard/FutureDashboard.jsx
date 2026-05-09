@@ -45,15 +45,15 @@ export default function FutureDashboard({
 
   return (
     <div
-      className="min-h-screen pb-32 relative"
-      style={{ background: 'linear-gradient(160deg, #050a15 0%, #090e1e 55%, #07101c 100%)' }}
+      className="min-h-screen pb-32 relative overflow-x-hidden"
+      style={{ background: 'linear-gradient(180deg, #2f5cff 0%, #1846e7 22%, #0a239e 52%, #060f4a 78%, #040814 100%)' }}
     >
       {/* Background stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
-        <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(15,222,189,0.05) 0%, transparent 65%)' }} />
+        <div className="absolute top-[-60px] left-1/2 -translate-x-1/2 w-[340px] h-[340px] sm:w-[500px] sm:h-[500px] rounded-full"
+          style={{ background: 'radial-gradient(circle, rgba(191,213,255,0.18) 0%, transparent 65%)' }} />
         <div className="absolute bottom-40 left-[-80px] w-72 h-72 rounded-full"
-          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.05) 0%, transparent 65%)' }} />
+          style={{ background: 'radial-gradient(circle, rgba(111,145,255,0.14) 0%, transparent 65%)' }} />
         {[...Array(22)].map((_, i) => (
           <motion.div
             key={i}
@@ -64,9 +64,9 @@ export default function FutureDashboard({
               top: `${(i * 37 + 5) % 100}%`,
               left: `${(i * 61 + 7) % 100}%`,
               background: '#fff',
-              opacity: 0.10 + (i % 4) * 0.07,
+              opacity: 0.11 + (i % 4) * 0.08,
             }}
-            animate={{ opacity: [0.06, 0.3, 0.06] }}
+            animate={{ opacity: [0.08, 0.34, 0.08] }}
             transition={{ duration: 2 + (i % 3), repeat: Infinity, delay: (i * 0.3) % 4 }}
           />
         ))}
@@ -87,10 +87,10 @@ export default function FutureDashboard({
       </AnimatePresence>
 
       {/* Header */}
-      <div className="relative z-10 px-5 pt-10 pb-2 flex items-center justify-between">
+      <div className="relative z-10 px-4 sm:px-5 pt-8 sm:pt-10 pb-2 flex items-center justify-between">
         <div>
           <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.20)' }}>ANCHOR</p>
-          <h1 className="text-xl font-black" style={{ color: '#fff', letterSpacing: '-0.02em' }}>
+          <h1 className="text-lg sm:text-xl font-black" style={{ color: '#fff', letterSpacing: '-0.02em' }}>
             {user?.full_name?.split(' ')[0] || 'Din ekonomi'}
           </h1>
         </div>
@@ -134,12 +134,12 @@ export default function FutureDashboard({
       </div>
 
       {/* Action buttons row */}
-      <div className="relative z-10 mx-4 mt-4 flex gap-3">
+      <div className="relative z-10 mx-4 mt-4 flex flex-col sm:flex-row gap-3">
         {/* Magic entry */}
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleMagicEntry}
-          className="flex-1 py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
+          className="w-full sm:flex-1 py-4 rounded-2xl text-sm font-black tracking-wide flex items-center justify-center gap-2"
           style={{
             background: 'linear-gradient(135deg, rgba(15,222,189,0.15), rgba(75,124,243,0.10))',
             border: '1px solid rgba(15,222,189,0.28)',
@@ -154,7 +154,7 @@ export default function FutureDashboard({
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setKalkylatornOpen(true)}
-          className="py-4 px-5 rounded-2xl flex items-center justify-center gap-2"
+          className="w-full sm:w-auto py-4 px-5 rounded-2xl flex items-center justify-center gap-2"
           style={{
             background: 'linear-gradient(135deg, rgba(167,139,250,0.18), rgba(96,165,250,0.12))',
             border: '1px solid rgba(167,139,250,0.35)',
@@ -170,7 +170,7 @@ export default function FutureDashboard({
       <KalkylatornSheet isOpen={kalkylatornOpen} onClose={() => setKalkylatornOpen(false)} />
 
       {/* Pull-up Drawer handle */}
-      <div className="fixed bottom-[72px] left-0 right-0 z-40 flex justify-center pointer-events-none">
+      <div className="fixed bottom-[76px] sm:bottom-[72px] left-0 right-0 z-40 flex justify-center pointer-events-none">
         <motion.button
           onClick={() => setDrawerOpen(true)}
           animate={{ y: [0, -5, 0] }}
@@ -203,7 +203,7 @@ export default function FutureDashboard({
                   <p className="text-xs font-black tracking-widest" style={{ color: 'rgba(255,255,255,0.35)' }}>SNABBVAL</p>
                   <button onClick={() => setDrawerOpen(false)} className="text-xs font-bold" style={{ color: '#0FDEBD' }}>Stäng</button>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     { label: 'Registrera', icon: Zap, color: '#0FDEBD', action: () => { setDrawerOpen(false); onOpenExpense(); } },
                     { label: 'Spara', icon: PiggyBank, color: '#A78BFA', action: () => { setDrawerOpen(false); onOpenTransactionHub(); } },

@@ -95,15 +95,17 @@ export default function Onboarding() {
     />
   ];
 
+  const revolutBlue = 'linear-gradient(180deg, #2f5cff 0%, #1846e7 22%, #0a239e 52%, #060f4a 78%, #040814 100%)';
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: revolutBlue }}>
         <div className="text-center">
           <div className="relative w-16 h-16 mx-auto mb-6">
-            <div className="absolute inset-0 rounded-full border-2 border-indigo-500/20" />
-            <div className="absolute inset-0 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" style={{ filter: 'drop-shadow(0 0 8px rgba(99, 102, 241, 0.5))' }} />
+            <div className="absolute inset-0 rounded-full border-2 border-white/15" />
+            <div className="absolute inset-0 rounded-full border-2 border-[#8EA5FF] border-t-transparent animate-spin" style={{ filter: 'drop-shadow(0 0 10px rgba(142, 165, 255, 0.45))' }} />
           </div>
-          <p className="text-slate-300 text-lg">Skapar din profil...</p>
+          <p className="text-[#DDE7FF] text-lg">Skapar din profil...</p>
         </div>
       </div>
     );
@@ -113,22 +115,22 @@ export default function Onboarding() {
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: 'linear-gradient(160deg, #07090f 0%, #0d1321 50%, #0b1120 100%)' }}>
+    <div className="min-h-screen flex flex-col overflow-x-hidden" style={{ background: revolutBlue }}>
       {/* Progress bar */}
       {(
         <div className="fixed top-0 left-0 right-0 z-50">
-          <div className="h-1 bg-white/10 w-full">
+          <div className="h-1 bg-white/15 w-full">
             <motion.div
               className="h-full rounded-full"
-              style={{ background: 'linear-gradient(90deg, #6366f1, #a855f7)' }}
+              style={{ background: 'linear-gradient(90deg, #b6c7ff, #7ca0ff)' }}
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.4, ease: 'easeInOut' }}
             />
           </div>
-          <div className="flex justify-between px-6 pt-2 pb-1">
-            <span className="text-xs text-slate-500">Steg {step + 1} av {totalSteps}</span>
-            <span className="text-xs text-slate-500">{progressPercent}%</span>
+          <div className="flex justify-between px-5 sm:px-6 pt-2 pb-1">
+            <span className="text-xs text-white/70">Steg {step + 1} av {totalSteps}</span>
+            <span className="text-xs text-white/70">{progressPercent}%</span>
           </div>
         </div>
       )}

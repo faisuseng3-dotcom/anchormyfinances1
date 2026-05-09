@@ -100,8 +100,8 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
       <div className="space-y-5">
         {/* Income */}
         <div className="space-y-2">
-          <Label className="text-slate-300 flex items-center gap-2 text-sm">
-            <Wallet className="w-4 h-4 text-indigo-400" />
+          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+            <Wallet className="w-4 h-4 text-[#9FB5FF]" />
             Ungefärlig månadsinkomst (efter skatt)
           </Label>
           <div className="relative">
@@ -115,17 +115,17 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               }}
               className="h-14 text-lg pr-12 rounded-xl"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9FB5FF]">kr</span>
           </div>
         </div>
 
         {/* Fixed Costs — multi-row */}
         <div className="space-y-2">
-          <Label className="text-slate-300 flex items-center gap-2 text-sm">
-            <Home className="w-4 h-4 text-indigo-400" />
+          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+            <Home className="w-4 h-4 text-[#9FB5FF]" />
             Fasta månadskostnader
           </Label>
-          <p className="text-xs text-slate-500 -mt-1">Inkludera hyra, el, abonnemang, försäkringar och gym.</p>
+          <p className="text-xs text-[#B7C2D9] -mt-1">Inkludera hyra, el, abonnemang, försäkringar och gym.</p>
 
           <div className="space-y-2">
             {costItems.map((item) => (
@@ -145,7 +145,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                     placeholder={item.placeholder}
                     className="h-11 rounded-xl pr-8 text-sm"
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs">kr</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9FB5FF] text-xs">kr</span>
                 </div>
                 {costItems.length > 1 && (
                   <button
@@ -163,14 +163,15 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
           <div className="relative">
             <button
               onClick={() => setShowSuggestions(!showSuggestions)}
-              className="flex items-center gap-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors py-1"
+              className="flex items-center gap-2 text-sm text-[#9FB5FF] hover:text-[#C7D6FF] transition-colors py-1"
             >
               <Plus className="w-4 h-4" />
               Lägg till kostnad
             </button>
 
             {showSuggestions && (
-              <div className="absolute top-8 left-0 z-10 bg-[#1a2235] border border-white/10 rounded-xl p-2 shadow-xl min-w-48">
+              <div className="absolute top-8 left-0 z-10 border border-white/15 rounded-xl p-2 shadow-xl min-w-48"
+                style={{ background: 'linear-gradient(180deg, rgba(12,21,45,0.98), rgba(10,17,34,0.98))' }}>
                 {COST_SUGGESTIONS.map((s) => (
                   <button
                     key={s.label}
@@ -183,7 +184,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                 <div className="border-t border-white/10 mt-1 pt-1">
                   <button
                     onClick={() => addItem()}
-                    className="w-full text-left px-3 py-2 text-sm text-indigo-400 hover:bg-white/8 rounded-lg transition-colors"
+                    className="w-full text-left px-3 py-2 text-sm text-[#9FB5FF] hover:bg-white/8 rounded-lg transition-colors"
                   >
                     + Eget fält
                   </button>
@@ -195,7 +196,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
           {/* Total */}
           {totalFixed > 0 && (
             <div className="flex justify-between items-center text-sm border-t border-white/10 pt-2 mt-1">
-              <span className="text-slate-400">Totalt fasta kostnader:</span>
+              <span className="text-[#B7C2D9]">Totalt fasta kostnader:</span>
               <span className="text-white font-semibold">{formatNumber(totalFixed)} kr/mån</span>
             </div>
           )}
@@ -208,7 +209,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
             onToggle={handleDetectiveToggle}
           />
           {(data.subscriptions || []).length > 0 && (
-            <p className="text-xs text-slate-500 px-1">
+            <p className="text-xs text-[#B7C2D9] px-1">
               {(data.subscriptions || []).length} tjänst{(data.subscriptions || []).length > 1 ? 'er' : ''} valda · {(data.subscriptions || []).reduce((s, x) => s + (x.amount || 0), 0)} kr/mån läggs automatiskt till i dina fasta kostnader.
             </p>
           )}
@@ -216,8 +217,8 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
 
         {/* Optional: Savings */}
         <div className="space-y-2">
-          <Label className="text-slate-300 flex items-center gap-2 text-sm">
-            <PiggyBank className="w-4 h-4 text-indigo-400" />
+          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+            <PiggyBank className="w-4 h-4 text-[#9FB5FF]" />
             Nuvarande sparande (valfritt)
           </Label>
           <div className="relative">
@@ -228,14 +229,14 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               onChange={(e) => onChange({ ...data, buffer: parseNumber(e.target.value) })}
               className="h-14 text-lg pr-12 rounded-xl"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9FB5FF]">kr</span>
           </div>
         </div>
 
         {/* Optional: Loans */}
         <div className="space-y-2">
-          <Label className="text-slate-300 flex items-center gap-2 text-sm">
-            <CreditCard className="w-4 h-4 text-indigo-400" />
+          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+            <CreditCard className="w-4 h-4 text-[#9FB5FF]" />
             Eventuella lån (valfritt)
           </Label>
           <div className="relative">
@@ -246,44 +247,42 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               onChange={(e) => onChange({ ...data, totalLoans: parseNumber(e.target.value) })}
               className="h-14 text-lg pr-12 rounded-xl"
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9FB5FF]">kr</span>
           </div>
-          <p className="text-xs text-slate-500">Totalt lånebelopp (billån, CSN, privatlån etc.)</p>
+          <p className="text-xs text-[#B7C2D9]">Totalt lånebelopp (billån, CSN, privatlån etc.)</p>
         </div>
 
         {/* Preview */}
         {data.income > 0 && (
-          <div className="mt-2 p-4 glass-effect rounded-xl border border-indigo-500/30">
+          <div className="mt-2 p-4 rounded-2xl border border-[#7FA0FF]/30"
+            style={{ background: 'linear-gradient(180deg, rgba(18,29,58,0.72), rgba(14,24,46,0.65))' }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">Ungefär kvar per månad</p>
+                <p className="text-sm text-[#B7C2D9]">Ungefär kvar per månad</p>
                 <p className={`text-2xl font-bold mt-1 ${(data.income - totalFixed) < 0 ? 'text-rose-400' : 'text-white'}`}>
                   {formatNumber(data.income - totalFixed)} kr
                 </p>
                 {totalFixed > 0 && (
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-[#9FB5FF] mt-0.5">
                     {Math.round((totalFixed / data.income) * 100)}% går till fasta kostnader
                   </p>
                 )}
               </div>
-              <ChevronRight className="w-5 h-5 text-indigo-400" />
+              <ChevronRight className="w-5 h-5 text-[#9FB5FF]" />
             </div>
           </div>
         )}
       </div>
 
       <div className="flex gap-3 mt-8">
-        <Button
-          variant="outline"
-          onClick={onBack}
-          className="flex-1 h-14 rounded-xl"
-        >
+        <Button variant="outline" onClick={onBack} className="flex-1 h-14 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10">
           Tillbaka
         </Button>
         <Button
           onClick={onNext}
           disabled={!isValid}
-          className="flex-1 h-14 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+          className="flex-1 h-14 rounded-2xl font-semibold text-white"
+          style={{ background: 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' }}
         >
           Slutför
         </Button>

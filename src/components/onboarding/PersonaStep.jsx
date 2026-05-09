@@ -88,9 +88,10 @@ export default function PersonaStep({ data, onChange, onNext, onBack }) {
               onClick={() => select(p.id)}
               className="w-full rounded-2xl p-5 text-left transition-all relative overflow-hidden"
               style={{
-                background: isSelected ? p.bg : 'rgba(17,24,39,0.6)',
-                border: `2px solid ${isSelected ? p.border : 'rgba(255,255,255,0.08)'}`,
-                boxShadow: isSelected ? `0 0 24px ${p.glow}` : 'none',
+                background: isSelected ? p.bg : 'linear-gradient(180deg, rgba(17,24,39,0.74), rgba(15,23,42,0.58))',
+                border: `1px solid ${isSelected ? p.border : 'rgba(255,255,255,0.16)'}`,
+                boxShadow: isSelected ? `0 0 24px ${p.glow}` : '0 8px 24px rgba(2,6,23,0.2)',
+                backdropFilter: 'blur(12px)',
               }}
             >
               <div className="flex items-start gap-4">
@@ -102,19 +103,19 @@ export default function PersonaStep({ data, onChange, onNext, onBack }) {
                       {p.badge}
                     </span>
                     <h3 className="font-bold text-white text-base">{p.title}</h3>
-                    <span className="text-xs text-slate-500 italic">– {p.subtitle}</span>
+                    <span className="text-xs text-[#B7C2D9] italic">– {p.subtitle}</span>
                   </div>
-                  <p className="text-xs text-slate-400 mb-3 leading-relaxed">{p.description}</p>
+                  <p className="text-xs text-[#B7C2D9] mb-3 leading-relaxed">{p.description}</p>
 
                   <div className="space-y-1">
                     {p.features.map((f, fi) => (
-                      <div key={fi} className="flex items-center gap-2 text-xs text-slate-300">
+                      <div key={fi} className="flex items-center gap-2 text-xs text-[#D5E1FF]">
                         <Check className="w-3 h-3 flex-shrink-0" style={{ color: p.color }} />
                         {f}
                       </div>
                     ))}
                     {p.locked.map((f, fi) => (
-                      <div key={fi} className="flex items-center gap-2 text-xs text-slate-600">
+                      <div key={fi} className="flex items-center gap-2 text-xs text-[#7F8FB0]">
                         <Lock className="w-3 h-3 flex-shrink-0" />
                         {f} (låst)
                       </div>
@@ -133,14 +134,14 @@ export default function PersonaStep({ data, onChange, onNext, onBack }) {
         })}
 
         <div className="flex gap-3 pt-2">
-          <Button variant="outline" onClick={onBack} className="flex-1 h-13 rounded-xl border-white/10 text-slate-300">
+          <Button variant="outline" onClick={onBack} className="flex-1 h-13 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10">
             Tillbaka
           </Button>
           <Button
             onClick={onNext}
             disabled={!selected}
-            className="flex-1 h-13 rounded-xl font-bold text-white"
-            style={{ background: selected ? (PERSONAS.find(p => p.id === selected)?.gradient.replace('from-', '').split(' ')[0] ? `linear-gradient(135deg, var(--from), var(--to))` : 'linear-gradient(135deg, #6366F1, #8B5CF6)') : undefined }}
+            className="flex-1 h-13 rounded-2xl font-bold text-white"
+            style={{ background: selected ? 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' : 'rgba(255,255,255,0.12)' }}
           >
             Starta med {selected ? PERSONAS.find(p => p.id === selected)?.title : '…'}
           </Button>

@@ -88,9 +88,15 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
                 <button
                   key={goal.id}
                   onClick={() => toggleGoal(goal.id)}
-                  className={`w-full p-5 rounded-xl text-left transition-all border-2 relative overflow-hidden ${
-                    isSelected ? `${goal.borderColor} ${goal.bg}` : 'border-white/10 hover:border-white/20'
+                  className={`w-full p-5 rounded-2xl text-left transition-all border relative overflow-hidden ${
+                    isSelected ? `${goal.borderColor} ${goal.bg}` : 'border-white/15 hover:border-white/30'
                   }`}
+                  style={{
+                    background: isSelected
+                      ? undefined
+                      : 'linear-gradient(180deg, rgba(17,24,39,0.72), rgba(15,23,42,0.58))',
+                    backdropFilter: 'blur(12px)',
+                  }}
                 >
                   <div className="flex items-start gap-4">
                     <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${goal.color} flex items-center justify-center shadow-lg flex-shrink-0`}>
@@ -98,14 +104,14 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-semibold text-white text-lg">{goal.title}</h3>
+                      <h3 className="font-semibold text-white text-[17px]">{goal.title}</h3>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all ${
                           isSelected ? `${goal.borderColor} bg-gradient-to-br ${goal.color}` : 'border-white/20'
                         }`}>
                           {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
                         </div>
                       </div>
-                      <p className="text-sm text-slate-400 leading-relaxed">{goal.description}</p>
+                      <p className="text-sm text-[#B7C2D9] leading-relaxed">{goal.description}</p>
                     </div>
                   </div>
                 </button>
@@ -121,7 +127,8 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
             <Button
               onClick={handleContinue}
               disabled={selectedGoals.length === 0}
-              className="w-full h-14 mt-4 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+              className="w-full h-14 mt-4 rounded-2xl font-semibold text-white"
+              style={{ background: 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' }}
             >
               Fortsätt
             </Button>
@@ -136,9 +143,15 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
                 <button
                   key={goal.id}
                   onClick={() => selectPrimary(goal.id)}
-                  className={`w-full p-5 rounded-xl text-left transition-all border-2 relative overflow-hidden ${
-                    isPrimary ? `${goal.borderColor} ${goal.bg}` : 'border-white/10 hover:border-white/20'
+                  className={`w-full p-5 rounded-2xl text-left transition-all border relative overflow-hidden ${
+                    isPrimary ? `${goal.borderColor} ${goal.bg}` : 'border-white/15 hover:border-white/30'
                   }`}
+                  style={{
+                    background: isPrimary
+                      ? undefined
+                      : 'linear-gradient(180deg, rgba(17,24,39,0.72), rgba(15,23,42,0.58))',
+                    backdropFilter: 'blur(12px)',
+                  }}
                 >
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${goal.color} flex items-center justify-center shadow-lg flex-shrink-0`}>
@@ -159,13 +172,14 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
             })}
 
             <div className="flex gap-3 mt-4">
-              <Button variant="outline" onClick={() => setShowPriority(false)} className="flex-1 h-14 rounded-xl">
+              <Button variant="outline" onClick={() => setShowPriority(false)} className="flex-1 h-14 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10">
                 Tillbaka
               </Button>
               <Button
                 onClick={onNext}
                 disabled={!data.primaryGoal}
-                className="flex-1 h-14 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+                className="flex-1 h-14 rounded-2xl font-semibold text-white"
+                style={{ background: 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' }}
               >
                 Fortsätt
               </Button>

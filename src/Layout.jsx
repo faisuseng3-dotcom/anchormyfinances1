@@ -16,6 +16,7 @@ import ModeSwitch from '@/components/modes/ModeSwitch';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { useNavigate } from 'react-router-dom';
 import { isAlexMode } from '@/lib/alexMode';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
@@ -30,6 +31,7 @@ export default function Layout({ children, currentPageName }) {
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [actionMenuOpen, setActionMenuOpen] = useState(false);
   const { isBusiness, toggleMode } = useModeContext();
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [alexActive, setAlexActive] = React.useState(() => isAlexMode());
@@ -113,6 +115,26 @@ export default function Layout({ children, currentPageName }) {
           background: var(--color-background-primary);
           color: var(--color-text-primary);
           min-height: 100vh;
+        }
+
+        html, body, #root {
+          width: 100%;
+          max-width: 100%;
+          overflow-x: hidden;
+        }
+
+        img, video, svg, canvas {
+          max-width: 100%;
+          height: auto;
+        }
+
+        button, a, input, select, textarea {
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+        }
+
+        input, select, textarea {
+          font-size: 16px;
         }
         
         /* Business mode — light premium */
@@ -248,8 +270,8 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
       
       <main
-        className={!hideNav ? 'overflow-y-auto' : ''}
-        style={!hideNav ? { paddingBottom: 'max(5rem, calc(env(safe-area-inset-bottom) + 5rem))' } : {}}
+        className={!hideNav ? 'overflow-y-auto overflow-x-hidden' : 'overflow-x-hidden'}
+        style={!hideNav ? { paddingBottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 5.5rem))' } : {}}
       >
         {children}
       </main>
@@ -263,10 +285,11 @@ export default function Layout({ children, currentPageName }) {
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
             onClick={() => setVoiceOpen(true)}
-            className="fixed bottom-24 right-6 w-12 h-12 rounded-full flex items-center justify-center z-40 border border-white/12 hover:border-white/20 transition-colors"
+            className={`fixed ${isMobile ? 'bottom-28 right-4 w-12 h-12' : 'bottom-24 right-6 w-12 h-12'} rounded-full flex items-center justify-center z-40 border border-white/12 hover:border-white/20 transition-colors`}
             style={{ background: 'var(--color-surface)' }}
+            aria-label="Open voice assistant"
           >
-            <Mic className="w-6 h-6 text-white" />
+            <Mic className="w-5 h-5" style={{ color: 'var(--color-text-primary)' }} />
           </motion.button>
           <VoiceAssistant
             isOpen={voiceOpen}
@@ -292,8 +315,8 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Bottom Navigation */}
       {!hideNav && (
-        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6" style={{ background: 'var(--color-background-secondary)' }}>
-          <div className="flex items-center justify-around py-3 max-w-md mx-auto px-4">
+        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6 backdrop-blur-sm" style={{ background: 'var(--color-background-secondary)' }}>
+          <div className="flex items-center justify-around py-2.5 max-w-md mx-auto px-3">
             {navItems.map((item, idx) => {
               // Center FAB
               if (item === null || item === undefined) {
@@ -304,6 +327,7 @@ export default function Layout({ children, currentPageName }) {
                     onClick={() => setActionMenuOpen(v => !v)}
                     className="relative flex items-center justify-center w-14 h-14 rounded-full shadow-lg -mt-5"
                     style={{ background: 'var(--color-accent)' }}
+                    aria-label="Open quick actions"
                   >
                     <motion.div animate={{ rotate: actionMenuOpen ? 45 : 0 }} transition={{ duration: 0.2 }}>
                       <Plus className="w-6 h-6 text-white" />
@@ -319,17 +343,18 @@ export default function Layout({ children, currentPageName }) {
                 <Link
                   key={item.page}
                   to={createPageUrl(item.page)}
-                  className="relative flex items-center justify-center w-12 h-12"
+                  className="relative flex items-center justify-center w-11 h-11"
+                  aria-label={item.page}
                 >
                   <motion.div
                     whileTap={{ scale: 0.85 }}
-                    className="flex items-center justify-center w-10 h-10 rounded-full transition-all"
+                    className="flex items-center justify-center w-11 h-11 rounded-full transition-all"
                     style={{ background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent' }}
                   >
                     <Icon
                       className="w-5 h-5"
                       style={{
-                        color: isActive ? '#fff' : 'var(--color-text-muted)',
+                        color: isActive ? 'var(--color-accent)' : 'var(--color-text-muted)',
                         strokeWidth: isActive ? 2.5 : 1.8,
                       }}
                     />

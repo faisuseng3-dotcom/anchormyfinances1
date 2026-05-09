@@ -21,23 +21,24 @@ export default function HeroSpendingCard({ totalSpent, budget }) {
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-2xl p-6"
+      className="relative overflow-hidden rounded-[28px] p-6"
       style={{
-        background: 'rgba(17, 24, 39, 0.6)',
+        background: 'linear-gradient(180deg, rgba(20,31,61,0.9) 0%, rgba(13,22,44,0.84) 100%)',
         backdropFilter: 'blur(20px)',
-        border: '1px solid rgba(255,255,255,0.1)'
+        border: '1px solid rgba(179, 200, 255, 0.2)',
+        boxShadow: '0 12px 28px rgba(6, 13, 38, 0.5), inset 0 1px 0 rgba(255,255,255,0.05)'
       }}
     >
-      <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-1">Total Denna Månad</p>
-      <p className="text-5xl font-black text-white tracking-tight">{formatNumber(totalSpent)}<span className="text-2xl font-semibold text-slate-400 ml-2">kr</span></p>
+      <p className="text-[#B7C2D9] text-xs font-medium uppercase tracking-[0.18em] mb-1">Total denna månad</p>
+      <p className="text-4xl sm:text-5xl font-black text-white tracking-tight">{formatNumber(totalSpent)}<span className="text-xl sm:text-2xl font-semibold text-[#B7C2D9] ml-2">kr</span></p>
 
       {/* Progress Bar */}
       <div className="mt-5">
         <div className="flex justify-between items-center mb-2">
           <span className={`text-xs font-semibold ${textColor}`}>{percentage}% av budget</span>
-          <span className="text-xs text-slate-500">{formatNumber(budget)} kr</span>
+          <span className="text-xs text-[#9FB5FF]">{formatNumber(budget)} kr</span>
         </div>
-        <div className="h-3 bg-white/5 rounded-full overflow-hidden">
+        <div className="h-3 bg-white/10 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${percentage}%` }}
@@ -54,7 +55,7 @@ export default function HeroSpendingCard({ totalSpent, budget }) {
             <TrendingDown className="w-3 h-3 text-emerald-400" />
           </div>
           <p className="text-sm text-slate-400">
-            <span className="text-emerald-400 font-semibold">{formatNumber(remaining)} kr</span> kvar av månadsbudget
+            <span className="text-emerald-400 font-semibold">{formatNumber(remaining)} kr</span> kvar av budget
           </p>
         </div>
       ) : (

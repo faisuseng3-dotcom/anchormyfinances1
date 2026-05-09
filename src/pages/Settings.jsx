@@ -127,28 +127,28 @@ export default function Settings() {
   const inputStyle = "h-12 rounded-xl text-sm";
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: 'var(--color-background-primary)' }}>
+    <div className="min-h-screen pb-24 overflow-x-hidden" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
-      <div className="px-5 pt-8 pb-6 flex items-center justify-between">
+      <div className="px-4 sm:px-5 pt-7 sm:pt-8 pb-5 sm:pb-6 flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link to={createPageUrl('Dashboard')}>
             <button className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'var(--color-surface)' }}>
               <ArrowLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
             </button>
           </Link>
-          <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>Inställningar</h1>
+          <h1 className="text-lg sm:text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>Inställningar</h1>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-5 py-2 rounded-full text-sm font-semibold text-white transition-opacity disabled:opacity-60"
+          className="px-4 sm:px-5 py-2 rounded-full text-sm font-semibold text-white transition-opacity disabled:opacity-60 whitespace-nowrap"
           style={{ background: 'var(--color-accent)' }}
         >
           {saving ? 'Sparar...' : 'Spara'}
         </button>
       </div>
 
-      <div className="px-5 space-y-4">
+      <div className="px-4 sm:px-5 space-y-4">
         {/* Budget */}
         <Section title="Budget">
           <div className="space-y-4">
@@ -176,7 +176,7 @@ export default function Settings() {
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'var(--color-text-muted)' }}>kr</span>
               </div>
             </FieldRow>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FieldRow label="Sparmål (namn)" icon={Target}>
                 <Input placeholder="ex. Resa" value={formData.savingsGoalName || ''}
                   onChange={(e) => setFormData({ ...formData, savingsGoalName: e.target.value })}
@@ -198,7 +198,7 @@ export default function Settings() {
         <Section title="Abonnemang">
           <div className="space-y-2">
             {(formData.subscriptions || []).map((sub, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
+              <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{sub.name}</p>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
@@ -206,8 +206,8 @@ export default function Settings() {
                     {sub.billingDay ? ` · dag ${sub.billingDay}` : ''}
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>{sub.amount} kr</span>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <span className="text-sm font-bold whitespace-nowrap" style={{ color: 'var(--color-text-primary)' }}>{sub.amount} kr</span>
                   <button onClick={() => removeSubscription(i)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'rgba(217,95,95,0.15)' }}>
                     <X className="w-3.5 h-3.5" style={{ color: 'var(--color-danger)' }} />
                   </button>
@@ -220,7 +220,7 @@ export default function Settings() {
                 <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className="h-11 rounded-xl text-sm" />
                 <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className="h-11 rounded-xl text-sm" />
                 <DayPicker value={parseInt(newSub.billingDay) || 15} onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })} label="Dragningsdag" hint="Standard: 15" />
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Select value={newSub.category} onValueChange={(v) => setNewSub({ ...newSub, category: v })}>
                     <SelectTrigger className="h-11 rounded-xl flex-1 text-sm"><SelectValue /></SelectTrigger>
                     <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}</SelectContent>
@@ -234,7 +234,7 @@ export default function Settings() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button onClick={() => setShowAddSub(false)} className="flex-1 h-11 rounded-full text-sm font-semibold" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--color-text-secondary)' }}>Avbryt</button>
                   <button onClick={addSubscription} className="flex-1 h-11 rounded-full text-sm font-semibold text-white" style={{ background: 'var(--color-accent)' }}>Lägg till</button>
                 </div>
@@ -252,15 +252,15 @@ export default function Settings() {
         <Section title="Lån">
           <div className="space-y-2">
             {(formData.loans || []).map((loan, i) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
+              <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
                 <div>
                   <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{loan.name}</p>
                   <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{loan.interestRate}% ränta</p>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3">
                   <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>{formatNumber(loan.totalAmount)} kr</p>
-                    <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{formatNumber(loan.monthlyPayment)} kr/mån</p>
+                    <p className="text-sm font-bold whitespace-nowrap" style={{ color: 'var(--color-text-primary)' }}>{formatNumber(loan.totalAmount)} kr</p>
+                    <p className="text-xs whitespace-nowrap" style={{ color: 'var(--color-text-muted)' }}>{formatNumber(loan.monthlyPayment)} kr/mån</p>
                   </div>
                   <button onClick={() => removeLoan(i)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'rgba(217,95,95,0.15)' }}>
                     <X className="w-3.5 h-3.5" style={{ color: 'var(--color-danger)' }} />
@@ -272,12 +272,12 @@ export default function Settings() {
             {showAddLoan ? (
               <div className="p-4 rounded-xl space-y-3" style={{ background: 'var(--color-surface)', border: '1px solid rgba(200,146,58,0.3)' }}>
                 <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className="h-11 rounded-xl text-sm" />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className="h-11 rounded-xl text-sm" />
                   <Input type="number" step="0.1" placeholder="Ränta %" value={newLoan.interestRate} onChange={(e) => setNewLoan({ ...newLoan, interestRate: e.target.value })} className="h-11 rounded-xl text-sm" />
                 </div>
                 <Input placeholder="Månadskostnad (kr)" value={newLoan.monthlyPayment} onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })} className="h-11 rounded-xl text-sm" />
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button onClick={() => setShowAddLoan(false)} className="flex-1 h-11 rounded-full text-sm font-semibold" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--color-text-secondary)' }}>Avbryt</button>
                   <button onClick={addLoan} className="flex-1 h-11 rounded-full text-sm font-semibold text-white" style={{ background: 'var(--color-warning)' }}>Lägg till</button>
                 </div>
@@ -349,7 +349,7 @@ export default function Settings() {
         <InviteUserSection />
 
         {/* Legal */}
-        <div className="flex justify-center gap-6 py-2">
+        <div className="flex justify-center gap-4 sm:gap-6 py-2 flex-wrap">
           <Link to="/TermsOfService" className="text-xs transition-colors" style={{ color: 'var(--color-text-muted)' }}>Användarvillkor</Link>
           <Link to="/PrivacyPolicy" className="text-xs transition-colors" style={{ color: 'var(--color-text-muted)' }}>Integritetspolicy</Link>
         </div>

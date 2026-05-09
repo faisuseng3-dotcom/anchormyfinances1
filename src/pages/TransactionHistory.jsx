@@ -293,9 +293,9 @@ export default function TransactionHistory() {
   const activeFilterCount = [filterType, filterCategory].filter(Boolean).length;
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: 'var(--color-background-primary)' }}>
+    <div className="min-h-screen pb-32 overflow-x-hidden" style={{ background: 'var(--color-background-primary)' }}>
       {/* Header */}
-      <div className="px-5 pt-8 pb-2">
+      <div className="px-4 sm:px-5 pt-7 sm:pt-8 pb-2">
         {filterCategory && (
           <button
             onClick={() => { setFilterCategory(''); navigate(createPageUrl('TransactionHistory')); }}
@@ -309,12 +309,12 @@ export default function TransactionHistory() {
         <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>
           {filterCategory ? `Filtrerat: ${CATEGORY_LABELS[filterCategory] || filterCategory}` : 'Historik'}
         </p>
-        <h1 className="text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Transaktioner</h1>
+        <h1 className="text-2xl sm:text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Transaktioner</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{filtered.length} poster</p>
       </div>
 
       {/* Search + Filter bar */}
-      <div className="px-5 mt-3 flex gap-2">
+      <div className="px-4 sm:px-5 mt-3 flex gap-2">
         <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-2xl" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
           <Search className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
           <input
@@ -322,7 +322,7 @@ export default function TransactionHistory() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Sök ICA, Hyra..."
-            className="flex-1 text-sm outline-none bg-slate-400 text-slate-600"
+            className="flex-1 text-sm outline-none bg-transparent min-w-0"
             style={{ color: 'var(--color-text-primary)' }} />
           
           {search &&
@@ -346,7 +346,7 @@ export default function TransactionHistory() {
         {showFilters &&
         <motion.div
           initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-          className="px-5 mt-2 overflow-hidden">
+          className="px-4 sm:px-5 mt-2 overflow-hidden">
           
             <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
               <div>
@@ -380,7 +380,7 @@ export default function TransactionHistory() {
 
       {/* Current month category breakdown */}
       {thisMonthCategories.length > 0 &&
-      <div className="mx-5 mt-3 rounded-2xl p-4" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+      <div className="mx-4 sm:mx-5 mt-3 rounded-2xl p-4" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
           <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-muted)' }}>
             Utgifter denna månad per kategori
           </p>
@@ -417,7 +417,7 @@ export default function TransactionHistory() {
 
       {/* Summary */}
       {filtered.length > 0 &&
-      <div className="mx-5 mt-3 mb-2 rounded-2xl p-4 grid grid-cols-3 gap-4"
+      <div className="mx-4 sm:mx-5 mt-3 mb-2 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
       style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
           <div>
             <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>In</p>
@@ -438,7 +438,7 @@ export default function TransactionHistory() {
 
       {/* Loading */}
       {isLoading &&
-      <div className="space-y-2 px-5 mt-4">
+      <div className="space-y-2 px-4 sm:px-5 mt-4">
           {[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-16 rounded-2xl skeleton" />)}
         </div>
       }
@@ -488,9 +488,9 @@ export default function TransactionHistory() {
       {/* FAB */}
       <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }}
       onClick={() => {setEditingTx(null);setShowForm(true);}}
-      className="fixed bottom-24 right-6 w-14 h-14 rounded-full flex items-center justify-center z-40 shadow-lg"
+      className="fixed bottom-24 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center z-40 shadow-lg"
       style={{ background: 'var(--color-accent)' }}>
-        <Plus className="w-7 h-7 text-white" />
+        <Plus className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
       </motion.button>
 
       {/* Form modal */}
