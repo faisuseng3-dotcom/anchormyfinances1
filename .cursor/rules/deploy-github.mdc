@@ -1,0 +1,27 @@
+---
+description: Push and deploy this workspace to the canonical GitHub repository
+alwaysApply: true
+---
+
+# Deploy to GitHub (anchormyfinances1)
+
+## Canonical remote
+
+- **Repository**: `https://github.com/faisuseng3-dotcom/anchormyfinances1.git`
+- **Remote name**: `origin`
+- **Default branch**: `main`
+
+When the user asks to deploy, release, or push to GitHub, treat that as **shipping committed code to `origin/main`** unless they name another branch or remote.
+
+## Agent workflow
+
+1. Confirm `origin` points at the URL above (`git remote -v`). If it differs, set it with:
+   - `git remote set-url origin https://github.com/faisuseng3-dotcom/anchormyfinances1.git`
+2. Ensure changes are committed (`git status`). Stage and commit when there are uncommitted changes the user wants included; use clear commit messages.
+3. Before pushing substantive feature or fix work, run quality checks when reasonable: `npm run lint`, `npm run typecheck`, and `npm run build` (fix failures or report them).
+4. Push: `git push -u origin main` (or the branch the user requested).
+
+## Notes
+
+- Authentication (HTTPS token, SSH, or GitHub CLI) is handled on the machine running git; do not embed secrets in the repo or rules.
+- If push fails (auth, protected branch, conflicts), report the error and the next concrete step (e.g. pull/rebase, fix CI, open PR).
