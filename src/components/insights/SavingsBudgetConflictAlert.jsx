@@ -36,7 +36,7 @@ export default function SavingsBudgetConflictAlert({ profile, safeToSpend }) {
     <motion.div
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="mx-5 mb-4 flex items-start gap-3 rounded-2xl px-4 py-4"
+      className="flex items-start gap-3 rounded-2xl px-4 py-4"
       style={{ background: 'rgba(229,62,62,0.07)', border: '1.5px solid rgba(229,62,62,0.25)' }}
     >
       <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#E53E3E' }} />

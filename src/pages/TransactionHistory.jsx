@@ -2,11 +2,13 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
+import TransactionInsightsPanel from '@/components/transactions/TransactionInsightsPanel';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import { createPageUrl } from '@/utils';
+import PageShell from '@/components/layout/PageShell';
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -206,7 +208,7 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
           transition={{ duration: 0.22 }}
           className="overflow-hidden">
           
-            <div className="mx-5 rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+            <div className="anchor-glass-card-sm overflow-hidden">
               {group.txs.map((tx) =>
             <TransactionRow key={tx.id} tx={tx} onDelete={onDelete} onEdit={onEdit} />
             )}
@@ -228,24 +230,52 @@ export default function TransactionHistory() {
   const [filterType, setFilterType] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [activeTab, setActiveTab] = useState('list');
 
-  // Läs förinställt kategorifilter från URL (deep-dive från "Vart pengarna går")
+  // Läs flik och kategorifilter från URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const cat = params.get('category');
+    const tab = params.get('tab');
     if (cat) {
       setFilterCategory(cat);
       setShowFilters(true);
+      setActiveTab('list');
+    } else if (tab === 'insights') {
+      setActiveTab('insights');
     }
   }, []);
+
+  const switchTab = (tab) => {
+    setActiveTab(tab);
+    const params = new URLSearchParams(window.location.search);
+    if (tab === 'insights') {
+      params.set('tab', 'insights');
+      params.delete('category');
+      setFilterCategory('');
+    } else {
+      params.delete('tab');
+    }
+    const qs = params.toString();
+    navigate(`${createPageUrl('TransactionHistory')}${qs ? `?${qs}` : ''}`, { replace: true });
+  };
 
   const { data: dbTransactions = [], isLoading } = useQuery({
     queryKey: ['transactions', 'personal'],
     queryFn: async () => {
-      const all = await base44.entities.Transaction.list('-created_date', 500);
+      const all = await base44.entities.Transaction.list('-created_date', 1000);
       return (all || []).filter(t => t.context !== 'BUSINESS');
     },
-    enabled: !isDemoMode, // Blockera DB-anrop i demo-läge
+    enabled: !isDemoMode,
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ['financialProfile'],
+    queryFn: async () => {
+      const profiles = await base44.entities.FinancialProfile.list();
+      return profiles[0] || null;
+    },
+    enabled: activeTab === 'insights' && !isDemoMode,
   });
 
   // I demo-läge: använd hårdkodat Alex-data, annars riktig DB
@@ -265,23 +295,6 @@ export default function TransactionHistory() {
   const totalIn = filtered.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
   const totalOut = filtered.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
-  // Category breakdown for current month (expenses only)
-  const thisMonthCategories = useMemo(() => {
-    const now = new Date();
-    const thisMonth = transactions.filter((tx) => {
-      const d = getTxDate(tx);
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && tx.amount < 0;
-    });
-    const map = {};
-    thisMonth.forEach((tx) => {
-      const cat = tx.category || 'other';
-      map[cat] = (map[cat] || 0) + Math.abs(tx.amount);
-    });
-    return Object.entries(map).
-    sort((a, b) => b[1] - a[1]).
-    map(([cat, amount]) => ({ cat, amount }));
-  }, [transactions]);
-
   const handleDelete = async (id) => {
     await base44.entities.Transaction.delete(id);
     queryClient.invalidateQueries({ queryKey: ['transactions'] });
@@ -292,38 +305,67 @@ export default function TransactionHistory() {
 
   const activeFilterCount = [filterType, filterCategory].filter(Boolean).length;
 
+  const headerExtra = filterCategory ? (
+    <button
+      type="button"
+      onClick={() => { setFilterCategory(''); navigate(createPageUrl('TransactionHistory')); }}
+      className="flex items-center gap-1.5 mb-2 text-xs font-semibold text-[#9FB5FF]"
+    >
+      <ArrowLeft className="w-3.5 h-3.5" />
+      Tillbaka till översikt
+    </button>
+  ) : null;
+
   return (
-    <div className="min-h-screen pb-32 overflow-x-hidden" style={{ background: 'var(--color-background-primary)' }}>
-      {/* Header */}
-      <div className="px-4 sm:px-5 pt-7 sm:pt-8 pb-2">
-        {filterCategory && (
-          <button
-            onClick={() => { setFilterCategory(''); navigate(createPageUrl('TransactionHistory')); }}
-            className="flex items-center gap-1.5 mb-3 text-xs font-semibold"
-            style={{ color: 'var(--color-accent)' }}
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Tillbaka till översikt
-          </button>
-        )}
-        <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: 'var(--color-text-muted)' }}>
-          {filterCategory ? `Filtrerat: ${CATEGORY_LABELS[filterCategory] || filterCategory}` : 'Historik'}
-        </p>
-        <h1 className="text-2xl sm:text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Transaktioner</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>{filtered.length} poster</p>
+    <PageShell
+      title="Transaktioner"
+      subtitle={activeTab === 'insights' ? 'Insikter & kategorier' : filterCategory ? `Filtrerat: ${CATEGORY_LABELS[filterCategory] || filterCategory}` : 'Historik'}
+      backHref={createPageUrl('Dashboard')}
+    >
+      {headerExtra}
+
+      <div className="flex gap-1 p-1 rounded-2xl anchor-glass-card-sm mb-3">
+        <button
+          type="button"
+          onClick={() => switchTab('list')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+            activeTab === 'list' ? 'bg-white text-slate-900' : 'text-white/60'
+          }`}
+        >
+          <List className="w-4 h-4" />
+          Lista
+        </button>
+        <button
+          type="button"
+          onClick={() => switchTab('insights')}
+          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+            activeTab === 'insights' ? 'bg-white text-slate-900' : 'text-white/60'
+          }`}
+        >
+          <TrendingUp className="w-4 h-4" />
+          Insikter
+        </button>
       </div>
 
-      {/* Search + Filter bar */}
-      <div className="px-4 sm:px-5 mt-3 flex gap-2">
-        <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-2xl" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+      {activeTab === 'insights' ? (
+        <TransactionInsightsPanel
+          transactions={transactions}
+          isLoading={isLoading}
+          profile={profile}
+        />
+      ) : (
+        <>
+      <p className="text-sm -mt-2 mb-2 text-white/45">{filtered.length} poster</p>
+
+      <div className="flex gap-2">
+        <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-2xl anchor-glass-card-sm">
           <Search className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Sök ICA, Hyra..."
-            className="flex-1 text-sm outline-none bg-transparent min-w-0"
-            style={{ color: 'var(--color-text-primary)' }} />
+            className="flex-1 text-sm outline-none bg-transparent min-w-0 text-white placeholder:text-white/35" />
           
           {search &&
           <button onClick={() => setSearch('')}><X className="w-3.5 h-3.5" style={{ color: 'var(--color-text-muted)' }} /></button>
@@ -331,10 +373,11 @@ export default function TransactionHistory() {
         </div>
         <button
           onClick={() => setShowFilters((v) => !v)}
-          className="relative w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
-          style={{ background: showFilters ? 'var(--color-accent)' : 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+          className={`relative w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 border ${
+            showFilters ? 'bg-white text-slate-900 border-white' : 'anchor-glass-card-sm text-white/70'
+          }`}>
           
-          <Filter className="w-4 h-4" style={{ color: showFilters ? '#fff' : 'var(--color-text-muted)' }} />
+          <Filter className="w-4 h-4" />
           {activeFilterCount > 0 &&
           <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-xs flex items-center justify-center font-bold" style={{ background: 'var(--color-danger)', fontSize: 10 }}>{activeFilterCount}</span>
           }
@@ -346,9 +389,9 @@ export default function TransactionHistory() {
         {showFilters &&
         <motion.div
           initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-          className="px-4 sm:px-5 mt-2 overflow-hidden">
+          className="mt-2 overflow-hidden">
           
-            <div className="rounded-2xl p-4 space-y-3" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+            <div className="anchor-glass-card space-y-3">
               <div>
                 <p className="text-xs font-bold mb-2 uppercase tracking-wide" style={{ color: 'var(--color-text-muted)' }}>Typ</p>
                 <div className="flex gap-2 flex-wrap">
@@ -378,63 +421,24 @@ export default function TransactionHistory() {
         }
       </AnimatePresence>
 
-      {/* Current month category breakdown */}
-      {thisMonthCategories.length > 0 &&
-      <div className="mx-4 sm:mx-5 mt-3 rounded-2xl p-4" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-          <p className="text-xs font-bold uppercase tracking-wide mb-3" style={{ color: 'var(--color-text-muted)' }}>
-            Utgifter denna månad per kategori
-          </p>
-          <div className="space-y-2">
-            {thisMonthCategories.map(({ cat, amount }) => {
-            const max = thisMonthCategories[0].amount;
-            const pct = amount / max * 100;
-            const color = CATEGORY_COLORS[cat] || '#8B97A8';
-            return (
-              <div key={cat}>
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-semibold" style={{ color: 'var(--color-text-secondary)' }}>
-                      {CATEGORY_LABELS[cat] || 'Övrigt'}
-                    </span>
-                    <span className="text-xs font-bold" style={{ color: 'var(--color-text-primary)' }}>
-                      {amount.toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
-                    </span>
-                  </div>
-                  <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>
-                    <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${pct}%` }}
-                    transition={{ duration: 0.5, ease: 'easeOut' }}
-                    className="h-full rounded-full"
-                    style={{ background: color }} />
-                  
-                  </div>
-                </div>);
-
-          })}
-          </div>
-        </div>
-      }
-
-      {/* Summary */}
-      {filtered.length > 0 &&
-      <div className="mx-4 sm:mx-5 mt-3 mb-2 rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
+      {filtered.length > 0 && (
+      <div className="anchor-glass-card grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <div>
-            <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>In</p>
-            <p className="text-sm font-bold" style={{ color: 'var(--color-success)' }}>+{totalIn.toLocaleString('sv-SE')} kr</p>
+            <p className="text-xs mb-1 text-white/45">In</p>
+            <p className="text-sm font-semibold text-emerald-300">+{totalIn.toLocaleString('sv-SE')} kr</p>
           </div>
           <div>
-            <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>Ut</p>
-            <p className="text-sm font-bold" style={{ color: 'var(--color-danger)' }}>-{totalOut.toLocaleString('sv-SE')} kr</p>
+            <p className="text-xs mb-1 text-white/45">Ut</p>
+            <p className="text-sm font-semibold text-red-300">-{totalOut.toLocaleString('sv-SE')} kr</p>
           </div>
           <div>
-            <p className="text-xs mb-1" style={{ color: 'var(--color-text-muted)' }}>Netto</p>
-            <p className="text-sm font-bold" style={{ color: totalIn - totalOut >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+            <p className="text-xs mb-1 text-white/45">Netto</p>
+            <p className={`text-sm font-semibold ${totalIn - totalOut >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>
               {(totalIn - totalOut).toLocaleString('sv-SE')} kr
             </p>
           </div>
         </div>
-      }
+      )}
 
       {/* Loading */}
       {isLoading &&
@@ -488,10 +492,11 @@ export default function TransactionHistory() {
       {/* FAB */}
       <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }}
       onClick={() => {setEditingTx(null);setShowForm(true);}}
-      className="fixed bottom-24 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center z-40 shadow-lg"
-      style={{ background: 'var(--color-accent)' }}>
-        <Plus className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+      className="fixed bottom-24 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center z-40 bg-white text-slate-900 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
+        <Plus className="w-6 h-6 sm:w-7 sm:h-7" />
       </motion.button>
+        </>
+      )}
 
       {/* Form modal */}
       <AnimatePresence>
@@ -503,6 +508,7 @@ export default function TransactionHistory() {
 
         }
       </AnimatePresence>
-    </div>);
+    </PageShell>
+  );
 
 }

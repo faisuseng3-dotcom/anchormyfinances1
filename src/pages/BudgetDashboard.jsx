@@ -2,8 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import PageShell, { GlassSection } from '@/components/layout/PageShell';
+import { createPageUrl } from '@/utils';
 import BudgetCategoryRow from '@/components/budget/BudgetCategoryRow';
 import SetBudgetModal from '@/components/budget/SetBudgetModal';
 
@@ -17,7 +17,6 @@ function getMonthRange() {
 }
 
 export default function BudgetDashboard() {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [editCategory, setEditCategory] = useState(null);
 
@@ -65,49 +64,34 @@ export default function BudgetDashboard() {
   const monthName = now.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: 'var(--color-background-primary)' }}>
-      {/* Header */}
-      <div className="px-5 pt-8 pb-4">
-        <button onClick={() => navigate(-1)} className="flex items-center gap-2 mb-4" style={{ color: 'var(--color-text-muted)' }}>
-          <ArrowLeft className="w-4 h-4" />
-          <span className="text-sm">Tillbaka</span>
-        </button>
-        <p className="text-xs font-medium uppercase tracking-widest mb-1 capitalize" style={{ color: 'var(--color-text-muted)' }}>{monthName}</p>
-        <h1 className="text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>Budget</h1>
-      </div>
-
-      {/* Summary card */}
+    <PageShell title="Budget" subtitle={monthName} backHref={createPageUrl('Dashboard')}>
       {totalBudgeted > 0 && (
-        <div className="mx-5 mb-4 rounded-2xl p-5"
-          style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-          <p className="text-xs font-medium mb-3" style={{ color: 'var(--color-text-muted)' }}>Månadens totala budget</p>
+        <GlassSection title="Månadens totala budget">
           <div className="flex items-end justify-between mb-2">
-            <p className="text-3xl font-black" style={{ color: 'var(--color-text-primary)' }}>
-              {totalSpent.toLocaleString('sv-SE')} <span className="text-lg font-normal">kr</span>
+            <p className="text-3xl font-semibold text-white tabular-nums">
+              {totalSpent.toLocaleString('sv-SE')} <span className="text-lg font-normal text-white/50">kr</span>
             </p>
-            <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>av {totalBudgeted.toLocaleString('sv-SE')} kr</p>
+            <p className="text-sm text-white/45">av {totalBudgeted.toLocaleString('sv-SE')} kr</p>
           </div>
-          <div className="w-full h-3 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.08)' }}>
+          <div className="w-full h-2.5 rounded-full overflow-hidden bg-white/10">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${Math.min((totalSpent / totalBudgeted) * 100, 100)}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="h-full rounded-full"
               style={{
-                background: totalSpent / totalBudgeted >= 1 ? '#E53E3E'
-                  : totalSpent / totalBudgeted >= 0.8 ? '#D69E2E'
-                  : '#0D7377'
+                background: totalSpent / totalBudgeted >= 1 ? '#FCA5A5'
+                  : totalSpent / totalBudgeted >= 0.8 ? '#FCD34D'
+                  : 'linear-gradient(90deg, #6E9BFF, #B8C9FF)'
               }}
             />
           </div>
-        </div>
+        </GlassSection>
       )}
 
-      {/* Category list */}
-      <div className="mx-5 rounded-2xl overflow-hidden"
-        style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-        <div className="px-5 py-3 border-b" style={{ borderColor: 'rgba(0,0,0,0.05)' }}>
-          <p className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)' }}>
+      <div className="anchor-glass-card overflow-hidden p-0">
+        <div className="px-5 py-3 border-b border-white/10">
+          <p className="anchor-section-label normal-case tracking-normal">
             Kategorier — tryck för att ändra
           </p>
         </div>
@@ -122,11 +106,10 @@ export default function BudgetDashboard() {
         ))}
       </div>
 
-      <p className="text-center text-xs mt-4" style={{ color: 'var(--color-text-muted)' }}>
+      <p className="text-center text-xs mt-4 text-white/40">
         Baserat på transaktioner importerade eller registrerade denna månad
       </p>
 
-      {/* Modal */}
       {editCategory && (
         <SetBudgetModal
           category={editCategory}
@@ -135,6 +118,6 @@ export default function BudgetDashboard() {
           onClose={() => setEditCategory(null)}
         />
       )}
-    </div>
+    </PageShell>
   );
 }

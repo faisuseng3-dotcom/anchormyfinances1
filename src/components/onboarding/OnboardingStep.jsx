@@ -11,11 +11,7 @@ export default function OnboardingStep({ children, title, subtitle, step, totalS
       style={{ paddingBottom: 'max(3rem, calc(env(safe-area-inset-bottom) + 2rem))' }}
     >
       <div className="max-w-md mx-auto">
-        <div className="rounded-3xl p-5 sm:p-6 border border-white/10 backdrop-blur-xl"
-          style={{
-            background: 'linear-gradient(180deg, rgba(15,23,42,0.82) 0%, rgba(17,24,39,0.72) 100%)',
-            boxShadow: '0 12px 40px rgba(2,6,23,0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
-          }}>
+        <div className="anchor-glass-card">
           {/* Progress */}
           <div className="flex items-center gap-2 mb-7">
           {Array.from({ length: totalSteps || 0 }).map((_, i) => (

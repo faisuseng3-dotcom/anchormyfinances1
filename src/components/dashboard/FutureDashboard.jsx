@@ -45,8 +45,7 @@ export default function FutureDashboard({
 
   return (
     <div
-      className="min-h-screen pb-32 relative overflow-x-hidden"
-      style={{ background: 'linear-gradient(180deg, #2f5cff 0%, #1846e7 22%, #0a239e 52%, #060f4a 78%, #040814 100%)' }}
+      className="min-h-screen pb-32 relative overflow-x-hidden anchor-page"
     >
       {/* Background stars */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>

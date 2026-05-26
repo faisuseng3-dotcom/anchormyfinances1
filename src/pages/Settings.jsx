@@ -3,8 +3,9 @@ import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { motion } from 'framer-motion';
-import { ArrowLeft, Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users } from 'lucide-react';
+import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users } from 'lucide-react';
+import PageShell, { GlassSection } from '@/components/layout/PageShell';
+import { anchorGlassCardClass, anchorPrimaryButtonClass, anchorSecondaryButtonClass } from '@/lib/anchorTheme';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
@@ -25,21 +26,12 @@ const categories = [
   { id: 'other', label: 'Övrigt' },
 ];
 
-function Section({ title, children }) {
-  return (
-    <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-      <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--color-text-muted)' }}>{title}</p>
-      {children}
-    </div>
-  );
-}
-
 function FieldRow({ label, icon: Icon, children }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
-        {Icon && <Icon className="w-3.5 h-3.5" style={{ color: 'var(--color-accent)' }} />}
-        <Label className="text-xs font-medium" style={{ color: 'var(--color-text-muted)' }}>{label}</Label>
+        {Icon && <Icon className="w-3.5 h-3.5 text-[#9FB5FF]" />}
+        <Label className="text-xs font-medium text-white/50">{label}</Label>
       </div>
       {children}
     </div>
@@ -118,39 +110,31 @@ export default function Settings() {
 
   if (isLoading || !formData) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />
+      <div className="anchor-page min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 rounded-full animate-spin border-white/20 border-t-white/80" />
       </div>
     );
   }
 
-  const inputStyle = "h-12 rounded-xl text-sm";
+  const inputStyle = "h-12 rounded-2xl text-sm";
 
   return (
-    <div className="min-h-screen pb-24 overflow-x-hidden" style={{ background: 'var(--color-background-primary)' }}>
-      {/* Header */}
-      <div className="px-4 sm:px-5 pt-7 sm:pt-8 pb-5 sm:pb-6 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Link to={createPageUrl('Dashboard')}>
-            <button className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'var(--color-surface)' }}>
-              <ArrowLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
-            </button>
-          </Link>
-          <h1 className="text-lg sm:text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>Inställningar</h1>
-        </div>
+    <PageShell
+      title="Inställningar"
+      subtitle="Konto"
+      backHref={createPageUrl('Dashboard')}
+      action={
         <button
+          type="button"
           onClick={handleSave}
           disabled={saving}
-          className="px-4 sm:px-5 py-2 rounded-full text-sm font-semibold text-white transition-opacity disabled:opacity-60 whitespace-nowrap"
-          style={{ background: 'var(--color-accent)' }}
+          className={`${anchorPrimaryButtonClass} !h-10 !px-5 !text-sm whitespace-nowrap`}
         >
           {saving ? 'Sparar...' : 'Spara'}
         </button>
-      </div>
-
-      <div className="px-4 sm:px-5 space-y-4">
-        {/* Budget */}
-        <Section title="Budget">
+      }
+    >
+        <GlassSection title="Budget">
           <div className="space-y-4">
             <FieldRow label="Månatlig nettoinkomst" icon={Wallet}>
               <div className="relative">
@@ -192,10 +176,9 @@ export default function Settings() {
               </FieldRow>
             </div>
           </div>
-        </Section>
+        </GlassSection>
 
-        {/* Subscriptions */}
-        <Section title="Abonnemang">
+        <GlassSection title="Abonnemang">
           <div className="space-y-2">
             {(formData.subscriptions || []).map((sub, i) => (
               <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
@@ -246,10 +229,9 @@ export default function Settings() {
               </button>
             )}
           </div>
-        </Section>
+        </GlassSection>
 
-        {/* Loans */}
-        <Section title="Lån">
+        <GlassSection title="Lån">
           <div className="space-y-2">
             {(formData.loans || []).map((loan, i) => (
               <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
@@ -289,80 +271,72 @@ export default function Settings() {
               </button>
             )}
           </div>
-        </Section>
+        </GlassSection>
 
-        {/* Social link */}
         <Link to="/Social">
-          <div className="flex items-center justify-between p-4 rounded-2xl cursor-pointer"
-            style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.1), rgba(15,222,189,0.08))', border: '1px solid rgba(167,139,250,0.2)' }}>
+          <div className={`${anchorGlassCardClass} flex items-center justify-between cursor-pointer active:opacity-90`}>
             <div className="flex items-center gap-3">
-              <Users className="w-5 h-5" style={{ color: '#A78BFA' }} />
+              <Users className="w-5 h-5 text-[#9FB5FF]" />
               <div>
-                <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>Anchor Social</p>
-                <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Profil, avatar, vänner & integritet</p>
+                <p className="text-sm font-semibold text-white">Anchor Social</p>
+                <p className="text-xs text-white/45">Profil, avatar, vänner & integritet</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+            <ChevronRight className="w-4 h-4 text-white/40" />
           </div>
         </Link>
 
         {/* Insights link */}
-        <Link to="/Insights">
-          <div className="flex items-center justify-between p-4 rounded-2xl cursor-pointer"
-            style={{ background: 'linear-gradient(135deg, rgba(13,115,119,0.1), rgba(75,124,243,0.1))', border: '1px solid rgba(13,115,119,0.2)' }}>
+        <Link to={`${createPageUrl('TransactionHistory')}?tab=insights`}>
+          <div className={`${anchorGlassCardClass} flex items-center justify-between cursor-pointer active:opacity-90`}>
             <div className="flex items-center gap-3">
-              <TrendingUp className="w-5 h-5" style={{ color: '#0D7377' }} />
+              <TrendingUp className="w-5 h-5 text-[#9FB5FF]" />
               <div>
-                <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>Ekonomiska insikter</p>
-                <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Grafer & analys av din ekonomi</p>
+                <p className="text-sm font-semibold text-white">Ekonomiska insikter</p>
+                <p className="text-xs text-white/45">Kategorier & trender i transaktioner</p>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+            <ChevronRight className="w-4 h-4 text-white/40" />
           </div>
         </Link>
 
-        {/* Gamification */}
-        <div className="rounded-2xl p-5 space-y-3" style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-          <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>Utmaningar & Poäng</p>
+        <GlassSection title="Utmaningar & poäng">
           <GamificationSection profile={profile} transactions={transactions} />
-        </div>
+        </GlassSection>
 
-        {/* Account */}
-        <Section title="Konto">
+        <GlassSection title="Konto">
           <div className="space-y-2">
             <Link to={createPageUrl('SecurityInfo')}>
-              <div className="flex items-center justify-between p-3 rounded-xl cursor-pointer" style={{ background: 'var(--color-surface)' }}>
+              <div className="flex items-center justify-between p-3 rounded-2xl cursor-pointer anchor-glass-card-sm active:opacity-90">
                 <div className="flex items-center gap-3">
-                  <Shield className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
+                  <Shield className="w-4 h-4 text-[#9FB5FF]" />
                   <div>
-                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>Säkerhet & Data</p>
-                    <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Hur vi skyddar din information</p>
+                    <p className="text-sm font-semibold text-white">Säkerhet & Data</p>
+                    <p className="text-xs text-white/45">Hur vi skyddar din information</p>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+                <ChevronRight className="w-4 h-4 text-white/40" />
               </div>
             </Link>
           </div>
-        </Section>
+        </GlassSection>
 
         {/* Invite */}
         <InviteUserSection />
 
         {/* Legal */}
         <div className="flex justify-center gap-4 sm:gap-6 py-2 flex-wrap">
-          <Link to="/TermsOfService" className="text-xs transition-colors" style={{ color: 'var(--color-text-muted)' }}>Användarvillkor</Link>
-          <Link to="/PrivacyPolicy" className="text-xs transition-colors" style={{ color: 'var(--color-text-muted)' }}>Integritetspolicy</Link>
+          <Link to="/TermsOfService" className="text-xs text-white/45 hover:text-white/70 transition-colors">Användarvillkor</Link>
+          <Link to="/PrivacyPolicy" className="text-xs text-white/45 hover:text-white/70 transition-colors">Integritetspolicy</Link>
         </div>
 
-        {/* Switch mode & logout */}
         <button
+          type="button"
           onClick={() => {
-            // Switch to other mode, then log out to gateway
             if (isBusiness) setPersonal(); else setBusiness();
             base44.auth.logout(window.location.origin);
           }}
-          className="w-full h-14 rounded-full text-sm font-semibold transition-opacity"
-          style={{ background: 'rgba(75,124,243,0.1)', color: 'var(--color-accent)', border: '1px solid rgba(75,124,243,0.3)' }}
+          className={`w-full ${anchorSecondaryButtonClass}`}
         >
           <span className="flex items-center justify-center gap-2">
             <RefreshCw className="w-4 h-4" />
@@ -370,11 +344,10 @@ export default function Settings() {
           </span>
         </button>
 
-        {/* Logout */}
         <button
+          type="button"
           onClick={() => base44.auth.logout(window.location.origin)}
-          className="w-full h-14 rounded-full text-sm font-semibold transition-opacity"
-          style={{ background: 'rgba(217,95,95,0.12)', color: 'var(--color-danger)', border: '1px solid rgba(217,95,95,0.3)' }}
+          className="w-full h-14 rounded-2xl text-sm font-semibold text-red-200 bg-red-500/15 border border-red-400/25 hover:bg-red-500/25 transition-colors"
         >
           <span className="flex items-center justify-center gap-2">
             <LogOut className="w-4 h-4" /> Logga ut
@@ -382,7 +355,6 @@ export default function Settings() {
         </button>
 
         <DeleteAccountSection profile={profile} />
-      </div>
-    </div>
+    </PageShell>
   );
 }

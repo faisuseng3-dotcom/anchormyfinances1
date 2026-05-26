@@ -99,7 +99,7 @@ export default function Onboarding() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: revolutBlue }}>
+      <div className="anchor-page min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="relative w-16 h-16 mx-auto mb-6">
             <div className="absolute inset-0 rounded-full border-2 border-white/15" />
@@ -115,7 +115,7 @@ export default function Onboarding() {
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden" style={{ background: revolutBlue }}>
+    <div className="anchor-page min-h-screen flex flex-col overflow-x-hidden">
       {/* Progress bar */}
       {(
         <div className="fixed top-0 left-0 right-0 z-50">

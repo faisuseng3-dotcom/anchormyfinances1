@@ -59,31 +59,29 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--color-background-primary)' }}>
+    <div className="min-h-screen anchor-app anchor-page">
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
       <style>{`
         :root {
-          /* Premium Teal — Starling/Revolut inspiration */
-          --color-background-primary: #F4F6F8;
-          --color-background-secondary: #ECEEF1;
-          --color-surface: #FFFFFF;
-          --color-card: #FFFFFF;
+          /* Anchor Revolut — global tokens */
+          --anchor-page-gradient: linear-gradient(180deg, #2f5cff 0%, #1846e7 22%, #0a239e 52%, #060f4a 78%, #040814 100%);
+          --color-background-primary: #040814;
+          --color-background-secondary: rgba(8, 14, 30, 0.88);
+          --color-surface: rgba(255, 255, 255, 0.08);
+          --color-card: rgba(255, 255, 255, 0.06);
           
-          /* Accent — Starling teal */
-          --color-accent: #0D7377;
-          --color-accent-hover: #0a5f63;
+          --color-accent: #7FA0FF;
+          --color-accent-hover: #5B7CFA;
           
-          /* Text */
-          --color-text-primary: #1A2332;
-          --color-text-secondary: #4A5568;
-          --color-text-muted: #8896A5;
+          --color-text-primary: #ffffff;
+          --color-text-secondary: rgba(255, 255, 255, 0.78);
+          --color-text-muted: rgba(255, 255, 255, 0.45);
           
-          /* Status */
-          --color-success: #0D7377;
-          --color-danger: #E53E3E;
-          --color-warning: #D69E2E;
+          --color-success: #9AE6B4;
+          --color-danger: #FCA5A5;
+          --color-warning: #FCD34D;
           
           /* Effects — subtila skuggor, ingen glow */
           --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.15);
@@ -92,9 +90,9 @@ export default function Layout({ children, currentPageName }) {
           --shadow-xl: 0 16px 24px -5px rgb(0 0 0 / 0.35);
           
           /* Borders */
-          --border-radius-sm: 12px;
-          --border-radius-md: 16px;
-          --border-radius-lg: 24px;
+          --border-radius-sm: 14px;
+          --border-radius-md: 20px;
+          --border-radius-lg: 28px;
           
           /* Transitions */
           --transition-fast: 150ms ease-out;
@@ -112,9 +110,14 @@ export default function Layout({ children, currentPageName }) {
           font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
-          background: var(--color-background-primary);
+          background: var(--anchor-page-gradient);
           color: var(--color-text-primary);
           min-height: 100vh;
+        }
+
+        .anchor-app {
+          background: var(--anchor-page-gradient);
+          color: var(--color-text-primary);
         }
 
         html, body, #root {
@@ -188,24 +191,28 @@ export default function Layout({ children, currentPageName }) {
 
         /* Glass Effect */
         .glass-effect {
-          background: rgba(255,255,255,0.75);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border: 1px solid rgba(0, 0, 0, 0.06);
+          background: linear-gradient(165deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 38%, rgba(6,14,32,0.78) 100%);
+          backdrop-filter: blur(22px);
+          -webkit-backdrop-filter: blur(22px);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          box-shadow: 0 22px 48px rgba(2, 8, 26, 0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+          border-radius: var(--border-radius-lg);
         }
         
-        /* Card Effect */
+        /* Card Effect — same as anchor-glass-card */
         .dark-card {
-          background: var(--color-card);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          border-radius: var(--border-radius-md);
-          transition: all var(--transition-base);
+          background: linear-gradient(165deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0.04) 38%, rgba(6,14,32,0.78) 100%);
+          backdrop-filter: blur(22px);
+          -webkit-backdrop-filter: blur(22px);
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          border-radius: var(--border-radius-lg);
+          box-shadow: 0 22px 48px rgba(2, 8, 26, 0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+          transition: border-color var(--transition-base), box-shadow var(--transition-base);
         }
         
         .dark-card:hover {
-          border-color: rgba(255, 255, 255, 0.10);
-          transform: translateY(-1px);
-          box-shadow: var(--shadow-md);
+          border-color: rgba(255, 255, 255, 0.20);
+          box-shadow: 0 24px 52px rgba(2, 8, 26, 0.45), inset 0 1px 0 rgba(255,255,255,0.1);
         }
         
         /* Input Styling */
@@ -218,8 +225,8 @@ export default function Layout({ children, currentPageName }) {
         
         input:focus, textarea:focus, select:focus {
           outline: none !important;
-          border-color: var(--color-accent) !important;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+          border-color: rgba(255, 255, 255, 0.28) !important;
+          box-shadow: 0 0 0 2px rgba(127, 160, 255, 0.15) !important;
         }
         
         input::placeholder, textarea::placeholder {
@@ -315,7 +322,7 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Bottom Navigation */}
       {!hideNav && (
-        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/6 backdrop-blur-sm" style={{ background: 'var(--color-background-secondary)' }}>
+        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/10 backdrop-blur-xl" style={{ background: 'rgba(6, 14, 32, 0.82)' }}>
           <div className="flex items-center justify-around py-2.5 max-w-md mx-auto px-3">
             {navItems.map((item, idx) => {
               // Center FAB
@@ -325,12 +332,11 @@ export default function Layout({ children, currentPageName }) {
                     key="fab"
                     whileTap={{ scale: 0.88 }}
                     onClick={() => setActionMenuOpen(v => !v)}
-                    className="relative flex items-center justify-center w-14 h-14 rounded-full shadow-lg -mt-5"
-                    style={{ background: 'var(--color-accent)' }}
+                    className="relative flex items-center justify-center w-14 h-14 rounded-full shadow-[0_12px_28px_rgba(0,0,0,0.35)] -mt-5 bg-white text-slate-900"
                     aria-label="Open quick actions"
                   >
                     <motion.div animate={{ rotate: actionMenuOpen ? 45 : 0 }} transition={{ duration: 0.2 }}>
-                      <Plus className="w-6 h-6 text-white" />
+                      <Plus className="w-6 h-6 text-slate-900" />
                     </motion.div>
                   </motion.button>
                 );
@@ -354,7 +360,7 @@ export default function Layout({ children, currentPageName }) {
                     <Icon
                       className="w-5 h-5"
                       style={{
-                        color: isActive ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                        color: isActive ? '#ffffff' : 'var(--color-text-muted)',
                         strokeWidth: isActive ? 2.5 : 1.8,
                       }}
                     />

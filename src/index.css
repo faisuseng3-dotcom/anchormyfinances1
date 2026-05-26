@@ -84,7 +84,106 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    margin: 0;
+    min-height: 100vh;
+  }
+}
+
+/* Anchor Revolut theme — global utilities */
+@layer components {
+  .anchor-page {
+    background: linear-gradient(
+      180deg,
+      #2f5cff 0%,
+      #1846e7 22%,
+      #0a239e 52%,
+      #060f4a 78%,
+      #040814 100%
+    );
+    color: rgba(255, 255, 255, 0.92);
+  }
+
+  .anchor-glass-card {
+    border-radius: 26px;
+    padding: 1.25rem;
+    background: linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.04) 38%,
+      rgba(6, 14, 32, 0.78) 100%
+    );
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+      0 22px 48px rgba(2, 8, 26, 0.42),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  @media (min-width: 640px) {
+    .anchor-glass-card {
+      padding: 1.5rem;
+    }
+  }
+
+  .anchor-glass-card-sm {
+    border-radius: 20px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  .anchor-section-label {
+    @apply text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45;
+  }
+
+  .anchor-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 h-12 sm:h-14 px-6 rounded-2xl text-sm font-semibold text-slate-900 bg-white shadow-[0_14px_32px_rgba(0,0,0,0.22)] hover:bg-white/95 transition-colors disabled:opacity-50;
+  }
+
+  .anchor-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 h-12 sm:h-14 px-6 rounded-2xl text-sm font-semibold transition-colors disabled:opacity-50;
+    color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+  }
+
+  .anchor-btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .anchor-icon-btn {
+    @apply w-10 h-10 rounded-full flex items-center justify-center transition-colors;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  .anchor-icon-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .anchor-input {
+    @apply flex w-full h-12 rounded-2xl border px-4 text-sm text-white focus-visible:outline-none focus-visible:ring-0 disabled:opacity-50;
+    border-color: rgba(255, 255, 255, 0.14);
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .anchor-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .anchor-input:focus-visible {
+    border-color: rgba(255, 255, 255, 0.3);
   }
 }
