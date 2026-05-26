@@ -5,6 +5,7 @@ import { Settings, ChevronUp, Zap, PiggyBank, TrendingUp, Calculator } from 'luc
 import { createPageUrl } from '@/utils';
 import AIStoryBar from './AIStoryBar';
 import SpendableHero from './SpendableHero';
+import FuturePulse from './FuturePulse';
 import MoneyOverview from './MoneyOverview';
 import DebtCheck from './DebtCheck';
 import SavingsAndBudget from './SavingsAndBudget';
@@ -116,6 +117,11 @@ export default function FutureDashboard({
       {/* ─── KAPITEL 1: SANNINGEN ─── */}
       <div className="relative z-10 mt-3">
         <SpendableHero profile={profile} />
+      </div>
+
+      {/* ─── FRAMTIDSPULS: vindrutan ─── */}
+      <div className="relative z-10 mt-3">
+        <FuturePulse profile={profile} transactions={transactions} />
       </div>
 
       {/* ─── KAPITEL 2: FLÖDE ─── */}
