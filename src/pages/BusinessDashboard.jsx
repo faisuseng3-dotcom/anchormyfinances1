@@ -22,18 +22,7 @@ const TAB_TITLES = {
   profil: 'Profil',
 };
 
-// Tax calc for safe-to-spend
-function calcSafeToSpend(grossBalance, vatReserved, entityType) {
-  const net = grossBalance - vatReserved;
-  if (entityType === 'ab') {
-    const tax = Math.round(net * 0.206) + Math.round(net * 0.12);
-    return { safeToSpend: Math.max(0, net - tax), label: 'Utdelning / lön tillgänglig' };
-  }
-  const egenavgifter = Math.round(net * 0.2897);
-  const prelimSkatt = Math.round((net - egenavgifter) * 0.30);
-  return { safeToSpend: Math.max(0, net - egenavgifter - prelimSkatt), label: 'Nettolön — säkert att föra över' };
-}
-
+// Tax calc delegated to businessTaxEngine
 const biz = SIMULATED_BUSINESS;
 const monthlyBurn = calcMonthlyBurn(biz);
 
@@ -73,7 +62,6 @@ export default function BusinessDashboard() {
 
   // After reset: show empty data instead of simulated demo data
   const activeBiz = isReset ? { ...biz, bankBalance: 0, vatReserved: 0, recentTransactions: [], unpaidInvoices: [], runwayMonths: 0, runwayData: [] } : biz;
-  const { safeToSpend, label } = calcSafeToSpend(activeBiz.bankBalance, activeBiz.vatReserved, legalEntity);
   const allTransactions = isReset ? manualTransactions : [...manualTransactions, ...biz.recentTransactions];
 
   return (
@@ -132,12 +120,26 @@ export default function BusinessDashboard() {
         <AnimatePresence mode="wait">
           {!loading && activeTab === 'home' && (
             <motion.div key="home" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <HomeTab safeToSpend={safeToSpend} label={label} onScannerOpen={() => setShowScanner(true)} recentTransactions={isReset ? allTransactions : activeBiz.recentTransactions} />
+              <HomeTab
+                grossBalance={activeBiz.bankBalance}
+                vatReserved={activeBiz.vatReserved}
+                entityType={legalEntity}
+                isReset={isReset}
+                onScannerOpen={() => setShowScanner(true)}
+                recentTransactions={allTransactions}
+              />
             </motion.div>
           )}
           {!loading && activeTab === 'skatt' && (
             <motion.div key="skatt" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <SkattMomsTab vatReserved={activeBiz.vatReserved} vatDeadlines={activeBiz.vatDeadlines} entityType={legalEntity} totalBalance={activeBiz.bankBalance} isReset={isReset} />
+              <SkattMomsTab
+                vatReserved={activeBiz.vatReserved}
+                vatDeadlines={activeBiz.vatDeadlines}
+                entityType={legalEntity}
+                totalBalance={activeBiz.bankBalance}
+                isReset={isReset}
+                transactions={allTransactions}
+              />
             </motion.div>
           )}
           {!loading && activeTab === 'rapporter' && (

@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import TaxClarityHero from '@/components/business/TaxClarityHero';
 import VATShield from '@/components/business/VATShield';
 import NetSalaryCalculator from '@/components/business/NetSalaryCalculator';
 import TaxOptimizer from '@/components/business/TaxOptimizer';
-import LiquidityGauge from '@/components/business/LiquidityGauge';
 
-export default function SkattMomsTab({ vatReserved, vatDeadlines, entityType, totalBalance, isReset }) {
+export default function SkattMomsTab({ vatReserved, vatDeadlines, entityType, totalBalance, isReset, transactions = [] }) {
   const safeVat = isReset ? 0 : (vatReserved || 0);
   const safeDeadlines = isReset ? [] : (vatDeadlines || []);
   const safeBalance = isReset ? 0 : (totalBalance || 0);
@@ -17,7 +17,13 @@ export default function SkattMomsTab({ vatReserved, vatDeadlines, entityType, to
         Skatt &amp; Moms
       </motion.p>
       <p className="text-sm -mt-2" style={{ color: '#9AA5B4' }}>Vi har räknat ut din moms åt dig</p>
-      <LiquidityGauge totalBalance={safeBalance} vatReserved={safeVat} grossIncome={safeBalance} entityType={entityType} />
+      <TaxClarityHero
+        grossBalance={safeBalance}
+        vatReserved={safeVat}
+        entityType={entityType}
+        transactions={transactions}
+        isReset={isReset}
+      />
       <VATShield vatReserved={safeVat} vatDeadlines={safeDeadlines} />
       <NetSalaryCalculator entityType={entityType} />
       <TaxOptimizer

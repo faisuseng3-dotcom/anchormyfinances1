@@ -1,51 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, TrendingDown, Wallet } from 'lucide-react';
-
-// Swedish tax calculation per entity type
-function calcBreakdown(grossBalance, vatReserved, entityType) {
-  const net = grossBalance - vatReserved;
-
-  if (entityType === 'ab') {
-    // Aktiebolag: bolagsskatt 20.6% + arbetsgivaravgift 31.42% on salary
-    // Simplified: reserve ~35% of net for taxes
-    const bolagsskatt = Math.round(net * 0.206);
-    const arbgivaravgift = Math.round(net * 0.12); // on potential salary portion
-    const totalTax = bolagsskatt + arbgivaravgift;
-    const safeToSpend = Math.max(0, net - totalTax);
-    return {
-      rows: [
-        { label: 'Totalt på banken', amount: grossBalance, color: '#F0EAD6', sign: '' },
-        { label: 'Moms-sköld (tillhör staten)', amount: vatReserved, color: '#D4AF37', sign: '−' },
-        { label: 'Bolagsskatt 20.6% (reservat)', amount: bolagsskatt, color: '#D95F5F', sign: '−' },
-        { label: 'Arbetsgivaravgifter (reservat)', amount: arbgivaravgift, color: '#D95F5F', sign: '−' },
-      ],
-      safeToSpend,
-      label: 'Utdelning / lön tillgänglig',
-    };
-  } else {
-    // Enskild firma: egenavgifter 28.97% + inkomstskatt ~30% on profit
-    const egenavgifter = Math.round(net * 0.2897);
-    const prelimSkatt = Math.round((net - egenavgifter) * 0.30);
-    const totalTax = egenavgifter + prelimSkatt;
-    const safeToSpend = Math.max(0, net - totalTax);
-    return {
-      rows: [
-        { label: 'Totalt på banken', amount: grossBalance, color: '#F0EAD6', sign: '' },
-        { label: 'Moms-sköld (tillhör staten)', amount: vatReserved, color: '#D4AF37', sign: '−' },
-        { label: 'Egenavgifter 28.97%', amount: egenavgifter, color: '#D95F5F', sign: '−' },
-        { label: 'Prelim. F-skatt ~30%', amount: prelimSkatt, color: '#D95F5F', sign: '−' },
-      ],
-      safeToSpend,
-      label: 'Nettolön — säkert att föra över',
-    };
-  }
-}
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import { calcAccountTaxBreakdown } from '@/lib/businessTaxEngine';
 
 export default function SafeToSpendCard({ grossBalance, vatReserved, entityType = 'enskild' }) {
   const [expanded, setExpanded] = useState(false);
-  const breakdown = calcBreakdown(grossBalance, vatReserved, entityType);
-  const { safeToSpend, rows, label } = breakdown;
+  const breakdown = calcAccountTaxBreakdown(grossBalance, vatReserved, entityType);
+  const { yours: safeToSpend, rows, transferLabel: label } = breakdown;
   const pct = Math.round((safeToSpend / grossBalance) * 100);
 
   return (
@@ -58,50 +19,70 @@ export default function SafeToSpendCard({ grossBalance, vatReserved, entityType 
         boxShadow: '0 16px 48px rgba(13,115,119,0.35)',
       }}
     >
-      {/* Main balance */}
       <div className="px-6 pt-7 pb-6">
-        <p className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>Ditt att röra dig med</p>
-        <p className="font-black mt-1 mb-1 leading-none" style={{ fontSize: 52, color: '#ffffff', letterSpacing: '-2px' }}>
-          {safeToSpend.toLocaleString('sv-SE')}
-          <span className="text-2xl font-semibold ml-2" style={{ color: 'rgba(255,255,255,0.55)' }}>kr</span>
+        <p className="text-sm font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          Ditt att röra dig med
         </p>
-        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>{label}</p>
+        <p
+          className="font-black mt-1 mb-1 leading-none"
+          style={{ fontSize: 52, color: '#ffffff', letterSpacing: '-2px' }}
+        >
+          {safeToSpend.toLocaleString('sv-SE')}
+          <span className="text-2xl font-semibold ml-2" style={{ color: 'rgba(255,255,255,0.55)' }}>
+            kr
+          </span>
+        </p>
+        <p className="text-sm" style={{ color: 'rgba(255,255,255,0.55)' }}>
+          {label}
+        </p>
 
-        {/* Three pill badges */}
         <div className="flex gap-2 mt-4">
           {[
             { label: 'Ditt', amount: safeToSpend, color: 'rgba(255,255,255,0.25)' },
             { label: 'Moms', amount: vatReserved, color: 'rgba(212,175,55,0.35)' },
             { label: 'Skatt', amount: grossBalance - vatReserved - safeToSpend, color: 'rgba(217,95,95,0.35)' },
-          ].map(l => (
-            <div key={l.label} className="flex-1 rounded-2xl px-3 py-2 text-center"
-              style={{ background: l.color }}>
+          ].map((l) => (
+            <div
+              key={l.label}
+              className="flex-1 rounded-2xl px-3 py-2 text-center"
+              style={{ background: l.color }}
+            >
               <p className="text-[10px] font-semibold text-white/60">{l.label}</p>
               <p className="text-xs font-black text-white">{l.amount.toLocaleString('sv-SE')}</p>
             </div>
           ))}
         </div>
 
-        {/* Bar */}
-        <div className="mt-4 h-1.5 rounded-full overflow-hidden flex"
-          style={{ background: 'rgba(255,255,255,0.15)' }}>
+        <div
+          className="mt-4 h-1.5 rounded-full overflow-hidden flex"
+          style={{ background: 'rgba(255,255,255,0.15)' }}
+        >
           <div style={{ width: `${pct}%`, background: 'rgba(255,255,255,0.8)', borderRadius: 4 }} />
-          <div style={{ width: `${Math.round((vatReserved / grossBalance) * 100)}%`, background: 'rgba(212,175,55,0.7)', borderRadius: 4 }} />
+          <div
+            style={{
+              width: `${Math.round((vatReserved / grossBalance) * 100)}%`,
+              background: 'rgba(212,175,55,0.7)',
+              borderRadius: 4,
+            }}
+          />
           <div style={{ flex: 1, background: 'rgba(217,95,95,0.5)', borderRadius: 4 }} />
         </div>
       </div>
 
-      {/* Expandable breakdown */}
       <button
-        onClick={() => setExpanded(v => !v)}
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
         className="w-full flex items-center justify-between px-5 py-3"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
+      >
         <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.5)' }}>
           Visa uträkning
         </span>
-        {expanded
-          ? <ChevronUp className="w-3.5 h-3.5" style={{ color: 'rgba(155,173,184,0.4)' }} />
-          : <ChevronDown className="w-3.5 h-3.5" style={{ color: 'rgba(155,173,184,0.4)' }} />}
+        {expanded ? (
+          <ChevronUp className="w-3.5 h-3.5" style={{ color: 'rgba(155,173,184,0.4)' }} />
+        ) : (
+          <ChevronDown className="w-3.5 h-3.5" style={{ color: 'rgba(155,173,184,0.4)' }} />
+        )}
       </button>
 
       <AnimatePresence>
@@ -112,28 +93,30 @@ export default function SafeToSpendCard({ grossBalance, vatReserved, entityType 
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-4 space-y-2"
-              style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+            <div
+              className="px-5 pb-4 space-y-2"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}
+            >
               {rows.map((row, i) => (
-                <div key={i} className={`flex items-center justify-between pt-2 ${i < rows.length - 1 ? 'border-b' : ''}`}
-                  style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                <div
+                  key={row.key || i}
+                  className={`flex items-center justify-between pt-2 ${i < rows.length - 1 ? 'border-b' : ''}`}
+                  style={{ borderColor: 'rgba(255,255,255,0.05)' }}
+                >
                   <span className="text-xs" style={{ color: 'rgba(155,173,184,0.65)' }}>
-                    {row.sign && <span style={{ color: '#D95F5F', marginRight: 4 }}>{row.sign}</span>}
+                    {row.sign && row.sign !== '=' && (
+                      <span style={{ color: '#D95F5F', marginRight: 4 }}>{row.sign}</span>
+                    )}
                     {row.label}
                   </span>
-                  <span className="text-sm font-bold" style={{ color: row.color }}>
+                  <span
+                    className="text-sm font-bold"
+                    style={{ color: row.highlight ? '#3DAA7A' : 'rgba(240,234,214,0.9)' }}
+                  >
                     {row.amount.toLocaleString('sv-SE')} kr
                   </span>
                 </div>
               ))}
-              {/* Result line */}
-              <div className="flex items-center justify-between pt-2 border-t"
-                style={{ borderColor: 'rgba(61,170,122,0.3)' }}>
-                <span className="text-xs font-black" style={{ color: '#3DAA7A' }}>= {label}</span>
-                <span className="text-base font-black" style={{ color: '#3DAA7A' }}>
-                  {safeToSpend.toLocaleString('sv-SE')} kr
-                </span>
-              </div>
               <p className="text-[10px] pt-1" style={{ color: 'rgba(155,173,184,0.3)' }}>
                 Uppskattning. Exakta siffror beror på din totala inkomst och avdrag.
               </p>
