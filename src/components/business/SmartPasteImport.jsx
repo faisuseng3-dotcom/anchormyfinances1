@@ -94,7 +94,7 @@ export default function SmartPasteImport({ onBooked }) {
         onCancel={() => setShowConfirm(false)}
       />
     )}
-    <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', boxShadow: '0 2px 16px rgba(0,0,0,0.07)' }}>
+    <div className="py-1">
       {/* Header */}
       <div className="px-5 pt-5 pb-4 flex items-center gap-3 border-b" style={{ borderColor: '#F0F2F5' }}>
         <div className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"

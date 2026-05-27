@@ -17,22 +17,19 @@ const fmt = (n) => n.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximum
 function Section({ title, icon: Icon, color, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+    <div className="border-t border-[#E8ECF0] pt-4">
       <button
-        className="w-full px-5 pt-4 pb-4 flex items-center justify-between"
-        style={{ borderBottom: open ? '1px solid #F0F2F5' : 'none' }}
-        onClick={() => setOpen(v => !v)}
+        type="button"
+        className="w-full flex items-center justify-between pb-3"
+        onClick={() => setOpen((v) => !v)}
       >
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
-            style={{ background: `${color}18` }}>
-            <Icon className="w-4 h-4" style={{ color }} />
-          </div>
-          <p className="text-sm font-bold" style={{ color: '#1A2332' }}>{title}</p>
+        <div className="flex items-center gap-2">
+          <Icon className="w-4 h-4" style={{ color }} />
+          <p className="text-[15px] font-medium text-[#1A2332]">{title}</p>
         </div>
-        {open ? <ChevronUp className="w-4 h-4" style={{ color: '#9AA5B4' }} /> : <ChevronDown className="w-4 h-4" style={{ color: '#9AA5B4' }} />}
+        {open ? <ChevronUp className="w-4 h-4 text-[#9AA5B4]" /> : <ChevronDown className="w-4 h-4 text-[#9AA5B4]" />}
       </button>
-      {open && <div className="px-5 pb-4 pt-2">{children}</div>}
+      {open && <div className="pb-2">{children}</div>}
     </div>
   );
 }
@@ -40,7 +37,7 @@ function Section({ title, icon: Icon, color, children, defaultOpen = false }) {
 export default function FinancialReports({ transactions, isReset }) {
   if (isReset || !transactions?.length) {
     return (
-      <div className="rounded-3xl p-6 text-center" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+      <div className="py-8 text-center">
         <p className="text-2xl mb-2">📊</p>
         <p className="text-sm font-bold" style={{ color: '#4A5568' }}>Inga bokförda transaktioner</p>
         <p className="text-xs mt-1" style={{ color: '#9AA5B4' }}>Bokför via Arkiv-fliken för att generera rapporter.</p>

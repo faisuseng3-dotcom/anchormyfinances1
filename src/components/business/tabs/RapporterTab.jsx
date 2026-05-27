@@ -32,7 +32,7 @@ export default function RapporterTab({
         <p className="text-[14px] text-[#9AA5B4] mt-0.5">Kassaflöde, runway och fakturor</p>
       </motion.div>
 
-      <BusinessSection>
+      <BusinessSection title="Kassaflöde">
         <RunwayEngine
           runwayMonths={safeRunwayMonths}
           runwayData={safeRunwayData}

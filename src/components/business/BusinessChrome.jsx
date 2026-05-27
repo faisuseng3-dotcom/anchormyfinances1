@@ -7,6 +7,9 @@ export const bizSubtitleClass = 'text-[13px] text-[#6B7A8C] leading-relaxed';
 export const bizMetaClass = 'text-[13px] font-medium text-[#9AA5B4] tabular-nums';
 export const bizDividerClass = 'h-px bg-[#E8ECF0]';
 
+/** Flat block on #F4F6F8 canvas — no white card shadow */
+export const bizBlockClass = 'py-1';
+
 export function BusinessSection({
   title,
   subtitle,

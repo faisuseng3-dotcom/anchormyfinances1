@@ -70,8 +70,7 @@ export default function NetSalaryCalculator({ entityType = 'enskild' }) {
   }
 
   return (
-    <div className="rounded-3xl overflow-hidden"
-      style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+    <div>
 
       <div className="px-5 pt-4 pb-3 flex items-center gap-3"
         style={{ borderBottom: '1px solid #F0F2F5' }}>

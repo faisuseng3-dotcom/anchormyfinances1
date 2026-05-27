@@ -1,94 +1,85 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, AlertCircle, Clock, ChevronRight } from 'lucide-react';
+import { AlertCircle, Clock } from 'lucide-react';
 import InvoiceDetailSheet from '@/components/business/details/InvoiceDetailSheet';
+import { BusinessDivider } from '@/components/business/BusinessChrome';
 
 export default function InvoiceList({ invoices: initialInvoices }) {
   const [invoices, setInvoices] = useState(initialInvoices || []);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     setInvoices(initialInvoices || []);
   }, [initialInvoices]);
-  const [selected, setSelected] = useState(null);
+
   const total = invoices.reduce((s, i) => s + i.amount, 0);
 
   const handleMarkPaid = (id) => {
-    setInvoices(prev => prev.filter(inv => inv.id !== id));
+    setInvoices((prev) => prev.filter((inv) => inv.id !== id));
   };
+
+  if (invoices.length === 0) {
+    return <p className="text-[14px] text-[#9AA5B4] py-4">Inga utestående fakturor</p>;
+  }
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-3xl overflow-hidden"
-        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
-      >
-        <div className="px-5 pt-4 pb-3 flex items-center justify-between"
-          style={{ borderBottom: '1px solid #F0F2F5' }}>
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
-              style={{ background: 'rgba(13,115,119,0.1)' }}>
-              <FileText className="w-4 h-4" style={{ color: '#0D7377' }} />
-            </div>
-            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Utestående fakturor</p>
-          </div>
-          <p className="text-sm font-black" style={{ color: '#0D7377' }}>
-            {total.toLocaleString('sv-SE')} kr
-          </p>
-        </div>
-
-        <div className="divide-y" style={{ borderColor: '#F0F2F5' }}>
-          {invoices.map((inv) => {
-            const isOverdue = inv.status === 'overdue';
-            const isSoon = inv.daysLeft <= 7 && inv.daysLeft >= 0;
-            return (
-              <button key={inv.id} onClick={() => setSelected(inv)}
-                className="w-full px-5 py-3.5 flex items-center justify-between text-left transition-colors hover:bg-gray-50 active:bg-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: isOverdue ? 'rgba(229,62,62,0.1)' : '#F4F6F8' }}>
-                    {isOverdue
-                      ? <AlertCircle className="w-4 h-4" style={{ color: '#E53E3E' }} />
-                      : <Clock className="w-4 h-4" style={{ color: isSoon ? '#D69E2E' : '#9AA5B4' }} />}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold" style={{ color: '#1A2332' }}>{inv.client}</p>
-                    <p className="text-xs" style={{ color: '#9AA5B4' }}>{inv.id} · {inv.due}</p>
-                  </div>
+      <p className="text-[15px] font-semibold text-[#1A2332] tabular-nums mb-3">
+        {total.toLocaleString('sv-SE')} kr totalt
+      </p>
+      <div>
+        {invoices.map((inv, i) => {
+          const isOverdue = inv.status === 'overdue';
+          const isSoon = inv.daysLeft <= 7 && inv.daysLeft >= 0;
+          return (
+            <React.Fragment key={inv.id}>
+              {i > 0 && <BusinessDivider />}
+              <button
+                type="button"
+                onClick={() => setSelected(inv)}
+                className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
+              >
+                <div
+                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
+                  style={{ background: isOverdue ? 'rgba(229,62,62,0.1)' : '#F0F2F5' }}
+                >
+                  {isOverdue ? (
+                    <AlertCircle className="w-4 h-4 text-[#E53E3E]" />
+                  ) : (
+                    <Clock className="w-4 h-4" style={{ color: isSoon ? '#D69E2E' : '#9AA5B4' }} />
+                  )}
                 </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: '#1A2332' }}>
-                      {inv.amount.toLocaleString('sv-SE')} kr
-                    </p>
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full"
-                      style={{
-                        background: isOverdue ? 'rgba(229,62,62,0.1)' : isSoon ? 'rgba(214,158,46,0.1)' : 'rgba(13,115,119,0.1)',
-                        color: isOverdue ? '#E53E3E' : isSoon ? '#D69E2E' : '#0D7377',
-                      }}>
-                      {isOverdue ? 'Förfallen' : `${inv.daysLeft}d`}
-                    </span>
-                  </div>
-                  <ChevronRight className="w-4 h-4" style={{ color: '#C0C8D2' }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] font-medium text-[#1A2332] truncate">{inv.client}</p>
+                  <p className="text-[13px] text-[#9AA5B4]">
+                    {inv.id} · {inv.due}
+                  </p>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="text-[15px] font-semibold text-[#1A2332] tabular-nums">
+                    {inv.amount.toLocaleString('sv-SE')} kr
+                  </p>
+                  <p
+                    className={`text-[12px] font-medium mt-0.5 ${isOverdue ? 'text-[#E53E3E]' : isSoon ? 'text-[#D69E2E]' : 'text-[#0D7377]'}`}
+                  >
+                    {isOverdue ? 'Förfallen' : `${inv.daysLeft}d`}
+                  </p>
                 </div>
               </button>
-            );
-          })}
-          {invoices.length === 0 && (
-            <div className="px-5 py-6 text-center">
-              <p className="text-sm" style={{ color: '#9AA5B4' }}>Inga utestående fakturor</p>
-            </div>
-          )}
-        </div>
-      </motion.div>
+            </React.Fragment>
+          );
+        })}
+      </div>
 
       <AnimatePresence>
         {selected && (
           <InvoiceDetailSheet
             invoice={selected}
             onClose={() => setSelected(null)}
-            onMarkPaid={(id) => { handleMarkPaid(id); setSelected(null); }}
+            onMarkPaid={(id) => {
+              handleMarkPaid(id);
+              setSelected(null);
+            }}
           />
         )}
       </AnimatePresence>

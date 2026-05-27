@@ -44,8 +44,7 @@ export default function TaxOptimizer({ entityType, annualRevenue, annualExpenses
   // Loading state
   if (loading) {
     return (
-      <div className="rounded-3xl p-6 flex items-center gap-3"
-        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+      <div className="py-4 flex items-center gap-3">
         <Loader2 className="w-5 h-5 animate-spin flex-shrink-0" style={{ color: '#0D7377' }} />
         <p className="text-sm font-semibold" style={{ color: '#4A5568' }}>Analyserar skatteoptimering...</p>
       </div>
@@ -65,8 +64,7 @@ export default function TaxOptimizer({ entityType, annualRevenue, annualExpenses
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-3xl overflow-hidden"
-        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+        className="py-1"
       >
         <div className="px-5 pt-4 pb-3 flex items-center gap-3"
           style={{ borderBottom: '1px solid #F0F2F5' }}>

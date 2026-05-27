@@ -13,8 +13,7 @@ export default function DeductibleTransactions({ transactions }) {
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-3xl overflow-hidden"
-        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+        className="py-1"
       >
         <div className="px-5 pt-4 pb-3 flex items-center justify-between"
           style={{ borderBottom: '1px solid #F0F2F5' }}>
