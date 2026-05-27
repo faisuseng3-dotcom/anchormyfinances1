@@ -3,6 +3,8 @@
  * Sparar user-specifika overrides i localStorage och matchar dem före generell AI-logik.
  */
 
+import { categorizeLocal, confidenceLabel } from '@/lib/categoryRouter';
+
 const STORAGE_KEY = 'anchor_category_overrides';
 
 /** Läser alla overrides från localStorage: { vendorKey: category } */
@@ -31,21 +33,23 @@ export function removeOverride(vendorOrLabel) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
 }
 
-/** Slår upp kategori med override-prioritet */
-export function enrichCategory(vendorOrLabel, fallbackCategory, suggestFn) {
-  const key = normalizeKey(vendorOrLabel);
-  const overrides = getOverrides();
+/** Slår upp kategori via categoryRouter (override → regler → liknande handlare) */
+export function enrichCategory(vendorOrLabel, fallbackCategory, _suggestFn) {
+  const result = categorizeLocal(vendorOrLabel);
 
-  if (overrides[key]) {
-    return { category: overrides[key], confidence: 'high', isOverride: true };
+  if (result.source === 'unknown' && fallbackCategory) {
+    return {
+      category: fallbackCategory,
+      confidence: confidenceLabel(result.confidence),
+      isOverride: false,
+    };
   }
 
-  const suggested = suggestFn ? suggestFn(vendorOrLabel) : fallbackCategory;
-  if (suggested && suggested !== 'other') {
-    return { category: suggested, confidence: 'medium', isOverride: false };
-  }
-
-  return { category: fallbackCategory || 'other', confidence: 'low', isOverride: false };
+  return {
+    category: result.category,
+    confidence: confidenceLabel(result.confidence),
+    isOverride: result.source === 'override',
+  };
 }
 
 /** Räknar antal overrides */

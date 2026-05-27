@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, Sparkles } from 'lucide-react';
+import { X, Check, Sparkles, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
-import { enrichCategory, saveOverride } from '@/lib/enrichmentEngine';
-import { suggestCategory } from '@/lib/smartCategorization';
+import { saveOverride } from '@/lib/enrichmentEngine';
+import { categorizeTransaction } from '@/lib/categoryRouter';
 import CategoryOverridePrompt from './CategoryOverridePrompt';
 
 const CATEGORIES = [
@@ -33,14 +33,21 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
   const [saving, setSaving] = useState(false);
   const [overridePrompt, setOverridePrompt] = useState(null); // { vendor, newCategory, categoryLabel }
   const [aiConfidence, setAiConfidence] = useState(null); // 'high'|'medium'|'low'
+  const [categorizing, setCategorizing] = useState(false);
 
-  const handleVendorBlur = () => {
+  const handleVendorBlur = async () => {
     if (!vendor) return;
-    const enriched = enrichCategory(vendor, 'other', suggestCategory);
-    if (enriched.category !== category) {
-      setCategory(enriched.category);
+    setCategorizing(true);
+    const amountNum = parseFloat(amount);
+    const result = await categorizeTransaction(base44, vendor, {
+      amount: Number.isFinite(amountNum) ? (isExpense ? -Math.abs(amountNum) : Math.abs(amountNum)) : undefined,
+      useLLM: true,
+    });
+    if (result.category !== category) {
+      setCategory(result.category);
     }
-    setAiConfidence(enriched.confidence);
+    setAiConfidence(result.confidenceLabel || result.confidence);
+    setCategorizing(false);
   };
 
   const handleCategoryChange = (newCat) => {
@@ -156,6 +163,7 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
           <div>
             <div className="flex items-center gap-2 mb-2 px-1">
               <p className="text-xs text-slate-500">Kategori</p>
+              {categorizing && <Loader2 className="w-3 h-3 animate-spin text-slate-500" />}
               {aiConfidence === 'high' && (
                 <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
                   style={{ background: 'rgba(13,115,119,0.2)', color: '#0D7377' }}>

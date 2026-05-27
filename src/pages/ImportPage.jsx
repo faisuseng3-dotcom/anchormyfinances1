@@ -4,6 +4,7 @@ import { Sparkles, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import { categorizePipeline } from '@/lib/categoryRouter';
 import CSVUploadZone from '@/components/import/CSVUploadZone';
 import CSVPreviewTable from '@/components/import/CSVPreviewTable';
 import { BusinessPageHeader, BusinessSection, bizSubtitleClass } from '@/components/business/BusinessChrome';
@@ -109,17 +110,28 @@ export default function ImportPage() {
   };
 
   const categorizeAndShow = async (normalized) => {
-    setAnalyzeLabel('AI kategoriserar transaktionerna...');
-    const descriptions = normalized.map((r) => r._description).join('\n');
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Kategorisera dessa svenska banktransaktioner. Returnera JSON med "categories" — food, transport, entertainment, shopping, health, home, savings, income, other.\n\n${descriptions}`,
-      response_json_schema: {
-        type: 'object',
-        properties: { categories: { type: 'array', items: { type: 'string' } } },
-      },
-    });
-    const cats = result?.categories || [];
-    setParsedRows(normalized.map((r, i) => ({ ...r, _category: cats[i] || 'other' })));
+    setAnalyzeLabel('Kategoriserar transaktioner…');
+
+    const items = normalized.map((r, i) => ({
+      id: i,
+      description: r._description,
+      amount: r._amount,
+    }));
+
+    const { categories, stats } = await categorizePipeline(base44, items);
+
+    if (stats.llmUsed > 0) {
+      setAnalyzeLabel(`${stats.localOnly} lokalt · ${stats.llmUsed} via AI`);
+    }
+
+    setParsedRows(
+      normalized.map((r, i) => ({
+        ...r,
+        _category: categories[i]?.category || 'other',
+        _confidence: categories[i]?.confidence,
+        _needsReview: categories[i]?.needsReview,
+      })),
+    );
     setStep('preview');
   };
 

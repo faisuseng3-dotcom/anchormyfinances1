@@ -5,7 +5,7 @@ import { X, Sparkles, Loader2 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { suggestCategory } from '@/lib/smartCategorization';
+import { categorizeLocal } from '@/lib/categoryRouter';
 import { toast } from 'sonner';
 
 const categories = [
@@ -181,7 +181,7 @@ Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, v
                     const val = e.target.value;
                     setName(val);
                     if (val.length > 2) {
-                      setSuggestedCategory(suggestCategory(val));
+                      setSuggestedCategory(categorizeLocal(val).category);
                     }
                   }}
                   className="h-12 rounded-xl"
