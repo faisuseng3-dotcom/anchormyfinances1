@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
 import TransactionInsightsPanel from '@/components/transactions/TransactionInsightsPanel';
+import CategoryConfidenceBadge from '@/components/transactions/CategoryConfidenceBadge';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import { createPageUrl } from '@/utils';
@@ -125,9 +126,12 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-medium text-white truncate">{tx.vendor || tx.label}</p>
-          <p className="text-[13px] text-white/45 truncate mt-0.5">
-            {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {getTxDate(tx).toLocaleDateString('sv-SE')}
-          </p>
+          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+            <p className="text-[13px] text-white/45 truncate">
+              {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {getTxDate(tx).toLocaleDateString('sv-SE')}
+            </p>
+            <CategoryConfidenceBadge vendor={tx.vendor} label={tx.label} amount={tx.amount} />
+          </div>
         </div>
         <p className={`text-[15px] font-semibold tabular-nums flex-shrink-0 ${isPositive ? 'text-emerald-300' : 'text-rose-300'}`}>
           {isPositive ? '+' : '-'}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr

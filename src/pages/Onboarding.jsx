@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
 import PersonaStep from '@/components/onboarding/PersonaStep';
+import { rowsToTransactions } from '@/lib/bankImportHelpers';
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -34,13 +35,15 @@ export default function Onboarding() {
     savingsGoalName: '',
     financialGoal: '',
     plannedPurchases: [],
-    monthlyExpenses: []
+    monthlyExpenses: [],
+    pendingImportRows: [],
   });
 
   const handleComplete = async () => {
     setLoading(true);
 
     const mergedData = { ...data, mode: data.mode || 'basic', onboardingCompleted: true };
+    const { pendingImportRows = [], ...profilePayload } = mergedData;
 
     if (mergedData.totalLoans > 0 && (!mergedData.loans || mergedData.loans.length === 0)) {
       mergedData.loans = [{
@@ -53,12 +56,16 @@ export default function Onboarding() {
 
     const profiles = await base44.entities.FinancialProfile.list();
     if (profiles.length > 0) {
-      await base44.entities.FinancialProfile.update(profiles[0].id, mergedData);
+      await base44.entities.FinancialProfile.update(profiles[0].id, profilePayload);
     } else {
-      await base44.entities.FinancialProfile.create(mergedData);
+      await base44.entities.FinancialProfile.create(profilePayload);
     }
 
-    base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: mergedData.mode } });
+    if (pendingImportRows.length) {
+      await base44.entities.Transaction.bulkCreate(rowsToTransactions(pendingImportRows));
+    }
+
+    base44.analytics.track({ eventName: 'onboarding_completed', properties: { mode: profilePayload.mode } });
     // Award onboarding points
     base44.functions.invoke('awardPoints', { event_type: 'onboarding_complete' })
       .then(res => {

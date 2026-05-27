@@ -10,20 +10,7 @@ import CSVUploadZone from '@/components/import/CSVUploadZone';
 import CSVPreviewTable from '@/components/import/CSVPreviewTable';
 import { BusinessPageHeader, BusinessSection, bizSubtitleClass } from '@/components/business/BusinessChrome';
 import { createPageUrl } from '@/utils';
-
-const BANK_COLUMN_MAPS = {
-  date: ['datum', 'date', 'bokföringsdag', 'transaktionsdatum', 'bokf.dag'],
-  description: ['transaktion', 'text', 'beskrivning', 'referens', 'ändamål', 'mottagare', 'transaction', 'description'],
-  amount: ['belopp', 'amount', 'summa', 'debet', 'kredit', 'saldo', 'transaktionsbelopp'],
-};
-
-function detectColumn(headers, candidates) {
-  for (const c of candidates) {
-    const found = headers.find((h) => h.toLowerCase().trim() === c);
-    if (found) return found;
-  }
-  return null;
-}
+import { normalizeCSVRows, rowsToTransactions } from '@/lib/bankImportHelpers';
 
 export default function ImportPage() {
   const [parsedRows, setParsedRows] = useState(null);
@@ -33,21 +20,8 @@ export default function ImportPage() {
 
   const handleFileParsed = async (rows, headers) => {
     setStep('analyzing');
-    setAnalyzeLabel('AI kategoriserar dina transaktioner...');
-    const dateCol = detectColumn(headers, BANK_COLUMN_MAPS.date);
-    const descCol = detectColumn(headers, BANK_COLUMN_MAPS.description);
-    const amtCol = detectColumn(headers, BANK_COLUMN_MAPS.amount);
-    const normalized = rows
-      .slice(0, 50)
-      .map((r) => ({
-        _date: dateCol ? r[dateCol] : r[headers[0]] || '',
-        _description: descCol ? r[descCol] : r[headers[1]] || '',
-        _amount: amtCol
-          ? parseFloat((r[amtCol] || '0').toString().replace(',', '.').replace(/\s/g, ''))
-          : 0,
-      }))
-      .filter((r) => r._description);
-    await categorizeAndShow(normalized);
+    setAnalyzeLabel('Kategoriserar transaktioner…');
+    await categorizeAndShow(normalizeCSVRows(rows, headers, 50));
   };
 
   const handlePdfFile = async (file) => {
@@ -138,15 +112,8 @@ export default function ImportPage() {
 
   const handleConfirm = async () => {
     setSaving(true);
-    const toCreate = parsedRows.map((r) => ({
-      type: (r._amount || 0) > 0 ? 'income' : 'expense',
-      amount: r._amount,
-      label: r._description,
-      category: r._category,
-      context: 'PERSONAL',
-    }));
-    await base44.entities.Transaction.bulkCreate(toCreate);
-    toast.success(`${toCreate.length} transaktioner importerade!`);
+    await base44.entities.Transaction.bulkCreate(rowsToTransactions(parsedRows));
+    toast.success(`${parsedRows.length} transaktioner importerade!`);
     setSaving(false);
     setStep('done');
   };

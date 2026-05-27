@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Wallet, Home, PiggyBank, CreditCard, ChevronRight, Plus, X } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
 import SubscriptionDetective from './SubscriptionDetective';
+import OnboardingHistoryImport from './OnboardingHistoryImport';
 
 const DEFAULT_COST_ITEMS = [
   { id: 'housing', label: 'Hyra / Boende', amount: '', placeholder: '10 000' },
@@ -251,6 +252,12 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
           </div>
           <p className="text-xs text-[#B7C2D9]">Totalt lånebelopp (billån, CSN, privatlån etc.)</p>
         </div>
+
+        {/* Optional bank history import */}
+        <OnboardingHistoryImport
+          pendingRows={data.pendingImportRows || []}
+          onChange={(rows) => onChange({ ...data, pendingImportRows: rows })}
+        />
 
         {/* Preview */}
         {data.income > 0 && (

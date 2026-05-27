@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Sparkles } from 'lucide-react';
 import { runLeakageDetector, fmtLeakageSek } from '@/lib/leakageEngine';
 import { createPageUrl } from '@/utils';
+import { useLeakageExplanations } from '@/hooks/useLeakageExplanations';
 import { DashboardDivider, DashboardListRow, DashboardSection } from './DashboardChrome';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
 
@@ -22,6 +23,11 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
   const { leaks, totalMonthlyLeak, headline, savingsStory, hasLeaks } = result;
   const showCount = variant === 'dashboard' ? 3 : leaks.length;
   const visibleLeaks = leaks.slice(0, showCount);
+
+  const { data: explanations = {} } = useLeakageExplanations(
+    visibleLeaks,
+    hasLeaks && visibleLeaks.length > 0,
+  );
 
   if (!transactions?.length) {
     return (
@@ -70,7 +76,16 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
       </p>
 
       <div>
-        {visibleLeaks.map((leak, i) => (
+        {visibleLeaks.map((leak, i) => {
+          const aiText = explanations[leak.id];
+          const subtitle =
+            variant === 'full'
+              ? leak.description
+              : aiText
+                ? aiText.slice(0, 72) + (aiText.length > 72 ? '…' : '')
+                : leak.action;
+
+          return (
           <React.Fragment key={leak.id}>
             {i > 0 && <DashboardDivider />}
             {leak.actionLink ? (
@@ -78,7 +93,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
                 href={leak.actionLink.startsWith('/') ? leak.actionLink : `/${leak.actionLink}`}
                 leading={<span className="text-lg">{TYPE_ICON[leak.type] || '💸'}</span>}
                 title={leak.title}
-                subtitle={variant === 'full' ? leak.description : leak.action}
+                subtitle={subtitle}
                 trailing={
                   <span className="text-[15px] font-semibold text-amber-200/90 tabular-nums">
                     {fmtLeakageSek(leak.monthlyAmount)}/mån
@@ -89,7 +104,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
               <DashboardListRow
                 leading={<span className="text-lg">{TYPE_ICON[leak.type] || '💸'}</span>}
                 title={leak.title}
-                subtitle={variant === 'full' ? leak.description : undefined}
+                subtitle={subtitle}
                 trailing={
                   <span className="text-[15px] font-semibold text-amber-200/90 tabular-nums">
                     {fmtLeakageSek(leak.monthlyAmount)}/mån
@@ -97,8 +112,15 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
                 }
               />
             )}
+            {variant === 'full' && aiText && (
+              <p className="text-[13px] text-white/50 pb-2 pl-12 flex items-start gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#9FB5FF] flex-shrink-0 mt-0.5" />
+                {aiText}
+              </p>
+            )}
           </React.Fragment>
-        ))}
+          );
+        })}
       </div>
 
       {variant === 'full' && (
