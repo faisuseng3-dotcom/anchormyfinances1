@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import { GlassSection } from '@/components/layout/PageShell';
 import SavingsBudgetConflictAlert from '@/components/insights/SavingsBudgetConflictAlert';
+import LeakageDetector from '@/components/dashboard/LeakageDetector';
 
 const CATEGORY_LABELS = {
   food: 'Mat', transport: 'Transport', entertainment: 'Nöje',
@@ -110,6 +111,7 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
 
   return (
     <div className="space-y-4 mt-2">
+      <LeakageDetector profile={profile} transactions={transactions} variant="full" className="mx-0" />
       <SavingsBudgetConflictAlert profile={profile} />
 
       <GlassSection title="Denna månad" subtitle="Utgiftsfördelning">

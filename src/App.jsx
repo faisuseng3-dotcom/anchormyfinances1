@@ -25,6 +25,7 @@ import Squads from './pages/Squads';
 import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
 import AnchorAnalysis from './pages/AnchorAnalysis';
+import FuturePulsePage from './pages/FuturePulsePage';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -119,6 +120,11 @@ const AuthenticatedApp = () => {
       <Route path="/Insights" element={
         <LayoutWrapper currentPageName="InsightsPage">
           <InsightsPage />
+        </LayoutWrapper>
+      } />
+      <Route path="/FuturePulse" element={
+        <LayoutWrapper currentPageName="FuturePulse">
+          <FuturePulsePage />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />

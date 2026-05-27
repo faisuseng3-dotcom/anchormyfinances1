@@ -14,6 +14,7 @@ import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import MLIBanner from '@/components/dashboard/MLIBanner';
 import { calculateMLI, getMLIToneConfig, resetActionDensity } from '@/lib/mliEngine';
 import SpendingHubModule from '@/components/dashboard/SpendingHubModule';
+import LeakageDetector from '@/components/dashboard/LeakageDetector';
 
 export default function FutureDashboard({
   profile,
@@ -120,7 +121,7 @@ export default function FutureDashboard({
       </div>
 
       {/* ─── FRAMTIDSPULS: vindrutan ─── */}
-      <div className="relative z-10 mt-3">
+      <div className="relative z-20 mt-3">
         <FuturePulse profile={profile} transactions={transactions} />
       </div>
 
@@ -138,6 +139,11 @@ export default function FutureDashboard({
       {/* ─── KAPITEL 4: VART PENGARNA GÅR ─── */}
       <div className="relative z-10 mt-3">
         <SpendingHubModule transactions={transactions || []} profile={profile} />
+      </div>
+
+      {/* ─── LÄCKAGEDETEKTORN ─── */}
+      <div className="relative z-10 mt-3">
+        <LeakageDetector profile={profile} transactions={transactions} variant="dashboard" />
       </div>
 
       {/* Action buttons row */}

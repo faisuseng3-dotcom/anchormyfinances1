@@ -246,6 +246,14 @@ export default function TransactionHistory() {
     }
   }, []);
 
+  useEffect(() => {
+    if (activeTab !== 'insights' || window.location.hash !== '#leakage-detector') return;
+    const t = setTimeout(() => {
+      document.getElementById('leakage-detector')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 350);
+    return () => clearTimeout(t);
+  }, [activeTab]);
+
   const switchTab = (tab) => {
     setActiveTab(tab);
     const params = new URLSearchParams(window.location.search);

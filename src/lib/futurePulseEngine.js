@@ -5,6 +5,7 @@
 
 import {
   buildUpcomingExpenses,
+  getUpcomingDates,
   calculateRunningBalance,
 } from '@/components/pulse/pulseEngine';
 import { calcLiquidityForecast } from '@/lib/insightEngine';
@@ -125,7 +126,7 @@ function spendingTrend(transactions) {
 /**
  * Core local forecast — returns UI-ready JSON matching futureEngine schema.
  */
-export function computeLocalFuturePulse(profile, transactions, horizonDays = 60) {
+export function computeLocalFuturePulse(profile, transactions, horizonDays = 60, maxEvents = 2) {
   if (!profile) {
     return emptyForecast('Skapa din profil för att se framtiden.');
   }
@@ -186,14 +187,14 @@ export function computeLocalFuturePulse(profile, transactions, horizonDays = 60)
     .filter((e) => e.balanceAfter < 0 && e.priority !== 'income')
     .slice(0, 2)
     .forEach((e) => {
-      framtida_handelser.push({
-        tidsfönster: fmtWindow(e.dayOffset),
-        dag_offset: e.dayOffset,
-        händelse: `Efter ${e.name.toLowerCase()} (${e.amount.toLocaleString('sv-SE')} kr) riskerar saldot bli negativt.`,
-        ai_losning: `Sätt undan ${Math.abs(e.balanceAfter + 500).toLocaleString('sv-SE')} kr redan nu, eller flytta en utgift några dagar.`,
-        saldo_efter: e.balanceAfter,
-        typ: 'kritisk',
-      });
+    framtida_handelser.push({
+      tidsfönster: fmtWindow(e.dayOffset),
+      dag_offset: e.dayOffset,
+      händelse: `Efter ${e.name} riskerar saldot bli minus`,
+      ai_losning: `Buffra ${Math.abs(e.balanceAfter + 500).toLocaleString('sv-SE')} kr nu`,
+      saldo_efter: e.balanceAfter,
+      typ: 'kritisk',
+    });
     });
 
   // Clustered subscriptions same week
@@ -211,8 +212,8 @@ export function computeLocalFuturePulse(profile, transactions, horizonDays = 60)
       framtida_handelser.push({
         tidsfönster: fmtWindow(first.dayOffset),
         dag_offset: first.dayOffset,
-        händelse: `${cluster.length} abonnemang dras samma vecka — totalt ${total.toLocaleString('sv-SE')} kr.`,
-        ai_losning: 'Granska om alla prenumerationer används, eller buffra kontot före dragningen.',
+        händelse: `${cluster.length} abonnemang · ${total.toLocaleString('sv-SE')} kr`,
+        ai_losning: 'Buffra kontot före dragningen',
         typ: 'varning',
       });
     }
@@ -224,8 +225,8 @@ export function computeLocalFuturePulse(profile, transactions, horizonDays = 60)
     framtida_handelser.push({
       tidsfönster: 'Nästa månad',
       dag_offset: 30,
-      händelse: `Dina småköp har ökat ${trend.pct}% senaste två veckorna.`,
-      ai_losning: `Om trenden håller i sig kostar det ~${projectedExtra.toLocaleString('sv-SE')} kr extra till månadsskiftet.`,
+      händelse: `Småköp +${trend.pct}% senaste 2 v`,
+      ai_losning: `Spara ~${projectedExtra.toLocaleString('sv-SE')} kr/mån`,
       typ: 'trend',
     });
   }
@@ -236,8 +237,8 @@ export function computeLocalFuturePulse(profile, transactions, horizonDays = 60)
     framtida_handelser.push({
       tidsfönster: fmtWindow(nextIncome.dayOffset),
       dag_offset: nextIncome.dayOffset,
-      händelse: `Inkomst på ${nextIncome.amount.toLocaleString('sv-SE')} kr väntas.`,
-      ai_losning: 'Planera sparande eller buffertfyllning direkt efter lönen — då slipper du överraskningar senare.',
+      händelse: `Lön ${nextIncome.amount.toLocaleString('sv-SE')} kr`,
+      ai_losning: 'Fyll buffert direkt efter lön',
       typ: 'möjlighet',
     });
   }
@@ -251,15 +252,15 @@ export function computeLocalFuturePulse(profile, transactions, horizonDays = 60)
     profile,
   });
 
-  return {
+  return compactFuturePulse({
     framtids_status: statusLabel(overallStatus),
     status_key: overallStatus,
-    prognos_30_dagar: `${(day30?.saldo ?? startBalance).toLocaleString('sv-SE')} kr uppskattat saldo om 30 dagar`,
+    prognos_30_dagar: `${(day30?.saldo ?? startBalance).toLocaleString('sv-SE')} kr om 30 dagar`,
     coach_meddelande,
-    framtida_handelser: framtida_handelser.slice(0, 3),
+    framtida_handelser: framtida_handelser.slice(0, maxEvents),
     tidslinje,
-    _meta: { source: 'local', minBalance, minDay, dailySpend: Math.round(dailySpend) },
-  };
+    _meta: { source: 'local', minBalance, minDay, dailySpend: Math.round(dailySpend), startBalance },
+  });
 }
 
 function buildCoachMessage({ overallStatus, minBalance, minDay, day30Balance, liquidity, profile }) {
@@ -267,18 +268,80 @@ function buildCoachMessage({ overallStatus, minBalance, minDay, day30Balance, li
   const greeting = name ? `${name}, ` : '';
 
   if (overallStatus === 'grön') {
-    return `${greeting}allt ser fint ut inför nästa vecka. Din buffert är intakt och du har råd med vardagens utgifter — jag håller koll åt dig.`;
+    return `${greeting}lugnt framåt — bufferten räcker.`;
   }
 
   if (overallStatus === 'gul') {
-    return `${greeting}det blir lite tajt ${fmtWindow(minDay).toLowerCase()}, men du har tid att justera. Ett litet steg nu gör helgen lugnare.`;
+    return `${greeting}lite tajt snart — håll koll på vardagsköp.`;
   }
 
-  return `${greeting}vi ser en tight period ${fmtWindow(minDay).toLowerCase()}. Jag har lagt upp konkreta steg nedan — inget att stressa över, vi löser det tillsammans.`;
+  return `${greeting}tight period snart — se stegen nedan.`;
+}
+
+const STATUS_SHORT = { grön: 'Stabil', gul: 'Tight', röd: 'Kritisk' };
+const STATUS_EMOJI = { grön: '🟢', gul: '🟡', röd: '🔴' };
+
+function truncate(str, max) {
+  if (!str) return '';
+  const s = String(str).trim();
+  if (s.length <= max) return s;
+  return `${s.slice(0, max - 1).trim()}…`;
+}
+
+function firstSentence(str, max = 90) {
+  if (!str) return '';
+  const s = String(str).trim();
+  const cut = s.split(/[.!?\n]/)[0].trim();
+  return truncate(cut, max);
+}
+
+/** Plockar ut saldo-siffra för UI */
+export function extractSaldo30(forecast) {
+  const day30 = forecast?.tidslinje?.[Math.min(30, (forecast.tidslinje?.length || 1) - 1)];
+  if (day30 != null) return `${Math.round(day30.saldo).toLocaleString('sv-SE')} kr`;
+  const m = String(forecast?.prognos_30_dagar || '').match(/([\d\s]+)\s*kr/i);
+  return m ? `${m[1].trim()} kr` : '—';
+}
+
+function compactEvent(ev) {
+  return {
+    ...ev,
+    tidsfönster: truncate(ev.tidsfönster, 18),
+    händelse: truncate(ev.händelse, 48),
+    ai_losning: truncate(ev.ai_losning, 52),
+  };
+}
+
+/** Gör prognos läsbar på en överblick */
+export function compactFuturePulse(forecast, options = {}) {
+  if (!forecast) return forecast;
+  const { full = false } = options;
+  const key = forecast.status_key || 'grön';
+  const base = {
+    ...forecast,
+    status_label: STATUS_SHORT[key] || 'Okänd',
+    status_emoji: STATUS_EMOJI[key] || '⚪',
+    prognos_saldo_30: extractSaldo30(forecast),
+    idag_saldo: forecast.tidslinje?.[0]?.saldo ?? forecast._meta?.startBalance,
+    min_saldo: forecast._meta?.minBalance,
+    min_dag: forecast._meta?.minDay,
+  };
+  if (full) {
+    return {
+      ...base,
+      coach_meddelande: forecast.coach_meddelande,
+      framtida_handelser: forecast.framtida_handelser || [],
+    };
+  }
+  return {
+    ...base,
+    coach_meddelande: firstSentence(forecast.coach_meddelande, 90),
+    framtida_handelser: (forecast.framtida_handelser || []).slice(0, 2).map(compactEvent),
+  };
 }
 
 function emptyForecast(message) {
-  return {
+  return compactFuturePulse({
     framtids_status: 'Grönt (Stabil)',
     status_key: 'grön',
     prognos_30_dagar: '—',
@@ -286,7 +349,7 @@ function emptyForecast(message) {
     framtida_handelser: [],
     tidslinje: [],
     _meta: { source: 'empty' },
-  };
+  });
 }
 
 /** Slim payload for AI — avoid token bloat */
@@ -318,20 +381,29 @@ export function summarizeForFutureEngine(profile, transactions) {
   };
 }
 
-/** Merge AI narrative onto local math timeline */
+/** Merge AI narrative onto local math — lokala siffror vinner, kort text only */
 export function mergeFuturePulse(local, ai) {
-  if (!ai || ai.error) return local;
+  if (!ai || ai.error) return compactFuturePulse(local);
 
-  return {
+  const statusKey = parseStatusKey(ai.framtids_status) || local.status_key;
+  const aiCoachOk = ai.coach_meddelande && ai.coach_meddelande.length <= 100;
+  const aiEventsOk =
+    ai.framtida_handelser?.length > 0 &&
+    ai.framtida_handelser.every(
+      (e) => (e.händelse?.length || 0) <= 55 && (e.ai_losning?.length || 0) <= 55,
+    );
+
+  const merged = {
     ...local,
-    framtids_status: ai.framtids_status || local.framtids_status,
-    status_key: parseStatusKey(ai.framtids_status) || local.status_key,
-    prognos_30_dagar: ai.prognos_30_dagar || local.prognos_30_dagar,
-    coach_meddelande: ai.coach_meddelande || local.coach_meddelande,
-    framtida_handelser:
-      ai.framtida_handelser?.length > 0 ? ai.framtida_handelser : local.framtida_handelser,
+    status_key: statusKey,
+    framtids_status: statusLabel(statusKey),
+    prognos_30_dagar: local.prognos_30_dagar,
+    coach_meddelande: aiCoachOk ? ai.coach_meddelande : local.coach_meddelande,
+    framtida_handelser: aiEventsOk ? ai.framtida_handelser.slice(0, 2) : local.framtida_handelser,
     _meta: { ...local._meta, source: 'ai+local' },
   };
+
+  return compactFuturePulse(merged);
 }
 
 function parseStatusKey(label) {
@@ -358,4 +430,64 @@ export function extractPatterns(profile, transactions) {
     .map(([name, count]) => ({ name, count }));
 
   return { spendingTrend: trend, recurring: topRecurring, subscriptions: profile?.subscriptions || [] };
+}
+
+/** Utökad coach och kommande utgifter för detaljsidan */
+export function enrichFuturePulseDetail(forecast, profile) {
+  const buffer = profile?.buffer ?? 0;
+  const incomeDay = profile?.incomeDay || 25;
+  const income = profile?.income || 0;
+  const expenses = buildUpcomingExpenses(profile);
+  const upcoming = calculateRunningBalance(
+    getUpcomingDates(expenses, buffer, incomeDay, income),
+    buffer,
+  );
+
+  const statusKey = forecast.status_key || 'grön';
+  const minDay = forecast._meta?.minDay ?? 0;
+  const minBal = forecast._meta?.minBalance ?? 0;
+  const dailySpend = forecast._meta?.dailySpend ?? 0;
+
+  let coach_detaljer = forecast.coach_meddelande || '';
+  if (statusKey === 'grön') {
+    coach_detaljer =
+      `${coach_detaljer} Din buffert och inkomst täcker planerade utgifter de närmaste veckorna. ` +
+      `Fortsätt som vanligt — jag flaggar om något ändras.`;
+  } else if (statusKey === 'gul') {
+    coach_detaljer =
+      `${coach_detaljer} Lägsta punkt runt dag ${minDay} (${fmt(minBal)} kr). ` +
+      `Planera mindre frivilliga köp tills nästa inkomst.`;
+  } else {
+    coach_detaljer =
+      `${coach_detaljer} Du kan behöva buffra eller skjuta på utgifter före dag ${minDay}. ` +
+      `Stegen nedan är sorterade efter vad som ger mest effekt.`;
+  }
+
+  const kommande_utgifter = upcoming
+    .filter((e) => e.dayOffset >= 0 && e.dayOffset <= 45)
+    .slice(0, 14)
+    .map((e) => ({
+      dag: e.dayOffset,
+      datum: e.date instanceof Date ? e.date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : '',
+      namn: e.name,
+      belopp: e.priority === 'income' ? e.amount : -e.amount,
+      saldo_efter: e.balanceAfter,
+      typ: e.priority,
+      ikon: e.icon,
+    }));
+
+  const dagar_med_händelse = (forecast.tidslinje || []).filter((d) => d.händelse).slice(0, 20);
+
+  return {
+    ...forecast,
+    ...compactFuturePulse(forecast, { full: true }),
+    coach_detaljer,
+    kommande_utgifter,
+    dagar_med_händelse,
+    daglig_spend: dailySpend,
+    inkomst_dag: incomeDay,
+    buffert: buffer,
+    manadsinkomst: income,
+    framtida_handelser: forecast.framtida_handelser || [],
+  };
 }

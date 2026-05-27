@@ -64,6 +64,7 @@ import Pulse from './pages/Pulse';
 import Landing from './pages/Landing';
 import FinancialHistory from './pages/FinancialHistory';
 import SecurityInfo from './pages/SecurityInfo';
+import FuturePulsePage from './pages/FuturePulsePage';
 import __Layout from './Layout.jsx';
 
 
@@ -85,6 +86,7 @@ export const PAGES = {
     "Landing": Landing,
     "FinancialHistory": FinancialHistory,
     "SecurityInfo": SecurityInfo,
+    "FuturePulse": FuturePulsePage,
 }
 
 export const pagesConfig = {
