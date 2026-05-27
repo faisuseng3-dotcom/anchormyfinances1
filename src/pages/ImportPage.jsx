@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { categorizePipeline } from '@/lib/categoryRouter';
+import { saveOverride } from '@/lib/enrichmentEngine';
 import CSVUploadZone from '@/components/import/CSVUploadZone';
 import CSVPreviewTable from '@/components/import/CSVPreviewTable';
 import { BusinessPageHeader, BusinessSection, bizSubtitleClass } from '@/components/business/BusinessChrome';
@@ -150,6 +151,16 @@ export default function ImportPage() {
     setStep('done');
   };
 
+  const handleCategoryChange = (index, newCategory) => {
+    setParsedRows((rows) => {
+      const desc = rows[index]?._description;
+      if (desc) saveOverride(desc, newCategory);
+      return rows.map((r, i) =>
+        i === index ? { ...r, _category: newCategory, _needsReview: false } : r,
+      );
+    });
+  };
+
   const reset = () => {
     setStep('upload');
     setParsedRows(null);
@@ -193,7 +204,13 @@ export default function ImportPage() {
 
           {step === 'preview' && parsedRows && (
             <motion.div key="preview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <CSVPreviewTable rows={parsedRows} isLoading={saving} onConfirm={handleConfirm} onCancel={reset} />
+              <CSVPreviewTable
+                rows={parsedRows}
+                isLoading={saving}
+                onConfirm={handleConfirm}
+                onCancel={reset}
+                onCategoryChange={handleCategoryChange}
+              />
             </motion.div>
           )}
 

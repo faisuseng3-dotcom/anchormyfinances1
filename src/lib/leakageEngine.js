@@ -3,6 +3,8 @@
  * Hittar dolda abonnemang, dubbletter och vanemönster i transaktionsdata.
  */
 
+import { normalizeMerchant } from '@/lib/merchantNormalize';
+
 const EXPENSE_TYPES = ['expense', 'shopping', 'savings_deposit', 'transfer_to_savings'];
 
 const STREAMING_KEYWORDS = [
@@ -26,7 +28,7 @@ function isExpense(tx) {
 }
 
 function normalizeVendor(str) {
-  return (str || '').toLowerCase().trim().replace(/\s+/g, ' ');
+  return normalizeMerchant(str) || (str || '').toLowerCase().trim().replace(/\s+/g, ' ');
 }
 
 function matchesKeywords(text, keywords) {
