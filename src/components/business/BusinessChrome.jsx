@@ -20,7 +20,7 @@ export function BusinessSection({
   id,
 }) {
   return (
-    <section id={id} className={`px-5 ${className}`}>
+    <section id={id} className={`px-4 sm:px-6 ${className}`}>
       {(title || actionHref) && (
         <div className="flex items-end justify-between gap-3 mb-3">
           <div className="min-w-0">
@@ -50,7 +50,7 @@ export function BusinessDivider({ className = '' }) {
 /** Light business page shell */
 export function BusinessPageHeader({ title, subtitle, backHref = '/' }) {
   return (
-    <header className="px-5 pt-8 pb-5 flex items-center gap-3">
+    <header className="px-4 sm:px-6 pt-8 pb-5 flex items-center gap-3">
       <Link
         to={backHref}
         className="w-10 h-10 rounded-full flex items-center justify-center bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)] active:opacity-80"

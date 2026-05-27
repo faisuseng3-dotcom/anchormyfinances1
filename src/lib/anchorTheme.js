@@ -48,7 +48,8 @@ export const sectionLabelClassLegacy =
 
 export const anchorPageClass = 'min-h-screen pb-32 overflow-x-hidden anchor-page';
 
-export const anchorZoneClass = 'px-5 sm:px-6';
+// Slightly tighter horizontal padding on the smallest screens
+export const anchorZoneClass = 'px-4 sm:px-6';
 
 export const anchorDisplayClass =
   'font-semibold leading-none tracking-tight text-white tabular-nums';
