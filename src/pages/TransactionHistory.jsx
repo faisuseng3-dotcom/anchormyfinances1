@@ -9,6 +9,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
+import SegmentTabs from '@/components/ui/SegmentTabs';
+import { DashboardDivider, DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
+import { anchorInputClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -111,22 +114,22 @@ function TransactionRow({ tx, onDelete, onEdit }) {
   const handleLongPressEnd = () => {clearTimeout(longPressTimer.current);};
 
   return (
-    <div className="border-b last:border-b-0" style={{ borderColor: 'rgba(0,0,0,0.05)' }}>
+    <div>
       <motion.div
         onTouchStart={handleLongPressStart} onTouchEnd={handleLongPressEnd}
         onMouseDown={handleLongPressStart} onMouseUp={handleLongPressEnd} onMouseLeave={handleLongPressEnd}
         onClick={() => {if (!showActions) onEdit(tx);}}
-        className="flex items-center gap-4 px-5 py-4 cursor-pointer active:opacity-70"
+        className="flex items-center gap-3 py-3.5 cursor-pointer active:opacity-60"
         whileTap={{ scale: 0.99 }}>
         
         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>{tx.vendor || tx.label}</p>
-          <p className="text-xs truncate mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
+          <p className="text-[15px] font-medium text-white truncate">{tx.vendor || tx.label}</p>
+          <p className="text-[13px] text-white/45 truncate mt-0.5">
             {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {getTxDate(tx).toLocaleDateString('sv-SE')}
           </p>
         </div>
-        <p className="text-sm font-bold flex-shrink-0" style={{ color: isPositive ? 'var(--color-success)' : 'var(--color-danger)' }}>
+        <p className={`text-[15px] font-semibold tabular-nums flex-shrink-0 ${isPositive ? 'text-emerald-300' : 'text-rose-300'}`}>
           {isPositive ? '+' : '-'}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr
         </p>
       </motion.div>
@@ -153,11 +156,11 @@ function TransactionRow({ tx, onDelete, onEdit }) {
       </AnimatePresence>
 
       {tx.aiNote &&
-      <div className="mx-5 mb-3">
-          <div className="flex gap-2 p-2.5 rounded-lg" style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.15)' }}>
-            <Bot className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: 'var(--color-accent)' }} />
-            <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{tx.aiNote}</p>
-          </div>
+      <div className="pb-3 pl-5">
+          <p className="text-[13px] text-white/55 flex gap-2">
+            <Bot className="w-4 h-4 flex-shrink-0 text-[#9FB5FF]" />
+            {tx.aiNote}
+          </p>
         </div>
       }
     </div>);
@@ -174,26 +177,26 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
     <div className="mb-3">
       {/* Month header — tappable to expand/collapse */}
       <button
+        type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-5 py-3">
-        
+        className="w-full flex items-center justify-between py-3 active:opacity-70">
         <div className="flex items-center gap-3">
           <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-            <ChevronDown className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
+            <ChevronDown className="w-4 h-4 text-white/45" />
           </motion.div>
           <div className="text-left">
-            <p className="text-sm font-black capitalize" style={{ color: 'var(--color-text-primary)' }}>{group.label}</p>
-            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{group.txs.length} transaktioner</p>
+            <p className="text-[17px] font-semibold text-white capitalize">{group.label}</p>
+            <p className="text-[13px] text-white/45">{group.txs.length} transaktioner</p>
           </div>
         </div>
         <div className="text-right">
-          <p className="text-sm font-bold" style={{ color: net >= 0 ? 'var(--color-success)' : 'var(--color-danger)' }}>
+          <p className={`text-[15px] font-semibold tabular-nums ${net >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
             {net >= 0 ? '+' : ''}{net.toLocaleString('sv-SE')} kr
           </p>
-          <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-            <span style={{ color: 'var(--color-success)' }}>+{totalIn.toLocaleString('sv-SE')}</span>
-            {' / '}
-            <span style={{ color: 'var(--color-danger)' }}>-{totalOut.toLocaleString('sv-SE')}</span>
+          <p className="text-[12px] text-white/40 tabular-nums">
+            <span className="text-emerald-300/80">+{totalIn.toLocaleString('sv-SE')}</span>
+            {' · '}
+            <span className="text-rose-300/80">-{totalOut.toLocaleString('sv-SE')}</span>
           </p>
         </div>
       </button>
@@ -207,12 +210,12 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.22 }}
           className="overflow-hidden">
-          
-            <div className="anchor-glass-card-sm overflow-hidden">
-              {group.txs.map((tx) =>
-            <TransactionRow key={tx.id} tx={tx} onDelete={onDelete} onEdit={onEdit} />
-            )}
-            </div>
+            {group.txs.map((tx, i) => (
+              <React.Fragment key={tx.id}>
+                {i > 0 && <DashboardDivider />}
+                <TransactionRow tx={tx} onDelete={onDelete} onEdit={onEdit} />
+              </React.Fragment>
+            ))}
           </motion.div>
         }
       </AnimatePresence>
@@ -332,28 +335,15 @@ export default function TransactionHistory() {
     >
       {headerExtra}
 
-      <div className="flex gap-1 p-1 rounded-2xl anchor-glass-card-sm mb-3">
-        <button
-          type="button"
-          onClick={() => switchTab('list')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-            activeTab === 'list' ? 'bg-white text-slate-900' : 'text-white/60'
-          }`}
-        >
-          <List className="w-4 h-4" />
-          Lista
-        </button>
-        <button
-          type="button"
-          onClick={() => switchTab('insights')}
-          className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
-            activeTab === 'insights' ? 'bg-white text-slate-900' : 'text-white/60'
-          }`}
-        >
-          <TrendingUp className="w-4 h-4" />
-          Insikter
-        </button>
-      </div>
+      <SegmentTabs
+        value={activeTab}
+        onChange={switchTab}
+        className="mb-4"
+        tabs={[
+          { id: 'list', label: 'Lista', icon: List },
+          { id: 'insights', label: 'Insikter', icon: TrendingUp },
+        ]}
+      />
 
       {activeTab === 'insights' ? (
         <TransactionInsightsPanel
@@ -363,32 +353,36 @@ export default function TransactionHistory() {
         />
       ) : (
         <>
-      <p className="text-sm -mt-2 mb-2 text-white/45">{filtered.length} poster</p>
+      <p className={`${sectionSubtitleClass} mb-3`}>{filtered.length} poster</p>
 
-      <div className="flex gap-2">
-        <div className="flex-1 flex items-center gap-2 px-4 py-2.5 rounded-2xl anchor-glass-card-sm">
-          <Search className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
+      <div className="flex gap-2 mb-2">
+        <div className={`flex-1 flex items-center gap-2 px-4 ${anchorInputClass}`}>
+          <Search className="w-4 h-4 flex-shrink-0 text-white/40" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Sök ICA, Hyra..."
-            className="flex-1 text-sm outline-none bg-transparent min-w-0 text-white placeholder:text-white/35" />
-          
-          {search &&
-          <button onClick={() => setSearch('')}><X className="w-3.5 h-3.5" style={{ color: 'var(--color-text-muted)' }} /></button>
-          }
+            className="flex-1 text-[15px] outline-none bg-transparent min-w-0 text-white placeholder:text-white/35" />
+          {search && (
+            <button type="button" onClick={() => setSearch('')} aria-label="Rensa sökning">
+              <X className="w-3.5 h-3.5 text-white/40" />
+            </button>
+          )}
         </div>
         <button
+          type="button"
           onClick={() => setShowFilters((v) => !v)}
-          className={`relative w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 border ${
-            showFilters ? 'bg-white text-slate-900 border-white' : 'anchor-glass-card-sm text-white/70'
-          }`}>
-          
+          className={`relative w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
+            showFilters ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/70'
+          }`}
+        >
           <Filter className="w-4 h-4" />
-          {activeFilterCount > 0 &&
-          <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-white text-xs flex items-center justify-center font-bold" style={{ background: 'var(--color-danger)', fontSize: 10 }}>{activeFilterCount}</span>
-          }
+          {activeFilterCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] flex items-center justify-center font-bold">
+              {activeFilterCount}
+            </span>
+          )}
         </button>
       </div>
 
@@ -399,29 +393,39 @@ export default function TransactionHistory() {
           initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
           className="mt-2 overflow-hidden">
           
-            <div className="anchor-glass-card space-y-3">
+            <div className="space-y-4 py-2">
               <div>
-                <p className="text-xs font-bold mb-2 uppercase tracking-wide" style={{ color: 'var(--color-text-muted)' }}>Typ</p>
+                <p className="text-[13px] text-white/45 mb-2">Typ</p>
                 <div className="flex gap-2 flex-wrap">
-                  {TYPE_OPTIONS.map((o) =>
-                <button key={o.value} onClick={() => setFilterType(o.value)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold"
-                style={{ background: filterType === o.value ? 'var(--color-accent)' : 'var(--color-surface)', color: filterType === o.value ? '#fff' : 'var(--color-text-secondary)' }}>
+                  {TYPE_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setFilterType(o.value)}
+                      className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-colors ${
+                        filterType === o.value ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/70'
+                      }`}
+                    >
                       {o.label}
                     </button>
-                )}
+                  ))}
                 </div>
               </div>
               <div>
-                <p className="text-xs font-bold mb-2 uppercase tracking-wide" style={{ color: 'var(--color-text-muted)' }}>Kategori</p>
+                <p className="text-[13px] text-white/45 mb-2">Kategori</p>
                 <div className="flex gap-2 flex-wrap">
-                  {CATEGORY_OPTIONS.map((o) =>
-                <button key={o.value} onClick={() => setFilterCategory(o.value)}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold"
-                style={{ background: filterCategory === o.value ? 'var(--color-accent)' : 'var(--color-surface)', color: filterCategory === o.value ? '#fff' : 'var(--color-text-secondary)' }}>
+                  {CATEGORY_OPTIONS.map((o) => (
+                    <button
+                      key={o.value}
+                      type="button"
+                      onClick={() => setFilterCategory(o.value)}
+                      className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-colors ${
+                        filterCategory === o.value ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/70'
+                      }`}
+                    >
                       {o.label}
                     </button>
-                )}
+                  ))}
                 </div>
               </div>
             </div>
@@ -430,22 +434,16 @@ export default function TransactionHistory() {
       </AnimatePresence>
 
       {filtered.length > 0 && (
-      <div className="anchor-glass-card grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          <div>
-            <p className="text-xs mb-1 text-white/45">In</p>
-            <p className="text-sm font-semibold text-emerald-300">+{totalIn.toLocaleString('sv-SE')} kr</p>
-          </div>
-          <div>
-            <p className="text-xs mb-1 text-white/45">Ut</p>
-            <p className="text-sm font-semibold text-red-300">-{totalOut.toLocaleString('sv-SE')} kr</p>
-          </div>
-          <div>
-            <p className="text-xs mb-1 text-white/45">Netto</p>
-            <p className={`text-sm font-semibold ${totalIn - totalOut >= 0 ? 'text-emerald-300' : 'text-red-300'}`}>
-              {(totalIn - totalOut).toLocaleString('sv-SE')} kr
-            </p>
-          </div>
-        </div>
+        <DashboardStatStrip
+          items={[
+            { label: 'In', value: `+${totalIn.toLocaleString('sv-SE')} kr` },
+            { label: 'Ut', value: `-${totalOut.toLocaleString('sv-SE')} kr` },
+            {
+              label: 'Netto',
+              value: `${(totalIn - totalOut).toLocaleString('sv-SE')} kr`,
+            },
+          ]}
+        />
       )}
 
       {/* Loading */}
@@ -456,36 +454,33 @@ export default function TransactionHistory() {
       }
 
       {/* Empty state */}
-      {!isLoading && transactions.length === 0 &&
-      <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
-          <FileUp className="w-12 h-12 mb-4" style={{ color: 'var(--color-text-muted)' }} />
-          <p className="font-bold text-xl mb-1" style={{ color: 'var(--color-text-primary)' }}>Inga transaktioner än</p>
-          <p className="text-sm mb-6" style={{ color: 'var(--color-text-muted)' }}>Importera från din bank eller lägg till ett köp manuellt.</p>
-          <div className="flex flex-col gap-3 w-full max-w-xs">
-            <Link to="/Import">
-              <button className="w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-bold text-sm text-white" style={{ background: 'var(--color-accent)' }}>
-                <FileUp className="w-4 h-4" /> Importera bank-data
-              </button>
+      {!isLoading && transactions.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <FileUp className="w-10 h-10 mb-4 text-white/35" />
+          <p className="text-[17px] font-semibold text-white mb-1">Inga transaktioner än</p>
+          <p className={sectionSubtitleClass}>Importera från bank eller lägg till manuellt.</p>
+          <div className="flex flex-col gap-3 w-full max-w-xs mt-6">
+            <Link to="/Import" className="anchor-btn-primary w-full">
+              <FileUp className="w-4 h-4" /> Importera
             </Link>
-            <button onClick={() => setShowForm(true)} className="w-full py-3.5 rounded-2xl font-semibold text-sm"
-          style={{ background: 'var(--color-surface)', color: 'var(--color-text-secondary)', border: '1px solid rgba(0,0,0,0.08)' }}>
-              + Lägg till manuellt
+            <button type="button" onClick={() => setShowForm(true)} className="anchor-btn-secondary w-full">
+              Lägg till manuellt
             </button>
           </div>
         </div>
-      }
+      )}
 
       {/* No search results */}
-      {!isLoading && transactions.length > 0 && filtered.length === 0 &&
-      <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <Search className="w-10 h-10 mb-3" style={{ color: 'var(--color-text-muted)' }} />
-          <p className="font-bold" style={{ color: 'var(--color-text-primary)' }}>Inga resultat</p>
-          <p className="text-sm mt-1" style={{ color: 'var(--color-text-muted)' }}>Prova ett annat sökord eller filter.</p>
+      {!isLoading && transactions.length > 0 && filtered.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <Search className="w-10 h-10 mb-3 text-white/35" />
+          <p className="text-[17px] font-semibold text-white">Inga resultat</p>
+          <p className={sectionSubtitleClass}>Prova ett annat sökord eller filter.</p>
         </div>
-      }
+      )}
 
       {/* Month groups */}
-      <div className="mt-2">
+      <div className="mt-6 space-y-6">
         {groups.map((group, i) =>
         <MonthGroup
           key={group.key}

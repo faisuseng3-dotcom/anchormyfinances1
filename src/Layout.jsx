@@ -66,7 +66,7 @@ export default function Layout({ children, currentPageName }) {
       <style>{`
         :root {
           /* Anchor Revolut — global tokens */
-          --anchor-page-gradient: linear-gradient(180deg, #2f5cff 0%, #1846e7 22%, #0a239e 52%, #060f4a 78%, #040814 100%);
+          --anchor-page-gradient: linear-gradient(165deg, #1a3dff 0%, #0f2a9e 28%, #081858 55%, #050d28 82%, #030610 100%);
           --color-background-primary: #040814;
           --color-background-secondary: rgba(8, 14, 30, 0.88);
           --color-surface: rgba(255, 255, 255, 0.08);

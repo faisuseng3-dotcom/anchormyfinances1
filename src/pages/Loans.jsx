@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Landmark, TrendingDown, PiggyBank, AlertCircle, CheckCircle, ChevronRight, Percent, Zap, Scissors, MessageSquare, Droplets, X, Loader2 } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { CheckCircle, MessageSquare, X, Loader2, Scissors, Zap } from 'lucide-react';
+import PageShell from '@/components/layout/PageShell';
+import {
+  DashboardDivider,
+  DashboardSection,
+  DashboardStatStrip,
+} from '@/components/dashboard/DashboardChrome';
+import { anchorPrimaryButtonClass, anchorSecondaryButtonClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -14,26 +20,30 @@ export default function Loans() {
   const [negotiationScript, setNegotiationScript] = useState(null);
   const [loadingEraser, setLoadingEraser] = useState(null);
   const [loadingNegotiate, setLoadingNegotiate] = useState(null);
-  const [selectedLoanIdx, setSelectedLoanIdx] = useState(null);
 
   const { data: profile } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
       const profiles = await base44.entities.FinancialProfile.list();
       return profiles[0] || null;
-    }
+    },
   });
 
   const loans = profile?.loans || [];
   const totalDebt = loans.reduce((sum, l) => sum + (l.totalAmount || 0), 0);
   const totalMonthly = loans.reduce((sum, l) => sum + (l.monthlyPayment || 0), 0);
-  const totalInterestMonthly = loans.reduce((sum, l) => sum + ((l.totalAmount || 0) * ((l.interestRate || 0) / 100 / 12)), 0);
+  const totalInterestMonthly = loans.reduce(
+    (sum, l) => sum + ((l.totalAmount || 0) * ((l.interestRate || 0) / 100 / 12)),
+    0,
+  );
   const totalInterestYearly = totalInterestMonthly * 12;
-
   const sortedLoans = [...loans].sort((a, b) => (b.interestRate || 0) - (a.interestRate || 0));
 
   const monthlyDisposable = profile
-    ? (profile.income || 0) - (profile.housingCost || 0) - totalMonthly - (profile.subscriptions || []).reduce((s, sub) => s + (sub.amount || 0), 0)
+    ? (profile.income || 0)
+      - (profile.housingCost || 0)
+      - totalMonthly
+      - (profile.subscriptions || []).reduce((s, sub) => s + (sub.amount || 0), 0)
     : 0;
   const extraPayment = Math.round(Math.min(monthlyDisposable * 0.2, 500));
 
@@ -42,25 +52,11 @@ export default function Loans() {
     setLoadingEraser(idx);
     const isZero = (loan.interestRate || 0) === 0;
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du är en CFO. Användaren har ett lån:
-Namn: ${loan.name}
-Skuld: ${loan.totalAmount} kr
-Ränta: ${loan.interestRate}%
-Månadsbetalning: ${loan.monthlyPayment} kr/mån
-Disponibel marginal att flytta: ${extraPayment} kr/mån
-
+      prompt: `Du är en CFO. Lån: ${loan.name}, skuld ${loan.totalAmount} kr, ränta ${loan.interestRate}%, ${loan.monthlyPayment} kr/mån. Extra: ${extraPayment} kr/mån.
 ${isZero
-  ? `Räntan är 0%. Fokusera INTE på räntebesparing. Fokusera istället på TID och kassaflöde:
-Beräkna hur många månader snabbare de blir skuldfria om de betalar ${extraPayment} kr extra/mån, och hur mycket kassaflöde per månad som frigörs när lånet är betalt.
-Exempel: "Eftersom räntan är 0% sparar du inga pengar på att betala av snabbare, men du frigör ${loan.monthlyPayment} kr/mån i kassaflöde X månader tidigare."
-Sätt interestSaved till 0.`
-  : `Beräkna:
-1. Nuvarande tid att bli skuldfri (månader): totalAmount / monthlyPayment
-2. Tid om de betalar ${extraPayment} kr extra/mån
-3. Hur många månader snabbare
-4. Total räntebesparing i kr`}
-
-Ge ett kort, engagerande svar på svenska. Max 3 meningar. Inkludera siffrorna.`,
+  ? `Ränta 0%. Fokus på tid och kassaflöde. interestSaved=0.`
+  : `Beräkna månader nu, med extra, månader snabbare, räntebesparing.`}
+Kort svar svenska, max 3 meningar.`,
       response_json_schema: {
         type: 'object',
         properties: {
@@ -68,9 +64,9 @@ Ge ett kort, engagerande svar på svenska. Max 3 meningar. Inkludera siffrorna.`
           monthsWithExtra: { type: 'number' },
           monthsFaster: { type: 'number' },
           interestSaved: { type: 'number' },
-          message: { type: 'string' }
-        }
-      }
+          message: { type: 'string' },
+        },
+      },
     });
     setDebtEraserResult({ ...res, loanName: loan.name, extra: extraPayment, idx });
     setLoadingEraser(null);
@@ -79,282 +75,213 @@ Ge ett kort, engagerande svar på svenska. Max 3 meningar. Inkludera siffrorna.`
   const runNegotiation = async (loan, idx) => {
     setLoadingNegotiate(idx);
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Generera ett kort, professionellt förhandlingsmanus på svenska för att sänka räntan på ett lån.
-Lånets namn: ${loan.name}
-Nuvarande ränta: ${loan.interestRate}%
-Skuld: ${loan.totalAmount} kr
-
-Manus ska vara: Hej [Bankens namn]... och referera till att användaren har bättre koll på sin ekonomi via en app och vill matcha marknadsräntan. Ca 3-4 meningar. Avsluta med ett artigt "Tack på förhand."`,
-      response_json_schema: {
-        type: 'object',
-        properties: { script: { type: 'string' } }
-      }
+      prompt: `Förhandlingsmanus svenska för att sänka ränta. Lån: ${loan.name}, ${loan.interestRate}%, ${loan.totalAmount} kr. 3-4 meningar.`,
+      response_json_schema: { type: 'object', properties: { script: { type: 'string' } } },
     });
     setNegotiationScript({ script: res.script, loanName: loan.name, idx });
     setLoadingNegotiate(null);
   };
 
-  return (
-    <div className="min-h-screen pb-12 px-4 pt-8">
-      <div className="flex items-center gap-4 mb-6">
-        <Link to={createPageUrl('Dashboard')}>
-          <Button variant="ghost" size="icon" className="rounded-xl text-white">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-xl font-bold text-white">Lånintelligens</h1>
-          <p className="text-sm text-slate-400">Optimera & radera dina skulder</p>
-        </div>
-      </div>
+  const highestInterestLoan = sortedLoans.find((l) => (l.interestRate || 0) > 0);
 
+  return (
+    <PageShell title="Lån" subtitle="Optimera dina skulder" backHref={createPageUrl('Dashboard')}>
       {loans.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          className="mt-16 flex flex-col items-center gap-4 text-center"
-        >
-          <div className="w-20 h-20 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
-            <CheckCircle className="w-10 h-10 text-emerald-400" />
-          </div>
-          <h3 className="text-white text-lg font-semibold">Inga lån registrerade</h3>
-          <p className="text-slate-400 text-sm max-w-xs">
-            Lägg till lån under Inställningar eller Onboarding så analyserar vi dem här.
-          </p>
-          <Link to={createPageUrl('Settings')}>
-            <Button className="bg-indigo-500 hover:bg-indigo-600 mt-2">Gå till Inställningar</Button>
+        <div className="py-16 text-center">
+          <CheckCircle className="w-10 h-10 mx-auto mb-4 text-emerald-400/80" />
+          <p className="text-[17px] font-semibold text-white mb-1">Inga lån registrerade</p>
+          <p className={sectionSubtitleClass}>Lägg till under Inställningar så analyserar vi dem här.</p>
+          <Link to={createPageUrl('Settings')} className={`${anchorPrimaryButtonClass} inline-flex mt-6 px-6`}>
+            Gå till inställningar
           </Link>
-        </motion.div>
+        </div>
       ) : (
         <>
-          {/* Summary */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-              <Landmark className="w-5 h-5 text-indigo-400 mb-2" />
-              <p className="text-xs text-slate-400">Total skuld</p>
-              <p className="text-lg font-bold text-white">{fmt(totalDebt)} kr</p>
-            </div>
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
-              <TrendingDown className="w-5 h-5 text-amber-400 mb-2" />
-              <p className="text-xs text-slate-400">Månadsbetalning</p>
-              <p className="text-lg font-bold text-white">{fmt(totalMonthly)} kr</p>
-            </div>
-          </div>
+          <DashboardStatStrip
+            items={[
+              { label: 'Total skuld', value: `${fmt(totalDebt)} kr` },
+              { label: 'Per månad', value: `${fmt(totalMonthly)} kr` },
+            ]}
+          />
 
-          {/* Ränte-Blödningen */}
-          {totalInterestMonthly > 0 ? (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-rose-900/60 to-red-950/60 border border-rose-500/30"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
-                  <Droplets className="w-5 h-5 text-rose-400" />
+          <DashboardSection nested title="Räntekostnad">
+            {totalInterestMonthly > 0 ? (
+              <>
+                <p className="text-[28px] font-semibold text-rose-300 tabular-nums leading-none">
+                  {fmt(totalInterestMonthly)} <span className="text-lg text-white/45">kr/mån</span>
+                </p>
+                <p className={`${sectionSubtitleClass} mt-2`}>
+                  {fmt(totalInterestYearly)} kr per år i ren ränta ·{' '}
+                  {Math.round((totalInterestMonthly / totalMonthly) * 100)}% av betalningen
+                </p>
+                <div className="mt-3 h-1 rounded-full bg-white/[0.08] overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min((totalInterestMonthly / totalMonthly) * 100, 100)}%` }}
+                    className="h-full bg-rose-400/80 rounded-full"
+                  />
                 </div>
-                <div>
-                  <h3 className="font-semibold text-white text-sm">Ränte-Blödningen</h3>
-                  <p className="text-rose-300 text-xs">Pengar du ger bort till banken varje månad</p>
-                </div>
-              </div>
-              <div className="bg-rose-500/10 rounded-xl p-4 mb-3">
-                <p className="text-3xl font-bold text-rose-300">{fmt(totalInterestMonthly)} kr/mån</p>
-                <p className="text-rose-400 text-xs mt-1">= {fmt(totalInterestYearly)} kr per år i ren ränta</p>
-              </div>
-              <div className="w-full bg-white/5 rounded-full h-2 overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.min((totalInterestMonthly / totalMonthly) * 100, 100)}%` }}
-                  transition={{ duration: 1.2, ease: 'easeOut' }}
-                  className="h-full bg-gradient-to-r from-rose-500 to-red-400 rounded-full"
-                />
-              </div>
-              <p className="text-rose-400/70 text-xs mt-2">
-                {Math.round((totalInterestMonthly / totalMonthly) * 100)}% av din månadsbetalning är ren ränta – resten amorterar.
+              </>
+            ) : (
+              <p className="text-[15px] text-emerald-300/90">
+                Inga räntekostnader — hela betalningen minskar skulden.
               </p>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-emerald-900/40 to-green-950/40 border border-emerald-500/30"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white text-sm">Inga räntekostnader 🎉</h3>
-                  <p className="text-emerald-300 text-xs">100% av din betalning minskar skulden – inget går till ränta.</p>
-                </div>
-              </div>
-            </motion.div>
-          )}
+            )}
+          </DashboardSection>
 
-          {/* Loans list */}
-          <h3 className="text-sm uppercase tracking-widest text-slate-400 mb-3 font-medium">Dina lån</h3>
-          <div className="space-y-4 mb-6">
+          <DashboardSection nested title="Dina lån">
             {sortedLoans.map((loan, i) => {
               const monthlyInterest = (loan.totalAmount || 0) * ((loan.interestRate || 0) / 100 / 12);
-              const pizzas = Math.round(monthlyInterest / 120);
               const isZeroInterest = (loan.interestRate || 0) === 0;
-              // Högst prio = första lånet med ränta > 0, annars ingen
-              const highestInterestLoan = sortedLoans.find(l => (l.interestRate || 0) > 0);
-              const isHighestPrio = highestInterestLoan && loan.name === highestInterestLoan.name && (loan.interestRate || 0) > 0;
+              const isHighestPrio =
+                highestInterestLoan && loan.name === highestInterestLoan.name && (loan.interestRate || 0) > 0;
+
               return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                  className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden"
-                >
-                  <div className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${isHighestPrio ? 'bg-rose-500/20 text-rose-400' : 'bg-white/10 text-slate-300'}`}>
-                          {i + 1}
-                        </div>
-                        <div>
-                          <p className="font-semibold text-white">{loan.name}</p>
-                          <p className="text-xs text-slate-400">{loan.interestRate || 0}% ränta · {fmt(loan.totalAmount)} kr kvar</p>
-                        </div>
+                <React.Fragment key={i}>
+                  {i > 0 && <DashboardDivider className="my-2" />}
+                  <div className="py-3">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div>
+                        <p className="text-[15px] font-medium text-white flex items-center gap-2">
+                          {loan.name}
+                          {isHighestPrio && (
+                            <span className="text-[11px] text-rose-300/90 font-medium">Högst prio</span>
+                          )}
+                          {isZeroInterest && (
+                            <span className="text-[11px] text-emerald-300/90 font-medium">Räntefritt</span>
+                          )}
+                        </p>
+                        <p className="text-[13px] text-white/45 mt-0.5">
+                          {loan.interestRate || 0}% · {fmt(loan.totalAmount)} kr · {fmt(loan.monthlyPayment)} kr/mån
+                        </p>
                       </div>
-                      {isHighestPrio && <span className="text-xs bg-rose-500/20 text-rose-400 px-2 py-1 rounded-full">Högst prio</span>}
-                      {isZeroInterest && <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded-full">Räntefritt ✓</span>}
                     </div>
 
-                    {isZeroInterest ? (
-                      <div className="bg-emerald-500/10 rounded-xl px-4 py-3 mb-3 text-sm border border-emerald-500/20">
-                        <p className="text-emerald-300 font-medium mb-1">Du spelar smart! 🧠</p>
-                        <p className="text-slate-400 text-xs leading-relaxed">Eftersom det här lånet är gratis (0% ränta) lönar det sig faktiskt att betala av det långsamt och istället lägga extra pengar på ditt sparkonto där du får ränta.</p>
-                        <p className="text-emerald-400 text-xs mt-2 font-medium">100% av din betalning minskar skulden – inget försvinner i ränta.</p>
-                      </div>
-                    ) : (
-                      <div className="bg-rose-500/10 rounded-xl px-4 py-3 mb-3 text-sm">
-                        <span className="text-rose-300 font-medium">{fmt(monthlyInterest)} kr</span>
-                        <span className="text-rose-400/80"> i ränta / mån</span>
-                        {pizzas > 0 && <span className="text-slate-400"> · {pizzas} 🍕 du ger bort varje månad</span>}
-                      </div>
+                    {!isZeroInterest && monthlyInterest > 0 && (
+                      <p className="text-[13px] text-rose-300/85 mb-3">
+                        {fmt(monthlyInterest)} kr i ränta per månad
+                      </p>
                     )}
 
-                    {/* Action buttons */}
                     <div className="flex gap-2">
                       <button
+                        type="button"
                         onClick={() => runDebtEraser(loan, i)}
                         disabled={loadingEraser === i || !(loan.monthlyPayment > 0)}
-                        title={!(loan.monthlyPayment > 0) ? 'Lägg till en månadsbetalning för att analysera' : undefined}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 text-xs font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className={`flex-1 ${anchorSecondaryButtonClass} !h-11 !text-[13px]`}
                       >
-                        {loadingEraser === i ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Scissors className="w-3.5 h-3.5" />}
-                        Radera snabbare
+                        {loadingEraser === i ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Scissors className="w-4 h-4" />
+                        )}
+                        Snabbare avbetalning
                       </button>
                       {!isZeroInterest && (
                         <button
+                          type="button"
                           onClick={() => runNegotiation(loan, i)}
                           disabled={loadingNegotiate === i}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-medium transition-colors"
+                          className={`flex-1 ${anchorSecondaryButtonClass} !h-11 !text-[13px]`}
                         >
-                          {loadingNegotiate === i ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <MessageSquare className="w-3.5 h-3.5" />}
-                          Sänk min ränta
+                          {loadingNegotiate === i ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <MessageSquare className="w-4 h-4" />
+                          )}
+                          Sänk ränta
                         </button>
                       )}
                     </div>
-                  </div>
 
-                  {/* Debt Eraser result */}
-                  <AnimatePresence>
-                    {debtEraserResult && debtEraserResult.idx === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="border-t border-white/10 bg-indigo-900/30 overflow-hidden"
-                      >
-                        <div className="p-4">
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <Zap className="w-4 h-4 text-indigo-400" />
-                              <span className="text-indigo-300 font-semibold text-sm">Debt Eraser</span>
+                    <AnimatePresence>
+                      {debtEraserResult?.idx === i && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-4 mt-3 border-t border-white/[0.08]">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-[14px] font-medium text-white/80 flex items-center gap-1.5">
+                                <Zap className="w-4 h-4 text-[#9FB5FF]" /> Analys
+                              </span>
+                              <button type="button" onClick={() => setDebtEraserResult(null)}>
+                                <X className="w-4 h-4 text-white/40" />
+                              </button>
                             </div>
-                            <button onClick={() => setDebtEraserResult(null)}><X className="w-4 h-4 text-slate-500" /></button>
+                            {debtEraserResult.monthsNow > 0 && debtEraserResult.monthsNow !== Infinity && (
+                              <div className="flex gap-4 mb-2 text-[13px] text-white/55">
+                                <span>Nu: {debtEraserResult.monthsNow} mån</span>
+                                <span>Med extra: {debtEraserResult.monthsWithExtra} mån</span>
+                                <span className="text-emerald-300">
+                                  −{debtEraserResult.monthsFaster} mån
+                                </span>
+                              </div>
+                            )}
+                            <p className="text-[14px] text-white/70 leading-relaxed">{debtEraserResult.message}</p>
+                            {debtEraserResult.interestSaved > 0 && (
+                              <p className="text-[14px] text-emerald-300 mt-2">
+                                Sparar {fmt(debtEraserResult.interestSaved)} kr i ränta
+                              </p>
+                            )}
                           </div>
-                          {/* monthsNow = 0 means no monthly payment set */}
-                          {debtEraserResult.monthsNow === 0 || debtEraserResult.monthsNow === Infinity ? (
-                            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 mb-3">
-                              <p className="text-amber-300 text-sm">Lägg till en månadsbetalning för att se när du blir skuldfri.</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                      {negotiationScript?.idx === i && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pt-4 mt-3 border-t border-white/[0.08]">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-[14px] font-medium text-white/80">Förhandlingsmanus</span>
+                              <button type="button" onClick={() => setNegotiationScript(null)}>
+                                <X className="w-4 h-4 text-white/40" />
+                              </button>
                             </div>
-                          ) : (
-                            <div className="grid grid-cols-3 gap-2 mb-3">
-                              <div className="bg-white/5 rounded-xl p-3 text-center">
-                                <p className="text-white font-bold">{debtEraserResult.monthsNow} mån</p>
-                                <p className="text-slate-400 text-xs">Nu</p>
-                              </div>
-                              <div className="bg-indigo-500/20 rounded-xl p-3 text-center">
-                                <p className="text-indigo-300 font-bold">{debtEraserResult.monthsWithExtra} mån</p>
-                                <p className="text-slate-400 text-xs">Med extra</p>
-                              </div>
-                              <div className="bg-emerald-500/20 rounded-xl p-3 text-center">
-                                <p className="text-emerald-300 font-bold">{debtEraserResult.monthsFaster} mån</p>
-                                <p className="text-slate-400 text-xs">Snabbare</p>
-                              </div>
-                            </div>
-                          )}
-                          <p className="text-slate-300 text-sm leading-relaxed">{debtEraserResult.message}</p>
-                          {debtEraserResult.interestSaved > 0 && (
-                            <p className="text-emerald-400 text-sm font-medium mt-2">
-                              Räntebesparing: {fmt(debtEraserResult.interestSaved)} kr 🎉
+                            <p className="text-[14px] text-white/70 leading-relaxed whitespace-pre-wrap">
+                              {negotiationScript.script}
                             </p>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Negotiation Script */}
-                  <AnimatePresence>
-                    {negotiationScript && negotiationScript.idx === i && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="border-t border-white/10 bg-emerald-900/30 overflow-hidden"
-                      >
-                        <div className="p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-2">
-                              <MessageSquare className="w-4 h-4 text-emerald-400" />
-                              <span className="text-emerald-300 font-semibold text-sm">Förhandlingsmanus</span>
-                            </div>
-                            <button onClick={() => setNegotiationScript(null)}><X className="w-4 h-4 text-slate-500" /></button>
+                            <button
+                              type="button"
+                              onClick={() => navigator.clipboard.writeText(negotiationScript.script)}
+                              className="text-[13px] text-[#9FB5FF] mt-2 font-medium"
+                            >
+                              Kopiera
+                            </button>
                           </div>
-                          <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-wrap">{negotiationScript.script}</p>
-                          <button
-                            onClick={() => navigator.clipboard.writeText(negotiationScript.script)}
-                            className="mt-3 text-xs text-emerald-400 hover:text-emerald-300 underline"
-                          >
-                            Kopiera manus
-                          </button>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </React.Fragment>
               );
             })}
-          </div>
+          </DashboardSection>
 
-          {/* Payoff tips */}
-          <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
-            <h4 className="font-semibold text-white mb-3 text-sm">Tips för snabbare avbetalning</h4>
-            <ul className="space-y-2">
-              {['Betala alltid mer på lånet med högst ränta först', 'Amortera extra vid bonus eller skatteåterbäring', 'Jämför räntor – byt till billigare alternativ'].map((tip, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                  <CheckCircle className="w-4 h-4 mt-0.5 text-emerald-500 flex-shrink-0" />
+          <DashboardSection nested title="Tips">
+            <ul className="space-y-3">
+              {[
+                'Betala mer på lånet med högst ränta först',
+                'Amortera extra vid bonus eller skatteåterbäring',
+                'Jämför räntor — byt till billigare alternativ',
+              ].map((tip) => (
+                <li key={tip} className="flex items-start gap-2 text-[14px] text-white/55">
+                  <CheckCircle className="w-4 h-4 mt-0.5 text-emerald-400 flex-shrink-0" />
                   {tip}
                 </li>
               ))}
             </ul>
-          </div>
+          </DashboardSection>
         </>
       )}
-    </div>
+    </PageShell>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, ArrowRightLeft, ShieldCheck, Sparkles } from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRightLeft, ShieldCheck } from 'lucide-react';
 import {
   calcAccountTaxBreakdown,
   splitDeposit,
@@ -47,13 +47,8 @@ export default function TaxClarityHero({
           boxShadow: '0 12px 40px rgba(13,115,119,0.25)',
         }}
       >
-        <div className="flex items-center gap-2 mb-3">
-          <ShieldCheck className="w-5 h-5 text-white/70" />
-          <p className="text-xs font-semibold uppercase tracking-wider text-white/50">
-            Skatte-klarhet
-          </p>
-        </div>
-        <p className="text-lg font-bold text-white leading-snug mb-2">
+        <p className="text-[15px] text-white/55 mb-2">Skatte-klarhet</p>
+        <p className="text-[20px] font-semibold text-white leading-snug mb-2">
           Hur mycket är faktiskt dina?
         </p>
         <p className="text-sm text-white/60 leading-relaxed">
@@ -75,16 +70,9 @@ export default function TaxClarityHero({
     >
       {/* Coach narrative */}
       <div className="px-6 pt-6 pb-4">
-        <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-emerald-200/80" />
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/45">
-            Skatte-klarhet
-          </p>
-        </div>
-        <p className="text-sm text-white/75 leading-relaxed mb-5">{coachMessage}</p>
+        <p className="text-[14px] text-white/70 leading-relaxed mb-5">{coachMessage}</p>
 
-        {/* Hero number */}
-        <p className="text-sm font-medium text-white/55 mb-1">Säkert att föra över till privat</p>
+        <p className="text-[15px] text-white/55 mb-1">Säkert att föra över till privat</p>
         <p
           className="font-black leading-none"
           style={{ fontSize: 52, color: '#fff', letterSpacing: '-2px' }}
@@ -96,20 +84,15 @@ export default function TaxClarityHero({
           Av {fmtSek(gross)} kr på kontot · {yoursPct}% är dina
         </p>
 
-        {/* Three-layer pills */}
-        <div className="flex gap-2 mt-5">
+        <div className="flex justify-between gap-4 mt-5 pt-4 border-t border-white/10">
           {[
-            { label: 'Dina', amount: yours, bg: 'rgba(255,255,255,0.22)' },
-            { label: 'Moms', amount: vat, bg: 'rgba(212,175,55,0.35)' },
-            { label: 'Skatt', amount: taxReserve, bg: 'rgba(217,95,95,0.32)' },
+            { label: 'Dina', amount: yours },
+            { label: 'Moms', amount: vat },
+            { label: 'Skatt', amount: taxReserve },
           ].map((pill) => (
-            <div
-              key={pill.label}
-              className="flex-1 rounded-2xl px-2 py-2.5 text-center"
-              style={{ background: pill.bg }}
-            >
-              <p className="text-[10px] font-semibold text-white/55">{pill.label}</p>
-              <p className="text-xs font-black text-white">{fmtSek(pill.amount)}</p>
+            <div key={pill.label} className="flex-1 text-center">
+              <p className="text-[12px] text-white/50">{pill.label}</p>
+              <p className="text-[14px] font-semibold text-white tabular-nums mt-0.5">{fmtSek(pill.amount)}</p>
             </div>
           ))}
         </div>
@@ -124,16 +107,11 @@ export default function TaxClarityHero({
 
       {/* Recent deposit detail */}
       {depositSplit && recentIncome && (
-        <div
-          className="mx-5 mb-4 rounded-2xl p-4"
-          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <ArrowRightLeft className="w-3.5 h-3.5 text-emerald-200" />
-            <p className="text-[10px] font-bold uppercase tracking-wider text-white/45">
-              Senaste inbetalning
-            </p>
-          </div>
+        <div className="mx-6 mb-4 pt-4 border-t border-white/10">
+          <p className="text-[13px] text-white/45 mb-2 flex items-center gap-1.5">
+            <ArrowRightLeft className="w-3.5 h-3.5" />
+            Senaste inbetalning
+          </p>
           <p className="text-sm font-semibold text-white mb-1">{recentIncome.name}</p>
           <div className="flex justify-between text-xs text-white/55 mb-2">
             <span>Brutto inbetalt</span>
@@ -150,13 +128,9 @@ export default function TaxClarityHero({
         </div>
       )}
 
-      {/* Transfer reassurance */}
-      <div
-        className="mx-5 mb-4 flex items-start gap-3 rounded-2xl px-4 py-3"
-        style={{ background: 'rgba(61,170,122,0.15)', border: '1px solid rgba(61,170,122,0.25)' }}
-      >
-        <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-200" />
-        <p className="text-xs text-white/70 leading-relaxed">
+      <div className="mx-6 mb-4 flex items-start gap-3 py-2">
+        <ShieldCheck className="w-4 h-4 flex-shrink-0 mt-0.5 text-emerald-200/80" />
+        <p className="text-[13px] text-white/65 leading-relaxed">
           Flytta <strong className="text-white">{fmtSek(yours)} kr</strong> till privatkontot när du vill —
           resten ligger tryggt reserverat till Skatteverket och momsdeklarationen.
         </p>

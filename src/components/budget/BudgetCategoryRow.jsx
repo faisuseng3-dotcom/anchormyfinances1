@@ -15,15 +15,14 @@ const CATEGORY_EMOJIS = {
 };
 
 function getBarColor(pct) {
-  if (pct >= 1) return '#E53E3E';
-  if (pct >= 0.8) return '#D69E2E';
-  if (pct >= 0.5) return '#D69E2E';
-  return '#0D7377';
+  if (pct >= 1) return '#FF8A9A';
+  if (pct >= 0.8) return '#FCD34D';
+  return '#5B8CFF';
 }
 
 function getStatusText(pct, remaining) {
-  if (pct >= 1) return `${Math.abs(remaining).toLocaleString('sv-SE')} kr över budget`;
-  if (pct >= 0.8) return `Bara ${remaining.toLocaleString('sv-SE')} kr kvar`;
+  if (pct >= 1) return `${Math.abs(remaining).toLocaleString('sv-SE')} kr över`;
+  if (pct >= 0.8) return `${remaining.toLocaleString('sv-SE')} kr kvar`;
   return `${remaining.toLocaleString('sv-SE')} kr kvar`;
 }
 
@@ -35,38 +34,29 @@ export default function BudgetCategoryRow({ category, spent, limit, onEdit }) {
   const emoji = CATEGORY_EMOJIS[category] || '📦';
 
   return (
-    <motion.div
+    <motion.button
+      type="button"
       whileTap={{ scale: 0.98 }}
       onClick={() => onEdit(category)}
-      className="flex items-center gap-4 px-5 py-4 cursor-pointer"
-      style={{ borderBottom: '1px solid rgba(0,0,0,0.05)' }}
+      className="flex items-center gap-3 py-3.5 w-full text-left active:opacity-60"
     >
       <span className="text-xl flex-shrink-0">{emoji}</span>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1.5">
-          <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>{label}</p>
-          <p className="text-xs font-semibold" style={{ color: 'var(--color-text-muted)' }}>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[15px] font-medium text-white">{label}</p>
+          <p className="text-[13px] text-white/45 tabular-nums">
             {spent.toLocaleString('sv-SE')} / {limit > 0 ? limit.toLocaleString('sv-SE') : '–'} kr
           </p>
         </div>
-        {limit > 0 ? (
-          <>
-            <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.08)' }}>
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min(pct * 100, 100)}%` }}
-                transition={{ duration: 0.6, ease: 'easeOut' }}
-                className="h-full rounded-full"
-                style={{ background: barColor }}
-              />
-            </div>
-            <p className="text-xs mt-1" style={{ color: barColor }}>{getStatusText(pct, remaining)}</p>
-          </>
-        ) : (
-          <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Tryck för att sätta budgetgräns</p>
-        )}
+        <div className="h-1 rounded-full bg-white/[0.08] overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all"
+            style={{ width: `${Math.min(pct * 100, 100)}%`, background: barColor }}
+          />
+        </div>
+        <p className="text-[12px] text-white/40 mt-1.5">{getStatusText(pct, remaining)}</p>
       </div>
-      <ChevronRight className="w-4 h-4 flex-shrink-0" style={{ color: 'var(--color-text-muted)' }} />
-    </motion.div>
+      <ChevronRight className="w-4 h-4 text-white/25 flex-shrink-0" />
+    </motion.button>
   );
 }

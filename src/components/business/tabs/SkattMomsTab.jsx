@@ -11,12 +11,11 @@ export default function SkattMomsTab({ vatReserved, vatDeadlines, entityType, to
   const safeBalance = isReset ? 0 : (totalBalance || 0);
 
   return (
-    <div className="px-5 space-y-4">
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        className="text-2xl font-black pt-4" style={{ color: '#1A2332', letterSpacing: '-0.5px' }}>
-        Skatt &amp; Moms
-      </motion.p>
-      <p className="text-sm -mt-2" style={{ color: '#9AA5B4' }}>Vi har räknat ut din moms åt dig</p>
+    <div className="space-y-6 pb-4">
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="pt-4 px-5">
+        <h1 className="text-[22px] font-semibold text-[#1A2332] tracking-tight">Skatt &amp; moms</h1>
+        <p className="text-[14px] text-[#9AA5B4] mt-0.5">Vi har räknat ut din moms åt dig</p>
+      </motion.div>
       <TaxClarityHero
         grossBalance={safeBalance}
         vatReserved={safeVat}

@@ -4,8 +4,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users } from 'lucide-react';
-import PageShell, { GlassSection } from '@/components/layout/PageShell';
-import { anchorGlassCardClass, anchorPrimaryButtonClass, anchorSecondaryButtonClass } from '@/lib/anchorTheme';
+import PageShell from '@/components/layout/PageShell';
+import {
+  DashboardDivider,
+  DashboardListRow,
+  DashboardSection,
+} from '@/components/dashboard/DashboardChrome';
+import {
+  anchorInputClass,
+  anchorPrimaryButtonClass,
+  anchorSecondaryButtonClass,
+  sectionSubtitleClass,
+} from '@/lib/anchorTheme';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
@@ -31,7 +41,7 @@ function FieldRow({ label, icon: Icon, children }) {
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
         {Icon && <Icon className="w-3.5 h-3.5 text-[#9FB5FF]" />}
-        <Label className="text-xs font-medium text-white/50">{label}</Label>
+        <Label className="text-[13px] font-medium text-white/50">{label}</Label>
       </div>
       {children}
     </div>
@@ -116,7 +126,7 @@ export default function Settings() {
     );
   }
 
-  const inputStyle = "h-12 rounded-2xl text-sm";
+  const inputStyle = anchorInputClass;
 
   return (
     <PageShell
@@ -134,7 +144,7 @@ export default function Settings() {
         </button>
       }
     >
-        <GlassSection title="Budget">
+        <DashboardSection nested title="Budget">
           <div className="space-y-4">
             <FieldRow label="Månatlig nettoinkomst" icon={Wallet}>
               <div className="relative">
@@ -176,30 +186,31 @@ export default function Settings() {
               </FieldRow>
             </div>
           </div>
-        </GlassSection>
+        </DashboardSection>
 
-        <GlassSection title="Abonnemang">
+        <DashboardSection nested title="Abonnemang">
           <div className="space-y-2">
             {(formData.subscriptions || []).map((sub, i) => (
-              <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{sub.name}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
-                    {categories.find(c => c.id === sub.category)?.label || 'Övrigt'}
-                    {sub.billingDay ? ` · dag ${sub.billingDay}` : ''}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span className="text-sm font-bold whitespace-nowrap" style={{ color: 'var(--color-text-primary)' }}>{sub.amount} kr</span>
-                  <button onClick={() => removeSubscription(i)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'rgba(217,95,95,0.15)' }}>
-                    <X className="w-3.5 h-3.5" style={{ color: 'var(--color-danger)' }} />
+              <React.Fragment key={i}>
+                {i > 0 && <DashboardDivider />}
+                <div className="flex items-center gap-3 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-medium text-white">{sub.name}</p>
+                    <p className="text-[13px] text-white/45 mt-0.5">
+                      {categories.find(c => c.id === sub.category)?.label || 'Övrigt'}
+                      {sub.billingDay ? ` · dag ${sub.billingDay}` : ''}
+                    </p>
+                  </div>
+                  <span className="text-[15px] font-semibold text-white tabular-nums">{sub.amount} kr</span>
+                  <button type="button" onClick={() => removeSubscription(i)} className="w-8 h-8 rounded-full flex items-center justify-center bg-rose-500/15 text-rose-300">
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </div>
+              </React.Fragment>
             ))}
 
             {showAddSub ? (
-              <div className="p-4 rounded-xl space-y-3" style={{ background: 'var(--color-surface)', border: '1px solid rgba(75,124,243,0.3)' }}>
+              <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
                 <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className="h-11 rounded-xl text-sm" />
                 <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className="h-11 rounded-xl text-sm" />
                 <DayPicker value={parseInt(newSub.billingDay) || 15} onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })} label="Dragningsdag" hint="Standard: 15" />
@@ -223,36 +234,33 @@ export default function Settings() {
                 </div>
               </div>
             ) : (
-              <button onClick={() => setShowAddSub(true)} className="w-full flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-medium"
-                style={{ background: 'var(--color-surface)', color: 'var(--color-text-muted)', border: '1px dashed rgba(255,255,255,0.12)' }}>
+              <button type="button" onClick={() => setShowAddSub(true)} className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-medium text-white/55 hover:text-white/80">
                 <Plus className="w-4 h-4" /> Lägg till abonnemang
               </button>
             )}
           </div>
-        </GlassSection>
+        </DashboardSection>
 
-        <GlassSection title="Lån">
+        <DashboardSection nested title="Lån">
           <div className="space-y-2">
             {(formData.loans || []).map((loan, i) => (
-              <div key={i} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ background: 'var(--color-surface)' }}>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--color-text-primary)' }}>{loan.name}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>{loan.interestRate}% ränta</p>
-                </div>
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="text-right">
-                    <p className="text-sm font-bold whitespace-nowrap" style={{ color: 'var(--color-text-primary)' }}>{formatNumber(loan.totalAmount)} kr</p>
-                    <p className="text-xs whitespace-nowrap" style={{ color: 'var(--color-text-muted)' }}>{formatNumber(loan.monthlyPayment)} kr/mån</p>
+              <React.Fragment key={i}>
+                {i > 0 && <DashboardDivider />}
+                <div className="flex items-center gap-3 py-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-medium text-white">{loan.name}</p>
+                    <p className="text-[13px] text-white/45">{loan.interestRate}% ränta · {formatNumber(loan.monthlyPayment)} kr/mån</p>
                   </div>
-                  <button onClick={() => removeLoan(i)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: 'rgba(217,95,95,0.15)' }}>
-                    <X className="w-3.5 h-3.5" style={{ color: 'var(--color-danger)' }} />
+                  <span className="text-[15px] font-semibold text-white tabular-nums">{formatNumber(loan.totalAmount)} kr</span>
+                  <button type="button" onClick={() => removeLoan(i)} className="w-8 h-8 rounded-full flex items-center justify-center bg-rose-500/15 text-rose-300">
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              </div>
+              </React.Fragment>
             ))}
 
             {showAddLoan ? (
-              <div className="p-4 rounded-xl space-y-3" style={{ background: 'var(--color-surface)', border: '1px solid rgba(200,146,58,0.3)' }}>
+              <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
                 <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className="h-11 rounded-xl text-sm" />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className="h-11 rounded-xl text-sm" />
@@ -265,61 +273,39 @@ export default function Settings() {
                 </div>
               </div>
             ) : (
-              <button onClick={() => setShowAddLoan(true)} className="w-full flex items-center justify-center gap-2 h-11 rounded-xl text-sm font-medium"
-                style={{ background: 'var(--color-surface)', color: 'var(--color-text-muted)', border: '1px dashed rgba(255,255,255,0.12)' }}>
+              <button type="button" onClick={() => setShowAddLoan(true)} className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-medium text-white/55 hover:text-white/80">
                 <Plus className="w-4 h-4" /> Lägg till lån
               </button>
             )}
           </div>
-        </GlassSection>
+        </DashboardSection>
 
-        <Link to="/Social">
-          <div className={`${anchorGlassCardClass} flex items-center justify-between cursor-pointer active:opacity-90`}>
-            <div className="flex items-center gap-3">
-              <Users className="w-5 h-5 text-[#9FB5FF]" />
-              <div>
-                <p className="text-sm font-semibold text-white">Anchor Social</p>
-                <p className="text-xs text-white/45">Profil, avatar, vänner & integritet</p>
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-white/40" />
-          </div>
-        </Link>
+        <DashboardSection nested title="Mer">
+          <DashboardListRow
+            href="/Social"
+            leading={<Users className="w-5 h-5 text-[#9FB5FF]" />}
+            title="Anchor Social"
+            subtitle="Profil, vänner & integritet"
+          />
+          <DashboardDivider />
+          <DashboardListRow
+            href={`${createPageUrl('TransactionHistory')}?tab=insights`}
+            leading={<TrendingUp className="w-5 h-5 text-[#9FB5FF]" />}
+            title="Ekonomiska insikter"
+            subtitle="Kategorier & trender"
+          />
+          <DashboardDivider />
+          <DashboardListRow
+            href={createPageUrl('SecurityInfo')}
+            leading={<Shield className="w-5 h-5 text-[#9FB5FF]" />}
+            title="Säkerhet & data"
+            subtitle="Hur vi skyddar din information"
+          />
+        </DashboardSection>
 
-        {/* Insights link */}
-        <Link to={`${createPageUrl('TransactionHistory')}?tab=insights`}>
-          <div className={`${anchorGlassCardClass} flex items-center justify-between cursor-pointer active:opacity-90`}>
-            <div className="flex items-center gap-3">
-              <TrendingUp className="w-5 h-5 text-[#9FB5FF]" />
-              <div>
-                <p className="text-sm font-semibold text-white">Ekonomiska insikter</p>
-                <p className="text-xs text-white/45">Kategorier & trender i transaktioner</p>
-              </div>
-            </div>
-            <ChevronRight className="w-4 h-4 text-white/40" />
-          </div>
-        </Link>
-
-        <GlassSection title="Utmaningar & poäng">
+        <DashboardSection nested title="Utmaningar & poäng">
           <GamificationSection profile={profile} transactions={transactions} />
-        </GlassSection>
-
-        <GlassSection title="Konto">
-          <div className="space-y-2">
-            <Link to={createPageUrl('SecurityInfo')}>
-              <div className="flex items-center justify-between p-3 rounded-2xl cursor-pointer anchor-glass-card-sm active:opacity-90">
-                <div className="flex items-center gap-3">
-                  <Shield className="w-4 h-4 text-[#9FB5FF]" />
-                  <div>
-                    <p className="text-sm font-semibold text-white">Säkerhet & Data</p>
-                    <p className="text-xs text-white/45">Hur vi skyddar din information</p>
-                  </div>
-                </div>
-                <ChevronRight className="w-4 h-4 text-white/40" />
-              </div>
-            </Link>
-          </div>
-        </GlassSection>
+        </DashboardSection>
 
         {/* Invite */}
         <InviteUserSection />

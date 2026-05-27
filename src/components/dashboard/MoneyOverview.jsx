@@ -1,36 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
-import { dashboardGlassSurface, dashboardSectionLabelClass } from '@/components/dashboard/dashboardGlass';
+import { DashboardSection } from './DashboardChrome';
+import { sectionMetaClass } from '@/lib/anchorTheme';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
-function PillGauge({ label, value, max, color, sublabel }) {
+function FlowBar({ label, value, max, color }) {
   const pct = max > 0 ? Math.min(100, (value / max) * 100) : 0;
   return (
-    <div className="space-y-2.5">
+    <div className="space-y-2">
       <div className="flex items-baseline justify-between gap-3">
-        <p className={dashboardSectionLabelClass}>{label}</p>
-        <p className="text-base font-semibold tabular-nums text-white">
-          {fmt(value)}{' '}
-          <span className="text-xs font-medium text-white/40">kr</span>
+        <p className={sectionMetaClass}>{label}</p>
+        <p className="text-[15px] font-semibold tabular-nums text-white">
+          {fmt(value)} <span className="text-[13px] font-medium text-white/40">kr</span>
         </p>
       </div>
-      <div className="relative h-2.5 rounded-full overflow-hidden bg-white/[0.08]">
+      <div className="relative h-1 rounded-full overflow-hidden bg-white/[0.06]">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
+          transition={{ duration: 1, ease: 'easeOut' }}
           className="absolute inset-y-0 left-0 rounded-full"
-          style={{
-            background: color,
-            boxShadow: '0 0 12px rgba(255,255,255,0.12)',
-          }}
+          style={{ background: color }}
         />
       </div>
-      {sublabel && (
-        <p className="text-[11px] leading-snug text-white/40">{sublabel}</p>
-      )}
     </div>
   );
 }
@@ -43,27 +37,24 @@ export default function MoneyOverview({ profile }) {
   const totalOut = totalFixed + expenses;
 
   return (
-    <div className="mx-4 rounded-[26px] p-5 sm:p-6" style={dashboardGlassSurface()}>
-      <p className={`${dashboardSectionLabelClass} mb-5`}>
-        Dina pengar just nu
-      </p>
-
+    <DashboardSection title="Flöde denna månad">
       <div className="space-y-5">
-        <PillGauge
+        <FlowBar
           label="Inkomst"
           value={profile.income}
           max={profile.income}
-          color="linear-gradient(90deg, #6E9BFF, #B8C9FF)"
-          sublabel="Månadslön / inkomst"
+          color="linear-gradient(90deg, #5B8CFF, #A8C4FF)"
         />
-        <PillGauge
+        <FlowBar
           label="Utgifter"
           value={totalOut}
           max={profile.income}
-          color="linear-gradient(90deg, #7C6AE8, #C4B5FD)"
-          sublabel={`Fasta: ${fmt(totalFixed)} kr · Använt: ${fmt(expenses)} kr`}
+          color="linear-gradient(90deg, #8B7CF8, #C4B8FF)"
         />
+        <p className="text-[12px] text-white/40">
+          Fasta {fmt(totalFixed)} kr · Övrigt {fmt(expenses)} kr
+        </p>
       </div>
-    </div>
+    </DashboardSection>
   );
 }

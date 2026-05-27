@@ -6,7 +6,11 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
 } from 'recharts';
-import { GlassSection } from '@/components/layout/PageShell';
+import {
+  DashboardDivider,
+  DashboardSection,
+} from '@/components/dashboard/DashboardChrome';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import SavingsBudgetConflictAlert from '@/components/insights/SavingsBudgetConflictAlert';
 import LeakageDetector from '@/components/dashboard/LeakageDetector';
 
@@ -17,8 +21,8 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_COLORS = [
-  '#0D7377', '#4B7CF3', '#C8923A', '#7C6CF3',
-  '#3DAABB', '#E05B7A', '#5CB85C', '#8B97A8'
+  '#34D9BE', '#5B8CFF', '#F6AD55', '#8B7CF8',
+  '#3DAABB', '#FCA5A5', '#6EE7B7', '#9AA5B4'
 ];
 
 function getMonthKey(dateStr) {
@@ -43,9 +47,9 @@ function isIncome(tx) {
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl px-3 py-2 text-sm shadow-xl anchor-glass-card-sm text-white">
-      <p className="font-bold">{payload[0].name}</p>
-      <p>{payload[0].value?.toLocaleString('sv-SE')} kr</p>
+    <div className="rounded-lg px-3 py-2 text-sm bg-[#0a1628]/95 text-white shadow-xl border border-white/10">
+      <p className="font-semibold">{payload[0].name}</p>
+      <p className="tabular-nums">{payload[0].value?.toLocaleString('sv-SE')} kr</p>
     </div>
   );
 }
@@ -88,41 +92,39 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
 
   if (isLoading) {
     return (
-      <div className="space-y-3 mt-2">
-        {[1, 2, 3].map(i => <div key={i} className="h-48 rounded-2xl skeleton" />)}
+      <div className="space-y-6 mt-2">
+        {[1, 2, 3].map(i => <div key={i} className="h-40 rounded-xl skeleton" />)}
       </div>
     );
   }
 
   if (transactions.length === 0) {
     return (
-      <div className="anchor-glass-card flex flex-col items-center text-center py-12 px-6 mt-2">
-        <TrendingUp className="w-12 h-12 mb-4 text-white/40" />
-        <p className="font-bold text-lg mb-1 text-white">Ingen data än</p>
-        <p className="text-sm text-white/45 mb-6">Importera transaktioner för att se kategorier och trender.</p>
-        <Link to="/Import">
-          <button type="button" className="anchor-btn-primary px-6 py-3 text-sm font-bold">
-            Importera bank-data
-          </button>
+      <div className="py-16 text-center">
+        <TrendingUp className="w-10 h-10 mx-auto mb-4 text-white/35" />
+        <p className="text-[17px] font-semibold text-white mb-1">Ingen data än</p>
+        <p className={sectionSubtitleClass}>Importera transaktioner för kategorier och trender.</p>
+        <Link to="/Import" className="anchor-btn-primary inline-flex mt-6 px-6">
+          Importera bank-data
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4 mt-2">
-      <LeakageDetector profile={profile} transactions={transactions} variant="full" className="mx-0" />
+    <div className="space-y-10 mt-2">
+      <LeakageDetector profile={profile} transactions={transactions} variant="full" nested className="!px-0" />
       <SavingsBudgetConflictAlert profile={profile} />
 
-      <GlassSection title="Denna månad" subtitle="Utgiftsfördelning">
+      <DashboardSection nested title="Denna månad" subtitle="Utgiftsfördelning">
         {pieData.length === 0 ? (
-          <p className="text-center text-sm py-8 text-white/45">Inga utgifter registrerade denna månad.</p>
+          <p className={`${sectionSubtitleClass} py-6 text-center`}>Inga utgifter denna månad.</p>
         ) : (
           <>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={90}
-                  paddingAngle={3} dataKey="value">
+                <Pie data={pieData} cx="50%" cy="50%" innerRadius={52} outerRadius={82}
+                  paddingAngle={2} dataKey="value">
                   {pieData.map((_, i) => (
                     <Cell key={i} fill={CATEGORY_COLORS[i % CATEGORY_COLORS.length]} />
                   ))}
@@ -131,64 +133,52 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
               </PieChart>
             </ResponsiveContainer>
 
-            <div className="text-center -mt-2 mb-4">
-              <p className="text-2xl font-black text-white">{totalExpenses.toLocaleString('sv-SE')} kr</p>
-              <p className="text-xs text-white/45">totalt ut denna månad</p>
-            </div>
+            <p className="text-center text-[28px] font-semibold text-white tabular-nums -mt-1">
+              {totalExpenses.toLocaleString('sv-SE')} kr
+            </p>
+            <p className="text-center text-[13px] text-white/45 mb-4">totalt ut denna månad</p>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
               {pieData.slice(0, 6).map((d, i) => (
-                <div key={d.key} className="flex items-center gap-2">
-                  <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: CATEGORY_COLORS[i % CATEGORY_COLORS.length] }} />
-                  <p className="text-xs truncate text-white/70">{d.name}</p>
-                  <p className="text-xs font-bold ml-auto flex-shrink-0 text-white">{d.value.toLocaleString('sv-SE')}</p>
+                <div key={d.key} className="flex items-center gap-2 py-1">
+                  <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: CATEGORY_COLORS[i % CATEGORY_COLORS.length] }} />
+                  <p className="text-[14px] text-white/70 flex-1 truncate">{d.name}</p>
+                  <p className="text-[14px] font-medium tabular-nums text-white">{d.value.toLocaleString('sv-SE')}</p>
                 </div>
               ))}
             </div>
 
             {topCategory && (
-              <motion.div
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-400/20"
-              >
-                <p className="text-xs font-semibold text-emerald-200">
-                  Din största utgiftskategori är <strong>{topCategory.name}</strong> — {topCategory.value.toLocaleString('sv-SE')} kr ({Math.round((topCategory.value / totalExpenses) * 100)}% av totalt)
-                </p>
-              </motion.div>
+              <p className="text-[14px] text-emerald-200/85 mt-4 leading-relaxed">
+                Störst: <strong className="text-white">{topCategory.name}</strong> — {topCategory.value.toLocaleString('sv-SE')} kr ({Math.round((topCategory.value / totalExpenses) * 100)}%)
+              </p>
             )}
           </>
         )}
-      </GlassSection>
+      </DashboardSection>
 
-      <GlassSection title="Senaste 6 månaderna" subtitle="Inkomst vs utgifter">
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={barData} barSize={14} barGap={4}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+      <DashboardSection nested title="Senaste 6 månaderna" subtitle="Inkomst vs utgifter">
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={barData} barSize={12} barGap={4}>
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
             <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.45)' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.45)' }} axisLine={false} tickLine={false}
               tickFormatter={v => v >= 1000 ? `${Math.round(v / 1000)}k` : v} />
             <Tooltip content={<CustomTooltip />} />
-            <Legend wrapperStyle={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', paddingTop: 8 }} />
-            <Bar dataKey="Inkomst" fill="#0D7377" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="Utgifter" fill="#E05B7A" radius={[6, 6, 0, 0]} />
+            <Legend wrapperStyle={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', paddingTop: 8 }} />
+            <Bar dataKey="Inkomst" fill="#34D9BE" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Utgifter" fill="#FF8A9A" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
 
         {barData.slice(-1)[0] && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-4 p-3 rounded-xl bg-blue-500/10 border border-blue-400/20"
-          >
-            <p className="text-xs font-semibold text-blue-200">
-              {barData.slice(-1)[0].Inkomst > barData.slice(-1)[0].Utgifter
-                ? `Denna månad sparar du ${(barData.slice(-1)[0].Inkomst - barData.slice(-1)[0].Utgifter).toLocaleString('sv-SE')} kr netto.`
-                : `Denna månad spenderar du ${(barData.slice(-1)[0].Utgifter - barData.slice(-1)[0].Inkomst).toLocaleString('sv-SE')} kr mer än du tjänar.`}
-            </p>
-          </motion.div>
+          <p className="text-[14px] text-white/55 mt-4 leading-relaxed">
+            {barData.slice(-1)[0].Inkomst > barData.slice(-1)[0].Utgifter
+              ? `Denna månad: ${(barData.slice(-1)[0].Inkomst - barData.slice(-1)[0].Utgifter).toLocaleString('sv-SE')} kr netto kvar.`
+              : `Denna månad: ${(barData.slice(-1)[0].Utgifter - barData.slice(-1)[0].Inkomst).toLocaleString('sv-SE')} kr mer ut än in.`}
+          </p>
         )}
-      </GlassSection>
+      </DashboardSection>
     </div>
   );
 }

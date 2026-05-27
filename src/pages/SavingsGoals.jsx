@@ -4,7 +4,8 @@ import { base44 } from '@/api/base44Client';
 import { PiggyBank, Pencil } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GoalCard from '@/components/savings/GoalCard';
-import PageShell, { GlassSection } from '@/components/layout/PageShell';
+import PageShell from '@/components/layout/PageShell';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { anchorPrimaryButtonClass, anchorSecondaryButtonClass } from '@/lib/anchorTheme';
 import { createPageUrl } from '@/utils';
 
@@ -106,16 +107,14 @@ export default function SavingsGoals() {
       {profile?.savingsGoal ? (
         <GoalCard profile={profile} onUpdated={handleUpdated} />
       ) : (
-        <GlassSection>
-          <div className="flex flex-col items-center text-center py-4">
-            <PiggyBank className="w-12 h-12 mb-4 text-white/40" />
-            <p className="font-semibold text-lg mb-1 text-white">Inget sparmål ännu</p>
-            <p className="text-sm text-white/45 mb-6">Sätt ett mål så kan Anchor hjälpa dig nå dit.</p>
-            <button type="button" onClick={() => setShowEdit(true)} className={anchorPrimaryButtonClass}>
-              Skapa sparmål
-            </button>
-          </div>
-        </GlassSection>
+        <div className="flex flex-col items-center text-center py-12">
+          <PiggyBank className="w-10 h-10 mb-4 text-white/35" />
+          <p className="text-[17px] font-semibold text-white mb-1">Inget sparmål ännu</p>
+          <p className={`${sectionSubtitleClass} mb-6`}>Sätt ett mål så hjälper Anchor dig nå dit.</p>
+          <button type="button" onClick={() => setShowEdit(true)} className={anchorPrimaryButtonClass}>
+            Skapa sparmål
+          </button>
+        </div>
       )}
 
       {showEdit && (

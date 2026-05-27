@@ -2,7 +2,9 @@ import React, { useState, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import PageShell, { GlassSection } from '@/components/layout/PageShell';
+import PageShell from '@/components/layout/PageShell';
+import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { createPageUrl } from '@/utils';
 import BudgetCategoryRow from '@/components/budget/BudgetCategoryRow';
 import SetBudgetModal from '@/components/budget/SetBudgetModal';
@@ -66,47 +68,44 @@ export default function BudgetDashboard() {
   return (
     <PageShell title="Budget" subtitle={monthName} backHref={createPageUrl('Dashboard')}>
       {totalBudgeted > 0 && (
-        <GlassSection title="Månadens totala budget">
-          <div className="flex items-end justify-between mb-2">
-            <p className="text-3xl font-semibold text-white tabular-nums">
-              {totalSpent.toLocaleString('sv-SE')} <span className="text-lg font-normal text-white/50">kr</span>
+        <DashboardSection nested title="Total budget">
+          <div className="flex items-end justify-between mb-3">
+            <p className="text-[32px] font-semibold text-white tabular-nums leading-none">
+              {totalSpent.toLocaleString('sv-SE')} <span className="text-lg font-normal text-white/45">kr</span>
             </p>
-            <p className="text-sm text-white/45">av {totalBudgeted.toLocaleString('sv-SE')} kr</p>
+            <p className={sectionSubtitleClass}>av {totalBudgeted.toLocaleString('sv-SE')} kr</p>
           </div>
-          <div className="w-full h-2.5 rounded-full overflow-hidden bg-white/10">
+          <div className="w-full h-1 rounded-full overflow-hidden bg-white/[0.08]">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${Math.min((totalSpent / totalBudgeted) * 100, 100)}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="h-full rounded-full"
               style={{
-                background: totalSpent / totalBudgeted >= 1 ? '#FCA5A5'
+                background: totalSpent / totalBudgeted >= 1 ? '#FF8A9A'
                   : totalSpent / totalBudgeted >= 0.8 ? '#FCD34D'
-                  : 'linear-gradient(90deg, #6E9BFF, #B8C9FF)'
+                  : 'linear-gradient(90deg, #5B8CFF, #A8C4FF)'
               }}
             />
           </div>
-        </GlassSection>
+        </DashboardSection>
       )}
 
-      <div className="anchor-glass-card overflow-hidden p-0">
-        <div className="px-5 py-3 border-b border-white/10">
-          <p className="anchor-section-label normal-case tracking-normal">
-            Kategorier — tryck för att ändra
-          </p>
-        </div>
-        {TRACKED_CATEGORIES.map(cat => (
-          <BudgetCategoryRow
-            key={cat}
-            category={cat}
-            spent={monthlySpent[cat] || 0}
-            limit={budgetLimits[cat] || 0}
-            onEdit={setEditCategory}
-          />
+      <DashboardSection nested title="Kategorier" subtitle="Tryck för att ändra gräns">
+        {TRACKED_CATEGORIES.map((cat, i) => (
+          <React.Fragment key={cat}>
+            {i > 0 && <DashboardDivider />}
+            <BudgetCategoryRow
+              category={cat}
+              spent={monthlySpent[cat] || 0}
+              limit={budgetLimits[cat] || 0}
+              onEdit={setEditCategory}
+            />
+          </React.Fragment>
         ))}
-      </div>
+      </DashboardSection>
 
-      <p className="text-center text-xs mt-4 text-white/40">
+      <p className={`text-center ${sectionSubtitleClass} mt-2`}>
         Baserat på transaktioner importerade eller registrerade denna månad
       </p>
 
