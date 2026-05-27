@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 function SkeletonLine({ width = 'w-full', height = 'h-3' }) {
   return (
@@ -21,8 +20,7 @@ export function SkeletonCard({ rows = 3 }) {
           100% { background-position: -200% 0; }
         }
       `}</style>
-      <div className="rounded-3xl p-5 space-y-3"
-        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+      <div className="py-4 space-y-3">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-2xl flex-shrink-0"
             style={{ background: '#F4F6F8', animation: 'skeletonShimmer 1.6s ease-in-out infinite', backgroundSize: '200% 100%',

@@ -1,47 +1,98 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, Download, ArrowDownLeft, ArrowUpRight, ChevronRight } from 'lucide-react';
+import { Search, X, Download, ChevronRight } from 'lucide-react';
+import { BusinessDivider } from '@/components/business/BusinessChrome';
 
 const EVENTS = [
   {
-    id: 1, date: '2026-04-11', time: '14:22',
-    vendor: 'Adobe Inc', description: 'Programvara',
-    account: '5420', accountLabel: 'Programvaror',
-    counterAccount: '1930', counterLabel: 'Företagskonto',
-    amount: -699, vat: 139.80, vatRate: 25,
-    hasReceipt: true, icon: '🎨', bookedBy: 'Anchor AI', type: 'expense',
+    id: 1,
+    date: '2026-04-11',
+    time: '14:22',
+    vendor: 'Adobe Inc',
+    description: 'Programvara',
+    account: '5420',
+    accountLabel: 'Programvaror',
+    counterAccount: '1930',
+    counterLabel: 'Företagskonto',
+    amount: -699,
+    vat: 139.8,
+    vatRate: 25,
+    hasReceipt: true,
+    icon: '🎨',
+    bookedBy: 'Anchor AI',
+    type: 'expense',
   },
   {
-    id: 2, date: '2026-04-11', time: '09:15',
-    vendor: 'SJ AB', description: 'Resor',
-    account: '5800', accountLabel: 'Resekostnader',
-    counterAccount: '1930', counterLabel: 'Företagskonto',
-    amount: -580, vat: 52.73, vatRate: 10,
-    hasReceipt: true, icon: '🚆', bookedBy: 'Anchor AI', type: 'expense',
+    id: 2,
+    date: '2026-04-11',
+    time: '09:15',
+    vendor: 'SJ AB',
+    description: 'Resor',
+    account: '5800',
+    accountLabel: 'Resekostnader',
+    counterAccount: '1930',
+    counterLabel: 'Företagskonto',
+    amount: -580,
+    vat: 52.73,
+    vatRate: 10,
+    hasReceipt: true,
+    icon: '🚆',
+    bookedBy: 'Anchor AI',
+    type: 'expense',
   },
   {
-    id: 3, date: '2026-04-10', time: '12:00',
-    vendor: 'Kund: Acme AB', description: 'Inkomst',
-    account: '1510', accountLabel: 'Kundfordringar',
-    counterAccount: '1930', counterLabel: 'Företagskonto',
-    amount: 24500, vat: 0, vatRate: 0,
-    hasReceipt: false, icon: '💸', bookedBy: 'Anchor AI', type: 'income',
+    id: 3,
+    date: '2026-04-10',
+    time: '12:00',
+    vendor: 'Kund: Acme AB',
+    description: 'Inkomst',
+    account: '1510',
+    accountLabel: 'Kundfordringar',
+    counterAccount: '1930',
+    counterLabel: 'Företagskonto',
+    amount: 24500,
+    vat: 0,
+    vatRate: 0,
+    hasReceipt: false,
+    icon: '💸',
+    bookedBy: 'Anchor AI',
+    type: 'income',
   },
   {
-    id: 4, date: '2026-04-09', time: '18:40',
-    vendor: 'Webhallen', description: 'IT-utrustning',
-    account: '5410', accountLabel: 'Förbrukningsinventarier',
-    counterAccount: '1930', counterLabel: 'Företagskonto',
-    amount: -4990, vat: 998, vatRate: 25,
-    hasReceipt: false, icon: '💻', bookedBy: 'Anchor AI', type: 'expense',
+    id: 4,
+    date: '2026-04-09',
+    time: '18:40',
+    vendor: 'Webhallen',
+    description: 'IT-utrustning',
+    account: '5410',
+    accountLabel: 'Förbrukningsinventarier',
+    counterAccount: '1930',
+    counterLabel: 'Företagskonto',
+    amount: -4990,
+    vat: 998,
+    vatRate: 25,
+    hasReceipt: false,
+    icon: '💻',
+    bookedBy: 'Anchor AI',
+    type: 'expense',
   },
   {
-    id: 5, date: '2026-04-08', time: '20:10',
-    vendor: 'Restaurang PM & Vänner', description: 'Representation',
-    account: '5900', accountLabel: 'Representation',
-    counterAccount: '1930', counterLabel: 'Företagskonto',
-    amount: -1840, vat: 220.80, vatRate: 12,
-    hasReceipt: false, icon: '🍽️', bookedBy: 'Anchor AI', type: 'expense',
+    id: 5,
+    date: '2026-04-08',
+    time: '20:10',
+    vendor: 'Restaurang PM & Vänner',
+    description: 'Representation',
+    account: '5900',
+    accountLabel: 'Representation',
+    counterAccount: '1930',
+    counterLabel: 'Företagskonto',
+    amount: -1840,
+    vat: 220.8,
+    vatRate: 12,
+    hasReceipt: false,
+    icon: '🍽️',
+    bookedBy: 'Anchor AI',
+    type: 'expense',
   },
 ];
 
@@ -59,70 +110,51 @@ function VerifikatModal({ event, onClose }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.5)' }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50"
       onClick={onClose}
     >
       <motion.div
-        initial={{ y: 60 }} animate={{ y: 0 }} exit={{ y: 60 }}
-        onClick={e => e.stopPropagation()}
-        className="w-full max-w-md rounded-t-3xl overflow-hidden"
-        style={{ background: '#F4F6F8' }}
+        initial={{ y: 60 }}
+        animate={{ y: 0 }}
+        exit={{ y: 60 }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md rounded-t-3xl overflow-hidden bg-[#F4F6F8]"
       >
-        {/* Modal header */}
-        <div className="px-5 pt-5 pb-4 flex items-center justify-between bg-white"
-          style={{ borderBottom: '1px solid #F0F2F5' }}>
+        <div className="px-5 pt-5 pb-4 flex items-center justify-between bg-white border-b border-[#E8ECF0]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl"
-              style={{ background: '#F4F6F8' }}>
-              {event.icon}
-            </div>
+            <span className="text-xl">{event.icon}</span>
             <div>
-              <p className="font-bold text-sm" style={{ color: '#1A2332' }}>{event.vendor}</p>
-              <p className="text-xs" style={{ color: '#9AA5B4' }}>{event.date} · {event.description}</p>
+              <p className="text-[15px] font-medium text-[#1A2332]">{event.vendor}</p>
+              <p className="text-[13px] text-[#9AA5B4]">{event.description}</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center"
-            style={{ background: '#F4F6F8' }}>
-            <X className="w-4 h-4" style={{ color: '#9AA5B4' }} />
+          <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-[#F4F6F8] flex items-center justify-center">
+            <X className="w-4 h-4 text-[#9AA5B4]" />
           </button>
         </div>
-
-        <div className="px-5 py-4 space-y-3">
-          {/* Details */}
-          <div className="rounded-2xl overflow-hidden bg-white">
-            {[
-              { label: 'Konto', value: `${event.account} — ${event.accountLabel}` },
-              { label: 'Motkonto', value: `${event.counterAccount} — ${event.counterLabel}` },
-              { label: 'Exkl. moms', value: `${(Math.abs(event.amount) - event.vat).toFixed(0)} kr` },
-              { label: `Moms ${event.vatRate}%`, value: `${event.vat.toFixed(0)} kr` },
-              { label: 'Totalt', value: `${Math.abs(event.amount).toLocaleString('sv-SE')} kr` },
-            ].map((row, i, arr) => (
-              <div key={row.label} className="px-4 py-3 flex items-center justify-between"
-                style={{ borderBottom: i < arr.length - 1 ? '1px solid #F0F2F5' : 'none' }}>
-                <p className="text-xs" style={{ color: '#9AA5B4' }}>{row.label}</p>
-                <p className="text-sm font-bold" style={{ color: '#1A2332' }}>{row.value}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Receipt status */}
-          <div className="px-4 py-3 rounded-2xl flex items-center gap-3"
-            style={{
-              background: event.hasReceipt ? 'rgba(13,115,119,0.06)' : '#FFF8F0',
-              border: `1px solid ${event.hasReceipt ? 'rgba(13,115,119,0.2)' : '#FFE0B2'}`,
-            }}>
-            <p className="text-sm font-medium"
-              style={{ color: event.hasReceipt ? '#0D7377' : '#B45309' }}>
-              {event.hasReceipt ? '✓ Kvitto bifogat' : 'Kvitto saknas — lägg till för att säkra avdraget'}
-            </p>
-          </div>
-
-          <button onClick={handleDownload}
-            className="w-full h-12 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
-            style={{ background: '#0D7377', color: '#fff' }}>
-            <Download className="w-4 h-4" /> Ladda ner verifikat
+        <div className="px-5 py-4 space-y-3 bg-white">
+          {[
+            ['Konto', `${event.account} — ${event.accountLabel}`],
+            ['Motkonto', `${event.counterAccount} — ${event.counterLabel}`],
+            ['Belopp', `${event.amount.toLocaleString('sv-SE')} kr`],
+            ['Moms', `${event.vatRate}% (${event.vat.toFixed(2)} kr)`],
+            ['Bokfört av', event.bookedBy],
+          ].map(([label, val]) => (
+            <div key={label} className="flex justify-between text-[14px]">
+              <span className="text-[#9AA5B4]">{label}</span>
+              <span className="font-medium text-[#1A2332]">{val}</span>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="w-full h-11 rounded-xl font-semibold text-[14px] text-white bg-[#0D7377] flex items-center justify-center gap-2"
+          >
+            <Download className="w-4 h-4" />
+            Ladda ner verifikat
           </button>
         </div>
       </motion.div>
@@ -134,79 +166,61 @@ export default function ActivityStream() {
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
 
-  const filtered = EVENTS.filter(e =>
-    e.vendor.toLowerCase().includes(search.toLowerCase()) ||
-    e.description.toLowerCase().includes(search.toLowerCase())
+  const filtered = EVENTS.filter(
+    (e) =>
+      e.vendor.toLowerCase().includes(search.toLowerCase()) ||
+      e.description.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <>
-      <div className="rounded-3xl overflow-hidden"
-        style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+      <p className="text-[14px] text-[#9AA5B4] mb-3">Tryck för att se verifikat</p>
 
-        {/* Header */}
-        <div className="px-5 pt-4 pb-3 flex items-center justify-between"
-          style={{ borderBottom: '1px solid #F0F2F5' }}>
-          <div>
-            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Senaste händelser</p>
-            <p className="text-xs" style={{ color: '#9AA5B4' }}>Tryck för att se verifikat</p>
-          </div>
-        </div>
+      <div className="relative mb-3">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA5B4]" />
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Sök leverantör eller kategori…"
+          className="w-full h-11 pl-9 pr-3 rounded-xl text-[15px] bg-[#F0F2F5] border-0 text-[#1A2332] placeholder:text-[#9AA5B4]"
+        />
+      </div>
 
-        {/* Search */}
-        <div className="px-5 pt-3 pb-2">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: '#9AA5B4' }} />
-            <input
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Sök leverantör eller kategori…"
-              className="w-full h-10 pl-9 pr-3 rounded-2xl text-sm"
-              style={{ background: '#F4F6F8', border: '1.5px solid #E8ECF0', color: '#1A2332' }}
-            />
-          </div>
-        </div>
-
-        {/* Event list — Revolut bank-feed style */}
-        <div className="divide-y" style={{ borderColor: '#F0F2F5' }}>
-          {filtered.map(event => (
-            <motion.button
-              key={event.id}
-              whileTap={{ scale: 0.99 }}
+      <div>
+        {filtered.map((event, i) => (
+          <React.Fragment key={event.id}>
+            {i > 0 && <BusinessDivider />}
+            <button
+              type="button"
               onClick={() => setSelected(event)}
-              className="w-full px-5 py-3.5 flex items-center justify-between text-left"
+              className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg flex-shrink-0"
-                  style={{ background: event.type === 'income' ? 'rgba(13,115,119,0.1)' : '#F4F6F8' }}>
-                  {event.icon}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: '#1A2332' }}>{event.vendor}</p>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <p className="text-xs" style={{ color: '#9AA5B4' }}>{event.description} · {event.date}</p>
-                    {!event.hasReceipt && (
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full"
-                        style={{ background: '#FFF0E0', color: '#D97706' }}>
-                        Kvitto saknas
-                      </span>
-                    )}
-                  </div>
-                </div>
+              <div
+                className="w-10 h-10 rounded-full flex items-center justify-center text-lg flex-shrink-0"
+                style={{ background: event.type === 'income' ? 'rgba(13,115,119,0.12)' : '#F0F2F5' }}
+              >
+                {event.icon}
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <p className="text-sm font-bold"
-                  style={{ color: event.amount > 0 ? '#0D7377' : '#1A2332' }}>
-                  {event.amount > 0 ? '+' : ''}{event.amount.toLocaleString('sv-SE')} kr
+              <div className="flex-1 min-w-0">
+                <p className="text-[15px] font-medium text-[#1A2332] truncate">{event.vendor}</p>
+                <p className="text-[13px] text-[#9AA5B4] truncate">
+                  {event.description} · {event.date}
+                  {!event.hasReceipt && ' · Kvitto saknas'}
                 </p>
-                <ChevronRight className="w-4 h-4" style={{ color: '#D0D7E0' }} />
               </div>
-            </motion.button>
-          ))}
-          {filtered.length === 0 && (
-            <p className="text-sm text-center py-8" style={{ color: '#9AA5B4' }}>Inga matchande händelser</p>
-          )}
-        </div>
+              <p
+                className={`text-[15px] font-semibold tabular-nums flex-shrink-0 ${event.amount > 0 ? 'text-[#0D7377]' : 'text-[#1A2332]'}`}
+              >
+                {event.amount > 0 ? '+' : ''}
+                {event.amount.toLocaleString('sv-SE')} kr
+              </p>
+              <ChevronRight className="w-4 h-4 text-[#D0D7E0] flex-shrink-0 ml-1" />
+            </button>
+          </React.Fragment>
+        ))}
+        {filtered.length === 0 && (
+          <p className="text-[14px] text-center py-8 text-[#9AA5B4]">Inga matchande händelser</p>
+        )}
       </div>
 
       <AnimatePresence>

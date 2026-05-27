@@ -1,12 +1,45 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Check, X, ChevronRight } from 'lucide-react';
+import { BusinessDivider } from '@/components/business/BusinessChrome';
 
 const PENDING = [
-  { id: 1, vendor: 'Apple Store', amount: -14900, vatRate: 25, account: '5420', accountLabel: 'Programvaror & IT', date: '2026-04-10' },
-  { id: 2, vendor: 'SJ AB', amount: -1240, vatRate: 6, account: '5800', accountLabel: 'Resekostnader', date: '2026-04-09' },
-  { id: 3, vendor: 'Elite Hotels', amount: -3800, vatRate: 12, account: '5900', accountLabel: 'Representation', date: '2026-04-08' },
-  { id: 4, vendor: 'Adobe Inc', amount: -1095, vatRate: 25, account: '5420', accountLabel: 'Programvaror & IT', date: '2026-04-07' },
+  {
+    id: 1,
+    vendor: 'Apple Store',
+    amount: -14900,
+    vatRate: 25,
+    account: '5420',
+    accountLabel: 'Programvaror & IT',
+    date: '2026-04-10',
+  },
+  {
+    id: 2,
+    vendor: 'SJ AB',
+    amount: -1240,
+    vatRate: 6,
+    account: '5800',
+    accountLabel: 'Resekostnader',
+    date: '2026-04-09',
+  },
+  {
+    id: 3,
+    vendor: 'Elite Hotels',
+    amount: -3800,
+    vatRate: 12,
+    account: '5900',
+    accountLabel: 'Representation',
+    date: '2026-04-08',
+  },
+  {
+    id: 4,
+    vendor: 'Adobe Inc',
+    amount: -1095,
+    vatRate: 25,
+    account: '5420',
+    accountLabel: 'Programvaror & IT',
+    date: '2026-04-07',
+  },
 ];
 
 function SwipeCard({ tx, onApprove, onReject }) {
@@ -26,55 +59,58 @@ function SwipeCard({ tx, onApprove, onReject }) {
   return (
     <motion.div
       drag="x"
-      style={{ x, rotate }}
+      style={{ x, rotate, touchAction: 'none' }}
       dragConstraints={{ left: -200, right: 200 }}
       onDragEnd={handleDragEnd}
       whileTap={{ cursor: 'grabbing' }}
-      className="absolute w-full rounded-2xl p-5 cursor-grab select-none"
-      style={{ background: '#fff', border: '1.5px solid #E8ECF0', touchAction: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.08)' }}
+      className="absolute w-full rounded-xl p-5 cursor-grab select-none bg-white border border-[#E8ECF0] shadow-sm"
     >
-      {/* Approve overlay */}
-      <motion.div className="absolute top-4 left-4 px-3 py-1 rounded-full border-2 border-green-500 rotate-[-20deg]"
-        style={{ opacity: approveOpacity }}>
-        <span className="text-green-400 font-black text-sm">GODKÄND ✓</span>
+      <motion.div
+        className="absolute top-4 left-4 px-3 py-1 rounded-full border-2 border-green-500 -rotate-[20deg]"
+        style={{ opacity: approveOpacity }}
+      >
+        <span className="text-green-500 font-bold text-sm">GODKÄND ✓</span>
       </motion.div>
-      {/* Reject overlay */}
-      <motion.div className="absolute top-4 right-4 px-3 py-1 rounded-full border-2 border-red-500 rotate-[20deg]"
-        style={{ opacity: rejectOpacity }}>
-        <span className="text-red-400 font-black text-sm">ÄNDRA ✗</span>
+      <motion.div
+        className="absolute top-4 right-4 px-3 py-1 rounded-full border-2 border-red-500 rotate-[20deg]"
+        style={{ opacity: rejectOpacity }}
+      >
+        <span className="text-red-500 font-bold text-sm">ÄNDRA ✗</span>
       </motion.div>
 
       <div className="mt-2">
-        <p className="text-lg font-black" style={{ color: '#1A2332' }}>{tx.vendor}</p>
-        <p className="text-2xl font-black mt-1" style={{ color: '#E53E3E', letterSpacing: '-1px' }}>
+        <p className="text-[17px] font-medium text-[#1A2332]">{tx.vendor}</p>
+        <p className="text-[28px] font-semibold mt-1 text-[#E53E3E] tabular-nums tracking-tight">
           {Math.abs(tx.amount).toLocaleString('sv-SE')} kr
         </p>
-        <p className="text-xs mt-1" style={{ color: '#9AA5B4' }}>{tx.date}</p>
+        <p className="text-[13px] mt-1 text-[#9AA5B4]">{tx.date}</p>
 
-        <div className="mt-4 p-3 rounded-2xl space-y-2" style={{ background: '#F4F6F8' }}>
-          <div className="flex justify-between">
-            <span className="text-xs" style={{ color: '#9AA5B4' }}>Konto</span>
-            <span className="text-xs font-bold" style={{ color: '#0D7377' }}>{tx.account} — {tx.accountLabel}</span>
+        <div className="mt-4 p-3 rounded-xl space-y-2 bg-[#F4F6F8]">
+          <div className="flex justify-between text-[13px]">
+            <span className="text-[#9AA5B4]">Konto</span>
+            <span className="font-medium text-[#0D7377]">
+              {tx.account} — {tx.accountLabel}
+            </span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-xs" style={{ color: '#9AA5B4' }}>Moms {tx.vatRate}%</span>
-            <span className="text-xs font-bold" style={{ color: '#1A2332' }}>{Math.abs(vat).toFixed(0)} kr</span>
+          <div className="flex justify-between text-[13px]">
+            <span className="text-[#9AA5B4]">Moms {tx.vatRate}%</span>
+            <span className="font-medium text-[#1A2332] tabular-nums">{Math.abs(vat).toFixed(0)} kr</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-xs" style={{ color: '#9AA5B4' }}>Netto</span>
-            <span className="text-xs font-bold" style={{ color: '#1A2332' }}>{Math.abs(net).toFixed(0)} kr</span>
+          <div className="flex justify-between text-[13px]">
+            <span className="text-[#9AA5B4]">Netto</span>
+            <span className="font-medium text-[#1A2332] tabular-nums">{Math.abs(net).toFixed(0)} kr</span>
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
-            <X className="w-4 h-4" style={{ color: '#E53E3E' }} />
-            <span className="text-xs" style={{ color: '#9AA5B4' }}>Ändra</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs" style={{ color: '#9AA5B4' }}>Godkänn</span>
-            <Check className="w-4 h-4" style={{ color: '#0D7377' }} />
-          </div>
+        <div className="mt-4 flex items-center justify-between text-[13px] text-[#9AA5B4]">
+          <span className="flex items-center gap-1.5">
+            <X className="w-4 h-4 text-[#E53E3E]" />
+            Ändra
+          </span>
+          <span className="flex items-center gap-1.5">
+            Godkänn
+            <Check className="w-4 h-4 text-[#0D7377]" />
+          </span>
         </div>
       </div>
     </motion.div>
@@ -86,50 +122,72 @@ export default function SwipeApprove() {
   const [approved, setApproved] = useState(0);
   const [open, setOpen] = useState(false);
 
-  const handleApprove = (id) => { setCards(c => c.filter(t => t.id !== id)); setApproved(a => a + 1); };
-  const handleReject = (id) => setCards(c => c.filter(t => t.id !== id));
+  const handleApprove = (id) => {
+    setCards((c) => c.filter((t) => t.id !== id));
+    setApproved((a) => a + 1);
+  };
+  const handleReject = (id) => setCards((c) => c.filter((t) => t.id !== id));
 
   const remaining = cards.length;
 
   return (
-    <div className="rounded-3xl overflow-hidden" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-      <button onClick={() => setOpen(v => !v)}
-        className="w-full px-5 py-4 flex items-center justify-between"
-        style={{ borderBottom: open ? '1px solid #F0F2F5' : 'none' }}>
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(13,115,119,0.1)' }}>
-            <span className="text-base">🃏</span>
-          </div>
-          <div className="text-left">
-            <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Godkänn transaktioner</p>
-            <p className="text-xs" style={{ color: '#9AA5B4' }}>
-              {remaining} väntar · {approved} godkända
-            </p>
-          </div>
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
+      >
+        <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#0D7377]/10 text-base">
+          🃏
         </div>
-        <ChevronRight className="w-4 h-4" style={{ color: '#9AA5B4', transform: open ? 'rotate(90deg)' : 'none', transition: '0.2s' }} />
+        <div className="flex-1 min-w-0">
+          <p className="text-[15px] font-medium text-[#1A2332]">Godkänn transaktioner</p>
+          <p className="text-[13px] text-[#9AA5B4]">
+            {remaining} väntar · {approved} godkända
+          </p>
+        </div>
+        <ChevronRight
+          className="w-4 h-4 text-[#9AA5B4] transition-transform"
+          style={{ transform: open ? 'rotate(90deg)' : 'none' }}
+        />
       </button>
 
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden">
-            <div className="px-4 py-4">
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden"
+          >
+            <BusinessDivider />
+            <div className="pt-4 pb-2">
               {remaining === 0 ? (
                 <div className="py-8 text-center">
                   <p className="text-2xl mb-2">🎉</p>
-                  <p className="text-sm font-bold" style={{ color: '#3DAA7A' }}>Alla transaktioner är behandlade!</p>
-                  <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.4)' }}>{approved} bokförda</p>
+                  <p className="text-[15px] font-medium text-[#3DAA7A]">Alla transaktioner är behandlade</p>
+                  <p className="text-[13px] mt-1 text-[#9AA5B4]">{approved} bokförda</p>
                 </div>
               ) : (
                 <div className="relative h-56">
                   {cards.slice(0, 3).map((tx, i) => (
-                    <div key={tx.id} style={{ zIndex: 3 - i, transform: `scale(${1 - i * 0.03}) translateY(${i * 8}px)`, position: 'absolute', width: '100%' }}>
-                      {i === 0
-                        ? <SwipeCard tx={tx} onApprove={handleApprove} onReject={handleReject} />
-                        : <div className="w-full rounded-2xl" style={{ height: '100%', background: '#F4F6F8', border: '1px solid #E8ECF0', minHeight: 80 }} />
-                      }
+                    <div
+                      key={tx.id}
+                      style={{
+                        zIndex: 3 - i,
+                        transform: `scale(${1 - i * 0.03}) translateY(${i * 8}px)`,
+                        position: 'absolute',
+                        width: '100%',
+                      }}
+                    >
+                      {i === 0 ? (
+                        <SwipeCard tx={tx} onApprove={handleApprove} onReject={handleReject} />
+                      ) : (
+                        <div
+                          className="w-full rounded-xl min-h-[80px] bg-[#F4F6F8] border border-[#E8ECF0]"
+                          style={{ height: '100%' }}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

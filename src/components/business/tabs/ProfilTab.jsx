@@ -54,7 +54,7 @@ export default function ProfilTab({ companyName, orgNr, legalLabel, monthlyBurn 
         <CrisisMode monthlyBurn={monthlyBurn} />
       </BusinessSection>
 
-      <BusinessSection>
+      <BusinessSection title="Datahantering">
         <DataResetSection />
       </BusinessSection>
 
