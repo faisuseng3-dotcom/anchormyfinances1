@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock } from 'lucide-react';
+import { ChevronRight, Clock } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { DashboardDivider, DashboardListRow, DashboardSection } from './DashboardChrome';
 import { sectionMetaClass } from '@/lib/anchorTheme';
@@ -71,6 +71,9 @@ function amountColor(amount) {
   return amount >= 0 ? 'text-emerald-300/90' : 'text-rose-300/90';
 }
 
+const VISIBLE_PAID = 5;
+const VISIBLE_PENDING = 3;
+
 export default function SpendingHubModule({ transactions = [], profile }) {
   const navigate = useNavigate();
   const isAlexMode = profile?._alexMode === true;
@@ -89,35 +92,43 @@ export default function SpendingHubModule({ transactions = [], profile }) {
         const d = new Date(tx.created_date);
         return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
       })
-      .sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+      .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
   }, [transactions, thisMonth, thisYear, isAlexMode]);
 
   const pendingItems = useMemo(() => {
     return isAlexMode ? ALEX_PENDING : buildPendingFromProfile(profile);
   }, [isAlexMode, profile]);
 
+  const visiblePaid = paidItems.slice(0, VISIBLE_PAID);
+  const hiddenPaidCount = Math.max(0, paidItems.length - visiblePaid.length);
+  const sortedPending = useMemo(
+    () => [...pendingItems].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)),
+    [pendingItems],
+  );
+  const visiblePending = sortedPending.slice(0, VISIBLE_PENDING);
+  const hiddenPendingCount = Math.max(0, sortedPending.length - visiblePending.length);
+
   const hasAny = paidItems.length > 0 || pendingItems.length > 0;
+  const historyUrl = createPageUrl('TransactionHistory');
 
   return (
     <DashboardSection
       title="Betalningar"
       subtitle={hasAny ? `${paidItems.length} betalda denna månad` : undefined}
-      actionHref={createPageUrl('TransactionHistory')}
-      actionLabel="Historik"
+      actionHref={historyUrl}
+      actionLabel={paidItems.length > VISIBLE_PAID ? `Alla ${paidItems.length}` : 'Historik'}
     >
       {!hasAny && (
         <p className="text-[14px] text-white/45 py-4">Inga transaktioner denna månad.</p>
       )}
 
-      {pendingItems.length > 0 && (
+      {visiblePending.length > 0 && (
         <>
           <p className={`${sectionMetaClass} flex items-center gap-1.5 mb-1`}>
             <Clock className="w-3.5 h-3.5 text-amber-200/70" />
             Kommande
           </p>
-          {[...pendingItems]
-            .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-            .map((item, i) => (
+          {visiblePending.map((item, i) => (
               <React.Fragment key={item.id}>
                 {i > 0 && <DashboardDivider />}
                 <DashboardListRow
@@ -134,15 +145,24 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                 />
               </React.Fragment>
             ))}
+          {hiddenPendingCount > 0 && (
+            <Link
+              to={historyUrl}
+              className="mt-2 flex items-center justify-center gap-1 py-2 text-[14px] font-medium text-white/50 hover:text-white/70"
+            >
+              +{hiddenPendingCount} kommande
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          )}
         </>
       )}
 
-      {pendingItems.length > 0 && paidItems.length > 0 && <DashboardDivider className="my-3" />}
+      {visiblePending.length > 0 && visiblePaid.length > 0 && <DashboardDivider className="my-3" />}
 
-      {paidItems.length > 0 && (
+      {visiblePaid.length > 0 && (
         <>
           <p className={`${sectionMetaClass} mb-1`}>Denna månad</p>
-          {paidItems.map((tx, i) => {
+          {visiblePaid.map((tx, i) => {
             const isPositive = tx.amount > 0 || tx.type === 'income';
             const amt = isPositive ? tx.amount : -Math.abs(tx.amount);
             return (
@@ -172,6 +192,15 @@ export default function SpendingHubModule({ transactions = [], profile }) {
               </React.Fragment>
             );
           })}
+          {hiddenPaidCount > 0 && (
+            <Link
+              to={historyUrl}
+              className="mt-3 flex items-center justify-center gap-1 py-2.5 text-[14px] font-medium text-white/55 hover:text-white/75 border-t border-white/[0.06]"
+            >
+              Visa alla {paidItems.length} transaktioner
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          )}
         </>
       )}
     </DashboardSection>

@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Camera, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Camera, ArrowUpRight, ArrowDownLeft, ChevronRight } from 'lucide-react';
 import TaxClarityHero from '@/components/business/TaxClarityHero';
 import { BusinessDivider, BusinessListRow, BusinessSection } from '@/components/business/BusinessChrome';
+
+const VISIBLE_TX = 5;
 
 const DEFAULT_RECENT_TX = [
   { vendor: 'Adobe Creative Cloud', amount: -599, date: 'Idag', category: 'Programvara' },
@@ -16,10 +18,13 @@ export default function HomeTab({
   entityType,
   isReset,
   onScannerOpen,
+  onViewAll,
   recentTransactions,
 }) {
   const fileRef = useRef();
   const txList = recentTransactions !== undefined ? recentTransactions : DEFAULT_RECENT_TX;
+  const visibleTx = txList.slice(0, VISIBLE_TX);
+  const hiddenTxCount = Math.max(0, txList.length - visibleTx.length);
 
   const handleCamera = () => {
     if (onScannerOpen) {
@@ -58,7 +63,7 @@ export default function HomeTab({
         {txList.length === 0 && (
           <p className="text-[14px] text-[#9AA5B4] py-4">Inga transaktioner ännu. Scanna ett kvitto för att börja.</p>
         )}
-        {txList.map((tx, i) => (
+        {visibleTx.map((tx, i) => (
           <React.Fragment key={i}>
             {i > 0 && <BusinessDivider />}
             <BusinessListRow
@@ -86,6 +91,16 @@ export default function HomeTab({
             />
           </React.Fragment>
         ))}
+        {hiddenTxCount > 0 && (
+          <button
+            type="button"
+            onClick={onViewAll}
+            className="mt-3 w-full flex items-center justify-center gap-1 py-2.5 text-[14px] font-medium text-[#0D7377] hover:text-[#0a5c5f] border-t border-[#E8ECF0]"
+          >
+            Visa alla {txList.length} händelser
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
       </BusinessSection>
     </div>
   );

@@ -90,26 +90,9 @@ export default function FutureDashboard({
       <div className="relative z-10">
         <MLIBanner mli={mli} greeting={toneConfig.greeting} />
         <SpendableHero profile={profile} />
-        <AIStoryBar profile={profile} transactions={transactions} />
 
-        <DashboardDivider className="mx-5 sm:mx-6 my-6" />
-
-        <FuturePulse profile={profile} transactions={transactions} />
-
-        <DashboardDivider className="mx-5 sm:mx-6 my-6" />
-
-        <MoneyOverview profile={profile} />
-        <div className="h-8" />
-        <DebtCheck profile={profile} />
-        <div className="h-8" />
-        <SavingsAndBudget profile={profile} />
-        <div className="h-8" />
-        <SpendingHubModule transactions={transactions || []} profile={profile} />
-        <div className="h-8" />
-        <LeakageDetector profile={profile} transactions={transactions} variant="dashboard" />
-
-        {/* Primary actions — one row, Revolut clarity */}
-        <div className={`${anchorZoneClass} mt-10 flex flex-col sm:flex-row gap-3`}>
+        {/* Primary actions — directly under hero so they stay reachable after import */}
+        <div className={`${anchorZoneClass} mt-5 flex flex-col sm:flex-row gap-3`}>
           <motion.button
             type="button"
             whileTap={{ scale: 0.98 }}
@@ -129,6 +112,40 @@ export default function FutureDashboard({
             Kalkylator
           </motion.button>
         </div>
+        <div className={`${anchorZoneClass} mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3`}>
+          <motion.button
+            type="button"
+            whileTap={{ scale: 0.98 }}
+            onClick={() => onOpenExpense?.()}
+            className={`${anchorSecondaryButtonClass} w-full sm:flex-1 text-[14px]`}
+          >
+            Registrera utgift
+          </motion.button>
+          <Link
+            to={createPageUrl('Import')}
+            className={`${anchorSecondaryButtonClass} w-full sm:flex-1 text-center no-underline text-[14px] flex items-center justify-center`}
+          >
+            Importera CSV
+          </Link>
+        </div>
+
+        <AIStoryBar profile={profile} transactions={transactions} />
+
+        <DashboardDivider className="mx-5 sm:mx-6 my-6" />
+
+        <FuturePulse profile={profile} transactions={transactions} />
+
+        <DashboardDivider className="mx-5 sm:mx-6 my-6" />
+
+        <MoneyOverview profile={profile} />
+        <div className="h-8" />
+        <DebtCheck profile={profile} />
+        <div className="h-8" />
+        <SavingsAndBudget profile={profile} />
+        <div className="h-8" />
+        <SpendingHubModule transactions={transactions || []} profile={profile} />
+        <div className="h-8" />
+        <LeakageDetector profile={profile} transactions={transactions} variant="dashboard" />
       </div>
 
       <KalkylatornSheet isOpen={kalkylatornOpen} onClose={() => setKalkylatornOpen(false)} />

@@ -126,6 +126,7 @@ export default function BusinessDashboard() {
                 entityType={legalEntity}
                 isReset={isReset}
                 onScannerOpen={() => setShowScanner(true)}
+                onViewAll={() => setActiveTab('arkiv')}
                 recentTransactions={allTransactions}
               />
             </motion.div>
