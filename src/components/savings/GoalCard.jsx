@@ -10,7 +10,7 @@ import {
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
 
-export default function GoalCard({ profile, onUpdated }) {
+export default function GoalCard({ profile, onUpdated, onDeposit }) {
   const [showDeposit, setShowDeposit] = useState(false);
   const [aiMessage, setAiMessage] = useState('');
   const [loadingAI, setLoadingAI] = useState(false);
@@ -40,8 +40,14 @@ export default function GoalCard({ profile, onUpdated }) {
   };
 
   const handleDeposit = async (amount, newBalance) => {
+    if (onDeposit) {
+      await onDeposit(newBalance);
+      onUpdated?.();
+      return;
+    }
+    if (!profile?.id) return;
     await base44.entities.FinancialProfile.update(profile.id, { savingsCurrentBalance: newBalance });
-    onUpdated();
+    onUpdated?.();
   };
 
   if (!goal) return null;

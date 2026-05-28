@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { TrendingUp, Shield, Target, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { createPageUrl } from '@/utils';
 import { Progress } from "@/components/ui/progress";
 import { AnimatedCurrency, AnimatedNumber } from "@/components/ui/animated-number";
 import MarginModal from './MarginModal';
@@ -33,6 +35,7 @@ const formatNumber = (value) => {
 };
 
 export default function HeroCards({ profile }) {
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(null);
   const [showDreamBuilder, setShowDreamBuilder] = useState(false);
   const [showDepositHub, setShowDepositHub] = useState(null); // 'savings' | 'buffer' | null
@@ -123,8 +126,13 @@ export default function HeroCards({ profile }) {
             whileTap={{ scale: 0.97 }}
             onClick={isClickable ? () => {
               awardHeroCardPoints();
-              if (card.id === 'savings') setShowDreamBuilder(true);
-              else if (card.id === 'buffer') setOpenModal('buffer');
+              if (card.id === 'savings') {
+                if (profile.savingsGoal > 0) {
+                  navigate(createPageUrl('SavingsGoals'));
+                } else {
+                  setShowDreamBuilder(true);
+                }
+              } else if (card.id === 'buffer') setOpenModal('buffer');
               else setOpenModal(CLICKABLE[card.id]);
             } : undefined}
             className={`relative overflow-hidden rounded-2xl p-5 group ${isClickable ? 'cursor-pointer' : ''}`}
