@@ -31,8 +31,8 @@ export default function FuturePulsePage() {
 
   return (
     <PageShell
-      title="Framtidspuls"
-      subtitle="60 dagar framåt"
+      title="Hur ser nästa månader ut?"
+      subtitle="Kommande händelser och prognos"
       backHref={createPageUrl('Dashboard')}
     >
       <FuturePulseDetail profile={activeProfile} transactions={activeTx} />

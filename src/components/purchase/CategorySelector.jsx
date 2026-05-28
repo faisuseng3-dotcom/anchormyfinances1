@@ -1,65 +1,38 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Car, Home, Laptop, PartyPopper } from 'lucide-react';
+import { DashboardDivider, DashboardListRow } from '@/components/dashboard/DashboardChrome';
 
 const categories = [
-  {
-    id: 'vehicle',
-    name: 'Fordon',
-    icon: Car,
-    color: 'from-blue-500 to-cyan-600',
-    description: 'Bil, MC eller annat fordon'
-  },
-  {
-    id: 'housing',
-    name: 'Boende',
-    icon: Home,
-    color: 'from-emerald-500 to-green-600',
-    description: 'Lägenhet, villa eller hyresrätt'
-  },
-  {
-    id: 'electronics',
-    name: 'Elektronik',
-    icon: Laptop,
-    color: 'from-purple-500 to-pink-600',
-    description: 'Dator, telefon eller gadgets'
-  },
-  {
-    id: 'event',
-    name: 'Event',
-    icon: PartyPopper,
-    color: 'from-amber-500 to-orange-600',
-    description: 'Bröllop, fest eller stor händelse'
-  }
+  { id: 'vehicle', name: 'Fordon', icon: Car, description: 'Bil, MC eller annat fordon' },
+  { id: 'housing', name: 'Boende', icon: Home, description: 'Lägenhet, villa eller hyresrätt' },
+  { id: 'electronics', name: 'Elektronik', icon: Laptop, description: 'Dator, telefon eller liknande' },
+  { id: 'event', name: 'Event', icon: PartyPopper, description: 'Bröllop, fest eller större tillställning' },
 ];
 
 export default function CategorySelector({ selected, onSelect }) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div>
       {categories.map((cat, i) => {
         const Icon = cat.icon;
         const isSelected = selected === cat.id;
-        
         return (
-          <motion.button
-            key={cat.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onSelect(cat.id)}
-            className={`p-4 rounded-2xl border-2 transition-all ${
-              isSelected
-                ? 'border-indigo-500 bg-indigo-500/10'
-                : 'border-white/10 dark-card hover:border-white/20'
-            }`}
-          >
-            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-3 mx-auto`}>
-              <Icon className="w-6 h-6 text-white" />
-            </div>
-            <h3 className="font-semibold text-white text-sm mb-1">{cat.name}</h3>
-            <p className="text-xs text-slate-400">{cat.description}</p>
-          </motion.button>
+          <React.Fragment key={cat.id}>
+            {i > 0 && <DashboardDivider />}
+            <DashboardListRow
+              onClick={() => onSelect(cat.id)}
+              leading={
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    isSelected ? 'bg-white/15 ring-1 ring-white/25' : 'bg-white/[0.06]'
+                  }`}
+                >
+                  <Icon className="w-5 h-5 text-white/85" />
+                </div>
+              }
+              title={cat.name}
+              subtitle={cat.description}
+            />
+          </React.Fragment>
         );
       })}
     </div>

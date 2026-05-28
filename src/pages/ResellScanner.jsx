@@ -1,17 +1,30 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Upload, ArrowLeft, RefreshCw, Tag, Zap, TrendingUp, Rocket } from 'lucide-react';
+import { Camera, Upload, RefreshCw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import PageShell from '@/components/layout/PageShell';
 import ScanOverlay from '@/components/resell/ScanOverlay';
 import PriceTag from '@/components/resell/PriceTag';
 import PlatformPriceTable from '@/components/resell/PlatformPriceTable';
 import FutureImpactModal from '@/components/resell/FutureImpactModal';
+import { DashboardDivider, DashboardListRow, DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
+import {
+  anchorGhostButtonClass,
+  anchorInputClass,
+  anchorPrimaryButtonClass,
+  anchorSecondaryButtonClass,
+  anchorIconButtonClass,
+  sectionMetaClass,
+  sectionSubtitleClass,
+} from '@/lib/anchorTheme';
+
+const PLATFORMS = ['Tradera', 'Blocket', 'Vinted', 'Sellpy', 'Plick'];
+const SEARCH_HINTS = ['PS5-kontroll', 'iPhone 14', 'Nike skor', 'Vinterjacka'];
 
 export default function ResellScanner() {
-  const navigate = useNavigate();
   const fileRef = useRef(null);
-  const [phase, setPhase] = useState('idle'); // idle | scanning | result | error | guess
+  const [phase, setPhase] = useState('idle');
   const [capturedImage, setCapturedImage] = useState(null);
   const [result, setResult] = useState(null);
   const [showFutureModal, setShowFutureModal] = useState(false);
@@ -21,56 +34,48 @@ export default function ResellScanner() {
   const [manualLoading, setManualLoading] = useState(false);
   const [scanError, setScanError] = useState(null);
 
-  const compressImage = (file) => new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
-    img.onload = () => {
-      const MAX = 1024;
-      const scale = Math.min(1, MAX / Math.max(img.width, img.height));
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(img.width * scale);
-      canvas.height = Math.round(img.height * scale);
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
-      canvas.toBlob((blob) => {
-        if (!blob) { reject(new Error('Canvas compression failed')); return; }
-        // Ensure proper File object with name + MIME so upload API recognizes it
-        const namedFile = new File([blob], 'scan.jpg', { type: 'image/jpeg' });
-        resolve(namedFile);
-      }, 'image/jpeg', 0.82);
-    };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load failed')); };
-    img.src = url;
-  });
-
-  const handleFile = async (file) => {
-    if (!file) return;
-    // Show preview immediately
-    const previewUrl = URL.createObjectURL(file);
-    setCapturedImage(previewUrl);
-    setPhase('scanning');
-    try {
-      const compressed = await compressImage(file);
-      await runScan(compressed);
-    } catch (err) {
-      console.error('ResellScanner handleFile error:', err);
-      setScanError(err?.message || 'Okänt fel');
-      setPhase('error');
-    }
-  };
+  const compressImage = (file) =>
+    new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        const MAX = 1024;
+        const scale = Math.min(1, MAX / Math.max(img.width, img.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(url);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              reject(new Error('Canvas compression failed'));
+              return;
+            }
+            resolve(new File([blob], 'scan.jpg', { type: 'image/jpeg' }));
+          },
+          'image/jpeg',
+          0.82,
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('Image load failed'));
+      };
+      img.src = url;
+    });
 
   const awardPoints = () => {
-    base44.functions.invoke('awardPoints', { event_type: 'resell_scanner' })
-      .then(r => {
+    base44.functions
+      .invoke('awardPoints', { event_type: 'resell_scanner' })
+      .then((r) => {
         if (r?.data?.points > 0) {
           import('sonner').then(({ toast }) => {
-            toast.success(`+${r.data.points} poäng! 🏆`, {
-              duration: 3000,
-              style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
-            });
+            toast.success(`+${r.data.points} poäng`);
           });
         }
-      }).catch(() => {});
+      })
+      .catch(() => {});
   };
 
   const applyResult = (data) => {
@@ -81,10 +86,10 @@ export default function ResellScanner() {
 
   const runScan = async (file) => {
     const uploadResult = await base44.integrations.Core.UploadFile({ file });
-    if (!uploadResult?.file_url) throw new Error('Upload failed – no file_url returned');
+    if (!uploadResult?.file_url) throw new Error('Uppladdning misslyckades');
     const res = await base44.functions.invoke('resellScanner', { imageUrl: uploadResult.file_url });
     const data = res?.data;
-    if (!data) throw new Error('Empty response from resellScanner');
+    if (!data) throw new Error('Tomt svar från servern');
 
     if (data.identified) {
       if ((data.confidence === 'låg' || data.confidence === 'medel') && data.guesses?.length > 0) {
@@ -99,6 +104,21 @@ export default function ResellScanner() {
     }
   };
 
+  const handleFile = async (file) => {
+    if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    setCapturedImage(previewUrl);
+    setPhase('scanning');
+    try {
+      const compressed = await compressImage(file);
+      await runScan(compressed);
+    } catch (err) {
+      console.error('ResellScanner handleFile error:', err);
+      setScanError(err?.message || 'Okänt fel');
+      setPhase('error');
+    }
+  };
+
   const handleManualSearch = async () => {
     if (!manualQuery.trim()) return;
     setManualLoading(true);
@@ -106,12 +126,19 @@ export default function ResellScanner() {
     setManualLoading(false);
     if (res.data?.identified) {
       applyResult(res.data);
+    } else {
+      setPhase('error');
     }
   };
 
   const confirmGuess = (guess) => {
-    // Apply the confirmed guess label as model override
-    const confirmed = { ...result, model: guess.label, category: guess.category || result.category, confidence: 'hög', guesses: [] };
+    const confirmed = {
+      ...result,
+      model: guess.label,
+      category: guess.category || result.category,
+      confidence: 'hög',
+      guesses: [],
+    };
     applyResult(confirmed);
   };
 
@@ -127,303 +154,251 @@ export default function ResellScanner() {
     setScanError(null);
   };
 
+  const openFile = (capture) => {
+    if (!fileRef.current) return;
+    fileRef.current.accept = capture ? 'image/*;capture=camera' : 'image/*';
+    fileRef.current.click();
+  };
+
   return (
-    <div className="min-h-screen bg-[#0a0e1a] flex flex-col">
-      {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-10 pb-4">
-        <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-full bg-white/8 flex items-center justify-center">
-          <ArrowLeft className="w-5 h-5 text-slate-300" />
-        </button>
-        <div>
-          <h1 className="text-lg font-bold text-white">ResellScanner</h1>
-          <p className="text-xs text-slate-500">Fota & förvandla skräp till framtidskapital</p>
-        </div>
-      </div>
-
-      {/* Main area */}
-      <div className="flex-1 flex flex-col items-center px-4 pb-8">
-        <AnimatePresence mode="wait">
-
-          {/* IDLE */}
-          {phase === 'idle' && (
-            <motion.div
-              key="idle"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="flex flex-col items-center gap-6 w-full max-w-sm mt-4"
-            >
-              {/* Scanner frame */}
-              <div className="relative w-full aspect-square rounded-3xl overflow-hidden border-2 border-dashed border-indigo-500/40 bg-indigo-500/5 flex items-center justify-center">
-                <div className="text-center px-6">
-                  <motion.div
-                    animate={{ scale: [1, 1.08, 1] }}
-                    transition={{ duration: 2.5, repeat: Infinity }}
-                    className="w-24 h-24 rounded-full bg-indigo-500/15 flex items-center justify-center mx-auto mb-4"
-                  >
-                    <Camera className="w-12 h-12 text-indigo-400" />
-                  </motion.div>
-                  <p className="text-white font-semibold text-base">Visa mig vad du vill sälja!</p>
-                  <p className="text-slate-500 text-xs mt-2">AI:n identifierar varan och hittar bästa priset på Tradera, Blocket & mer</p>
-                </div>
-                {/* Corner brackets */}
-                {[
-                  'top-3 left-3 border-t-2 border-l-2 rounded-tl-lg',
-                  'top-3 right-3 border-t-2 border-r-2 rounded-tr-lg',
-                  'bottom-3 left-3 border-b-2 border-l-2 rounded-bl-lg',
-                  'bottom-3 right-3 border-b-2 border-r-2 rounded-br-lg',
-                ].map((cls, i) => (
-                  <div key={i} className={`absolute w-8 h-8 border-indigo-400 ${cls}`} />
-                ))}
+    <PageShell
+      title="Sälj något du inte använder"
+      subtitle="Fota varan — vi föreslår pris och plattform"
+      backHref={createPageUrl('Dashboard')}
+    >
+      <AnimatePresence mode="wait">
+        {phase === 'idle' && (
+          <motion.div
+            key="idle"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="space-y-6 max-w-md mx-auto"
+          >
+            <div className="aspect-square rounded-xl bg-white/[0.04] flex flex-col items-center justify-center px-6 text-center">
+              <div className="w-16 h-16 rounded-full bg-white/[0.06] flex items-center justify-center mb-4">
+                <Camera className="w-8 h-8 text-white/70" />
               </div>
+              <p className="text-[17px] font-semibold text-white">Ta en bild av varan</p>
+              <p className={`${sectionSubtitleClass} mt-2`}>
+                Vi jämför med Tradera, Blocket, Vinted och fler
+              </p>
+            </div>
 
-              <div className="flex gap-3 w-full">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => { fileRef.current.accept = 'image/*;capture=camera'; fileRef.current.click(); }}
-                  className="flex-1 py-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30"
-                >
-                  <Camera className="w-5 h-5" /> Kamera
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => { fileRef.current.accept = 'image/*'; fileRef.current.click(); }}
-                  className="flex-1 py-4 rounded-2xl bg-white/8 border border-white/10 text-white font-semibold flex items-center justify-center gap-2"
-                >
-                  <Upload className="w-5 h-5" /> Galleri
-                </motion.button>
-              </div>
-              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => handleFile(e.target.files[0])} />
-
-              {/* Platform chips */}
-              <div className="flex flex-wrap gap-2 justify-center">
-                {['Tradera', 'Blocket', 'Vinted', 'Sellpy', 'Plick'].map(p => (
-                  <span key={p} className="text-xs text-slate-500 bg-white/5 border border-white/8 px-2.5 py-1 rounded-full">{p}</span>
-                ))}
-              </div>
-            </motion.div>
-          )}
-
-          {/* SCANNING */}
-          {phase === 'scanning' && (
-            <motion.div
-              key="scanning"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="w-full max-w-sm mt-4"
-            >
-              <ScanOverlay imageData={capturedImage} />
-            </motion.div>
-          )}
-
-          {/* RESULT */}
-          {phase === 'result' && result && (
-            <motion.div
-              key="result"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="w-full max-w-sm flex flex-col gap-4 mt-2"
-            >
-              {/* Image with AR price tag */}
-              <div className="relative w-full aspect-square rounded-3xl overflow-hidden">
-                <img src={capturedImage} alt="scanned" className="w-full h-full object-cover" />
-                <PriceTag result={result} />
-              </div>
-
-              {/* Identity card */}
-              <div className="rounded-3xl bg-white/5 border border-white/10 p-5 space-y-1">
-                <p className="text-xs text-slate-500 uppercase tracking-wide">Identifierad vara</p>
-                <p className="text-xl font-bold text-white">{result.brand} {result.model}</p>
-                <p className="text-sm text-slate-400">{result.category} · {result.condition}</p>
-                {result.conditionNote && <p className="text-xs text-slate-500 italic mt-1">"{result.conditionNote}"</p>}
-                {result.uncertainAboutModel && (
-                  <p className="text-xs text-amber-400 mt-1">⚠️ Priser baserade på kategori. Specificera modellen för exaktare värdering.</p>
-                )}
-              </div>
-
-              {/* Price spans */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="text-center p-3 rounded-2xl bg-amber-500/10 border border-amber-400/20">
-                  <Zap className="w-4 h-4 text-amber-400 mx-auto mb-1" />
-                  <p className="text-[10px] text-amber-400 font-semibold uppercase">Snabbpris</p>
-                  <p className="text-sm font-bold text-white">{result.quickSalePrice} kr</p>
-                </div>
-                <div className="text-center p-3 rounded-2xl bg-emerald-500/15 border border-emerald-400/30 ring-1 ring-emerald-400/20">
-                  <TrendingUp className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
-                  <p className="text-[10px] text-emerald-400 font-semibold uppercase">Snittpris</p>
-                  <p className="text-sm font-bold text-white">{result.avgPrice} kr</p>
-                </div>
-                <div className="text-center p-3 rounded-2xl bg-indigo-500/10 border border-indigo-400/20">
-                  <Tag className="w-4 h-4 text-indigo-400 mx-auto mb-1" />
-                  <p className="text-[10px] text-indigo-400 font-semibold uppercase">Maxpris</p>
-                  <p className="text-sm font-bold text-white">{result.maxPrice} kr</p>
-                </div>
-              </div>
-
-              {/* Platform price comparison */}
-              <div className="rounded-3xl bg-white/5 border border-white/10 p-5">
-                <PlatformPriceTable
-                  platformPrices={result.platformPrices}
-                  recommendedPlatform={result.recommendedPlatform}
-                  result={result}
-                />
-              </div>
-
-              {/* Selling tips */}
-              {result.sellingTips && (
-                <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-400/20">
-                  <p className="text-xs text-purple-300">💡 {result.sellingTips}</p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="flex gap-3">
-                {futureAdded ? (
-                  <div className="flex-1 py-4 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center gap-2 text-emerald-300 font-semibold text-sm">
-                    ✓ Tillagd i din framtid!
-                  </div>
-                ) : (
-                  <motion.button
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => setShowFutureModal(true)}
-                    className="flex-1 py-4 rounded-2xl font-bold text-white flex items-center justify-center gap-2 shadow-lg"
-                    style={{ background: 'linear-gradient(135deg, #6366f1, #10b981)', boxShadow: '0 8px 20px rgba(99,102,241,0.3)' }}
-                  >
-                    <Rocket className="w-5 h-5" /> Lägg till i min framtid
-                  </motion.button>
-                )}
-                <motion.button
-                  whileTap={{ scale: 0.97 }}
-                  onClick={reset}
-                  className="w-14 h-14 rounded-2xl bg-white/8 border border-white/10 flex items-center justify-center"
-                >
-                  <RefreshCw className="w-5 h-5 text-slate-400" />
-                </motion.button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* SMART GUESS – AI is unsure, shows options */}
-          {phase === 'guess' && (
-            <motion.div
-              key="guess"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="w-full max-w-sm flex flex-col gap-4 mt-4"
-            >
-              {capturedImage && (
-                <div className="relative w-full aspect-square rounded-3xl overflow-hidden opacity-80">
-                  <img src={capturedImage} alt="scanned" className="w-full h-full object-cover" />
-                </div>
-              )}
-              <div className="rounded-3xl p-5 border border-amber-500/30" style={{ background: 'rgba(245,158,11,0.08)' }}>
-                <p className="text-xs text-amber-400 font-semibold uppercase tracking-wider mb-1">AI behöver din hjälp</p>
-                <p className="text-base font-bold text-white mb-1">Vad är det för vara?</p>
-                <p className="text-sm text-slate-400">Är det något av dessa?</p>
-              </div>
-
-              <div className="space-y-2">
-                {guesses.map((guess, i) => (
-                  <motion.button
-                    key={i}
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.08 }}
-                    whileTap={{ scale: 0.97 }}
-                    onClick={() => confirmGuess(guess)}
-                    className="w-full text-left p-4 rounded-2xl border border-white/10 flex items-center justify-between hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all"
-                  >
-                    <div>
-                      <p className="text-sm font-semibold text-white">{guess.label}</p>
-                      {guess.category && <p className="text-xs text-slate-500">{guess.category}</p>}
-                    </div>
-                    <span className="text-indigo-400 text-lg">→</span>
-                  </motion.button>
-                ))}
-
-                <button
-                  onClick={() => setPhase('error')}
-                  className="w-full py-3 rounded-2xl border border-white/8 text-sm text-slate-500 hover:text-slate-300 transition-colors"
-                >
-                  Nej, inget av dessa
-                </button>
-              </div>
-            </motion.div>
-          )}
-
-          {/* ERROR + MANUAL SEARCH */}
-          {phase === 'error' && (
-            <motion.div
-              key="error"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center gap-5 w-full max-w-sm mt-8"
-            >
-              <div className="text-center">
-                <div className="text-5xl mb-3">🔍</div>
-                <p className="text-white font-semibold">Vi såg det inte tydligt</p>
-                <p className="text-slate-500 text-sm mt-1">Skriv vad du säljer så hjälper AI:n dig ändå</p>
-                {scanError && (
-                  <p className="text-red-400 text-xs mt-2 px-4 opacity-70">Fel: {scanError}</p>
-                )}
-              </div>
-
-              {/* Manual search bar */}
-              <div className="w-full space-y-3">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={manualQuery}
-                    onChange={e => setManualQuery(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleManualSearch()}
-                    placeholder="t.ex. PS5 DualSense, Nike Air Force 1..."
-                    className="flex-1 px-4 py-3 rounded-2xl text-sm text-white placeholder-slate-500"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
-                    autoFocus
-                  />
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleManualSearch}
-                    disabled={!manualQuery.trim() || manualLoading}
-                    className="px-4 py-3 rounded-2xl font-semibold text-white bg-indigo-500 disabled:opacity-40 flex items-center justify-center"
-                  >
-                    {manualLoading
-                      ? <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                      : '→'}
-                  </motion.button>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {['PS5 Kontroll', 'iPhone 14', 'Nike skor', 'Jacka'].map(s => (
-                    <button key={s} onClick={() => setManualQuery(s)}
-                      className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-colors">
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button onClick={reset} className="text-sm text-slate-600 hover:text-slate-400 transition-colors">
-                ← Ta en ny bild istället
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => openFile(true)}
+                className={`${anchorPrimaryButtonClass} flex-1`}
+              >
+                <Camera className="w-4 h-4" />
+                Kamera
               </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              <button
+                type="button"
+                onClick={() => openFile(false)}
+                className={`${anchorSecondaryButtonClass} flex-1`}
+              >
+                <Upload className="w-4 h-4" />
+                Galleri
+              </button>
+            </div>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleFile(e.target.files[0])}
+            />
 
-      {/* Future Impact Modal */}
+            <p className={`${sectionMetaClass} text-center`}>{PLATFORMS.join(' · ')}</p>
+          </motion.div>
+        )}
+
+        {phase === 'scanning' && (
+          <motion.div key="scanning" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="max-w-md mx-auto">
+            <ScanOverlay imageData={capturedImage} />
+          </motion.div>
+        )}
+
+        {phase === 'result' && result && (
+          <motion.div
+            key="result"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="space-y-6 max-w-md mx-auto"
+          >
+            <div className="relative aspect-square rounded-xl overflow-hidden">
+              <img src={capturedImage} alt="Vara" className="w-full h-full object-cover" />
+              <PriceTag result={result} />
+            </div>
+
+            <div>
+              <p className="text-[17px] font-semibold text-white">
+                {result.brand} {result.model}
+              </p>
+              <p className={sectionMetaClass}>
+                {result.category} · {result.condition}
+              </p>
+              {result.conditionNote && (
+                <p className={`${sectionSubtitleClass} mt-1`}>{result.conditionNote}</p>
+              )}
+              {result.uncertainAboutModel && (
+                <p className={`${sectionSubtitleClass} mt-2`}>
+                  Priserna är ungefärliga — välj rätt modell om du kan.
+                </p>
+              )}
+            </div>
+
+            <DashboardStatStrip
+              items={[
+                { label: 'Snabb', value: `${result.quickSalePrice} kr` },
+                { label: 'Snitt', value: `${result.avgPrice} kr` },
+                { label: 'Max', value: `${result.maxPrice} kr` },
+              ]}
+            />
+
+            <PlatformPriceTable
+              platformPrices={result.platformPrices}
+              recommendedPlatform={result.recommendedPlatform}
+              result={result}
+            />
+
+            {result.sellingTips && (
+              <>
+                <DashboardDivider />
+                <p className="text-[14px] text-white/70 leading-relaxed">{result.sellingTips}</p>
+              </>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              {futureAdded ? (
+                <p className="flex-1 text-center text-[15px] font-medium text-emerald-300/90 py-3">
+                  Tillagd i din ekonomi
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setShowFutureModal(true)}
+                  className={`${anchorPrimaryButtonClass} flex-1`}
+                >
+                  Lägg till försäljning
+                </button>
+              )}
+              <button type="button" onClick={reset} className={anchorIconButtonClass} aria-label="Ny bild">
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {phase === 'guess' && (
+          <motion.div
+            key="guess"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="space-y-5 max-w-md mx-auto"
+          >
+            {capturedImage && (
+              <div className="aspect-square rounded-xl overflow-hidden opacity-80">
+                <img src={capturedImage} alt="Vara" className="w-full h-full object-cover" />
+              </div>
+            )}
+            <div>
+              <p className="text-[17px] font-semibold text-white">Vilken vara är det?</p>
+              <p className={sectionSubtitleClass}>Välj det som stämmer bäst</p>
+            </div>
+
+            {guesses.map((guess, i) => (
+              <React.Fragment key={guess.label}>
+                {i > 0 && <DashboardDivider />}
+                <DashboardListRow
+                  onClick={() => confirmGuess(guess)}
+                  title={guess.label}
+                  subtitle={guess.category}
+                />
+              </React.Fragment>
+            ))}
+
+            <button type="button" onClick={() => setPhase('error')} className={`${anchorGhostButtonClass} w-full`}>
+              Inget av dessa
+            </button>
+          </motion.div>
+        )}
+
+        {phase === 'error' && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="space-y-5 max-w-md mx-auto"
+          >
+            <div className="text-center py-4">
+              <p className="text-[17px] font-semibold text-white">Kunde inte läsa bilden</p>
+              <p className={`${sectionSubtitleClass} mt-1`}>
+                Skriv vad du säljer så söker vi pris ändå
+              </p>
+              {scanError && <p className="text-[13px] text-rose-300/80 mt-2">{scanError}</p>}
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={manualQuery}
+                onChange={(e) => setManualQuery(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleManualSearch()}
+                placeholder="t.ex. PS5 DualSense"
+                className={`${anchorInputClass} flex-1`}
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={handleManualSearch}
+                disabled={!manualQuery.trim() || manualLoading}
+                className={`${anchorPrimaryButtonClass} shrink-0 px-5 disabled:opacity-50`}
+              >
+                {manualLoading ? (
+                  <span className="w-4 h-4 border-2 border-[#0a1628]/30 border-t-[#0a1628] rounded-full animate-spin" />
+                ) : (
+                  'Sök'
+                )}
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {SEARCH_HINTS.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setManualQuery(s)}
+                  className="px-3 py-1.5 rounded-lg text-[13px] text-white/50 bg-white/[0.05] hover:text-white/75"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+
+            <button type="button" onClick={reset} className={`${anchorGhostButtonClass} w-full`}>
+              Ta en ny bild
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showFutureModal && result && (
           <FutureImpactModal
             result={result}
             onClose={() => setShowFutureModal(false)}
-            onAdded={() => { setFutureAdded(true); setShowFutureModal(false); }}
+            onAdded={() => {
+              setFutureAdded(true);
+              setShowFutureModal(false);
+            }}
           />
         )}
       </AnimatePresence>
-    </div>
+    </PageShell>
   );
 }

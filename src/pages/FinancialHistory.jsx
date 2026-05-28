@@ -2,9 +2,10 @@ import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { ArrowLeft, TrendingDown, TrendingUp, Target } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import PageShell from '@/components/layout/PageShell';
+import { DashboardSection, DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine
 } from 'recharts';
@@ -130,90 +131,44 @@ export default function FinancialHistory() {
   const isLoading = loadingProfile || loadingTx;
 
   return (
-    <div className="min-h-screen pb-28 px-5 pt-8">
-      {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <Link to={createPageUrl('Dashboard')}>
-          <motion.div
-            whileTap={{ scale: 0.9 }}
-            className="w-10 h-10 rounded-xl bg-white/8 border border-white/10 flex items-center justify-center"
-          >
-            <ArrowLeft className="w-4 h-4 text-slate-300" />
-          </motion.div>
-        </Link>
-        <div>
-          <h1 className="text-xl font-bold text-white">Ekonomisk Historik</h1>
-          <p className="text-xs text-slate-400">Senaste 6 månader</p>
-        </div>
-      </div>
-
+    <PageShell
+      title="Hur har det gått?"
+      subtitle="Senaste 6 månader"
+      backHref={createPageUrl('Dashboard')}
+    >
       {isLoading ? (
         <div className="space-y-4">
-          {[1, 2, 3].map(i => (
+          {[1, 2, 3].map((i) => (
             <motion.div
               key={i}
               animate={{ opacity: [0.4, 0.8, 0.4] }}
               transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1 }}
-              className="h-32 rounded-2xl bg-white/5"
+              className="h-24 bg-white/[0.04] rounded-xl"
             />
           ))}
         </div>
       ) : (
-        <div className="space-y-5">
-          {/* Summary cards */}
-          <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-8">
+          <DashboardStatStrip
+            items={[
+              {
+                label: 'Buffert 6 mån',
+                value: `${bufferGrowth >= 0 ? '+' : ''}${fmt(bufferGrowth)} kr`,
+                sub: `Nu ${fmt(latestBuffer)} kr`,
+              },
+              {
+                label: 'Skuld 6 mån',
+                value: `${debtReduction >= 0 ? '−' : '+'}${fmt(Math.abs(debtReduction))} kr`,
+                sub: `Kvar ${fmt(latestDebt)} kr`,
+              },
+            ]}
+          />
+
+          <DashboardSection nested title="Buffert och skuld">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl p-4 border"
-              style={{
-                background: bufferGrowth >= 0 ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
-                borderColor: bufferGrowth >= 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
-              }}
             >
-              <div className="flex items-center gap-2 mb-1">
-                {bufferGrowth >= 0
-                  ? <TrendingUp className="w-4 h-4 text-emerald-400" />
-                  : <TrendingDown className="w-4 h-4 text-rose-400" />
-                }
-                <span className="text-xs text-slate-400">Buffert 6 mån</span>
-              </div>
-              <p className={`text-lg font-bold ${bufferGrowth >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
-                {bufferGrowth >= 0 ? '+' : ''}{fmt(bufferGrowth)} kr
-              </p>
-              <p className="text-xs text-slate-500 mt-0.5">Nu: {fmt(latestBuffer)} kr</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.05 }}
-              className="rounded-2xl p-4 border"
-              style={{
-                background: debtReduction >= 0 ? 'rgba(16,185,129,0.12)' : 'rgba(239,68,68,0.12)',
-                borderColor: debtReduction >= 0 ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)',
-              }}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Target className="w-4 h-4 text-amber-400" />
-                <span className="text-xs text-slate-400">Skuld 6 mån</span>
-              </div>
-              <p className={`text-lg font-bold ${debtReduction >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
-                {debtReduction >= 0 ? '-' : '+'}{fmt(Math.abs(debtReduction))} kr
-              </p>
-              <p className="text-xs text-slate-500 mt-0.5">Kvar: {fmt(latestDebt)} kr</p>
-            </motion.div>
-          </div>
-
-          {/* Main chart */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="rounded-2xl p-5"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-          >
-            <h2 className="text-white font-semibold text-sm mb-4">Buffert vs Skuld</h2>
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
@@ -244,18 +199,11 @@ export default function FinancialHistory() {
                 />
               </LineChart>
             </ResponsiveContainer>
-          </motion.div>
+            </motion.div>
+          </DashboardSection>
 
-          {/* Buffert only */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="rounded-2xl p-5"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-          >
-            <h2 className="text-white font-semibold text-sm mb-1">Buffertens resa</h2>
-            <p className="text-xs text-slate-500 mb-4">Hur din likviditet har förändrats</p>
+          <DashboardSection nested title="Buffert över tid" subtitle="Hur din likviditet har förändrats">
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
             <ResponsiveContainer width="100%" height={140}>
               <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
@@ -273,19 +221,12 @@ export default function FinancialHistory() {
                 />
               </LineChart>
             </ResponsiveContainer>
-          </motion.div>
+            </motion.div>
+          </DashboardSection>
 
-          {/* Debt only */}
           {latestDebt > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="rounded-2xl p-5"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              <h2 className="text-white font-semibold text-sm mb-1">Skuldens resa</h2>
-              <p className="text-xs text-slate-500 mb-4">Varje månad du amorterar räknas</p>
+            <DashboardSection nested title="Skuld över tid" subtitle="Amortering månad för månad">
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
               <ResponsiveContainer width="100%" height={140}>
                 <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
@@ -304,16 +245,15 @@ export default function FinancialHistory() {
                 </LineChart>
               </ResponsiveContainer>
               {debtReduction > 0 && (
-                <div className="mt-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <p className="text-emerald-300 text-xs font-medium">
-                    🎯 Du har minskat din skuld med {fmt(debtReduction)} kr de senaste 6 månaderna. Fortsätt så!
-                  </p>
-                </div>
+                <p className={`${sectionSubtitleClass} mt-4`}>
+                  Du har minskat skulden med {fmt(debtReduction)} kr på sex månader.
+                </p>
               )}
-            </motion.div>
+              </motion.div>
+            </DashboardSection>
           )}
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

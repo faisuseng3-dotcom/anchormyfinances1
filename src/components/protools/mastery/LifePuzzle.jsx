@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Users, Mail, Check, Copy } from 'lucide-react';
+import { Mail, Check, Copy } from 'lucide-react';
+import { DashboardDivider, DashboardListRow } from '@/components/dashboard/DashboardChrome';
+import {
+  anchorInputClass,
+  anchorPrimaryButtonClass,
+  anchorSecondaryButtonClass,
+  sectionSubtitleClass,
+} from '@/lib/anchorTheme';
 
 export default function LifePuzzle({ profile }) {
   const [email, setEmail] = useState('');
@@ -10,9 +16,17 @@ export default function LifePuzzle({ profile }) {
   const [copied, setCopied] = useState(false);
 
   const sharedGoals = [
-    { emoji: '🏠', label: 'Gemensamt boende', amount: profile?.savingsGoal || 0, progress: profile?.savingsCurrentBalance || 0 },
-    { emoji: '✈️', label: 'Semester ihop', amount: 20000, progress: Math.min(20000, (profile?.buffer || 0) * 0.2) },
-  ].filter(g => g.amount > 0);
+    {
+      label: 'Gemensamt boende',
+      amount: profile?.savingsGoal || 0,
+      progress: profile?.savingsCurrentBalance || 0,
+    },
+    {
+      label: 'Semester ihop',
+      amount: 20000,
+      progress: Math.min(20000, (profile?.buffer || 0) * 0.2),
+    },
+  ].filter((g) => g.amount > 0);
 
   const handleInvite = async () => {
     if (!email) return;
@@ -20,12 +34,12 @@ export default function LifePuzzle({ profile }) {
     try {
       await base44.integrations.Core.SendEmail({
         to: email,
-        subject: 'Du är inbjuden till Anchor – ekonomisk planering tillsammans',
-        body: `Hej!\n\nJag har bjudit in dig till Anchor för att vi ska kunna planera vår ekonomi tillsammans.\n\nAnchors Livspussel låter oss dela gemensamma mål utan att blanda in privata konton.\n\nKlicka här för att komma igång: ${window.location.origin}\n\nVi ses där! 🚀`,
+        subject: 'Inbjudan till Anchor',
+        body: `Hej!\n\nJag bjuder in dig till Anchor så vi kan planera ekonomi tillsammans.\n\n${window.location.origin}\n`,
       });
       setSent(true);
     } catch {
-      setSent(true); // optimistic
+      setSent(true);
     } finally {
       setLoading(false);
     }
@@ -38,109 +52,60 @@ export default function LifePuzzle({ profile }) {
   };
 
   return (
-    <div className="space-y-5">
-      {/* Concept */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-5 border border-cyan-500/20"
-        style={{ background: 'rgba(6,182,212,0.07)' }}
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
-            <Users className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-white">Multi-User Sync</p>
-            <p className="text-xs text-slate-400">Dela mål, inte hemligheter</p>
-          </div>
-        </div>
-        <p className="text-xs text-slate-400 leading-relaxed">
-          Forskning visar att par som pratar om ekonomi <span className="text-cyan-400 font-semibold">gemensamt har 35% lägre finansiell stress</span>. 
-          Bjud in din partner för att se gemensamma mål utan att blanda privata konton.
-        </p>
-      </motion.div>
+    <div className="space-y-6">
+      <p className={sectionSubtitleClass}>
+        Dela mål med någon du litar på — utan att blanda privata konton. Par som pratar ekonomi
+        tillsammans har ofta lägre stress.
+      </p>
 
-      {/* Shared Goals */}
       {sharedGoals.length > 0 && (
-        <div className="space-y-3">
-          <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Gemensamma mål</p>
+        <div>
+          <p className="text-[13px] font-medium text-white/45 mb-2">Gemensamma mål</p>
           {sharedGoals.map((goal, i) => {
-            const pct = goal.amount > 0 ? Math.min(100, Math.round((goal.progress / goal.amount) * 100)) : 0;
+            const pct =
+              goal.amount > 0 ? Math.min(100, Math.round((goal.progress / goal.amount) * 100)) : 0;
             return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="rounded-xl p-4 border border-white/8"
-                style={{ background: 'rgba(255,255,255,0.03)' }}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-white">{goal.emoji} {goal.label}</span>
-                  <span className="text-xs text-slate-400">{pct}%</span>
-                </div>
-                <div className="h-1.5 rounded-full bg-white/10">
-                  <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${pct}%` }}
-                    transition={{ duration: 1, delay: 0.3 + i * 0.1 }}
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-slate-600 mt-1">
-                  <span>{Math.round(goal.progress).toLocaleString('sv-SE')} kr</span>
-                  <span>{goal.amount.toLocaleString('sv-SE')} kr</span>
-                </div>
-              </motion.div>
+              <React.Fragment key={goal.label}>
+                {i > 0 && <DashboardDivider />}
+                <DashboardListRow
+                  title={goal.label}
+                  subtitle={`${goal.progress.toLocaleString('sv-SE')} / ${goal.amount.toLocaleString('sv-SE')} kr`}
+                  trailing={<span className="text-[15px] font-semibold text-white/80">{pct}%</span>}
+                />
+              </React.Fragment>
             );
           })}
         </div>
       )}
 
-      {/* Invite */}
-      <div className="space-y-3">
-        <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">Bjud in partner</p>
-        {!sent ? (
-          <div className="space-y-2">
-            <div className="flex gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="partners@email.com"
-                className="flex-1 px-4 py-3 rounded-xl text-sm"
-              />
-              <button
-                onClick={handleInvite}
-                disabled={!email || loading}
-                className="px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-500 to-blue-600 disabled:opacity-40"
-              >
-                {loading ? <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin inline-block" /> : <Mail className="w-4 h-4" />}
-              </button>
-            </div>
-            <button
-              onClick={handleCopyLink}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 text-xs text-slate-400 hover:text-white hover:border-white/20 transition-colors"
-            >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-              {copied ? 'Länken kopierad!' : 'Kopiera inbjudningslänk'}
-            </button>
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="rounded-xl p-4 border border-emerald-500/30 text-center"
-            style={{ background: 'rgba(16,185,129,0.08)' }}
+      <div>
+        <p className="text-[13px] font-medium text-white/45 mb-2">Bjud in</p>
+        <div className="flex gap-2">
+          <input
+            type="email"
+            placeholder="partners@email.se"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`${anchorInputClass} flex-1`}
+          />
+          <button
+            type="button"
+            onClick={handleInvite}
+            disabled={!email || loading || sent}
+            className={`${anchorPrimaryButtonClass} shrink-0 px-5`}
           >
-            <Check className="w-6 h-6 text-emerald-400 mx-auto mb-2" />
-            <p className="text-sm font-semibold text-white">Inbjudan skickad!</p>
-            <p className="text-xs text-slate-400 mt-1">Vi skickade en inbjudan till {email}</p>
-            <button onClick={() => setSent(false)} className="text-xs text-slate-600 mt-2 underline">Bjud in någon till</button>
-          </motion.div>
+            {sent ? <Check className="w-4 h-4" /> : <Mail className="w-4 h-4" />}
+          </button>
+        </div>
+        {sent && (
+          <p className={`${sectionSubtitleClass} mt-2`}>Inbjudan skickad till {email}</p>
         )}
       </div>
+
+      <button type="button" onClick={handleCopyLink} className={`${anchorSecondaryButtonClass} w-full`}>
+        <Copy className="w-4 h-4" />
+        {copied ? 'Länk kopierad' : 'Kopiera inbjudningslänk'}
+      </button>
     </div>
   );
 }
