@@ -19,6 +19,25 @@ const VERDICT_LABEL = {
   'Hitta billigare': { text: 'text-white/70', label: 'Leta alternativ' },
 };
 
+function getRisk(result, profile) {
+  if (!result) return { level: 'low', reason: '' };
+  const threshold = profile?.impulseThreshold || 700;
+  const hardSignals = (result?.budgetImpact || 0) >= 35 || (result?.daysDelayedGoal || 0) >= 10;
+  const thresholdSignal = (result?.price || 0) >= threshold;
+  if (hardSignals && thresholdSignal) {
+    return { level: 'high', reason: `Köpet överstiger din impulsgräns (${fmt(threshold)} kr).` };
+  }
+  if (hardSignals || thresholdSignal) {
+    return { level: 'medium', reason: 'Köpet påverkar ditt sparmål tydligt.' };
+  }
+  return { level: 'low', reason: 'Köpet ryms inom din nuvarande plan.' };
+}
+
+function getCooldownEnd(hours) {
+  const end = new Date(Date.now() + hours * 60 * 60 * 1000);
+  return end.toISOString();
+}
+
 export default function PurchaseAnalyzer({ profile }) {
   const [url, setUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -26,6 +45,8 @@ export default function PurchaseAnalyzer({ profile }) {
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState('');
   const [result, setResult] = useState(null);
+  const [shieldChoice, setShieldChoice] = useState(null);
+  const [wishlistSaved, setWishlistSaved] = useState(false);
   const fileRef = useRef();
 
   const handleImageChange = (e) => {
@@ -40,6 +61,8 @@ export default function PurchaseAnalyzer({ profile }) {
     if (!url && !imageFile) return;
     setLoading(true);
     setResult(null);
+    setShieldChoice(null);
+    setWishlistSaved(false);
 
     const steps = [
       'Läser annonsen…',
@@ -62,56 +85,72 @@ export default function PurchaseAnalyzer({ profile }) {
       fileUrls = [file_url];
     }
 
-    const prompt = `Du är en ekonomisk AI-assistent i en personlig finans-app.
-${url ? `Användaren har klistrat in denna URL: ${url}` : 'Användaren har laddat upp en bild på en produkt/prislapp.'}
+    try {
+      const res = await base44.functions.invoke('purchaseAdvisor', {
+        url: url || null,
+        income,
+        margin,
+        savingsGoalName: profile?.savingsGoalName || 'sparmål',
+        dailyTarget: profile?.savingsGoalDailyTarget || profile?.savingsDailyMicroAmount || 25,
+        fileUrls,
+      });
+      const payload = res?.data || res;
+      setResult({ ...payload, margin });
+    } catch (err) {
+      console.warn('purchaseAdvisor unavailable, fallback to direct InvokeLLM', err);
+      const fallback = await base44.integrations.Core.InvokeLLM({
+        prompt: `Analysera köpet kort på svenska och returnera ENDAST JSON med fält:
+productName, price, category, priceAssessment, verdict, verdictReason, budgetImpact, daysDelayedGoal, opportunityCost, aiInsight, maintenanceCost, maintenanceNote.
+Källa: ${url ? `URL ${url}` : 'uppladdad bild'}.
+Inkomst ${income} kr, marginal ${margin} kr.`,
+        add_context_from_internet: !!url,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            productName: { type: 'string' },
+            price: { type: 'number' },
+            category: { type: 'string' },
+            priceAssessment: { type: 'string' },
+            verdict: { type: 'string' },
+            verdictReason: { type: 'string' },
+            budgetImpact: { type: 'number' },
+            daysDelayedGoal: { type: 'number' },
+            opportunityCost: { type: 'string' },
+            aiInsight: { type: 'string' },
+            maintenanceCost: { type: 'number' },
+            maintenanceNote: { type: 'string' },
+          },
+        },
+        file_urls: fileUrls.length > 0 ? fileUrls : null,
+      });
+      setResult({ ...fallback, model: 'direct_fallback', margin });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-Analysera detta köp och ge svar i detta exakta JSON-format:
-{
-  "productName": "Produktnamn och modell",
-  "price": 4500,
-  "category": "möbel|elektronik|fordon|kläder|övrigt",
-  "priceAssessment": "Bra pris|Högt pris|Normalt pris",
-  "verdict": "Köp|Vänta|Hitta billigare",
-  "verdictReason": "En mening om varför",
-  "budgetImpact": 18,
-  "daysDelayedGoal": 14,
-  "opportunityCost": "Vad du istället kunde spara/köpa",
-  "aiInsight": "Personlig reflektion baserat på ekonomin (2-3 meningar, SVENSKA)",
-  "maintenanceCost": 0,
-  "maintenanceNote": "Om det finns löpande kostnader"
-}
-
-Användarens ekonomi: Inkomst ${income} kr, Marginal ${margin} kr/mån.
-Svara ENDAST med JSON, inget annat.`;
-
-    const res = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      add_context_from_internet: !!url,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          productName: { type: 'string' },
-          price: { type: 'number' },
-          category: { type: 'string' },
-          priceAssessment: { type: 'string' },
-          verdict: { type: 'string' },
-          verdictReason: { type: 'string' },
-          budgetImpact: { type: 'number' },
-          daysDelayedGoal: { type: 'number' },
-          opportunityCost: { type: 'string' },
-          aiInsight: { type: 'string' },
-          maintenanceCost: { type: 'number' },
-          maintenanceNote: { type: 'string' },
-        }
-      },
-      file_urls: fileUrls.length > 0 ? fileUrls : null,
-    });
-
-    setResult({ ...res, margin });
-    setLoading(false);
+  const saveToWishlist = () => {
+    if (!result) return;
+    const cooldownHours = profile?.impulseCooldownHours || 48;
+    const item = {
+      id: `${Date.now()}`,
+      productName: result.productName,
+      price: result.price,
+      sourceUrl: url || null,
+      cooldownEnd: getCooldownEnd(cooldownHours),
+      createdAt: new Date().toISOString(),
+    };
+    const key = 'anchor_impulse_wishlist';
+    const prev = JSON.parse(localStorage.getItem(key) || '[]');
+    localStorage.setItem(key, JSON.stringify([item, ...prev].slice(0, 40)));
+    setWishlistSaved(true);
+    setShieldChoice('wait');
   };
 
   const vs = result ? (VERDICT_LABEL[result.verdict] || VERDICT_LABEL.Vänta) : null;
+  const risk = getRisk(result, profile);
+  const shieldEnabled = profile?.impulseShieldEnabled !== false;
+  const showShield = !!result && shieldEnabled && risk.level !== 'low';
 
   return (
     <div className="space-y-5">
@@ -273,7 +312,61 @@ Svara ENDAST med JSON, inget annat.`;
               <p className={`text-[15px] font-semibold ${vs.text}`}>{vs.label}</p>
               <p className={`${sectionSubtitleClass} mt-2`}>{result.verdictReason}</p>
               <p className="text-[14px] text-white/75 leading-relaxed mt-2">{result.aiInsight}</p>
+              {result.model && (
+                <p className="text-[12px] text-white/35 mt-2">Modell: {result.model}</p>
+              )}
             </div>
+
+            {showShield && (
+              <>
+                <DashboardDivider className="my-5" />
+                <div className="space-y-3">
+                  <p className="text-[15px] font-semibold text-amber-300/90">Impulse Shield</p>
+                  <p className="text-[14px] text-white/70">{risk.reason}</p>
+                  <p className="text-[13px] text-white/55">
+                    Detta köp försenar ditt mål med cirka {result.daysDelayedGoal} dagar.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      onClick={saveToWishlist}
+                      className={`${anchorPrimaryButtonClass} h-10 px-4 text-[13px]`}
+                    >
+                      Vänta {profile?.impulseCooldownHours || 48}h
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShieldChoice('cheaper')}
+                      className={`${anchorIconButtonClass} h-10 w-auto px-3 rounded-xl text-[13px]`}
+                    >
+                      Hitta billigare
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShieldChoice('buy')}
+                      className={`${anchorIconButtonClass} h-10 w-auto px-3 rounded-xl text-[13px]`}
+                    >
+                      Köp ändå
+                    </button>
+                  </div>
+                  {wishlistSaved && (
+                    <p className="text-[13px] text-emerald-300/90">
+                      Sparad i wishlist med cooldown. Du kan kolla senare när impulsen lagt sig.
+                    </p>
+                  )}
+                  {shieldChoice === 'cheaper' && (
+                    <p className="text-[13px] text-white/65">
+                      Tips: sök samma modell begagnad eller med prisbevakning innan köp.
+                    </p>
+                  )}
+                  {shieldChoice === 'buy' && (
+                    <p className="text-[13px] text-amber-300/80">
+                      Okej, men håll koll på månadsutrymmet så sparmålet inte glider.
+                    </p>
+                  )}
+                </div>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

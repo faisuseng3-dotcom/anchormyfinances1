@@ -11,16 +11,54 @@ import { createPageUrl } from '@/utils';
 
 const EMOJIS = ['🎯','✈️','🏠','🚗','💻','🎓','🌍','🎵','💍','🏖️','📱','🎮'];
 
+function getDaysTo(deadline) {
+  if (!deadline) return null;
+  const end = new Date(deadline);
+  const now = new Date();
+  end.setHours(0, 0, 0, 0);
+  now.setHours(0, 0, 0, 0);
+  const diff = Math.ceil((end - now) / (1000 * 60 * 60 * 24));
+  return diff > 0 ? diff : null;
+}
+
 function EditGoalModal({ profile, onSave, onClose }) {
   const [name, setName] = useState(profile?.savingsGoalName || '');
   const [target, setTarget] = useState(profile?.savingsGoal ? String(profile.savingsGoal) : '');
   const [emoji, setEmoji] = useState(profile?.savingsGoalEmoji || '🎯');
+  const [deadline, setDeadline] = useState(profile?.savingsGoalDeadline || '');
+  const [cooldownHours, setCooldownHours] = useState(profile?.impulseCooldownHours || 48);
+  const [cooldownThreshold, setCooldownThreshold] = useState(profile?.impulseThreshold || 700);
+  const [dailyMicroAmount, setDailyMicroAmount] = useState(profile?.savingsDailyMicroAmount || 25);
 
   const handleSave = () => {
     const t = parseFloat(target.replace(',', '.'));
     if (!name || isNaN(t)) return;
-    onSave({ savingsGoalName: name, savingsGoal: t, savingsGoalEmoji: emoji });
+    const current = profile?.savingsCurrentBalance || 0;
+    const days = getDaysTo(deadline);
+    const remaining = Math.max(0, t - current);
+    const dailyTarget = days ? Math.max(1, Math.ceil(remaining / days)) : null;
+    const monthlyTarget = dailyTarget ? Math.ceil((dailyTarget * 365) / 12) : null;
+
+    onSave({
+      savingsGoalName: name,
+      savingsGoal: t,
+      savingsGoalEmoji: emoji,
+      savingsGoalDeadline: deadline || null,
+      savingsGoalDailyTarget: dailyTarget,
+      savingsGoalMonthlyTarget: monthlyTarget,
+      savingsDailyMicroAmount: Math.max(1, Number(dailyMicroAmount) || 25),
+      savingsMotivationStreak: profile?.savingsMotivationStreak || 0,
+      impulseShieldEnabled: true,
+      impulseCooldownHours: Math.max(0, Number(cooldownHours) || 0),
+      impulseThreshold: Math.max(100, Number(cooldownThreshold) || 100),
+    });
   };
+
+  const targetNum = parseFloat(target.replace(',', '.'));
+  const current = profile?.savingsCurrentBalance || 0;
+  const days = getDaysTo(deadline);
+  const remaining = Number.isFinite(targetNum) ? Math.max(0, targetNum - current) : 0;
+  const dailyNeeded = days && Number.isFinite(targetNum) ? Math.ceil(remaining / days) : null;
 
   return (
     <AnimatePresence>
@@ -56,7 +94,50 @@ function EditGoalModal({ profile, onSave, onClose }) {
 
           <p className="anchor-section-label mb-1">Målbelopp (kr)</p>
           <input value={target} onChange={e => setTarget(e.target.value)} type="number" placeholder="0"
-            className="anchor-input w-full mb-6" />
+            className="anchor-input w-full mb-4" />
+
+          <p className="anchor-section-label mb-1">Deadline</p>
+          <input
+            value={deadline}
+            onChange={e => setDeadline(e.target.value)}
+            type="date"
+            className="anchor-input w-full mb-4"
+          />
+
+          {dailyNeeded && (
+            <div className="rounded-xl px-3 py-2 mb-4" style={{ background: 'rgba(75,124,243,0.10)', border: '1px solid rgba(75,124,243,0.25)' }}>
+              <p className="text-xs text-white/70">
+                För att nå målet i tid behöver du cirka <strong>{dailyNeeded.toLocaleString('sv-SE')} kr/dag</strong>.
+              </p>
+            </div>
+          )}
+
+          <p className="anchor-section-label mb-1">Dagens mini-mål (kr)</p>
+          <input
+            value={dailyMicroAmount}
+            onChange={e => setDailyMicroAmount(e.target.value)}
+            type="number"
+            min="1"
+            className="anchor-input w-full mb-4"
+          />
+
+          <p className="anchor-section-label mb-1">Anti-impuls: cooldown (timmar)</p>
+          <input
+            value={cooldownHours}
+            onChange={e => setCooldownHours(e.target.value)}
+            type="number"
+            min="0"
+            className="anchor-input w-full mb-4"
+          />
+
+          <p className="anchor-section-label mb-1">Anti-impuls startar över (kr)</p>
+          <input
+            value={cooldownThreshold}
+            onChange={e => setCooldownThreshold(e.target.value)}
+            type="number"
+            min="100"
+            className="anchor-input w-full mb-6"
+          />
 
           <div className="flex gap-3">
             <button type="button" onClick={onClose} className={`flex-1 ${anchorSecondaryButtonClass}`}>Avbryt</button>

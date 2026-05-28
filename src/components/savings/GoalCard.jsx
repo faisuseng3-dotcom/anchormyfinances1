@@ -15,6 +15,11 @@ export default function GoalCard({ profile, onUpdated }) {
   const remaining = Math.max(goal - current, 0);
   const emoji = profile?.savingsGoalEmoji || '🎯';
   const goalName = profile?.savingsGoalName || 'Mitt sparmål';
+  const dailyTarget = profile?.savingsGoalDailyTarget || null;
+  const microGoal = profile?.savingsDailyMicroAmount || null;
+  const streak = profile?.savingsMotivationStreak || 0;
+  const cooldown = profile?.impulseCooldownHours || 0;
+  const threshold = profile?.impulseThreshold || 0;
 
   const fetchAIMessage = async () => {
     if (aiMessage || loadingAI) return;
@@ -74,6 +79,22 @@ export default function GoalCard({ profile, onUpdated }) {
           {remaining > 0 && (
             <p className="text-sm mt-2 font-medium" style={{ color: 'var(--color-text-secondary)' }}>
               Du behöver spara <strong>{remaining.toLocaleString('sv-SE')} kr</strong> till.
+            </p>
+          )}
+
+          {(dailyTarget || microGoal) && (
+            <p className="text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
+              {dailyTarget ? `Tempo: ${dailyTarget.toLocaleString('sv-SE')} kr/dag` : ''}
+              {dailyTarget && microGoal ? ' · ' : ''}
+              {microGoal ? `Dagens mini-mål: ${Number(microGoal).toLocaleString('sv-SE')} kr` : ''}
+            </p>
+          )}
+
+          {(cooldown > 0 || threshold > 0 || streak > 0) && (
+            <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
+              {streak > 0 ? `🔥 Streak: ${streak} dagar` : '🔥 Streak: 0 dagar'}
+              {cooldown > 0 ? ` · Cooldown ${cooldown}h` : ''}
+              {threshold > 0 ? ` över ${Number(threshold).toLocaleString('sv-SE')} kr` : ''}
             </p>
           )}
 
