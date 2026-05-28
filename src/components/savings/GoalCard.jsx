@@ -1,19 +1,38 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp } from 'lucide-react';
+import { Calendar, Flame, PiggyBank, Shield, Sparkles } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SavingsDepositModal from './SavingsDepositModal';
-import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
+import { DashboardDivider, DashboardListRow } from '@/components/dashboard/DashboardChrome';
 import {
   anchorPrimaryButtonClass,
   sectionMetaClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
 
+const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
+
+function formatDeadline(iso) {
+  if (!iso) return null;
+  try {
+    return new Date(iso).toLocaleDateString('sv-SE', { day: 'numeric', month: 'long', year: 'numeric' });
+  } catch {
+    return null;
+  }
+}
+
+function estimateMonthsToGoal(profile, remaining) {
+  const totalExpenses = (profile?.monthlyExpenses || []).reduce((s, e) => s + (e.amount || 0), 0);
+  const subs = (profile?.subscriptions || []).reduce((s, x) => s + (x.amount || 0), 0);
+  const loans = (profile?.loans || []).reduce((s, x) => s + (x.monthlyPayment || 0), 0);
+  const fixed = (profile?.housingCost || 0) + subs + loans;
+  const margin = (profile?.income || 0) - totalExpenses - fixed;
+  if (margin <= 0 || remaining <= 0) return null;
+  return Math.max(1, Math.ceil(remaining / margin));
+}
+
 export default function GoalCard({ profile, onUpdated, onDeposit }) {
   const [showDeposit, setShowDeposit] = useState(false);
-  const [aiMessage, setAiMessage] = useState('');
-  const [loadingAI, setLoadingAI] = useState(false);
 
   const goal = profile?.savingsGoal || 0;
   const current = profile?.savingsCurrentBalance || 0;
@@ -26,18 +45,8 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
   const streak = profile?.savingsMotivationStreak || 0;
   const cooldown = profile?.impulseCooldownHours || 0;
   const threshold = profile?.impulseThreshold || 0;
-
-  const fetchAIMessage = async () => {
-    if (aiMessage || loadingAI) return;
-    setLoadingAI(true);
-    const totalExpenses = (profile?.monthlyExpenses || []).reduce((s, e) => s + e.amount, 0);
-    const margin = (profile?.income || 0) - totalExpenses - (profile?.housingCost || 0);
-    const monthsLeft = margin > 0 ? Math.ceil(remaining / margin) : null;
-    setAiMessage(monthsLeft
-      ? `Baserat på din nuvarande marginal på ${margin.toLocaleString('sv-SE')} kr/mån når du ditt mål om ungefär ${monthsLeft} ${monthsLeft === 1 ? 'månad' : 'månader'}.`
-      : 'Lägg till fler utgifter för att få en prognos.');
-    setLoadingAI(false);
-  };
+  const deadlineLabel = formatDeadline(profile?.savingsGoalDeadline);
+  const monthsLeft = useMemo(() => estimateMonthsToGoal(profile, remaining), [profile, remaining]);
 
   const handleDeposit = async (amount, newBalance) => {
     if (onDeposit) {
@@ -52,94 +61,146 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
 
   if (!goal) return null;
 
+  const pctRounded = Math.round(pct);
+  const almostThere = pctRounded >= 75 && pctRounded < 100;
+  const isDone = pctRounded >= 100;
+
+  const headline = isDone
+    ? 'Grattis — du nådde målet!'
+    : almostThere
+      ? 'Nästan i mål'
+      : pctRounded >= 40
+        ? 'Du är på god väg'
+        : 'Varje krona räknas';
+
   return (
     <>
-      <div className="mx-5 border border-white/[0.08] rounded-2xl overflow-hidden bg-white/[0.03]">
-        <div className="px-5 pt-5 pb-4">
-          <div className="flex items-start justify-between mb-2 gap-3">
-            <div className="min-w-0">
-              <p className={`${sectionMetaClass} mb-0.5`}>Sparmål</p>
-              <p className="text-[18px] font-semibold text-white truncate">
-                {emoji} {goalName}
-              </p>
+      <div className="mx-4 sm:mx-5 rounded-2xl overflow-hidden border border-white/[0.1] bg-white/[0.04]">
+        {/* Hero */}
+        <div className="px-5 pt-6 pb-4">
+          <div className="flex items-start gap-4">
+            <div
+              className="flex-shrink-0 w-[72px] h-[72px] rounded-2xl flex flex-col items-center justify-center"
+              style={{
+                background: 'linear-gradient(145deg, rgba(232,184,107,0.25) 0%, rgba(232,184,107,0.06) 100%)',
+                border: '1px solid rgba(232,184,107,0.35)',
+              }}
+            >
+              <span className="text-[26px] leading-none">{emoji}</span>
+              <span className="text-[20px] font-bold text-white tabular-nums mt-1">{pctRounded}%</span>
             </div>
-            <p className="text-[15px] font-semibold text-white/65 tabular-nums">
-              {Math.round(pct)}%
-            </p>
+            <div className="flex-1 min-w-0 pt-0.5">
+              <p className="text-[13px] font-medium text-[#E8B86B]">{headline}</p>
+              <h2 className="text-[20px] font-semibold text-white leading-tight mt-0.5 truncate">
+                {goalName}
+              </h2>
+              <p className={`${sectionSubtitleClass} mt-1`}>
+                {fmt(current)} av {fmt(goal)} kr
+              </p>
+              {deadlineLabel && !isDone && (
+                <p className={`${sectionMetaClass} mt-1`}>Mål senast {deadlineLabel}</p>
+              )}
+            </div>
           </div>
 
-          <div className="w-full h-1.5 rounded-full overflow-hidden mt-3 mb-2 bg-white/[0.08]">
+          <div className="mt-5 h-2 rounded-full overflow-hidden bg-white/[0.08]">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full rounded-full"
-              style={{ background: 'rgba(255,255,255,0.6)' }}
+              transition={{ duration: 1, ease: 'easeOut' }}
+              className="h-full rounded-full bg-gradient-to-r from-[#E8B86B] to-[#F0D090]"
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <p className={sectionMetaClass}>
-              {current.toLocaleString('sv-SE')} kr sparade
-            </p>
-            <p className={sectionMetaClass}>
-              Mål: {goal.toLocaleString('sv-SE')} kr
-            </p>
-          </div>
-
-          {remaining > 0 && (
-            <p className="text-[14px] mt-2 text-white/75">
-              Du behöver spara <strong>{remaining.toLocaleString('sv-SE')} kr</strong> till.
-            </p>
+          {!isDone && remaining > 0 && (
+            <div className="mt-4 rounded-xl px-4 py-3 bg-white/[0.05] border border-white/[0.08]">
+              <p className="text-[13px] text-white/55 mb-0.5">Kvar att spara</p>
+              <p className="text-[28px] font-semibold text-white tabular-nums leading-none">
+                {fmt(remaining)} <span className="text-[17px] font-medium text-white/70">kr</span>
+              </p>
+              {dailyTarget && (
+                <p className={`${sectionSubtitleClass} mt-2`}>
+                  Ungefär <strong className="text-white/80">{fmt(dailyTarget)} kr per dag</strong> räcker
+                  {deadlineLabel ? ' om du håller tempot' : ''}.
+                </p>
+              )}
+            </div>
           )}
 
-          {(dailyTarget || microGoal) && (
-            <p className={`${sectionMetaClass} mt-2`}>
-              {dailyTarget ? `Tempo: ${dailyTarget.toLocaleString('sv-SE')} kr/dag` : ''}
-              {dailyTarget && microGoal ? ' · ' : ''}
-              {microGoal ? `Dagens mini-mål: ${Number(microGoal).toLocaleString('sv-SE')} kr` : ''}
+          {isDone && (
+            <p className="text-[15px] font-medium text-emerald-300/95 mt-4">
+              Du har sparat ihop hela beloppet. Bra jobbat.
             </p>
-          )}
-
-          {(cooldown > 0 || threshold > 0 || streak > 0) && (
-            <p className={`${sectionMetaClass} mt-1`}>
-              {streak > 0 ? `Streak: ${streak} dagar` : 'Streak: 0 dagar'}
-              {cooldown > 0 ? ` · Cooldown ${cooldown}h` : ''}
-              {threshold > 0 ? ` över ${Number(threshold).toLocaleString('sv-SE')} kr` : ''}
-            </p>
-          )}
-
-          {pct >= 100 && (
-            <p className="text-[14px] mt-2 font-medium text-emerald-300/90">Mål uppnått.</p>
           )}
         </div>
 
-        <div
-          className="mx-4 mb-4 p-3 rounded-xl cursor-pointer border border-white/[0.08] bg-white/[0.02]"
-          onClick={fetchAIMessage}
-        >
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 flex-shrink-0 text-white/45" />
-            {loadingAI ? (
-              <p className={sectionMetaClass}>Beräknar prognos...</p>
-            ) : aiMessage ? (
-              <p className="text-[13px] text-white/70">{aiMessage}</p>
-            ) : (
-              <p className={sectionMetaClass}>Tryck för prognos</p>
-            )}
-          </div>
-        </div>
+        {/* Tips & skydd */}
+        {(microGoal || streak > 0 || (cooldown > 0 && threshold > 0)) && !isDone && (
+          <>
+            <DashboardDivider className="mx-5" />
+            <div className="px-1 pb-1">
+              {microGoal > 0 && (
+                <DashboardListRow
+                  leading={<Calendar className="w-5 h-5 text-[#E8B86B]" />}
+                  title="Idag"
+                  subtitle={`Lägg undan ${fmt(microGoal)} kr — det räcker för att hålla igång`}
+                  trailing={null}
+                  className="px-4"
+                />
+              )}
+              {streak > 0 && (
+                <DashboardListRow
+                  leading={<Flame className="w-5 h-5 text-orange-400" />}
+                  title={`${streak} ${streak === 1 ? 'dag' : 'dagar'} i rad`}
+                  subtitle="Du har hållit igång sparandet"
+                  trailing={null}
+                  className="px-4"
+                />
+              )}
+              {cooldown > 0 && threshold > 0 && profile?.impulseShieldEnabled !== false && (
+                <DashboardListRow
+                  leading={<Shield className="w-5 h-5 text-sky-400" />}
+                  title="Skydd mot impulsköp"
+                  subtitle={`Vänta ${cooldown} timmar innan köp över ${fmt(threshold)} kr`}
+                  trailing={null}
+                  className="px-4"
+                />
+              )}
+            </div>
+          </>
+        )}
 
-        <DashboardDivider />
+        {monthsLeft && !isDone && (
+          <>
+            <DashboardDivider className="mx-5" />
+            <div className="mx-5 mb-4 flex gap-3 rounded-xl px-4 py-3 bg-white/[0.03] border border-white/[0.06]">
+              <Sparkles className="w-5 h-5 flex-shrink-0 text-white/40 mt-0.5" />
+              <p className="text-[14px] text-white/75 leading-relaxed">
+                Med pengar du har kvar varje månad kan du vara klar om cirka{' '}
+                <strong className="text-white/90">
+                  {monthsLeft} {monthsLeft === 1 ? 'månad' : 'månader'}
+                </strong>
+                — om du sparar i samma takt som nu.
+              </p>
+            </div>
+          </>
+        )}
 
-        <div className="px-4 pb-5">
+        <DashboardDivider className="mx-5" />
+
+        <div className="px-4 pb-5 pt-1">
           <motion.button
+            type="button"
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowDeposit(true)}
-            className={`w-full mt-4 ${anchorPrimaryButtonClass}`}
+            className={`w-full mt-3 ${anchorPrimaryButtonClass}`}
           >
-            Spara nu
+            <PiggyBank className="w-5 h-5" />
+            Lägg till sparande
           </motion.button>
+          <p className={`${sectionMetaClass} text-center mt-3`}>
+            Uppdatera hur mycket du har sparat — vi räknar om resten.
+          </p>
         </div>
       </div>
 
