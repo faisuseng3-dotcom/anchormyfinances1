@@ -148,7 +148,11 @@ export default function FutureDashboard({
         <LeakageDetector profile={profile} transactions={transactions} variant="dashboard" />
       </div>
 
-      <KalkylatornSheet isOpen={kalkylatornOpen} onClose={() => setKalkylatornOpen(false)} />
+      <KalkylatornSheet
+        isOpen={kalkylatornOpen}
+        onClose={() => setKalkylatornOpen(false)}
+        profile={profile}
+      />
 
       {/* Transaction drawer — single elevated surface */}
       <div className="fixed bottom-[76px] sm:bottom-[72px] left-0 right-0 z-40 flex justify-center pointer-events-none">
