@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
-import { PiggyBank, Pencil } from 'lucide-react';
+import { PiggyBank, Pencil, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GoalCard from '@/components/savings/GoalCard';
 import PageShell from '@/components/layout/PageShell';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
-import { anchorPrimaryButtonClass, anchorSecondaryButtonClass } from '@/lib/anchorTheme';
+import {
+  anchorPrimaryButtonClass,
+  anchorSecondaryButtonClass,
+  anchorInputClass,
+  anchorIconButtonClass,
+  sectionMetaClass,
+  elevatedSheet,
+} from '@/lib/anchorTheme';
 import { createPageUrl } from '@/utils';
-
-const EMOJIS = ['🎯','✈️','🏠','🚗','💻','🎓','🌍','🎵','💍','🏖️','📱','🎮'];
 
 function getDaysTo(deadline) {
   if (!deadline) return null;
@@ -24,7 +29,6 @@ function getDaysTo(deadline) {
 function EditGoalModal({ profile, onSave, onClose }) {
   const [name, setName] = useState(profile?.savingsGoalName || '');
   const [target, setTarget] = useState(profile?.savingsGoal ? String(profile.savingsGoal) : '');
-  const [emoji, setEmoji] = useState(profile?.savingsGoalEmoji || '🎯');
   const [deadline, setDeadline] = useState(profile?.savingsGoalDeadline || '');
   const [cooldownHours, setCooldownHours] = useState(profile?.impulseCooldownHours || 48);
   const [cooldownThreshold, setCooldownThreshold] = useState(profile?.impulseThreshold || 700);
@@ -42,7 +46,7 @@ function EditGoalModal({ profile, onSave, onClose }) {
     onSave({
       savingsGoalName: name,
       savingsGoal: t,
-      savingsGoalEmoji: emoji,
+      savingsGoalEmoji: profile?.savingsGoalEmoji || '🎯',
       savingsGoalDeadline: deadline || null,
       savingsGoalDailyTarget: dailyTarget,
       savingsGoalMonthlyTarget: monthlyTarget,
@@ -65,79 +69,84 @@ function EditGoalModal({ profile, onSave, onClose }) {
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 flex items-end justify-center"
-        style={{ background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)' }}
+        style={{ background: 'rgba(0,0,0,0.62)', backdropFilter: 'blur(8px)' }}
         onClick={onClose}
       >
         <motion.div
           initial={{ y: 200 }} animate={{ y: 0 }} exit={{ y: 200 }}
-          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="w-full max-w-md rounded-t-[28px] p-6 pb-10 anchor-glass-card border-b-0"
+          transition={{ type: 'spring', damping: 30, stiffness: 320 }}
+          className="w-full max-w-md rounded-t-[24px] p-6 pb-10"
+          style={elevatedSheet()}
           onClick={e => e.stopPropagation()}
         >
-          <h2 className="text-xl font-semibold mb-5 text-white">Redigera sparmål</h2>
-
-          <p className="anchor-section-label mb-2">Välj ikon</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {EMOJIS.map(e => (
-              <button key={e} type="button" onClick={() => setEmoji(e)}
-                className={`text-2xl w-11 h-11 rounded-2xl flex items-center justify-center ${
-                  emoji === e ? 'bg-white/15 border-2 border-white/30' : 'bg-white/6 border border-transparent'
-                }`}>
-                {e}
-              </button>
-            ))}
+          <div className="flex items-start justify-between gap-4 mb-5">
+            <div>
+              <h2 className="text-[20px] font-semibold text-white">
+                {profile?.savingsGoal ? 'Redigera sparmål' : 'Skapa sparmål'}
+              </h2>
+              <p className={`${sectionMetaClass} mt-1`}>Tydligt mål, tydligt tempo.</p>
+            </div>
+            <button type="button" onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          <p className="anchor-section-label mb-1">Namn på målet</p>
+          <p className={`${sectionMetaClass} mb-1`}>Namn på målet</p>
           <input value={name} onChange={e => setName(e.target.value)} placeholder="t.ex. Resa till Japan"
-            className="anchor-input w-full mb-4" />
+            className={`${anchorInputClass} w-full mb-4`} />
 
-          <p className="anchor-section-label mb-1">Målbelopp (kr)</p>
+          <p className={`${sectionMetaClass} mb-1`}>Målbelopp (kr)</p>
           <input value={target} onChange={e => setTarget(e.target.value)} type="number" placeholder="0"
-            className="anchor-input w-full mb-4" />
+            className={`${anchorInputClass} w-full mb-4`} />
 
-          <p className="anchor-section-label mb-1">Deadline</p>
+          <p className={`${sectionMetaClass} mb-1`}>Deadline</p>
           <input
             value={deadline}
             onChange={e => setDeadline(e.target.value)}
             type="date"
-            className="anchor-input w-full mb-4"
+            className={`${anchorInputClass} w-full mb-4`}
           />
 
           {dailyNeeded && (
-            <div className="rounded-xl px-3 py-2 mb-4" style={{ background: 'rgba(75,124,243,0.10)', border: '1px solid rgba(75,124,243,0.25)' }}>
-              <p className="text-xs text-white/70">
+            <div className="rounded-xl px-3 py-2.5 mb-4 border border-white/[0.08] bg-white/[0.04]">
+              <p className="text-[13px] text-white/75">
                 För att nå målet i tid behöver du cirka <strong>{dailyNeeded.toLocaleString('sv-SE')} kr/dag</strong>.
               </p>
             </div>
           )}
 
-          <p className="anchor-section-label mb-1">Dagens mini-mål (kr)</p>
-          <input
-            value={dailyMicroAmount}
-            onChange={e => setDailyMicroAmount(e.target.value)}
-            type="number"
-            min="1"
-            className="anchor-input w-full mb-4"
-          />
-
-          <p className="anchor-section-label mb-1">Anti-impuls: cooldown (timmar)</p>
-          <input
-            value={cooldownHours}
-            onChange={e => setCooldownHours(e.target.value)}
-            type="number"
-            min="0"
-            className="anchor-input w-full mb-4"
-          />
-
-          <p className="anchor-section-label mb-1">Anti-impuls startar över (kr)</p>
-          <input
-            value={cooldownThreshold}
-            onChange={e => setCooldownThreshold(e.target.value)}
-            type="number"
-            min="100"
-            className="anchor-input w-full mb-6"
-          />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div>
+              <p className={`${sectionMetaClass} mb-1`}>Dagens mini-mål (kr)</p>
+              <input
+                value={dailyMicroAmount}
+                onChange={e => setDailyMicroAmount(e.target.value)}
+                type="number"
+                min="1"
+                className={`${anchorInputClass} w-full`}
+              />
+            </div>
+            <div>
+              <p className={`${sectionMetaClass} mb-1`}>Cooldown (timmar)</p>
+              <input
+                value={cooldownHours}
+                onChange={e => setCooldownHours(e.target.value)}
+                type="number"
+                min="0"
+                className={`${anchorInputClass} w-full`}
+              />
+            </div>
+            <div className="sm:col-span-2">
+              <p className={`${sectionMetaClass} mb-1`}>Anti-impuls startar över (kr)</p>
+              <input
+                value={cooldownThreshold}
+                onChange={e => setCooldownThreshold(e.target.value)}
+                type="number"
+                min="100"
+                className={`${anchorInputClass} w-full`}
+              />
+            </div>
+          </div>
 
           <div className="flex gap-3">
             <button type="button" onClick={onClose} className={`flex-1 ${anchorSecondaryButtonClass}`}>Avbryt</button>

@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ChevronRight } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SavingsDepositModal from './SavingsDepositModal';
+import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
+import {
+  anchorPrimaryButtonClass,
+  sectionMetaClass,
+  sectionSubtitleClass,
+} from '@/lib/anchorTheme';
 
 export default function GoalCard({ profile, onUpdated }) {
   const [showDeposit, setShowDeposit] = useState(false);
@@ -42,48 +48,47 @@ export default function GoalCard({ profile, onUpdated }) {
 
   return (
     <>
-      <div className="mx-5 rounded-2xl overflow-hidden"
-        style={{ background: 'var(--color-card)', border: '1px solid rgba(0,0,0,0.06)' }}>
-        {/* Header */}
+      <div className="mx-5 border border-white/[0.08] rounded-2xl overflow-hidden bg-white/[0.03]">
         <div className="px-5 pt-5 pb-4">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <span className="text-2xl">{emoji}</span>
-              <p className="font-bold text-lg" style={{ color: 'var(--color-text-primary)' }}>{goalName}</p>
+          <div className="flex items-start justify-between mb-2 gap-3">
+            <div className="min-w-0">
+              <p className={`${sectionMetaClass} mb-0.5`}>Sparmål</p>
+              <p className="text-[18px] font-semibold text-white truncate">
+                {emoji} {goalName}
+              </p>
             </div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--color-text-muted)' }}>
+            <p className="text-[15px] font-semibold text-white/65 tabular-nums">
               {Math.round(pct)}%
             </p>
           </div>
 
-          {/* Progress bar */}
-          <div className="w-full h-3 rounded-full overflow-hidden mt-3 mb-2" style={{ background: 'rgba(0,0,0,0.08)' }}>
+          <div className="w-full h-1.5 rounded-full overflow-hidden mt-3 mb-2 bg-white/[0.08]">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="h-full rounded-full"
-              style={{ background: pct >= 100 ? '#0D7377' : 'linear-gradient(90deg, #0D7377, #4B7CF3)' }}
+              style={{ background: 'rgba(255,255,255,0.6)' }}
             />
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+            <p className={sectionMetaClass}>
               {current.toLocaleString('sv-SE')} kr sparade
             </p>
-            <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+            <p className={sectionMetaClass}>
               Mål: {goal.toLocaleString('sv-SE')} kr
             </p>
           </div>
 
           {remaining > 0 && (
-            <p className="text-sm mt-2 font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+            <p className="text-[14px] mt-2 text-white/75">
               Du behöver spara <strong>{remaining.toLocaleString('sv-SE')} kr</strong> till.
             </p>
           )}
 
           {(dailyTarget || microGoal) && (
-            <p className="text-xs mt-2" style={{ color: 'var(--color-text-muted)' }}>
+            <p className={`${sectionMetaClass} mt-2`}>
               {dailyTarget ? `Tempo: ${dailyTarget.toLocaleString('sv-SE')} kr/dag` : ''}
               {dailyTarget && microGoal ? ' · ' : ''}
               {microGoal ? `Dagens mini-mål: ${Number(microGoal).toLocaleString('sv-SE')} kr` : ''}
@@ -91,45 +96,43 @@ export default function GoalCard({ profile, onUpdated }) {
           )}
 
           {(cooldown > 0 || threshold > 0 || streak > 0) && (
-            <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>
-              {streak > 0 ? `🔥 Streak: ${streak} dagar` : '🔥 Streak: 0 dagar'}
+            <p className={`${sectionMetaClass} mt-1`}>
+              {streak > 0 ? `Streak: ${streak} dagar` : 'Streak: 0 dagar'}
               {cooldown > 0 ? ` · Cooldown ${cooldown}h` : ''}
               {threshold > 0 ? ` över ${Number(threshold).toLocaleString('sv-SE')} kr` : ''}
             </p>
           )}
 
           {pct >= 100 && (
-            <p className="text-sm mt-2 font-bold" style={{ color: '#0D7377' }}>🎉 Mål uppnått! Grattis!</p>
+            <p className="text-[14px] mt-2 font-medium text-emerald-300/90">Mål uppnått.</p>
           )}
         </div>
 
-        {/* AI prognos */}
         <div
-          className="mx-4 mb-4 p-3 rounded-xl cursor-pointer"
-          style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.15)' }}
+          className="mx-4 mb-4 p-3 rounded-xl cursor-pointer border border-white/[0.08] bg-white/[0.02]"
           onClick={fetchAIMessage}
         >
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 flex-shrink-0" style={{ color: '#4B7CF3' }} />
+            <TrendingUp className="w-4 h-4 flex-shrink-0 text-white/45" />
             {loadingAI ? (
-              <p className="text-xs" style={{ color: '#4B7CF3' }}>Beräknar prognos...</p>
+              <p className={sectionMetaClass}>Beräknar prognos...</p>
             ) : aiMessage ? (
-              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{aiMessage}</p>
+              <p className="text-[13px] text-white/70">{aiMessage}</p>
             ) : (
-              <p className="text-xs" style={{ color: '#4B7CF3' }}>Tryck för AI-prognos 🔮</p>
+              <p className={sectionMetaClass}>Tryck för prognos</p>
             )}
           </div>
         </div>
 
-        {/* Save button */}
+        <DashboardDivider />
+
         <div className="px-4 pb-5">
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowDeposit(true)}
-            className="w-full py-3.5 rounded-2xl font-bold text-sm text-white"
-            style={{ background: 'var(--color-accent)' }}
+            className={`w-full mt-4 ${anchorPrimaryButtonClass}`}
           >
-            💰 Spara nu
+            Spara nu
           </motion.button>
         </div>
       </div>
