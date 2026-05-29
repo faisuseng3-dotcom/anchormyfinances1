@@ -17,6 +17,8 @@ import { useModeContext } from '@/components/modes/ModeContext';
 import { useNavigate } from 'react-router-dom';
 import { isAlexMode } from '@/lib/alexMode';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { isEmbeddedApp } from '@/lib/embedLayout';
+import { cn } from '@/lib/utils';
 
 const navItems = [
   { icon: Home, page: 'Dashboard' },
@@ -36,6 +38,7 @@ export default function Layout({ children, currentPageName }) {
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [alexActive, setAlexActive] = React.useState(() => isAlexMode());
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
+  const embedded = isEmbeddedApp();
 
   // Lyssna på Alex Mode-event för att dölja business-element
   React.useEffect(() => {
@@ -64,7 +67,12 @@ export default function Layout({ children, currentPageName }) {
   };
 
   return (
-    <div className="min-h-screen anchor-app anchor-page">
+    <div
+      className={cn(
+        'anchor-app anchor-page',
+        embedded ? 'anchor-app-shell h-full max-h-full' : 'min-h-screen',
+      )}
+    >
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
@@ -170,6 +178,12 @@ export default function Layout({ children, currentPageName }) {
         
         #root {
           min-height: 100vh;
+        }
+
+        html.anchor-embedded #root,
+        html.anchor-embedded body {
+          min-height: 0;
+          height: 100%;
         }
         
         @media (max-width: 640px) {
@@ -282,8 +296,14 @@ export default function Layout({ children, currentPageName }) {
       `}</style>
       
       <main
-        className={!hideNav ? 'overflow-y-auto overflow-x-hidden' : 'overflow-x-hidden'}
-        style={!hideNav ? { paddingBottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 5.5rem))' } : {}}
+        className={cn(
+          embedded ? 'anchor-app-main' : !hideNav ? 'overflow-y-auto overflow-x-hidden' : 'overflow-x-hidden',
+        )}
+        style={
+          !embedded && !hideNav
+            ? { paddingBottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 5.5rem))' }
+            : {}
+        }
       >
         {children}
       </main>
@@ -297,7 +317,12 @@ export default function Layout({ children, currentPageName }) {
             whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.05 }}
             onClick={() => setVoiceOpen(true)}
-            className={`fixed ${isMobile ? 'bottom-28 right-4 w-12 h-12' : 'bottom-24 right-6 w-12 h-12'} rounded-full flex items-center justify-center z-40 border border-white/12 hover:border-white/20 transition-colors`}
+            className={cn(
+              'rounded-full flex items-center justify-center w-12 h-12 border border-white/12 hover:border-white/20 transition-colors',
+              embedded
+                ? 'anchor-voice-fab'
+                : `fixed z-40 ${isMobile ? 'bottom-28 right-4' : 'bottom-24 right-6'}`,
+            )}
             style={{ background: 'var(--color-surface)' }}
             aria-label="Open voice assistant"
           >
@@ -327,7 +352,13 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Bottom Navigation */}
       {!hideNav && (
-        <nav className="fixed bottom-0 left-0 right-0 mobile-safe-area z-50 border-t border-white/10 backdrop-blur-xl" style={{ background: 'rgba(6, 14, 32, 0.82)' }}>
+        <nav
+          className={cn(
+            'anchor-bottom-nav left-0 right-0 mobile-safe-area border-t border-white/10 backdrop-blur-xl',
+            embedded ? 'relative w-full' : 'fixed bottom-0 z-50',
+          )}
+          style={{ background: 'rgba(6, 14, 32, 0.82)' }}
+        >
           <div className="flex items-center justify-around py-2.5 max-w-md mx-auto px-3">
             {navItems.map((item, idx) => {
               // Center FAB

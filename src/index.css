@@ -95,6 +95,58 @@
     margin: 0;
     min-height: 100vh;
   }
+
+  /* Base44 preview / sandbox iframe — nav must live in layout flow, not 100vh overflow */
+  html.anchor-embedded,
+  html.anchor-embedded body,
+  html.anchor-embedded #root {
+    height: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  }
+
+  html.anchor-embedded body {
+    min-height: 0;
+  }
+
+  html.anchor-embedded {
+    --anchor-nav-height: 5.5rem;
+  }
+
+  html.anchor-embedded .anchor-app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  html.anchor-embedded .anchor-app-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  html.anchor-embedded .anchor-bottom-nav {
+    position: relative;
+    flex-shrink: 0;
+    z-index: 50;
+  }
+
+  html.anchor-embedded .anchor-voice-fab {
+    position: absolute;
+    right: 1rem;
+    bottom: calc(var(--anchor-nav-height) + 0.75rem);
+    z-index: 40;
+  }
+
+  html.anchor-embedded .anchor-action-menu-pills {
+    bottom: calc(var(--anchor-nav-height) + 1.25rem);
+  }
 }
 
 /* Anchor — Revolut / Monzo / Apple Wallet canvas */

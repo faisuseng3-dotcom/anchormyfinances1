@@ -29,7 +29,7 @@ export default function ActionMenu({ isOpen, onClose, onAction }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="fixed bottom-24 left-0 right-0 z-50 flex justify-center gap-4 px-6"
+            className="anchor-action-menu-pills fixed bottom-24 left-0 right-0 z-50 flex justify-center gap-4 px-6"
           >
             {ACTIONS.map((action, i) => {
               const Icon = action.icon;

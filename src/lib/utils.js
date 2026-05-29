@@ -6,4 +6,4 @@ export function cn(...inputs) {
 } 
 
 
-export const isIframe = window.self !== window.top;
+export { isEmbeddedApp as isIframe } from '@/lib/embedLayout';
