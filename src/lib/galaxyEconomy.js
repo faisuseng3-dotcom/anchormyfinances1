@@ -188,6 +188,7 @@ export function socialProfileToGalaxy(social, currentUserId) {
       ? social.galaxy_tags
       : inferGalaxyTags(social.occupation, null),
     privacy_level: social.privacy_level || 'hybrid',
+    avatar_config: social.avatar_config || social.avatar_style || null,
     highlight: highlightFromSnapshot(snap),
     savings_rate,
     economy_snapshot: snap,

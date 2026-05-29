@@ -37,30 +37,6 @@
       },
       "description": "Intressen"
     },
-    "avatar_style": {
-      "type": "object",
-      "description": "Avatar-utseende",
-      "properties": {
-        "skin": {
-          "type": "string"
-        },
-        "hair": {
-          "type": "string"
-        },
-        "hairColor": {
-          "type": "string"
-        },
-        "top": {
-          "type": "string"
-        },
-        "topColor": {
-          "type": "string"
-        },
-        "bg": {
-          "type": "string"
-        }
-      }
-    },
     "privacy_level": {
       "type": "string",
       "enum": [
@@ -121,7 +97,7 @@
     },
     "avatar_config": {
       "type": "object",
-      "description": "Detaljerad avatar (PBREngine)"
+      "description": "Minimal 2D avatar (version 2)"
     }
   },
   "required": [

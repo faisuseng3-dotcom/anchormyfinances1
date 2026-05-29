@@ -280,6 +280,13 @@ export default function Settings() {
 
         <DashboardSection nested title="Mer">
           <DashboardListRow
+            href={createPageUrl('AvatarStudio')}
+            leading={<Users className="w-5 h-5 text-[#FFB800]" />}
+            title="Din avatar"
+            subtitle="Clean minimal profilbild"
+          />
+          <DashboardDivider />
+          <DashboardListRow
             href="/Social"
             leading={<Users className="w-5 h-5 text-[#9FB5FF]" />}
             title="Anchor Social"
