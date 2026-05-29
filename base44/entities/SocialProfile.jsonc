@@ -95,9 +95,9 @@
       "items": { "type": "string" },
       "description": "Taggar f\u00f6r filtrering i J\u00e4mf\u00f6r"
     },
-    "avatar_config": {
-      "type": "object",
-      "description": "Minimal 2D avatar (version 2)"
+    "profile_photo_url": {
+      "type": "string",
+      "description": "Uppladdad profilbild (URL)"
     }
   },
   "required": [

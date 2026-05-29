@@ -2,18 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy, Sparkles } from 'lucide-react';
+import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import ProfilePhotoUpload from '@/components/social/ProfilePhotoUpload';
 import ProfileAvatar from '@/components/social/ProfileAvatar';
-import AvatarEditor from '@/components/social/avatar/AvatarEditor';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
 import { Input } from '@/components/ui/input';
 
 const TABS = [
   { id: 'profile',  label: 'Profil',    Icon: User },
-  { id: 'look',     label: 'Utseende',  Icon: Sparkles },
   { id: 'friends',  label: 'Vänner',    Icon: Users },
   { id: 'privacy',  label: 'Integritet',Icon: Shield },
 ];
@@ -46,7 +45,7 @@ export default function Social() {
     occupation: '',
     age: '',
     interests: [],
-    avatar_config: null,
+    profile_photo_url: null,
     privacy_level: 'hybrid',
     shared_categories: [],
     friends: [],
@@ -74,6 +73,13 @@ export default function Social() {
   const handleSave = () => {
     setSaving(true);
     saveMutation.mutate(form);
+  };
+
+  const handlePhotoChange = (url) => {
+    const next = { ...form, profile_photo_url: url || null };
+    setForm(next);
+    setSaving(true);
+    saveMutation.mutate(next);
   };
 
   const handleSearch = async () => {
@@ -197,20 +203,22 @@ export default function Social() {
               {/* Profilbild + username */}
               <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div className="flex items-center gap-4 mb-5">
-                  <Link to={createPageUrl('AvatarStudio')} className="no-underline">
-                    <ProfileAvatar profile={form} size={64} />
-                  </Link>
+                  <ProfilePhotoUpload
+                    profile={form}
+                    size={64}
+                    onPhotoChange={handlePhotoChange}
+                    disabled={saving}
+                  />
                   <div className="flex-1">
                     <p className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>
                       {form.username ? `@${form.username}` : 'Sätt ett användarnamn'}
                     </p>
-                    <Link
-                      to={createPageUrl('AvatarStudio')}
-                      className="text-xs font-semibold no-underline"
-                      style={{ color: 'var(--color-accent)' }}
-                    >
-                      Redigera avatar →
-                    </Link>
+                    {form.display_name && (
+                      <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{form.display_name}</p>
+                    )}
+                    <p className="text-[11px] mt-1" style={{ color: 'var(--color-text-muted)' }}>
+                      Tryck på kameran för att ladda upp profilbild
+                    </p>
                   </div>
                   <button onClick={copyUsername} disabled={!form.username}
                     className="w-9 h-9 rounded-full flex items-center justify-center"
@@ -260,32 +268,6 @@ export default function Social() {
               </div>
 
 
-            </motion.div>
-          )}
-
-          {activeTab === 'look' && (
-            <motion.div key="look"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="space-y-3">
-              <Link
-                to={createPageUrl('AvatarStudio')}
-                className="block w-full py-3 rounded-2xl text-center text-sm font-bold no-underline"
-                style={{ background: 'var(--color-surface)', color: 'var(--color-text-secondary)' }}
-              >
-                Öppna helskärmsstudio →
-              </Link>
-              <div className="rounded-2xl overflow-hidden border border-white/10">
-                <AvatarEditor
-                  embedded
-                  initialValue={form.avatar_config || form.avatar_style}
-                  onChange={(cfg) => setForm((f) => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
-                  onSave={handleSave}
-                  saved={saveMutation.isSuccess}
-                  saving={saving}
-                />
-              </div>
             </motion.div>
           )}
 
