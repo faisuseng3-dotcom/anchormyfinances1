@@ -202,17 +202,18 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
         transition={{ type: 'spring', damping: 28, stiffness: 280 }}
         onClick={e => e.stopPropagation()}
         className="w-full rounded-t-3xl p-6 pb-10 max-h-[92vh] overflow-y-auto"
-        style={{ background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)', border: '1px solid rgba(139,92,246,0.3)' }}
+        style={{ background: 'rgba(12, 18, 38, 0.98)', borderTop: '1px solid rgba(255,255,255,0.1)' }}
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-xs text-purple-400 font-semibold tracking-widest uppercase">Dream Builder</p>
-            <h2 className="text-xl font-bold text-white">
-              {step === 1 ? 'Ge drömmen ett ansikte' : step === 2 ? 'Välj din tidslinje' : step === 3 ? 'Välj spar-stil' : 'Drömmen är satt!'}
+            <p className="text-[13px] font-medium text-white/45">Nytt sparmål</p>
+            <h2 className="text-[20px] font-semibold text-white mt-0.5">
+              {step === 1 ? 'Vad sparar du till?' : step === 2 ? 'När vill du vara klar?' : step === 3 ? 'Hur vill du spara?' : 'Klart!'}
             </h2>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+          <button type="button" onClick={onClose} className="text-white/50 hover:text-white" aria-label="Stäng">
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Step indicator */}
