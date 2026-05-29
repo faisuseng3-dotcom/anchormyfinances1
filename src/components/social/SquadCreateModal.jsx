@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Target, Calendar } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import ProfileAvatar from './ProfileAvatar';
 
 export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProfiles = [] }) {
   const [form, setForm] = useState({
@@ -117,7 +118,7 @@ export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProf
                       <button key={fp.id} onClick={() => toggleMember(fp.user_id)}
                         className="w-full flex items-center gap-3 p-3 rounded-2xl text-left transition-all"
                         style={{ background: selected ? 'rgba(13,115,119,0.12)' : 'var(--color-surface)', border: selected ? '1.5px solid rgba(13,115,119,0.4)' : '1px solid rgba(255,255,255,0.07)' }}>
-                        <div className="w-8 h-8 rounded-full" style={{ background: `${fp.avatar_style?.bg || '#0D7377'}30` }} />
+                        <ProfileAvatar profile={fp} size={32} />
                         <p className="text-sm font-semibold flex-1" style={{ color: 'var(--color-text-primary)' }}>@{fp.username}</p>
                         <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center"
                           style={{ borderColor: selected ? '#0D7377' : 'rgba(255,255,255,0.2)', background: selected ? '#0D7377' : 'transparent' }}>

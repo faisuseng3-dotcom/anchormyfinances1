@@ -20,7 +20,7 @@ const PRIVACY_LEVELS = [
   {
     id: 'ghost',
     label: 'Ghost-läge',
-    sub: 'Vänner ser bara din avatar och framsteg, ingen ekonomisk data',
+    sub: 'Vänner ser bara din profil och framsteg, ingen ekonomisk data',
     Icon: Ghost,
     color: '#9AA5B4',
   },

@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy, Smile } from 'lucide-react';
+import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import AvatarBuilder from '@/components/social/AvatarBuilder';
-import { AvatarSVG } from '@/components/social/avatar/PBREngine';
+import ProfileAvatar from '@/components/social/ProfileAvatar';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
 import { Input } from '@/components/ui/input';
 
 const TABS = [
   { id: 'profile',  label: 'Profil',    Icon: User },
-  { id: 'avatar',   label: 'Avatar',    Icon: Smile },
   { id: 'friends',  label: 'Vänner',    Icon: Users },
   { id: 'privacy',  label: 'Integritet',Icon: Shield },
 ];
@@ -51,8 +49,6 @@ export default function Social() {
     occupation: '',
     age: '',
     interests: [],
-    avatar_style: {},
-    avatar_config: null,
     privacy_level: 'hybrid',
     shared_categories: [],
     friends: [],
@@ -200,13 +196,10 @@ export default function Social() {
               exit={{ opacity: 0, y: -8 }}
               className="space-y-5">
 
-              {/* Avatar preview + username */}
+              {/* Profilbild + username */}
               <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <div className="flex items-center gap-4 mb-5">
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center"
-                    style={{ background: `${(form.avatar_config || form.avatar_style)?.bg || '#0D7377'}20`, border: `2px solid ${(form.avatar_config || form.avatar_style)?.bg || '#0D7377'}` }}>
-                    <AvatarSVG config={form.avatar_config || form.avatar_style} size={56} />
-                  </div>
+                  <ProfileAvatar profile={form} size={64} />
                   <div className="flex-1">
                     <p className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>
                       {form.username ? `@${form.username}` : 'Sätt ett användarnamn'}
@@ -266,35 +259,6 @@ export default function Social() {
             </motion.div>
           )}
 
-          {/* ── TAB: Avatar ── */}
-          {activeTab === 'avatar' && (
-            <motion.div key="avatar"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="space-y-3">
-              <Link
-                to={createPageUrl('AvatarStudio')}
-                className="block w-full py-3.5 rounded-2xl text-center text-[15px] font-bold no-underline"
-                style={{ background: '#FFFC00', color: '#16181C' }}
-              >
-                Öppna Bitmoji-studio →
-              </Link>
-              <p className="text-xs text-center" style={{ color: 'var(--color-text-muted)' }}>
-                Eller redigera snabbt här nedan
-              </p>
-              <div className="rounded-2xl overflow-hidden border border-white/10">
-                <AvatarBuilder
-                  embedded
-                  value={form.avatar_config || form.avatar_style}
-                  onChange={(cfg) => setForm((f) => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
-                  onSave={handleSave}
-                  saved={saveMutation.isSuccess}
-                />
-              </div>
-            </motion.div>
-          )}
-
           {/* ── TAB: Vänner ── */}
           {activeTab === 'friends' && (
             <motion.div key="friends"
@@ -337,9 +301,7 @@ export default function Social() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mt-3 flex items-center gap-3 p-3 rounded-2xl"
                     style={{ background: 'var(--color-surface)', border: '1px solid rgba(13,115,119,0.3)' }}>
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${searchResult.avatar_style?.bg || '#0D7377'}20` }}>
-                      <AvatarSVG config={searchResult.avatar_config || searchResult.avatar_style} size={44} />
-                    </div>
+                    <ProfileAvatar profile={searchResult} size={48} />
                     <div className="flex-1">
                       <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>@{searchResult.username}</p>
                       {searchResult.bio && <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{searchResult.bio}</p>}

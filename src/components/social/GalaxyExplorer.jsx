@@ -8,21 +8,14 @@ import { cn } from '@/lib/utils';
 import { GALAXY_DEMO_PROFILES, GALAXY_FILTER_TAGS, matchScore } from '@/lib/galaxyProfiles';
 import { socialProfileToGalaxy } from '@/lib/galaxyEconomy';
 import ExpandedProfile from './ExpandedProfile';
-import { AvatarSVG } from './avatar/BitmojiEngine';
+import ProfileAvatar from './ProfileAvatar';
 
 function ProfileRow({ profile, subtitle, onOpen, badge }) {
-  const accent = profile.avatar_config?.bg || '#7FA0FF';
-
   return (
     <button type="button" onClick={() => onOpen(profile)} className="w-full text-left">
       <DashboardListRow
         leading={
-          <div
-            className="w-11 h-11 rounded-full flex items-center justify-center"
-            style={{ background: `${accent}22`, border: `1px solid ${accent}44` }}
-          >
-            <AvatarSVG config={profile.avatar_config} size={40} />
-          </div>
+          <ProfileAvatar profile={profile} size={44} />
         }
         title={badge ? `${profile.display_name} (${badge})` : profile.display_name}
         subtitle={subtitle}

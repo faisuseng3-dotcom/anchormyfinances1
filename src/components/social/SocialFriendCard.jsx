@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AvatarSVG } from './avatar/PBREngine';
+import ProfileAvatar from './ProfileAvatar';
 import { Eye, BarChart2, Ghost, UserCheck } from 'lucide-react';
 
 const PRIVACY_ICONS = {
@@ -21,11 +21,7 @@ export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
       className="flex items-center gap-3 p-3 rounded-2xl"
       style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.07)' }}
     >
-      {/* Avatar */}
-      <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{ background: `${friend.avatar_style?.bg || '#0D7377'}20` }}>
-        <AvatarSVG config={friend.avatar_config || friend.avatar_style} size={44} />
-      </div>
+      <ProfileAvatar profile={friend} size={48} />
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">

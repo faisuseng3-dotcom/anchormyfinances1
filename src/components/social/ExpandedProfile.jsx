@@ -4,7 +4,7 @@ import { X, Check, MapPin, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { AvatarSVG } from './avatar/BitmojiEngine';
+import ProfileAvatar from './ProfileAvatar';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
 import {
@@ -50,7 +50,6 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
   const { updateProfile, isPersisted } = useFinancialProfile();
   const queryClient = useQueryClient();
 
-  const accent = profile.avatar_config?.bg || profile.avatar_style?.bg || '#7FA0FF';
   const items = getSpendItems(profile);
   const showKr = profile.privacy_level === 'full' && profile.finance?.income;
   const comparison = compareWithUser(userFinancialProfile, profile);
@@ -113,12 +112,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
 
           <div className="px-5 pt-4 pb-6 space-y-6">
             <div className="flex items-start gap-4">
-              <div
-                className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0"
-                style={{ background: `${accent}22`, border: `1px solid ${accent}44` }}
-              >
-                <AvatarSVG config={profile.avatar_config || profile.avatar_style} size={48} />
-              </div>
+              <ProfileAvatar profile={profile} size={56} />
               <div className="min-w-0 flex-1">
                 <h2 className={sectionTitleClass}>{profile.display_name}</h2>
                 <p className={sectionSubtitleClass}>@{profile.username}</p>

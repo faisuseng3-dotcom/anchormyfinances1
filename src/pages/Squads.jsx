@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import SquadDashboard from '@/components/social/SquadDashboard';
 import SquadCreateModal from '@/components/social/SquadCreateModal';
-import { AvatarSVG } from '@/components/social/AvatarBuilder';
 
 export default function Squads() {
   const queryClient = useQueryClient();

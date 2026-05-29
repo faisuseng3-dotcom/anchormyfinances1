@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AvatarSVG } from './AvatarBuilder';
+import ProfileAvatar from './ProfileAvatar';
 import { Zap, Bell, ChevronDown, ChevronUp, Eye, BarChart2, Ghost } from 'lucide-react';
 
 const PRIVACY = {
@@ -33,10 +33,7 @@ export default function SquadMemberRow({ member, goalAmount, isMe, onPepp, onDra
           onClick={() => privacy !== 'ghost' && setPeek(v => !v)}
           className="relative flex-shrink-0"
         >
-          <div className="w-12 h-12 rounded-full flex items-center justify-center"
-            style={{ background: `${member.avatar_style?.bg || '#0D7377'}20`, border: `2px solid ${pInfo.color}50` }}>
-            <AvatarSVG style={member.avatar_style} size={44} />
-          </div>
+          <ProfileAvatar profile={member} size={48} />
           {isMe && (
             <div className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[8px] font-black flex items-center justify-center text-white"
               style={{ background: 'var(--color-accent)' }}>Du</div>
@@ -72,7 +69,7 @@ export default function SquadMemberRow({ member, goalAmount, isMe, onPepp, onDra
               className="absolute top-0 -translate-y-1/4"
               style={{ width: 14, height: 14 }}
             >
-              <AvatarSVG style={member.avatar_style} size={14} />
+              <ProfileAvatar profile={member} size={14} />
             </motion.div>
           </div>
 

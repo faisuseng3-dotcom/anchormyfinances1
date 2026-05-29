@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AvatarSVG } from './AvatarBuilder';
+import ProfileAvatar from './ProfileAvatar';
 import SquadMemberRow from './SquadMemberRow';
 import NudgeToast from './NudgeToast';
 import { Users, Target, Calendar, ChevronDown, Filter } from 'lucide-react';
@@ -85,7 +85,7 @@ export default function SquadDashboard({ squad, memberProfiles, myProfile, myFin
               return (
                 <div key={m.id} className="absolute top-0 -translate-y-1/4"
                   style={{ left: `${Math.max(0, mPct - 3)}%`, zIndex: enrichedMembers.length - i }}>
-                  <AvatarSVG style={m.avatar_style} size={20} />
+                  <ProfileAvatar profile={m} size={20} />
                 </div>
               );
             })}

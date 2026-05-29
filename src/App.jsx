@@ -23,7 +23,6 @@ import { DemoProvider } from '@/components/demo/DemoMode';
 import Social from './pages/Social';
 import Squads from './pages/Squads';
 import Galaxy from './pages/Galaxy';
-import AvatarStudio from './pages/AvatarStudio';
 import YearEndClosing from './pages/YearEndClosing';
 import AnchorAnalysis from './pages/AnchorAnalysis';
 import FuturePulsePage from './pages/FuturePulsePage';
@@ -109,11 +108,6 @@ const AuthenticatedApp = () => {
       <Route path="/Galaxy" element={
         <LayoutWrapper currentPageName="Galaxy">
           <Galaxy />
-        </LayoutWrapper>
-      } />
-      <Route path="/AvatarStudio" element={
-        <LayoutWrapper currentPageName="AvatarStudio">
-          <AvatarStudio />
         </LayoutWrapper>
       } />
       <Route path="/Squads" element={
