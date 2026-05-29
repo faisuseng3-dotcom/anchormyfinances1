@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
 import BasicTravelPlanner from '@/components/travel/BasicTravelPlanner';
@@ -12,13 +12,7 @@ import { anchorSecondaryButtonClass } from '@/lib/anchorTheme';
 export default function TravelPlanner() {
   const [activeTab, setActiveTab] = useState('agent');
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-  });
+  const { profile, isLoading } = useFinancialProfile();
 
   const currentMode = profile?.mode || 'basic';
 

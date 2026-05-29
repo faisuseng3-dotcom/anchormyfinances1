@@ -1,9 +1,8 @@
 import React, { useMemo, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useModeContext } from '@/components/modes/ModeContext';
 import {
   buildUpcomingExpenses,
@@ -30,14 +29,7 @@ export default function Pulse() {
     base44.functions.invoke('awardPoints', { event_type: 'pulse_open' }).catch(() => {});
   }, []);
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      if (isGuestMode()) return loadGuestProfile() || null;
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-  });
+  const { profile, isLoading } = useFinancialProfile();
 
   const incomeDay = 25;
 

@@ -47,8 +47,8 @@ const SCENARIO_TOOLS = [
   },
   {
     id: 'loans',
-    question: 'Ska jag lägga om lånet?',
-    hint: 'Jämför ränta och månadskostnad',
+    question: 'Jämför ditt lån',
+    hint: 'Ränta, månadskostnad och extra betalningar',
     icon: Landmark,
     page: 'Loans',
   },

@@ -1,32 +1,44 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Anchor, Sparkles, CheckCircle2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import TransactionClusters, { classifyTransaction } from '@/components/analysis/TransactionClusters';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
+import { useAuth } from '@/lib/AuthContext';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
 import DualPathChart from '@/components/analysis/DualPathChart';
 import ScenarioCards from '@/components/analysis/ScenarioCards';
+import PageShell from '@/components/layout/PageShell';
+import { DashboardSection } from '@/components/dashboard/DashboardChrome';
+import { createPageUrl } from '@/utils';
+import {
+  anchorPrimaryButtonClass,
+  sectionMetaClass,
+  sectionSubtitleClass,
+} from '@/lib/anchorTheme';
 
 export default function AnchorAnalysis() {
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const { profile } = useFinancialProfile();
   const { transactions } = useTransactions({ limit: 200, personalOnly: true });
   const [optimized, setOptimized] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [sliderPct, setSliderPct] = useState(50);
 
-  // Calculate brus total
-  const brusTxs = useMemo(() =>
-    transactions.filter(tx => tx.amount < 0 && classifyTransaction(tx) === 'brus'),
-    [transactions]
+  const firstName = user?.full_name?.split(' ')[0];
+  const headline = firstName
+    ? `${firstName}, så här ser dina köp ut`
+    : 'Så här ser dina köp ut';
+
+  const brusTxs = useMemo(
+    () => transactions.filter((tx) => tx.amount < 0 && classifyTransaction(tx) === 'brus'),
+    [transactions],
   );
-  const brusTotal = useMemo(() =>
-    brusTxs.reduce((s, t) => s + Math.abs(t.amount), 0),
-    [brusTxs]
+  const brusTotal = useMemo(
+    () => brusTxs.reduce((s, t) => s + Math.abs(t.amount), 0),
+    [brusTxs],
   );
-  const brusSavings = Math.round(brusTotal * 0.5); // 50% av brus
+  const brusSavings = Math.round(brusTotal * 0.5);
 
   const monthlyMargin = profile
     ? (profile.income || 0) - getTotalFixedCosts(profile)
@@ -34,190 +46,111 @@ export default function AnchorAnalysis() {
 
   const handleOptimize = async () => {
     setOptimizing(true);
-    await new Promise(r => setTimeout(r, 1800));
+    await new Promise((r) => setTimeout(r, 1200));
     setOptimized(true);
     setOptimizing(false);
   };
 
   return (
-    <div
-      className="min-h-screen"
-      style={{ background: 'linear-gradient(170deg, #f0fafa 0%, #edf2fb 45%, #f5f0ff 100%)' }}
+    <PageShell
+      title="Min ekonomi"
+      subtitle="Analys"
+      backHref={createPageUrl('Dashboard')}
+      className="!pb-32"
     >
-      {/* Sticky header */}
-      <div
-        className="sticky top-0 z-20 flex items-center justify-between px-5 pt-12 pb-4"
-        style={{ background: 'rgba(240,250,250,0.92)', backdropFilter: 'blur(12px)' }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-sm font-semibold"
-          style={{ color: '#0D7377' }}
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Tillbaka
-        </button>
-        <div className="flex items-center gap-2">
-          <Anchor className="w-4 h-4" style={{ color: '#0D7377' }} />
-          <span className="text-sm font-black" style={{ color: '#0D7377' }}>Den Stora Framtidsanalysen</span>
+      <div className="-mt-2 mb-6">
+        <h2 className="text-[22px] font-semibold text-white leading-tight">{headline}</h2>
+        <p className={`${sectionSubtitleClass} mt-2`}>
+          Vi grupperar dina senaste köp och visar vad små utgifter kan betyda på sikt.
+        </p>
+      </div>
+
+      <TransactionClusters transactions={transactions} />
+
+      {brusTotal > 0 && (
+        <div className="mt-6 rounded-xl px-4 py-3 border border-amber-400/25 bg-amber-400/10">
+          <p className="text-[15px] font-medium text-amber-200/95">
+            Småköp den här perioden: {brusTotal.toLocaleString('sv-SE')} kr
+          </p>
+          <p className={`${sectionSubtitleClass} mt-1`}>
+            Om du lägger undan hälften ({brusSavings.toLocaleString('sv-SE')} kr/mån) till sparande
+            märker du skillnad över tid.
+          </p>
         </div>
-        <div style={{ width: 72 }} />
+      )}
+
+      <DashboardSection nested title="Två vägar framåt" className="mt-8">
+        <DualPathChart
+          currentMonthlyNet={Math.max(0, monthlyMargin * 0.25)}
+          brusSavings={brusSavings}
+          sliderPct={sliderPct}
+        />
+      </DashboardSection>
+
+      <div className="mt-8">
+        <ScenarioCards
+          profile={profile}
+          brusSavings={brusSavings}
+          brusTotal={brusTotal}
+          onSliderChange={setSliderPct}
+        />
       </div>
 
-      <div className="px-5 pb-36 space-y-8">
-
-        {/* Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center pt-4"
-        >
-          <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-4"
-            style={{ background: 'rgba(13,115,119,0.10)', border: '2px solid rgba(13,115,119,0.18)' }}
-          >
-            <Anchor className="w-7 h-7" style={{ color: '#0D7377' }} />
-          </div>
-          <h1 className="text-3xl font-black leading-tight" style={{ color: '#1A2332', letterSpacing: '-0.02em' }}>
-            Alex, din ekonomi<br />har en hemlighet.
-          </h1>
-          <p className="mt-3 text-sm leading-relaxed" style={{ color: '#6B7E96', maxWidth: 300, margin: '12px auto 0' }}>
-            Anchor har analyserat dina senaste köp och räknat ut vad de faktiskt kostar dig — i tid, frihet och framtida förmögenhet.
+      {brusTotal > 0 && (
+        <div className="mt-6 rounded-xl px-4 py-3 border border-white/[0.08] bg-white/[0.03]">
+          <p className={sectionMetaClass}>Kort sammanfattning</p>
+          <p className="text-[14px] text-white/75 leading-relaxed mt-2">
+            Dina småköp är inte bara {brusTotal.toLocaleString('sv-SE')} kr — de påverkar också hur
+            snabbt du når {profile?.savingsGoalName || 'ditt sparmål'}. Mindre spontanköp ger mer
+            utrymme varje månad.
           </p>
-        </motion.div>
+        </div>
+      )}
 
-        {/* Cluster section */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-        >
-          <TransactionClusters transactions={transactions} />
-        </motion.div>
-
-        {/* Brus insight callout */}
-        {brusTotal > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.25 }}
-            className="rounded-2xl p-5"
-            style={{ background: 'rgba(233,168,37,0.08)', border: '1px solid rgba(233,168,37,0.25)' }}
-          >
-            <p className="text-sm font-black mb-1" style={{ color: '#B7791F' }}>
-              ☕ Brus-pengarna: {brusTotal.toLocaleString('sv-SE')} kr
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: '#4A5568' }}>
-              Om du automatiserar 50% av dessa — <strong>{brusSavings.toLocaleString('sv-SE')} kr/mån</strong> — direkt till en global indexfond, händer något magiskt med din framtid.
-            </p>
-          </motion.div>
-        )}
-
-        {/* Dual Path Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <DualPathChart
-            currentMonthlyNet={Math.max(0, monthlyMargin * 0.25)}
-            brusSavings={brusSavings}
-            sliderPct={sliderPct}
-          />
-        </motion.div>
-
-        {/* Scenario Cards */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-        >
-          <ScenarioCards
-            profile={profile}
-            brusSavings={brusSavings}
-            brusTotal={brusTotal}
-            onSliderChange={setSliderPct}
-          />
-        </motion.div>
-
-        {/* r/PrivatEkonomi verdict */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="rounded-2xl px-6 py-5"
-          style={{ background: 'rgba(13,115,119,0.07)', border: '1px solid rgba(13,115,119,0.14)' }}
-        >
-          <p className="text-[10px] font-black uppercase tracking-widest mb-2" style={{ color: '#0D7377' }}>
-            ⚓ Anchor-domen
-          </p>
-          <p className="text-sm leading-relaxed" style={{ color: '#2D5A5C', lineHeight: 1.8 }}>
-            "Din alternativkostnad av Brus-köpen är inte{' '}
-            <strong>{brusTotal.toLocaleString('sv-SE')} kr</strong> — det är{' '}
-            <strong>hundratusentals kronor</strong> vid pension. r/PrivatEkonomi-rådet är enkelt: automatisera, diversifiera, glöm bort. Låt pengarna jobba medan du lever."
-          </p>
-          <p className="text-[11px] mt-3 font-bold" style={{ color: 'rgba(13,115,119,0.45)' }}>— ⚓ Anchor</p>
-        </motion.div>
-
+      <div className="fixed bottom-0 left-0 right-0 z-30 px-4 sm:px-6 pb-10 pt-4 pointer-events-none">
+        <div className="max-w-lg mx-auto pointer-events-auto">
+          <AnimatePresence mode="wait">
+            {!optimized ? (
+              <motion.button
+                key="optimize"
+                type="button"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleOptimize}
+                disabled={optimizing}
+                className={`w-full ${anchorPrimaryButtonClass}`}
+              >
+                {optimizing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Sparar plan…
+                  </>
+                ) : (
+                  'Sätt undan småköps-budget'
+                )}
+              </motion.button>
+            ) : (
+              <motion.div
+                key="done"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="w-full rounded-xl px-4 py-4 flex items-center gap-3 border border-emerald-400/30 bg-emerald-400/10"
+              >
+                <CheckCircle2 className="w-5 h-5 text-emerald-300 flex-shrink-0" />
+                <div>
+                  <p className="text-[15px] font-medium text-white">
+                    {brusSavings.toLocaleString('sv-SE')} kr/mån kan gå till{' '}
+                    {profile?.savingsGoalName || 'ditt sparmål'}
+                  </p>
+                  <p className={sectionMetaClass}>Du kan justera detta under sparmål.</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-
-      {/* Fixed CTA */}
-      <div
-        className="fixed bottom-0 left-0 right-0 px-5 pb-10 pt-4 z-30"
-        style={{ background: 'linear-gradient(to top, rgba(240,250,250,1) 70%, transparent)' }}
-      >
-        <AnimatePresence mode="wait">
-          {!optimized ? (
-            <motion.button
-              key="optimize"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={handleOptimize}
-              disabled={optimizing}
-              className="w-full py-5 rounded-2xl text-base font-black text-white flex items-center justify-center gap-3"
-              style={{
-                background: 'linear-gradient(135deg, #0D7377 0%, #0FDEBD 100%)',
-                boxShadow: '0 8px 28px rgba(13,115,119,0.30)',
-                opacity: optimizing ? 0.8 : 1,
-              }}
-            >
-              {optimizing ? (
-                <>
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                    className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full"
-                  />
-                  Anchor optimerar din framtid...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5" />
-                  Optimera min framtid
-                </>
-              )}
-            </motion.button>
-          ) : (
-            <motion.div
-              key="done"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="w-full py-5 rounded-2xl flex items-center justify-center gap-3"
-              style={{ background: 'rgba(15,222,189,0.12)', border: '2px solid rgba(15,222,189,0.35)' }}
-            >
-              <CheckCircle2 className="w-5 h-5" style={{ color: '#0FDEBD' }} />
-              <div>
-                <p className="text-sm font-black" style={{ color: '#0D7377' }}>
-                  {brusSavings.toLocaleString('sv-SE')} kr/mån flyttas till {profile?.savingsGoalName || 'ditt sparmål'}
-                </p>
-                <p className="text-xs" style={{ color: '#6B7E96' }}>Anchor har tagit hand om framtiden ✓</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+    </PageShell>
   );
 }

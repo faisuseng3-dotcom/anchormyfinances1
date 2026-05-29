@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPageUrl } from '@/utils';
 import DebtDashboardCard from './DebtDashboardCard';
 import { DashboardListRow, DashboardSection } from './DashboardChrome';
 
@@ -14,7 +15,7 @@ export default function DebtCheck({ profile }) {
   return (
     <DashboardSection title="Skuld">
       <DashboardListRow
-        href="/Loans"
+        href={createPageUrl('Loans')}
         leading={
           <div
             className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold"

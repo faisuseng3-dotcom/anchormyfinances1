@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
+import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
+import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
-// Klassificera en transaktion i brus / investering / socialt
 export function classifyTransaction(tx) {
   const amount = Math.abs(tx.amount || 0);
   const label = (tx.label || '').toLowerCase();
@@ -14,8 +15,8 @@ export function classifyTransaction(tx) {
   const investKeywords = ['gym', 'gymshark', 'sats', 'actic', 'nike', 'adidas', 'bokus',
     'kjell', 'elgiganten', 'akademibokhandeln', 'kurs', 'utbildning'];
 
-  if (socialKeywords.some(k => combined.includes(k))) return 'social';
-  if (investKeywords.some(k => combined.includes(k))) return 'invest';
+  if (socialKeywords.some((k) => combined.includes(k))) return 'social';
+  if (investKeywords.some((k) => combined.includes(k))) return 'invest';
   if (amount < 150) return 'brus';
   if (amount >= 400) return 'invest';
   return 'brus';
@@ -24,27 +25,21 @@ export function classifyTransaction(tx) {
 const CLUSTERS = {
   brus: {
     emoji: '☕',
-    label: 'Brus',
-    subtitle: 'Småköp under 150 kr',
-    color: '#E9A825',
-    bg: 'rgba(233,168,37,0.08)',
-    border: 'rgba(233,168,37,0.22)',
+    label: 'Småköp',
+    subtitle: 'Under cirka 150 kr',
+    color: '#FCD34D',
   },
   invest: {
     emoji: '🛍️',
-    label: 'Investeringar i dig',
-    subtitle: 'Större sällanköp',
-    color: '#0FDEBD',
-    bg: 'rgba(15,222,189,0.07)',
-    border: 'rgba(15,222,189,0.20)',
+    label: 'Större köp',
+    subtitle: 'Sällan men tydligt',
+    color: '#9FB5FF',
   },
   social: {
     emoji: '🥂',
-    label: 'Livskvalitet',
-    subtitle: 'Utekvällar & middag',
-    color: '#A78BFA',
-    bg: 'rgba(167,139,250,0.08)',
-    border: 'rgba(167,139,250,0.22)',
+    label: 'Ute & middag',
+    subtitle: 'Socialt',
+    color: '#C4B5FD',
   },
 };
 
@@ -56,33 +51,31 @@ function ClusterInsight({ type, txs }) {
   const fmt = (n) => Math.round(n).toLocaleString('sv-SE');
 
   const insights = {
-    brus: `Du har gjort ${count} småköp denna månad. Det känns som ingenting när du blippar kortet, men tillsammans har de kostat dig ${fmt(total)} kr. Det är en weekendresa till Berlin som rann ut i sanden.`,
-    invest: `Du har gjort ${count} större köp denna månad för totalt ${fmt(total)} kr. Anchor ser detta som investeringar i dig själv — hälsa, kunskap och utrustning är positiva val.`,
-    social: `Dina utekvällar och middagar landade på totalt ${fmt(total)} kr (${count} tillfällen). Det är här ditt "sociala batteri" laddas. Anchor klassar detta som livskvalitet, inte slöseri.`,
+    brus: `Du har ${count} småköp som tillsammans blir ${fmt(total)} kr. Det är lätt att missa när varje köp känns litet.`,
+    invest: `${count} större köp på ${fmt(total)} kr — ofta saker du behöver eller valt medvetet.`,
+    social: `${count} utgifter på ${fmt(total)} kr för att umgås och äta ute.`,
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl overflow-hidden"
-      style={{ background: cfg.bg, border: `1px solid ${cfg.border}` }}
-    >
+    <div className="rounded-2xl overflow-hidden border border-white/[0.08] bg-white/[0.03]">
       <button
-        className="w-full flex items-center gap-4 px-5 py-4 text-left"
-        onClick={() => setOpen(v => !v)}
+        type="button"
+        className="w-full flex items-center gap-4 px-4 py-4 text-left"
+        onClick={() => setOpen((v) => !v)}
       >
-        <span className="text-3xl flex-shrink-0">{cfg.emoji}</span>
+        <span className="text-2xl flex-shrink-0">{cfg.emoji}</span>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-black" style={{ color: '#1A2332' }}>{cfg.label}</p>
-          <p className="text-xs" style={{ color: '#6B7E96' }}>{cfg.subtitle}</p>
+          <p className="text-[15px] font-medium text-white">{cfg.label}</p>
+          <p className={sectionMetaClass}>{cfg.subtitle}</p>
         </div>
         <div className="text-right flex-shrink-0">
-          <p className="text-base font-black" style={{ color: cfg.color }}>{fmt(total)} kr</p>
-          <p className="text-[10px]" style={{ color: '#8896A5' }}>{count} köp</p>
+          <p className="text-[17px] font-semibold tabular-nums" style={{ color: cfg.color }}>
+            {fmt(total)} kr
+          </p>
+          <p className={sectionMetaClass}>{count} köp</p>
         </div>
         <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown className="w-4 h-4 ml-2" style={{ color: '#8896A5' }} />
+          <ChevronDown className="w-4 h-4 text-white/40" />
         </motion.div>
       </button>
 
@@ -95,52 +88,58 @@ function ClusterInsight({ type, txs }) {
             transition={{ duration: 0.22 }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-4">
-              <p className="text-sm leading-relaxed" style={{ color: '#4A5568', lineHeight: 1.75 }}>
-                {insights[type]}
-              </p>
+            <DashboardDivider className="mx-4" />
+            <div className="px-4 pb-4 pt-2">
+              <p className={`${sectionSubtitleClass}`}>{insights[type]}</p>
               {txs.slice(0, 5).map((tx, i) => (
-                <div key={i} className="flex justify-between items-center mt-2 pt-2"
-                  style={{ borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                  <span className="text-xs truncate mr-2" style={{ color: '#6B7E96' }}>
+                <div key={tx.id || i} className="flex justify-between items-center mt-3 pt-3 border-t border-white/[0.06]">
+                  <span className="text-[13px] text-white/55 truncate mr-2">
                     {tx.vendor || tx.label}
                   </span>
-                  <span className="text-xs font-bold flex-shrink-0" style={{ color: '#1A2332' }}>
+                  <span className="text-[13px] font-medium text-white/85 tabular-nums flex-shrink-0">
                     {Math.abs(tx.amount).toLocaleString('sv-SE')} kr
                   </span>
                 </div>
               ))}
               {txs.length > 5 && (
-                <p className="text-xs mt-2 text-center" style={{ color: '#8896A5' }}>
-                  + {txs.length - 5} fler transaktioner
+                <p className={`${sectionMetaClass} mt-2 text-center`}>
+                  + {txs.length - 5} till
                 </p>
               )}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </div>
   );
 }
 
 export default function TransactionClusters({ transactions }) {
-  const expenses = (transactions || []).filter(tx => tx.amount < 0 && tx.type !== 'transfer_to_savings');
+  const expenses = (transactions || []).filter(
+    (tx) => tx.amount < 0 && tx.type !== 'transfer_to_savings',
+  );
 
   const clusters = { brus: [], invest: [], social: [] };
-  expenses.forEach(tx => {
+  expenses.forEach((tx) => {
     const type = classifyTransaction(tx);
     clusters[type].push(tx);
   });
 
+  const hasAny = Object.values(clusters).some((arr) => arr.length > 0);
+
+  if (!hasAny) {
+    return (
+      <p className={sectionSubtitleClass}>
+        Lägg till eller importera transaktioner så kan vi gruppera dina köp här.
+      </p>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      <p className="text-xs font-black uppercase tracking-widest px-1" style={{ color: '#8896A5' }}>
-        Anchor grupperar dina köp
-      </p>
+      <p className={sectionMetaClass}>Grupperade köp</p>
       {Object.entries(clusters).map(([type, txs]) =>
-        txs.length > 0 ? (
-          <ClusterInsight key={type} type={type} txs={txs} />
-        ) : null
+        txs.length > 0 ? <ClusterInsight key={type} type={type} txs={txs} /> : null,
       )}
     </div>
   );

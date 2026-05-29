@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import Landing from '@/pages/Landing';
 import { isGuestMode } from '@/components/guestStorage';
@@ -8,31 +8,27 @@ import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings } from 'lucide-react';
 import FutureDashboard from '@/components/dashboard/FutureDashboard';
-import InsightEngineCards from '@/components/dashboard/InsightEngineCards';
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
 import TransactionHub from '@/components/transactions/TransactionHub';
 import BadgeUnlock from '@/components/gamification/BadgeUnlock';
 import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
-import AdminScoreboard from '@/components/challenge/AdminScoreboard';
-import WeeklyPointsBadge from '@/components/challenge/WeeklyPointsBadge';
 import { useGamification, checkAndUnlockBadges } from '@/hooks/useGamification';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
-import DemoToggle from '@/components/demo/DemoToggle';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexModeHUD from '@/components/demo/AlexModeHUD';
 import AlexConflictAlert from '@/components/demo/AlexConflictAlert';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showMagicEntry, setShowMagicEntry] = useState(false);
   const { isAlexMode: isAlex } = useDemoMode();
-  const { profile, isLoading, invalidate } = useFinancialProfile({ unlockBadges: true });
+  const { profile, isLoading, invalidate, isPersisted } = useFinancialProfile();
   const { transactions: txs } = useTransactions();
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
@@ -67,8 +63,16 @@ export default function Dashboard() {
   }, [profile]);
 
   useEffect(() => {
+    const action = location.state?.anchorAction;
+    if (action === 'register') setShowExpenseModal(true);
+    if (action === 'transfer' || action === 'save') setShowTransactionHub(true);
+    if (action) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state?.anchorAction, location.pathname, navigate]);
+
+  useEffect(() => {
     base44.analytics.track({ eventName: 'dashboard_viewed' });
-    // Listen for FAB actions from Layout
     const handler = (e) => {
       if (e.detail.action === 'register') setShowExpenseModal(true);
       if (e.detail.action === 'transfer' || e.detail.action === 'save') setShowTransactionHub(true);

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -31,13 +31,7 @@ export default function Optimize() {
   const [optimizingId, setOptimizingId] = useState(null);
   const [suggestions, setSuggestions] = useState({});
 
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
+  const { profile } = useFinancialProfile();
 
   const formatNumber = (value) => {
     return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';

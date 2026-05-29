@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -41,16 +42,11 @@ export default function Expenses() {
     }, 100);
   };
 
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
+  const { profile, isPersisted } = useFinancialProfile();
 
   const updateProfile = useMutation({
     mutationFn: async (data) => {
+      if (!isPersisted || !profile?.id) return;
       await base44.entities.FinancialProfile.update(profile.id, data);
     },
     onSuccess: () => {

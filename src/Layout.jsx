@@ -54,7 +54,12 @@ export default function Layout({ children, currentPageName }) {
   }, [isBusiness]);
 
   const handleAction = (actionId) => {
-    // Dispatch a custom event that Dashboard listens to
+    const onDashboard =
+      location.pathname === '/' || location.pathname === createPageUrl('Dashboard');
+    if (!onDashboard) {
+      navigate(createPageUrl('Dashboard'), { state: { anchorAction: actionId } });
+      return;
+    }
     window.dispatchEvent(new CustomEvent('anchor:action', { detail: { action: actionId } }));
   };
 

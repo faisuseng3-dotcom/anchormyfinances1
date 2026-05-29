@@ -41,8 +41,8 @@ export default function AIStoryBar({ profile, transactions }) {
               >
                 <Ic className="w-5 h-5" style={{ color: cfg.ring }} />
               </div>
-              <p className="text-[11px] font-medium text-center text-white/45 max-w-[64px] leading-tight line-clamp-2">
-                {ins.title.split(' ').slice(0, 2).join(' ')}
+              <p className="text-[11px] font-medium text-center text-white/45 max-w-[72px] leading-tight line-clamp-2">
+                {ins.title}
               </p>
             </motion.button>
           );

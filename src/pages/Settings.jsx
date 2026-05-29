@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { useTransactions } from '@/hooks/useTransactions';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users } from 'lucide-react';
@@ -58,23 +60,16 @@ export default function Settings() {
   const [newLoan, setNewLoan] = useState({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
   const [showAddLoan, setShowAddLoan] = useState(false);
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
-
-  const { data: transactions = [] } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 500)
-  });
+  const { profile, isLoading, isPersisted } = useFinancialProfile();
+  const { transactions = [] } = useTransactions();
 
   useEffect(() => { if (profile) setFormData({ ...profile }); }, [profile]);
 
   const updateProfile = useMutation({
-    mutationFn: async (data) => { await base44.entities.FinancialProfile.update(profile.id, data); },
+    mutationFn: async (data) => {
+      if (!isPersisted || !profile?.id) return;
+      await base44.entities.FinancialProfile.update(profile.id, data);
+    },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['financialProfile'] }); setSaving(false); }
   });
 
@@ -107,13 +102,16 @@ export default function Settings() {
     setFormData(prev => ({ ...prev, loans: updatedLoans }));
     setNewLoan({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
     setShowAddLoan(false);
-    await base44.entities.FinancialProfile.update(profile.id, { loans: updatedLoans });
-    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    if (isPersisted && profile?.id) {
+      await base44.entities.FinancialProfile.update(profile.id, { loans: updatedLoans });
+      queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    }
   };
 
   const removeLoan = async (i) => {
     const updatedLoans = formData.loans.filter((_, idx) => idx !== i);
     setFormData(prev => ({ ...prev, loans: updatedLoans }));
+    if (!isPersisted || !profile?.id) return;
     await base44.entities.FinancialProfile.update(profile.id, { loans: updatedLoans });
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
   };
