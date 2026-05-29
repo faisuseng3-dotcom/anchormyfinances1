@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useQueryClient } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { useTransactions } from '@/hooks/useTransactions';
 import { motion } from 'framer-motion';
 import PageShell from '@/components/layout/PageShell';
 import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
@@ -22,18 +23,8 @@ export default function BudgetDashboard() {
   const queryClient = useQueryClient();
   const [editCategory, setEditCategory] = useState(null);
 
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
-
-  const { data: transactions = [] } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 500)
-  });
+  const { profile } = useFinancialProfile();
+  const { transactions = [] } = useTransactions();
 
   // Aggregate expenses for current month per category
   const monthlySpent = useMemo(() => {

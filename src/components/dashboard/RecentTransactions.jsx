@@ -1,11 +1,9 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { ChevronRight } from 'lucide-react';
-import { useDemoMode } from '@/components/demo/DemoMode';
+import { useTransactions } from '@/hooks/useTransactions';
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -23,15 +21,8 @@ function formatRelativeDate(dateStr) {
 }
 
 export default function RecentTransactions() {
-  const { isDemoMode } = useDemoMode();
-  const { data: transactions = [], isLoading } = useQuery({
-    queryKey: ['transactions', 'personal', 'recent'],
-    queryFn: async () => {
-      const all = await base44.entities.Transaction.list('-created_date', 20);
-      return (all || []).filter(t => t.context !== 'BUSINESS').slice(0, 3);
-    },
-    enabled: !isDemoMode, // Blockera DB-anrop i demo/alex-läge
-  });
+  const { transactions: all, isLoading } = useTransactions({ personalOnly: true, limit: 20 });
+  const transactions = all.slice(0, 3);
 
   if (isLoading) {
     return (
@@ -49,41 +40,30 @@ export default function RecentTransactions() {
         <p className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)' }}>
           Senaste
         </p>
-        <Link to={createPageUrl('TransactionHistory')}>
-          <span className="text-xs flex items-center gap-0.5" style={{ color: 'var(--color-accent)' }}>
-            Visa alla <ChevronRight className="w-3 h-3" />
-          </span>
+        <Link to={createPageUrl('TransactionHistory')} className="text-xs font-semibold flex items-center gap-0.5" style={{ color: 'var(--color-accent)' }}>
+          Visa alla <ChevronRight className="w-3 h-3" />
         </Link>
       </div>
-
-      <div className="rounded-2xl overflow-hidden" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        {transactions.map((tx, i) => {
-          const isPositive = tx.amount > 0 || ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(tx.type);
-          const color = CATEGORY_COLORS[tx.category] || '#8B97A8';
-          return (
-            <motion.div
-              key={tx.id}
-              initial={{ opacity: 0, x: -12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.07 }}
-              className="flex items-center gap-4 px-5 py-4"
-              style={{ borderBottom: i < transactions.length - 1 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}
-            >
-              <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>
-                  {tx.vendor || tx.label}
-                </p>
-                <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
-                  {formatRelativeDate(tx.created_date)}
-                </p>
-              </div>
-              <p className="text-sm font-bold flex-shrink-0" style={{ color: isPositive ? 'var(--color-success)' : 'var(--color-text-primary)' }}>
-                {isPositive ? '+' : '-'}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr
-              </p>
-            </motion.div>
-          );
-        })}
+      <div className="space-y-2">
+        {transactions.map((tx, i) => (
+          <motion.div
+            key={tx.id || i}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: i * 0.05 }}
+            className="flex items-center gap-3 p-3 rounded-xl"
+            style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}
+          >
+            <div className="w-2 h-8 rounded-full" style={{ background: CATEGORY_COLORS[tx.category] || CATEGORY_COLORS.other }} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold truncate" style={{ color: 'var(--color-text-primary)' }}>{tx.label}</p>
+              <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{formatRelativeDate(tx.created_date)}</p>
+            </div>
+            <p className="text-sm font-bold tabular-nums" style={{ color: tx.amount >= 0 ? '#3DAA7A' : 'var(--color-text-primary)' }}>
+              {tx.amount >= 0 ? '+' : ''}{tx.amount?.toLocaleString('sv-SE')} kr
+            </p>
+          </motion.div>
+        ))}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
 import ModeGate from '@/components/ModeGate';
@@ -8,13 +8,7 @@ import AnchorOracle from '@/components/whatif/AnchorOracle';
 import { DashboardSection } from '@/components/dashboard/DashboardChrome';
 
 export default function WhatIf() {
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-  });
+  const { profile } = useFinancialProfile();
 
   const currentMode = profile?.mode || 'basic';
 

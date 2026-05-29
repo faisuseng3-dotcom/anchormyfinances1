@@ -1,8 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
-import { useDemoMode } from '@/components/demo/DemoMode';
-import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,22 +20,7 @@ export default function Loans() {
   const [negotiationScript, setNegotiationScript] = useState(null);
   const [loadingEraser, setLoadingEraser] = useState(null);
   const [loadingNegotiate, setLoadingNegotiate] = useState(null);
-  const { isDemoMode, demoProfile } = useDemoMode();
-
-  const { data: profileData } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      if (isGuestMode()) return loadGuestProfile() || null;
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-    enabled: !isDemoMode,
-  });
-
-  const profile = useMemo(
-    () => (isDemoMode ? demoProfile : profileData),
-    [isDemoMode, demoProfile, profileData],
-  );
+  const { profile } = useFinancialProfile();
 
   const loans = profile?.loans || [];
   const totalDebt = loans.reduce((sum, l) => sum + (l.totalAmount || 0), 0);

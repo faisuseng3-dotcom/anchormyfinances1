@@ -1,12 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import React, { useState } from 'react';
 import { PiggyBank, Pencil, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GoalCard from '@/components/savings/GoalCard';
 import PageShell from '@/components/layout/PageShell';
-import { useDemoMode } from '@/components/demo/DemoMode';
-import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import {
   anchorPrimaryButtonClass,
@@ -129,7 +126,7 @@ function EditGoalModal({ profile, onSave, onClose }) {
               />
             </div>
             <div>
-              <p className={`${sectionMetaClass} mb-1`}>Cooldown (timmar)</p>
+              <p className={`${sectionMetaClass} mb-1`}>Väntetid vid impulsköp (timmar)</p>
               <input
                 value={cooldownHours}
                 onChange={e => setCooldownHours(e.target.value)}
@@ -139,7 +136,7 @@ function EditGoalModal({ profile, onSave, onClose }) {
               />
             </div>
             <div className="sm:col-span-2">
-              <p className={`${sectionMetaClass} mb-1`}>Anti-impuls startar över (kr)</p>
+              <p className={`${sectionMetaClass} mb-1`}>Skydd aktiveras över (kr)</p>
               <input
                 value={cooldownThreshold}
                 onChange={e => setCooldownThreshold(e.target.value)}
@@ -161,46 +158,17 @@ function EditGoalModal({ profile, onSave, onClose }) {
 }
 
 export default function SavingsGoals() {
-  const queryClient = useQueryClient();
   const [showEdit, setShowEdit] = useState(false);
-  const [demoPatches, setDemoPatches] = useState({});
-  const { isDemoMode, demoProfile } = useDemoMode();
-
-  const { data: profileData } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      if (isGuestMode()) return loadGuestProfile() || null;
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-    enabled: !isDemoMode,
-  });
-
-  const profile = useMemo(() => {
-    if (isDemoMode) return { ...demoProfile, ...demoPatches };
-    return profileData;
-  }, [isDemoMode, demoProfile, demoPatches, profileData]);
+  const { profile, updateProfile, invalidate } = useFinancialProfile();
 
   const handleSaveGoal = async (data) => {
-    if (isDemoMode) {
-      setDemoPatches((prev) => ({ ...prev, ...data }));
-      setShowEdit(false);
-      return;
-    }
-    if (!profile?.id) return;
-    await base44.entities.FinancialProfile.update(profile.id, data);
-    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+    await updateProfile(data);
     setShowEdit(false);
   };
 
-  const handleUpdated = () => {
-    if (!isDemoMode) {
-      queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
-    }
-  };
-
-  const handleDemoDeposit = async (newBalance) => {
-    setDemoPatches((prev) => ({ ...prev, savingsCurrentBalance: newBalance }));
+  const handleDeposit = async (newBalance) => {
+    await updateProfile({ savingsCurrentBalance: newBalance });
+    invalidate();
   };
 
   return (
@@ -217,11 +185,7 @@ export default function SavingsGoals() {
       }
     >
       {profile?.savingsGoal ? (
-        <GoalCard
-          profile={profile}
-          onUpdated={handleUpdated}
-          onDeposit={isDemoMode ? handleDemoDeposit : undefined}
-        />
+        <GoalCard profile={profile} onUpdated={invalidate} onDeposit={handleDeposit} />
       ) : (
         <div className="flex flex-col items-center text-center py-12">
           <PiggyBank className="w-10 h-10 mb-4 text-white/35" />

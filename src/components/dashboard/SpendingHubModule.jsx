@@ -30,12 +30,6 @@ function fmt(dateStr) {
   return d.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' });
 }
 
-const ALEX_PENDING = [
-  { id: 'ap_rent', label: 'Hyra', category: 'home', amount: -9500, dueDate: '2026-06-01T12:00:00' },
-  { id: 'ap_spotify', label: 'Spotify', category: 'entertainment', amount: -119, dueDate: '2026-06-15T12:00:00' },
-  { id: 'ap_sats', label: 'SATS Gym', category: 'health', emoji: '🏋️', amount: -549, dueDate: '2026-06-25T12:00:00' },
-];
-
 function buildPendingFromProfile(profile) {
   if (!profile) return [];
   const now = new Date();
@@ -88,16 +82,13 @@ export default function SpendingHubModule({ transactions = [], profile }) {
         if (tx.context === 'BUSINESS') return false;
         if (tx._pending) return false;
         if (['savings_deposit', 'transfer_to_savings'].includes(tx.type)) return false;
-        if (isAlexMode && !tx.is_recurring) return false;
         const d = new Date(tx.created_date);
         return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
       })
       .sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-  }, [transactions, thisMonth, thisYear, isAlexMode]);
+  }, [transactions, thisMonth, thisYear]);
 
-  const pendingItems = useMemo(() => {
-    return isAlexMode ? ALEX_PENDING : buildPendingFromProfile(profile);
-  }, [isAlexMode, profile]);
+  const pendingItems = useMemo(() => buildPendingFromProfile(profile), [profile]);
 
   const visiblePaid = paidItems.slice(0, VISIBLE_PAID);
   const hiddenPaidCount = Math.max(0, paidItems.length - visiblePaid.length);

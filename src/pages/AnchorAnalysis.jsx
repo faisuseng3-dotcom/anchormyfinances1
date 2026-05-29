@@ -2,59 +2,17 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Anchor, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import TransactionClusters, { classifyTransaction } from '@/components/analysis/TransactionClusters';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { useTransactions } from '@/hooks/useTransactions';
+import { getTotalFixedCosts } from '@/lib/financialUtils';
 import DualPathChart from '@/components/analysis/DualPathChart';
 import ScenarioCards from '@/components/analysis/ScenarioCards';
 
-// --- Demo data for Alex Mode ---
-const ALEX_DEMO_TRANSACTIONS = [
-  { id: 'a1', amount: -89, label: 'Kaffe', vendor: 'Espresso House', category: 'food', type: 'expense' },
-  { id: 'a2', amount: -49, label: 'Lunch', vendor: 'Pressbyrån', category: 'food', type: 'expense' },
-  { id: 'a3', amount: -79, label: 'Snacks', vendor: '7-Eleven', category: 'food', type: 'expense' },
-  { id: 'a4', amount: -129, label: 'Kaffe & Bulle', vendor: 'Waynes Coffee', category: 'food', type: 'expense' },
-  { id: 'a5', amount: -45, label: 'Godis', vendor: 'ICA', category: 'food', type: 'expense' },
-  { id: 'a6', amount: -69, label: 'Lunch', vendor: 'Meny', category: 'food', type: 'expense' },
-  { id: 'a7', amount: -99, label: 'Fika', vendor: 'Drop Coffee', category: 'food', type: 'expense' },
-  { id: 'a8', amount: -890, label: 'Träningskläder', vendor: 'Gymshark', category: 'shopping', type: 'expense' },
-  { id: 'a9', amount: -549, label: 'Gym', vendor: 'SATS', category: 'health', type: 'expense' },
-  { id: 'a10', amount: -299, label: 'Bok', vendor: 'Akademibokhandeln', category: 'shopping', type: 'expense' },
-  { id: 'a11', amount: -890, label: 'Middag', vendor: 'Urban Deli', category: 'food', type: 'expense' },
-  { id: 'a12', amount: -780, label: 'Kväll ute', vendor: 'Boulebar', category: 'entertainment', type: 'expense' },
-  { id: 'a13', amount: -1230, label: 'Restaurang', vendor: 'Sushi Bar', category: 'food', type: 'expense' },
-  { id: 'a14', amount: -500, label: 'Bar', vendor: 'Monks', category: 'entertainment', type: 'expense' },
-  { id: 'a15', amount: -59, label: 'Kaffe', vendor: 'Espresso House', category: 'food', type: 'expense' },
-  { id: 'a16', amount: -39, label: 'Snack', vendor: 'Pressbyrån', category: 'food', type: 'expense' },
-  { id: 'a17', amount: -119, label: 'Lunch', vendor: 'Max', category: 'food', type: 'expense' },
-  { id: 'a18', amount: -89, label: 'Kaffe', vendor: 'Starbucks', category: 'food', type: 'expense' },
-  { id: 'a19', amount: -75, label: 'Snabb mat', vendor: 'McDonald\'s', category: 'food', type: 'expense' },
-  { id: 'a20', amount: -109, label: 'Lunch', vendor: 'Subway', category: 'food', type: 'expense' },
-];
-
-function useAnalysisData(isAlexMode) {
-  const { data: dbTransactions = [] } = useQuery({
-    queryKey: ['transactions', 'analysis'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 200),
-    enabled: !isAlexMode,
-  });
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const list = await base44.entities.FinancialProfile.list();
-      return list?.[0] || null;
-    },
-    enabled: !isAlexMode,
-  });
-  return { transactions: isAlexMode ? ALEX_DEMO_TRANSACTIONS : dbTransactions, profile };
-}
-
 export default function AnchorAnalysis() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const isAlexMode = true; // Always use demo in this view for now
-
-  const { transactions, profile } = useAnalysisData(isAlexMode);
+  const { profile } = useFinancialProfile();
+  const { transactions } = useTransactions({ limit: 200, personalOnly: true });
   const [optimized, setOptimized] = useState(false);
   const [optimizing, setOptimizing] = useState(false);
   const [sliderPct, setSliderPct] = useState(50);
@@ -70,15 +28,9 @@ export default function AnchorAnalysis() {
   );
   const brusSavings = Math.round(brusTotal * 0.5); // 50% av brus
 
-  const alexProfile = {
-    income: 28000,
-    savingsGoal: 400000,
-    savingsCurrentBalance: 52000,
-    savingsGoalName: 'Japan',
-    buffer: 15000,
-    _alexMode: true,
-    ...(profile || {}),
-  };
+  const monthlyMargin = profile
+    ? (profile.income || 0) - getTotalFixedCosts(profile)
+    : 0;
 
   const handleOptimize = async () => {
     setOptimizing(true);
@@ -168,7 +120,7 @@ export default function AnchorAnalysis() {
           transition={{ delay: 0.3 }}
         >
           <DualPathChart
-            currentMonthlyNet={alexProfile.income * 0.18}
+            currentMonthlyNet={Math.max(0, monthlyMargin * 0.25)}
             brusSavings={brusSavings}
             sliderPct={sliderPct}
           />
@@ -181,7 +133,7 @@ export default function AnchorAnalysis() {
           transition={{ delay: 0.4 }}
         >
           <ScenarioCards
-            profile={alexProfile}
+            profile={profile}
             brusSavings={brusSavings}
             brusTotal={brusTotal}
             onSliderChange={setSliderPct}
@@ -258,7 +210,7 @@ export default function AnchorAnalysis() {
               <CheckCircle2 className="w-5 h-5" style={{ color: '#0FDEBD' }} />
               <div>
                 <p className="text-sm font-black" style={{ color: '#0D7377' }}>
-                  {brusSavings.toLocaleString('sv-SE')} kr/mån flyttas till {alexProfile.savingsGoalName || 'ditt sparmål'}
+                  {brusSavings.toLocaleString('sv-SE')} kr/mån flyttas till {profile?.savingsGoalName || 'ditt sparmål'}
                 </p>
                 <p className="text-xs" style={{ color: '#6B7E96' }}>Anchor har tagit hand om framtiden ✓</p>
               </div>

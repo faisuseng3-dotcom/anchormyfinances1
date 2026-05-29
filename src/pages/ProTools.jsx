@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useQuery } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
 import {
@@ -127,13 +127,7 @@ function ToolIcon({ icon: Icon }) {
 export default function ProTools() {
   const [activeModule, setActiveModule] = useState(null);
 
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-  });
+  const { profile } = useFinancialProfile();
 
   const active = DEEP_MODULES.find((m) => m.id === activeModule);
   const ActiveComponent = active?.component;

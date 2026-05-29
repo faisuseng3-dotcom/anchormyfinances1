@@ -7,7 +7,8 @@ import TransactionForm from '@/components/transactions/TransactionForm';
 import TransactionInsightsPanel from '@/components/transactions/TransactionInsightsPanel';
 import CategoryConfidenceBadge from '@/components/transactions/CategoryConfidenceBadge';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDemoMode } from '@/components/demo/DemoMode';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { useTransactions } from '@/hooks/useTransactions';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
 import SegmentTabs from '@/components/ui/SegmentTabs';
@@ -230,7 +231,8 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
 export default function TransactionHistory() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { isDemoMode, demoTransactions } = useDemoMode();
+  const { profile } = useFinancialProfile();
+  const { transactions, isLoading } = useTransactions({ personalOnly: true, limit: 1000 });
   const [showForm, setShowForm] = useState(false);
   const [editingTx, setEditingTx] = useState(null);
   const [search, setSearch] = useState('');
@@ -275,26 +277,6 @@ export default function TransactionHistory() {
     navigate(`${createPageUrl('TransactionHistory')}${qs ? `?${qs}` : ''}`, { replace: true });
   };
 
-  const { data: dbTransactions = [], isLoading } = useQuery({
-    queryKey: ['transactions', 'personal'],
-    queryFn: async () => {
-      const all = await base44.entities.Transaction.list('-created_date', 1000);
-      return (all || []).filter(t => t.context !== 'BUSINESS');
-    },
-    enabled: !isDemoMode,
-  });
-
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-    enabled: activeTab === 'insights' && !isDemoMode,
-  });
-
-  // I demo-läge: använd hårdkodat Alex-data, annars riktig DB
-  const transactions = isDemoMode ? demoTransactions : dbTransactions;
 
   const filtered = useMemo(() => {
     return transactions.filter((tx) => {

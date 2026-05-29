@@ -48,10 +48,9 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
   const deadlineLabel = formatDeadline(profile?.savingsGoalDeadline);
   const monthsLeft = useMemo(() => estimateMonthsToGoal(profile, remaining), [profile, remaining]);
 
-  const handleDeposit = async (amount, newBalance) => {
+  const handleDeposit = async (_amount, newBalance) => {
     if (onDeposit) {
       await onDeposit(newBalance);
-      onUpdated?.();
       return;
     }
     if (!profile?.id) return;

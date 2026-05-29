@@ -1,23 +1,14 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import GalaxyExplorer from '@/components/social/GalaxyExplorer';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexGalaxyBadge from '@/components/demo/AlexGalaxyBadge';
 import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 
 export default function Galaxy() {
   const { isAlexMode } = useDemoMode();
-  const { data: financialProfile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    },
-    enabled: !isAlexMode,
-  });
+  const { profile: financialProfile } = useFinancialProfile();
 
   return (
     <PageShell

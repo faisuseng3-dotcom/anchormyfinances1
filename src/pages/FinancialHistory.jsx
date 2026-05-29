@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { useTransactions } from '@/hooks/useTransactions';
 import { motion } from 'framer-motion';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
@@ -44,18 +44,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function FinancialHistory() {
-  const { data: profile, isLoading: loadingProfile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
-
-  const { data: allTransactions = [], isLoading: loadingTx } = useQuery({
-    queryKey: ['transactions_all'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 500),
-  });
+  const { profile, isLoading: loadingProfile } = useFinancialProfile();
+  const { transactions: allTransactions = [], isLoading: loadingTx } = useTransactions({ limit: 500 });
 
   const months = getLast6Months();
 

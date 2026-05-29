@@ -3,9 +3,10 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import Landing from '@/pages/Landing';
-import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
+import { isGuestMode } from '@/components/guestStorage';
 import { createPageUrl } from '@/utils';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { useTransactions } from '@/hooks/useTransactions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings } from 'lucide-react';
 import FutureDashboard from '@/components/dashboard/FutureDashboard';
@@ -26,40 +27,31 @@ import AlexConflictAlert from '@/components/demo/AlexConflictAlert';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showMagicEntry, setShowMagicEntry] = useState(false);
-  const { isDemoMode, isAlexMode: isAlex, demoProfile, demoTransactions } = useDemoMode();
+  const { isAlexMode: isAlex } = useDemoMode();
+  const { profile, isLoading, invalidate } = useFinancialProfile({ unlockBadges: true });
+  const { transactions: txs } = useTransactions();
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
   const [insights, setInsights] = useState([]);
 
-  const { data: profileData, isLoading } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      if (isGuestMode()) return loadGuestProfile() || null;
-      const profiles = await base44.entities.FinancialProfile.list();
-      if (profiles.length > 0) {
-        const newBadges = await checkAndUnlockBadges(profiles[0]);
-        if (newBadges.length > 0) {setUnlockedBadge(newBadges[0]);setShowBadgeUnlock(true);}
+  useGamification(isPersisted ? profile : null);
+
+  useEffect(() => {
+    if (!isPersisted || !profile) return;
+    let cancelled = false;
+    checkAndUnlockBadges(profile).then((newBadges) => {
+      if (!cancelled && newBadges?.length > 0) {
+        setUnlockedBadge(newBadges[0]);
+        setShowBadgeUnlock(true);
       }
-      return profiles[0] || null;
-    },
-    enabled: !isDemoMode, // Blockera DB-anrop helt i demo-läge
-  });
-
-  const { data: allTransactions = [] } = useQuery({
-    queryKey: ['transactions'],
-    queryFn: () => base44.entities.Transaction.list('-created_date', 500),
-    enabled: !isDemoMode, // Blockera DB-anrop helt i demo-läge
-  });
-
-  const profile = isDemoMode ? demoProfile : profileData;
-
-  useGamification(profileData);
+    });
+    return () => { cancelled = true; };
+  }, [isPersisted, profile?.id]);
 
   useEffect(() => {
     if (profile && !profile.onboardingCompleted) {
@@ -127,8 +119,6 @@ export default function Dashboard() {
 
   }
 
-  const txs = isDemoMode ? demoTransactions : allTransactions;
-
   return (
     <>
       <AlexModeHUD active={isAlex} />
@@ -139,7 +129,6 @@ export default function Dashboard() {
         onOpenExpense={() => setShowExpenseModal(true)}
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
-        alexMode={isAlex}
       />
       {isAlex && <AlexConflictAlert />}
 
@@ -162,7 +151,7 @@ export default function Dashboard() {
       <MagicEntryBox
         isOpen={showMagicEntry}
         onClose={() => setShowMagicEntry(false)}
-        onSaved={() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] })} />
+        onSaved={() => invalidate()} />
     </>
   );
 

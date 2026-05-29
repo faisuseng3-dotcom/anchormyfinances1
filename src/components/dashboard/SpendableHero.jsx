@@ -19,18 +19,16 @@ export default function SpendableHero({ profile }) {
 
   return (
     <div className={`${anchorZoneClass} pt-2 pb-6 text-center relative`}>
-      {profile._alexMode && (
-        <div className="flex justify-end mb-2">
-          <motion.button
-            whileTap={{ scale: 0.96 }}
-            onClick={() => navigate('/AnchorAnalysis')}
-            className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 hover:text-white"
-          >
-            <Anchor className="w-3.5 h-3.5" />
-            Min ekonomi
-          </motion.button>
-        </div>
-      )}
+      <div className="flex justify-end mb-2">
+        <motion.button
+          whileTap={{ scale: 0.96 }}
+          onClick={() => navigate('/AnchorAnalysis')}
+          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 hover:text-white"
+        >
+          <Anchor className="w-3.5 h-3.5" />
+          Min ekonomi
+        </motion.button>
+      </div>
 
       <p className="text-[15px] text-white/55 mb-2">Kvar att spendera</p>
 
