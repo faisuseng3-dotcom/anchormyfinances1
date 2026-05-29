@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
+import { useDemoMode } from '@/components/demo/DemoMode';
+import { isGuestMode, loadGuestProfile } from '@/components/guestStorage';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,14 +22,22 @@ export default function Loans() {
   const [negotiationScript, setNegotiationScript] = useState(null);
   const [loadingEraser, setLoadingEraser] = useState(null);
   const [loadingNegotiate, setLoadingNegotiate] = useState(null);
+  const { isDemoMode, demoProfile } = useDemoMode();
 
-  const { data: profile } = useQuery({
+  const { data: profileData } = useQuery({
     queryKey: ['financialProfile'],
     queryFn: async () => {
+      if (isGuestMode()) return loadGuestProfile() || null;
       const profiles = await base44.entities.FinancialProfile.list();
       return profiles[0] || null;
     },
+    enabled: !isDemoMode,
   });
+
+  const profile = useMemo(
+    () => (isDemoMode ? demoProfile : profileData),
+    [isDemoMode, demoProfile, profileData],
+  );
 
   const loans = profile?.loans || [];
   const totalDebt = loans.reduce((sum, l) => sum + (l.totalAmount || 0), 0);
@@ -85,12 +95,12 @@ Kort svar svenska, max 3 meningar.`,
   const highestInterestLoan = sortedLoans.find((l) => (l.interestRate || 0) > 0);
 
   return (
-    <PageShell title="Lån" subtitle="Optimera dina skulder" backHref={createPageUrl('Dashboard')}>
+    <PageShell title="Lån" subtitle="Jämför och förbättra" backHref={createPageUrl('Dashboard')}>
       {loans.length === 0 ? (
         <div className="py-16 text-center">
           <CheckCircle className="w-10 h-10 mx-auto mb-4 text-emerald-400/80" />
-          <p className="text-[17px] font-semibold text-white mb-1">Inga lån registrerade</p>
-          <p className={sectionSubtitleClass}>Lägg till under Inställningar så analyserar vi dem här.</p>
+          <p className="text-[17px] font-semibold text-white mb-1">Inget lån här ännu</p>
+          <p className={sectionSubtitleClass}>Lägg till ditt lån under inställningar — då kan vi räkna på ränta och extra betalningar.</p>
           <Link to={createPageUrl('Settings')} className={`${anchorPrimaryButtonClass} inline-flex mt-6 px-6`}>
             Gå till inställningar
           </Link>
