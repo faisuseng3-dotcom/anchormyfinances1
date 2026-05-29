@@ -455,7 +455,7 @@ export function enrichFuturePulseDetail(forecast, profile) {
       `Fortsätt som vanligt — jag flaggar om något ändras.`;
   } else if (statusKey === 'gul') {
     coach_detaljer =
-      `${coach_detaljer} Lägsta punkt runt dag ${minDay} (${fmt(minBal)} kr). ` +
+      `${coach_detaljer} Lägsta punkt runt dag ${minDay} (${Math.round(minBal).toLocaleString('sv-SE')} kr). ` +
       `Planera mindre frivilliga köp tills nästa inkomst.`;
   } else {
     coach_detaljer =

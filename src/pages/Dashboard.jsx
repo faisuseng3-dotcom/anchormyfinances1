@@ -39,10 +39,10 @@ export default function Dashboard() {
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
   const [insights, setInsights] = useState([]);
 
-  useGamification(isPersisted ? profile : null);
+  useGamification(profile ?? null);
 
   useEffect(() => {
-    if (!isPersisted || !profile) return;
+    if (!profile) return;
     let cancelled = false;
     checkAndUnlockBadges(profile).then((newBadges) => {
       if (!cancelled && newBadges?.length > 0) {
@@ -51,7 +51,7 @@ export default function Dashboard() {
       }
     });
     return () => { cancelled = true; };
-  }, [isPersisted, profile?.id]);
+  }, [profile?.id]);
 
   useEffect(() => {
     if (profile && !profile.onboardingCompleted) {
@@ -137,7 +137,7 @@ export default function Dashboard() {
         isOpen={showExpenseModal}
         onClose={() => setShowExpenseModal(false)}
         profile={profile}
-        onSuccess={() => { queryClient.invalidateQueries({ queryKey: ['financialProfile'] }); setShowExpenseModal(false); }} />
+        onSuccess={() => { invalidate(); setShowExpenseModal(false); }} />
 
       <TransactionHub
         isOpen={showTransactionHub}
