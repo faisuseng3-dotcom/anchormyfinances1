@@ -271,11 +271,20 @@ export default function Social() {
             <motion.div key="avatar"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}>
+              exit={{ opacity: 0, y: -8 }}
+              className="space-y-4">
+              <Link
+                to={createPageUrl('AvatarStudio')}
+                className="block w-full py-3 rounded-2xl text-center text-sm font-bold text-[#1a1a1a] no-underline"
+                style={{ background: '#FFE566' }}
+              >
+                Öppna avatar-studio (fullskärm)
+              </Link>
               <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
                 <AvatarBuilder
+                  embedded
                   value={form.avatar_config || form.avatar_style}
-                  onChange={cfg => setForm(f => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
+                  onChange={(cfg) => setForm((f) => ({ ...f, avatar_config: cfg, avatar_style: cfg }))}
                   onSave={handleSave}
                   saved={saveMutation.isSuccess}
                 />

@@ -4,7 +4,7 @@ import { X, Check, MapPin, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useQueryClient } from '@tanstack/react-query';
-import { AvatarSVG } from './avatar/PBREngine';
+import { AvatarSVG } from './avatar/BitmojiEngine';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
 import {

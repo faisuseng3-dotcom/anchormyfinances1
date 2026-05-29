@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { GALAXY_DEMO_PROFILES, GALAXY_FILTER_TAGS, matchScore } from '@/lib/galaxyProfiles';
 import { socialProfileToGalaxy } from '@/lib/galaxyEconomy';
 import ExpandedProfile from './ExpandedProfile';
-import { AvatarSVG } from './avatar/PBREngine';
+import { AvatarSVG } from './avatar/BitmojiEngine';
 
 function ProfileRow({ profile, subtitle, onOpen, badge }) {
   const accent = profile.avatar_config?.bg || '#7FA0FF';

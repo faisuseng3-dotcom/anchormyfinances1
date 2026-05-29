@@ -1,6 +1,6 @@
 import React from 'react';
 import { Users } from 'lucide-react';
-import { AvatarSVG } from '../avatar/PBREngine';
+import { AvatarSVG } from '../avatar/BitmojiEngine';
 import { GALAXY_DEMO_PROFILES } from '@/lib/galaxyProfiles';
 
 export default function GalaxyMiniList({ realProfiles = [], onSelect }) {

@@ -1,128 +1,122 @@
-// Avatar Configuration — Default state & type definitions
+// Avatar Configuration — Bitmoji-inspirerad palett
 
 export const DEFAULT_AVATAR_CONFIG = {
   body: 'standard',
-  skinColor: '#FFDBAC',
+  skinColor: '#FFCC9A',
   faceShape: 'oval',
-  eyes: { type: 'almond', color: '#2D3436' },
+  eyes: { type: 'round', color: '#4A3728' },
   eyebrows: { type: 'natural' },
   eyelashes: { type: 'natural' },
   nose: { type: 'button' },
-  mouth: { type: 'smile', lipColor: '#C48A8A' },
-  hair: { style: 'short_clean', color: '#1C1008', isLong: false },
-  outfit: { style: 'tshirt', color: '#0D7377' },
+  mouth: { type: 'smile', lipColor: '#E07A7A' },
+  hair: { style: 'short_clean', color: '#2C1810', isLong: false },
+  outfit: { style: 'hoodie', color: '#5AC8FA' },
   accessory: 'none',
-  bg: '#0D7377',
-  expression: 'neutral', // 'neutral' | 'happy' | 'excited' | 'focused'
+  bg: '#5AC8FA',
+  expression: 'neutral',
 };
 
-export const HAIR_LONG_STYLES = ['long_straight', 'curly_big', 'ponytail'];
+export const HAIR_LONG_STYLES = ['long_straight', 'curly_big', 'ponytail', 'bob'];
 
 export const SKIN_COLORS = [
-  '#FFDBAC', '#FDDBB4', '#F5C89A', '#E8A87C', '#D4874E',
-  '#C47A3A', '#A0611A', '#8B4E1A', '#6B3410', '#F1C27D',
+  '#FFEBD4', '#FFCC9A', '#F5B07A', '#E8A06A', '#D4895A',
+  '#C67A4E', '#A8653A', '#8D5524', '#6B3E1F', '#5C3317',
 ];
 
 export const HAIR_STYLES = [
-  { id: 'short_clean',   label: 'Kort',       isLong: false },
-  { id: 'medium_wave',   label: 'Vågigt',     isLong: false },
-  { id: 'undercut',      label: 'Undercut',   isLong: false },
-  { id: 'long_straight', label: 'Rakt långt', isLong: true  },
-  { id: 'curly_big',     label: 'Lockigt',    isLong: true  },
-  { id: 'afro',          label: 'Afro',       isLong: false },
-  { id: 'bun_top',       label: 'Toppknut',   isLong: false },
-  { id: 'bob',           label: 'Bob',        isLong: true  },
-  { id: 'ponytail',      label: 'Hästsvans',  isLong: true  },
-  { id: 'bald',          label: 'Skallig',    isLong: false },
+  { id: 'short_clean', label: 'Kort', isLong: false },
+  { id: 'medium_wave', label: 'Vågigt', isLong: false },
+  { id: 'undercut', label: 'Undercut', isLong: false },
+  { id: 'long_straight', label: 'Långt rakt', isLong: true },
+  { id: 'curly_big', label: 'Lockigt', isLong: true },
+  { id: 'afro', label: 'Afro', isLong: false },
+  { id: 'bun_top', label: 'Knut', isLong: false },
+  { id: 'bob', label: 'Bob', isLong: true },
+  { id: 'ponytail', label: 'Hästsvans', isLong: true },
+  { id: 'bald', label: 'Skallig', isLong: false },
 ];
 
 export const HAIR_COLORS = [
-  '#1C1008', '#3D2B1F', '#6B3A2A', '#8B4513', '#A0522D',
-  '#C8860A', '#D4A017', '#F5DEB3', '#FF6B6B', '#FF4499',
-  '#A78BFA', '#60A5FA', '#34D399', '#F97316',
+  '#1C1008', '#3D2914', '#6B3A2A', '#8B4513', '#B87333',
+  '#D4A017', '#F0D58C', '#FF6B6B', '#FF4D9D', '#9B59FF',
+  '#3498DB', '#2ECC71', '#FF9500', '#E8E8E8',
 ];
 
 export const EYE_TYPES = [
-  { id: 'almond',    label: 'Mandel'   },
-  { id: 'round',     label: 'Runda'    },
-  { id: 'cat',       label: 'Katt'     },
-  { id: 'hooded',    label: 'Drömiga'  },
-  { id: 'wide',      label: 'Vida'     },
+  { id: 'round', label: 'Runda' },
+  { id: 'almond', label: 'Mandel' },
+  { id: 'wide', label: 'Stora' },
+  { id: 'cat', label: 'Katt' },
+  { id: 'hooded', label: 'Sömniga' },
 ];
 
-export const EYE_COLORS = [
-  '#2D3436', '#3B2314', '#4A7C59', '#2E86AB', '#7B68EE', '#8B4513',
-];
+export const EYE_COLORS = ['#4A3728', '#2E5E8C', '#3D7A4A', '#5C4033', '#6B4C9A', '#1a1a1a'];
 
 export const EYEBROW_TYPES = [
   { id: 'natural', label: 'Naturliga' },
-  { id: 'arched',  label: 'Bågiga'   },
-  { id: 'thick',   label: 'Tjocka'   },
-  { id: 'thin',    label: 'Tunna'    },
+  { id: 'arched', label: 'Bågiga' },
+  { id: 'thick', label: 'Tjocka' },
+  { id: 'thin', label: 'Tunna' },
 ];
 
 export const EYELASH_TYPES = [
-  { id: 'none',      label: 'Inga'        },
-  { id: 'natural',   label: 'Naturliga'   },
-  { id: 'dramatic',  label: 'Dramatiska'  },
+  { id: 'none', label: 'Inga' },
+  { id: 'natural', label: 'Lätt' },
+  { id: 'dramatic', label: 'Tydliga' },
 ];
 
 export const NOSE_TYPES = [
-  { id: 'button',   label: 'Knappnäsa' },
-  { id: 'wide',     label: 'Bred'      },
-  { id: 'narrow',   label: 'Smal'      },
-  { id: 'upturned', label: 'Uppåt'     },
+  { id: 'button', label: 'Liten' },
+  { id: 'wide', label: 'Bred' },
+  { id: 'narrow', label: 'Smal' },
+  { id: 'upturned', label: 'Uppåt' },
 ];
 
 export const MOUTH_TYPES = [
-  { id: 'smile',  label: 'Leende' },
-  { id: 'smirk',  label: 'Smirk'  },
-  { id: 'open',   label: 'Öppen'  },
-  { id: 'pouty',  label: 'Pouty'  },
+  { id: 'smile', label: 'Leende' },
+  { id: 'open', label: 'Glad' },
+  { id: 'smirk', label: 'Smirk' },
+  { id: 'pouty', label: 'Pout' },
 ];
 
 export const LIP_COLORS = [
-  '#C48A8A', '#E57373', '#E91E63', '#9C27B0',
-  '#FF7043', '#F06292', '#AD1457', '#B71C1C', '#8B4513',
+  '#E07A7A', '#FF6B8A', '#D4537A', '#C48A8A', '#FF8A65', '#E91E63',
 ];
 
 export const OUTFIT_STYLES = [
-  { id: 'tshirt',     label: 'T-shirt'       },
-  { id: 'hoodie',     label: 'Hoodie'        },
-  { id: 'blazer',     label: 'Blazer'        },
-  { id: 'suit',       label: 'Kostym'        },
-  { id: 'turtleneck', label: 'Polotröja'     },
-  { id: 'bomber',     label: 'Bomber jacket' },
-  { id: 'denim',      label: 'Denim'         },
-  { id: 'sport',      label: 'Sport'         },
+  { id: 'tshirt', label: 'T-shirt' },
+  { id: 'hoodie', label: 'Hoodie' },
+  { id: 'blazer', label: 'Kavaj' },
+  { id: 'sport', label: 'Träning' },
+  { id: 'suit', label: 'Kostym' },
 ];
 
 export const OUTFIT_COLORS = [
-  '#0D7377', '#4B7CF3', '#E53E3E', '#D69E2E', '#A78BFA',
-  '#0FDEBD', '#1a1a2e', '#2D3748', '#F6AD55', '#FC8181',
-  '#ED64A6', '#ECC94B', '#48BB78', '#4299E1',
+  '#5AC8FA', '#FF6B8A', '#FFE566', '#7C5CFF', '#34C759',
+  '#FF9500', '#FF3B30', '#1C1C1E', '#FFFFFF', '#A8D8FF',
+  '#FFB3C7', '#B8F397',
 ];
 
 export const ACCESSORIES = [
-  { id: 'none',           label: 'Ingen'           },
-  { id: 'glasses_round',  label: 'Runda glasögon'  },
-  { id: 'glasses_square', label: 'Fyrkantiga'      },
-  { id: 'sunglasses',     label: 'Solglasögon'     },
-  { id: 'cap',            label: 'Keps'            },
-  { id: 'beanie',         label: 'Mössa'           },
-  { id: 'earrings',       label: 'Örhängen'        },
-  { id: 'headband',       label: 'Pannband'        },
+  { id: 'none', label: 'Ingen' },
+  { id: 'glasses_round', label: 'Glasögon' },
+  { id: 'glasses_square', label: 'Fyrkantiga' },
+  { id: 'sunglasses', label: 'Solglas' },
+  { id: 'cap', label: 'Keps' },
+  { id: 'beanie', label: 'Mössa' },
+  { id: 'earrings', label: 'Örhängen' },
+  { id: 'headband', label: 'Pannband' },
 ];
 
+/** Bitmoji-lika bakgrunder — starka pasteller */
 export const BG_COLORS = [
-  '#0D7377', '#4B7CF3', '#A78BFA', '#F6AD55', '#FC8181',
-  '#0FDEBD', '#1a1a2e', '#F687B3', '#68D391', '#ECC94B',
+  '#5AC8FA', '#FFE566', '#FF6B8A', '#7C5CFF', '#34C759',
+  '#FF9500', '#FFB3C7', '#A8D8FF', '#B8F397', '#1C1C1E',
 ];
 
-// Expression overrides mouth type
 export const EXPRESSION_MOUTH_MAP = {
-  neutral:  'smile',
-  happy:    'open',
-  excited:  'open',
-  focused:  'smirk',
+  neutral: 'smile',
+  happy: 'open',
+  excited: 'open',
+  focused: 'smirk',
 };
