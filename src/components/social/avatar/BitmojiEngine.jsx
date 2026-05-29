@@ -158,7 +158,7 @@ function Mouth({ type, lip, expression }) {
   );
 }
 
-function HairBack(style, color) {
+function HairBack({ style, color }) {
   const dk = hexAdjust(color, -25);
   switch (style) {
     case 'long_straight':
@@ -200,7 +200,7 @@ function HairBack(style, color) {
   }
 }
 
-function HairFront(style, color) {
+function HairFront({ style, color }) {
   if (style === 'bald') return null;
   const hi = hexAdjust(color, 18);
   const dk = hexAdjust(color, -22);
