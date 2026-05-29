@@ -272,15 +272,18 @@ export default function Social() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="space-y-4">
+              className="space-y-3">
               <Link
                 to={createPageUrl('AvatarStudio')}
-                className="block w-full py-3 rounded-2xl text-center text-sm font-bold text-[#1a1a1a] no-underline"
-                style={{ background: '#FFE566' }}
+                className="block w-full py-3.5 rounded-2xl text-center text-[15px] font-bold no-underline"
+                style={{ background: '#FFFC00', color: '#16181C' }}
               >
-                Öppna avatar-studio (fullskärm)
+                Öppna Bitmoji-studio →
               </Link>
-              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.07)' }}>
+              <p className="text-xs text-center" style={{ color: 'var(--color-text-muted)' }}>
+                Eller redigera snabbt här nedan
+              </p>
+              <div className="rounded-2xl overflow-hidden border border-white/10">
                 <AvatarBuilder
                   embedded
                   value={form.avatar_config || form.avatar_style}

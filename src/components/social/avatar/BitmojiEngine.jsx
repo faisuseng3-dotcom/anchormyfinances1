@@ -1,17 +1,13 @@
 /**
- * Bitmoji-style avatar renderer — stor huvud, mjuka former, tydliga konturer, starka färger.
- * Samma config-format som AvatarConfig / legacy profiler.
+ * Bitmoji-style avatar — stor huvud, liten kropp, mjuk tecknad stil med tydlig kontur.
  */
 import React, { useId } from 'react';
 import { EXPRESSION_MOUTH_MAP } from './AvatarConfig';
+import { OUTLINE, OUTLINE_WIDTH } from './bitmojiTheme';
 
 export function hexBlend(a, b, t) {
   if (!a || !b) return a || b || '#888';
-  const p = (h) => [
-    parseInt(h.slice(1, 3), 16),
-    parseInt(h.slice(3, 5), 16),
-    parseInt(h.slice(5, 7), 16),
-  ];
+  const p = (h) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
   const [r1, g1, b1] = p(a);
   const [r2, g2, b2] = p(b);
   return (
@@ -31,75 +27,102 @@ export function hexAdjust(hex, amt) {
   return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`;
 }
 
-const OUTLINE = '#2C2416';
-const LONG_HAIR = ['long_straight', 'curly_big', 'ponytail', 'bob'];
+const LONG = ['long_straight', 'curly_big', 'ponytail', 'bob'];
 
-function Face({ skin, faceShape, uid }) {
-  const hi = hexBlend(skin, '#FFFFFF', 0.35);
-  const sh = hexBlend(skin, '#000000', 0.12);
-  let rx = 30;
-  let ry = 32;
-  if (faceShape === 'round') {
-    rx = 31;
-    ry = 30;
+function strokeProps(extra = {}) {
+  return {
+    stroke: OUTLINE,
+    strokeWidth: OUTLINE_WIDTH,
+    strokeLinecap: 'round',
+    strokeLinejoin: 'round',
+    ...extra,
+  };
+}
+
+function Head({ skin, shape, uid }) {
+  const cx = 100;
+  const cy = 88;
+  let w = 58;
+  let h = 62;
+  if (shape === 'round') {
+    w = 60;
+    h = 58;
   }
-  if (faceShape === 'square') {
-    rx = 29;
-    ry = 28;
+  if (shape === 'square') {
+    w = 56;
+    h = 54;
   }
-  if (faceShape === 'heart') {
-    rx = 27;
-    ry = 33;
+  if (shape === 'heart') {
+    w = 52;
+    h = 64;
   }
-  const cx = 50;
-  const cy = 52;
-  const d = `
-    M${cx - rx} ${cy - 4}
-    C${cx - rx - 1} ${cy - ry} ${cx - 4} ${cy - ry - 2} ${cx} ${cy - ry}
-    C${cx + 4} ${cy - ry - 2} ${cx + rx + 1} ${cy - ry} ${cx + rx} ${cy - 4}
-    C${cx + rx + 2} ${cy + 6} ${cx + rx - 2} ${cy + ry - 2} ${cx} ${cy + ry + 2}
-    C${cx - rx + 2} ${cy + ry - 2} ${cx - rx - 2} ${cy + 6} ${cx - rx} ${cy - 4} Z`;
+
+  const face = `
+    M${cx - w} ${cy - 6}
+    C${cx - w - 2} ${cy - h} ${cx - 8} ${cy - h - 4} ${cx} ${cy - h - 2}
+    C${cx + 8} ${cy - h - 4} ${cx + w + 2} ${cy - h} ${cx + w} ${cy - 6}
+    C${cx + w + 4} ${cy + 14} ${cx + w - 4} ${cy + h - 4} ${cx} ${cy + h + 4}
+    C${cx - w + 4} ${cy + h - 4} ${cx - w - 4} ${cy + 14} ${cx - w} ${cy - 6} Z`;
 
   return (
-    <>
-      <path d={d} fill={sh} transform="translate(0, 2)" opacity="0.25" />
-      <path d={d} fill={`url(#${uid}_skin)`} stroke={OUTLINE} strokeWidth="2.2" strokeLinejoin="round" />
-      <ellipse cx={cx - 14} cy={cy + 10} rx="9" ry="6" fill={`url(#${uid}_blush)`} />
-      <ellipse cx={cx + 14} cy={cy + 10} rx="9" ry="6" fill={`url(#${uid}_blush)`} />
-      <ellipse cx={cx - 12} cy={cy - 12} rx="14" ry="8" fill={hi} opacity="0.35" />
-    </>
+    <g>
+      <ellipse cx={cx} cy={cy + h + 8} rx={w * 0.75} ry={10} fill="#000" opacity="0.08" />
+      <path d={face} fill={`url(#${uid}_skin)`} {...strokeProps()} />
+      <ellipse cx={cx - 22} cy={cy + 14} rx={14} ry={10} fill={`url(#${uid}_blush)`} />
+      <ellipse cx={cx + 22} cy={cy + 14} rx={14} ry={10} fill={`url(#${uid}_blush)`} />
+      <ellipse cx={cx - 18} cy={cy - 18} rx={22} ry={14} fill="#fff" opacity="0.22" />
+    </g>
+  );
+}
+
+function Ear({ cx, cy, skin }) {
+  return (
+    <ellipse
+      cx={cx}
+      cy={cy}
+      rx={9}
+      ry={11}
+      fill={hexBlend(skin, '#000', 0.06)}
+      {...strokeProps()}
+    />
   );
 }
 
 function Eye({ cx, cy, type, color }) {
-  const sizes = {
-    almond: [7, 8],
-    round: [7.5, 8.5],
-    cat: [8, 7],
-    hooded: [6.5, 7],
-    wide: [8.5, 9],
+  const map = {
+    round: [11, 12],
+    almond: [10, 11],
+    wide: [12, 13],
+    cat: [11, 10],
+    hooded: [10, 10],
   };
-  const [rx, ry] = sizes[type] || sizes.almond;
+  const [rx, ry] = map[type] || map.round;
+
   return (
     <g>
-      <ellipse cx={cx} cy={cy + 1} rx={rx + 2} ry={ry + 1} fill="white" stroke={OUTLINE} strokeWidth="1.8" />
-      <ellipse cx={cx} cy={cy + 1.5} rx={rx * 0.72} ry={ry * 0.78} fill={color} />
-      <ellipse cx={cx} cy={cy + 2} rx={rx * 0.38} ry={ry * 0.42} fill="#1a1208" />
-      <circle cx={cx - 2} cy={cy - 1} r={2.2} fill="white" />
-      <circle cx={cx + 2.5} cy={cy} r={1.2} fill="white" opacity="0.85" />
+      <path
+        d={`M${cx - rx - 4} ${cy + 2} Q${cx} ${cy - ry - 6} ${cx + rx + 4} ${cy + 2}`}
+        fill="none"
+        {...strokeProps({ strokeWidth: 3.2 })}
+      />
+      <ellipse cx={cx} cy={cy + 1} rx={rx + 3} ry={ry + 2} fill="#fff" {...strokeProps({ strokeWidth: 2.2 })} />
+      <ellipse cx={cx} cy={cy + 2} rx={rx * 0.78} ry={ry * 0.82} fill={color} />
+      <ellipse cx={cx} cy={cy + 3} rx={rx * 0.42} ry={ry * 0.45} fill="#1a1008" />
+      <circle cx={cx - 3.5} cy={cy - 2} r={3.8} fill="#fff" />
+      <circle cx={cx + 4} cy={cy - 0.5} r={2} fill="#fff" opacity="0.9" />
     </g>
   );
 }
 
 function Brow({ cx, cy, type }) {
-  const w = type === 'thick' ? 4 : type === 'thin' ? 1.8 : 2.8;
-  const arch = type === 'arched' ? -5 : -3;
+  const thick = type === 'thick' ? 4.5 : type === 'thin' ? 2 : 3.2;
+  const lift = type === 'arched' ? -8 : -5;
   return (
     <path
-      d={`M${cx - 9} ${cy + 2} Q${cx} ${cy + arch} ${cx + 9} ${cy + 1}`}
-      stroke="#2C1810"
-      strokeWidth={w}
+      d={`M${cx - 14} ${cy + 4} Q${cx} ${cy + lift} ${cx + 14} ${cy + 2}`}
       fill="none"
+      stroke="#2B2118"
+      strokeWidth={thick}
       strokeLinecap="round"
     />
   );
@@ -107,92 +130,87 @@ function Brow({ cx, cy, type }) {
 
 function Nose({ type }) {
   if (type === 'wide')
-    return <ellipse cx="50" cy="66" rx="4.5" ry="3" fill={hexBlend('#000', '#fff', 0.85)} opacity="0.12" />;
+    return <ellipse cx="100" cy="108" rx="5" ry="3.5" fill={OUTLINE} opacity="0.1" />;
   if (type === 'narrow')
-    return <path d="M50 62 L49 68 L51 68 Z" fill={OUTLINE} opacity="0.2" />;
-  if (type === 'upturned')
-    return (
-      <path
-        d="M48 65 Q50 62 52 65 Q50 68 48 65"
-        fill="none"
-        stroke={OUTLINE}
-        strokeWidth="1.6"
-        opacity="0.25"
-        strokeLinecap="round"
-      />
-    );
-  return <ellipse cx="50" cy="65" rx="3.2" ry="2.8" fill={OUTLINE} opacity="0.14" />;
+    return <path d="M100 102 L98.5 110 L101.5 110 Z" fill={OUTLINE} opacity="0.15" />;
+  return (
+    <path
+      d="M100 102 Q99 108 100 111 Q101 108 100 102"
+      fill="none"
+      stroke={OUTLINE}
+      strokeWidth="2"
+      opacity="0.2"
+      strokeLinecap="round"
+    />
+  );
 }
 
 function Mouth({ type, lip, expression }) {
-  const resolved = EXPRESSION_MOUTH_MAP[expression] || type || 'smile';
-  const stroke = lip || '#E07A7A';
-  if (resolved === 'open')
+  const m = EXPRESSION_MOUTH_MAP[expression] || type || 'smile';
+  const c = lip || '#E85D6A';
+  if (m === 'open')
     return (
-      <>
-        <ellipse cx="50" cy="76" rx="9" ry="7" fill="#3D1515" />
-        <ellipse cx="50" cy="74" rx="8" ry="3" fill="#fff" opacity="0.9" />
-        <path d="M42 76 Q50 84 58 76" fill="none" stroke={stroke} strokeWidth="2.2" strokeLinecap="round" />
-      </>
+      <g>
+        <ellipse cx="100" cy="122" rx="14" ry="11" fill="#4A1520" {...strokeProps({ strokeWidth: 2 })} />
+        <ellipse cx="100" cy="118" rx="12" ry="5" fill="#fff" />
+        <path d="M86 122 Q100 134 114 122" fill="none" stroke={c} strokeWidth="3.5" strokeLinecap="round" />
+      </g>
     );
-  if (resolved === 'pouty')
-    return <ellipse cx="50" cy="77" rx="6" ry="4" fill={stroke} stroke={OUTLINE} strokeWidth="1.4" />;
-  if (resolved === 'smirk')
+  if (m === 'pouty')
+    return <ellipse cx="100" cy="124" rx="9" ry="6" fill={c} {...strokeProps({ strokeWidth: 2 })} />;
+  if (m === 'smirk')
     return (
       <path
-        d="M42 76 Q52 80 60 73"
+        d="M86 122 Q102 128 118 116"
         fill="none"
-        stroke={stroke}
-        strokeWidth="3"
+        stroke={c}
+        strokeWidth="4"
         strokeLinecap="round"
       />
     );
   return (
     <path
-      d="M40 74 Q50 82 60 74"
+      d="M84 118 Q100 130 116 118"
       fill="none"
-      stroke={stroke}
-      strokeWidth="3.2"
+      stroke={c}
+      strokeWidth="4.2"
       strokeLinecap="round"
     />
   );
 }
 
 function HairBack({ style, color }) {
-  const dk = hexAdjust(color, -25);
+  const dk = hexAdjust(color, -28);
   switch (style) {
     case 'long_straight':
       return (
         <path
-          d="M22 38 Q20 95 28 118 Q50 125 72 118 Q80 95 78 38"
+          d="M42 70 Q38 175 55 195 Q100 205 145 195 Q162 175 158 70"
           fill={dk}
-          stroke={OUTLINE}
-          strokeWidth="1.5"
+          {...strokeProps()}
         />
       );
     case 'curly_big':
       return (
         <path
-          d="M18 42 Q12 70 16 100 Q24 120 50 122 Q76 120 84 100 Q88 70 82 42"
+          d="M35 75 Q25 120 32 165 Q55 200 100 205 Q145 200 168 165 Q175 120 165 75"
           fill={color}
-          stroke={OUTLINE}
-          strokeWidth="1.5"
+          {...strokeProps()}
         />
       );
     case 'ponytail':
       return (
-        <>
-          <ellipse cx="50" cy="108" rx="12" ry="22" fill={color} stroke={OUTLINE} strokeWidth="1.4" />
-          <circle cx="50" cy="88" r="7" fill={hexAdjust(color, 15)} stroke={OUTLINE} strokeWidth="1.2" />
-        </>
+        <g>
+          <ellipse cx="100" cy="178" rx="22" ry="38" fill={color} {...strokeProps()} />
+          <circle cx="100" cy="148" r="14" fill={hexAdjust(color, 20)} {...strokeProps()} />
+        </g>
       );
     case 'bob':
       return (
         <path
-          d="M24 40 Q22 88 30 105 Q50 112 70 105 Q78 88 76 40"
+          d="M48 72 Q44 150 58 172 Q100 182 142 172 Q156 150 152 72"
           fill={color}
-          stroke={OUTLINE}
-          strokeWidth="1.5"
+          {...strokeProps()}
         />
       );
     default:
@@ -202,232 +220,256 @@ function HairBack({ style, color }) {
 
 function HairFront({ style, color }) {
   if (style === 'bald') return null;
-  const hi = hexAdjust(color, 18);
-  const dk = hexAdjust(color, -22);
-  const base = `M20 48 Q18 22 50 16 Q82 22 80 48 Q72 28 50 24 Q28 28 20 48 Z`;
-  switch (style) {
-    case 'afro':
-      return (
-        <>
-          {[32, 42, 50, 58, 68].map((x, i) => (
-            <circle key={i} cx={x} cy={22 + (i % 2)} r={11} fill={color} stroke={OUTLINE} strokeWidth="1.2" />
-          ))}
-        </>
-      );
-    case 'bun_top':
-      return (
-        <>
-          <path d={base} fill={color} stroke={OUTLINE} strokeWidth="1.8" />
-          <circle cx="50" cy="12" r="14" fill={hi} stroke={OUTLINE} strokeWidth="1.8" />
-          <circle cx="46" cy="8" r="4" fill="#fff" opacity="0.35" />
-        </>
-      );
-    case 'undercut':
-      return (
-        <>
-          <path d="M20 50 Q22 26 50 20 Q78 26 80 50 L80 38 Q50 32 20 38 Z" fill={dk} />
-          <path
-            d="M26 44 Q28 24 50 18 Q72 24 74 44 Q68 30 50 26 Q32 30 26 44"
-            fill={color}
-            stroke={OUTLINE}
-            strokeWidth="1.8"
+  const hi = hexAdjust(color, 22);
+  const cap = `M44 78 Q40 38 100 28 Q160 38 156 78 Q145 52 100 44 Q55 52 44 78 Z`;
+
+  if (style === 'afro') {
+    return (
+      <g>
+        {[55, 72, 88, 100, 112, 128, 145].map((x, i) => (
+          <circle
+            key={x}
+            cx={x}
+            cy={42 + (i % 3) * 4}
+            r={18}
+            fill={i % 2 ? hi : color}
+            {...strokeProps({ strokeWidth: 2 })}
           />
-        </>
-      );
-    case 'medium_wave':
-      return (
-        <path
-          d="M18 50 Q14 30 28 20 Q50 12 72 20 Q86 30 82 50 Q76 34 50 28 Q24 34 18 50"
-          fill={color}
-          stroke={OUTLINE}
-          strokeWidth="1.8"
-        />
-      );
-    case 'curly_big':
-      return (
-        <path
-          d="M16 48 Q10 28 30 18 Q50 10 70 18 Q90 28 84 48 Q78 32 50 26 Q22 32 16 48"
-          fill={hi}
-          stroke={OUTLINE}
-          strokeWidth="1.8"
-        />
-      );
-    case 'long_straight':
-    case 'bob':
-    case 'ponytail':
-      return <path d={base} fill={color} stroke={OUTLINE} strokeWidth="1.8" />;
-    default:
-      return (
-        <path
-          d="M22 48 Q20 28 36 20 Q50 15 64 20 Q80 28 78 48 Q72 32 50 28 Q28 32 22 48"
-          fill={color}
-          stroke={OUTLINE}
-          strokeWidth="1.8"
-        />
-      );
+        ))}
+      </g>
+    );
   }
+  if (style === 'bun_top') {
+    return (
+      <g>
+        <path d={cap} fill={color} {...strokeProps()} />
+        <circle cx="100" cy="22" r="22" fill={hi} {...strokeProps()} />
+        <circle cx="92" cy="14" r="7" fill="#fff" opacity="0.4" />
+      </g>
+    );
+  }
+  if (style === 'undercut') {
+    return (
+      <g>
+        <path d="M44 80 Q48 42 100 36 Q152 42 156 80 L156 58 Q100 48 44 58 Z" fill={hexAdjust(color, -35)} />
+        <path
+          d="M52 74 Q56 40 100 32 Q144 40 148 74 Q138 54 100 48 Q62 54 52 74"
+          fill={color}
+          {...strokeProps()}
+        />
+      </g>
+    );
+  }
+  if (style === 'medium_wave') {
+    return (
+      <path
+        d="M38 80 Q30 48 58 32 Q100 22 Q142 32 170 48 Q162 80 148 58 Q100 46 Q52 58 38 80"
+        fill={color}
+        {...strokeProps()}
+      />
+    );
+  }
+  if (style === 'curly_big') {
+    return (
+      <path
+        d="M32 82 Q20 50 55 28 Q100 18 Q145 28 170 50 Q158 82 145 55 Q100 42 Q55 55 32 82"
+        fill={hi}
+        {...strokeProps()}
+      />
+    );
+  }
+  return <path d={cap} fill={color} {...strokeProps()} />;
 }
 
-function Body({ skin }) {
-  const neck = hexBlend(skin, '#000', 0.08);
+function Torso({ skin, outfitStyle, outfitColor, uid }) {
+  const c = outfitColor;
+  const dk = hexAdjust(c, -22);
+  const hi = hexBlend(c, '#fff', 0.25);
+  const neck = hexBlend(skin, '#000', 0.1);
+
+  const bodyPath = `M28 168 Q32 138 100 132 Q168 138 172 168 L180 220 L20 220 Z`;
+
+  let extras = null;
+  if (outfitStyle === 'hoodie') {
+    extras = (
+      <>
+        <path d="M100 138 L88 168 L112 168 Z" fill={dk} />
+        <path d="M36 155 Q40 175 38 190" stroke={hi} strokeWidth="5" fill="none" opacity="0.35" strokeLinecap="round" />
+        <circle cx="100" cy="158" r="3.5" fill={dk} />
+      </>
+    );
+  } else if (outfitStyle === 'blazer' || outfitStyle === 'suit') {
+    extras = (
+      <>
+        <path d="M100 134 L92 168 L108 168 Z" fill={hexBlend(c, '#fff', 0.12)} />
+        <path d="M88 140 L100 158 L112 140 Z" fill="#fff" {...strokeProps({ strokeWidth: 2 })} />
+      </>
+    );
+  } else if (outfitStyle === 'sport') {
+    extras = (
+      <>
+        <path d="M28 168 L42 132 L52 220 Z" fill={hi} opacity="0.55" />
+        <path d="M172 168 L158 132 L148 220 Z" fill={hi} opacity="0.55" />
+      </>
+    );
+  }
+
   return (
-    <>
-      <path d="M42 88 L38 102 L62 102 L58 88 Z" fill={neck} />
-      <ellipse cx="35" cy="100" rx="7" ry="9" fill={skin} stroke={OUTLINE} strokeWidth="1.6" />
-      <ellipse cx="65" cy="100" rx="7" ry="9" fill={skin} stroke={OUTLINE} strokeWidth="1.6" />
-    </>
+    <g>
+      <path d="M88 148 L82 168 L118 168 L112 148 Z" fill={neck} />
+      <Ear cx={42} cy={108} skin={skin} />
+      <Ear cx={158} cy={108} skin={skin} />
+      <path d={bodyPath} fill={c} {...strokeProps()} />
+      <path d={bodyPath} fill={`url(#${uid}_shirt)`} />
+      {extras}
+      <path d="M32 145 Q50 138 68 145" stroke={hi} strokeWidth="4" fill="none" opacity="0.25" strokeLinecap="round" />
+    </g>
   );
 }
 
-function Outfit({ style, color }) {
-  const hi = hexBlend(color, '#FFFFFF', 0.22);
-  const dk = hexBlend(color, '#000000', 0.18);
-  const body = `M6 108 Q10 78 50 76 Q90 78 94 108 L100 130 L0 130 Z`;
-  const collar = `M38 76 Q50 84 62 76 L60 80 Q50 86 40 80 Z`;
-
-  if (style === 'hoodie') {
-    return (
-      <>
-        <path d={body} fill={color} stroke={OUTLINE} strokeWidth="2" />
-        <path d={collar} fill={dk} />
-        <path d="M8 95 Q12 108 10 118" stroke={hi} strokeWidth="3" fill="none" opacity="0.4" strokeLinecap="round" />
-        <circle cx="50" cy="98" r="2" fill={dk} />
-      </>
-    );
+function Accessory({ type, hairStyle }) {
+  const hideUnderHat = ['cap', 'beanie'].includes(type);
+  if (hideUnderHat && hairStyle !== 'bald') {
+    /* hat drawn on top */
   }
-  if (style === 'blazer' || style === 'suit') {
-    return (
-      <>
-        <path d={body} fill={color} stroke={OUTLINE} strokeWidth="2" />
-        <path d="M50 76 L46 108 L54 108 Z" fill={hexBlend(color, '#fff', 0.15)} />
-        <path d={collar} fill="#F8F8F8" stroke={OUTLINE} strokeWidth="1" />
-        <path d="M44 82 L50 92 L56 82" fill="#fff" stroke={OUTLINE} strokeWidth="1.2" />
-      </>
-    );
-  }
-  if (style === 'sport') {
-    return (
-      <>
-        <path d={body} fill={color} stroke={OUTLINE} strokeWidth="2" />
-        <path d="M6 108 L14 76 L22 130 Z" fill={hi} opacity="0.5" />
-        <path d="M94 108 L86 76 L78 130 Z" fill={hi} opacity="0.5" />
-        <circle cx="50" cy="94" r="8" fill={dk} opacity="0.35" />
-      </>
-    );
-  }
-  return (
-    <>
-      <path d={body} fill={color} stroke={OUTLINE} strokeWidth="2" />
-      <path d={collar} fill={dk} opacity="0.5" />
-      <ellipse cx="38" cy="90" rx="12" ry="6" fill={hi} opacity="0.2" />
-    </>
-  );
-}
-
-function Acc({ type }) {
   switch (type) {
     case 'glasses_round':
       return (
-        <>
-          <circle cx="35" cy="58" r="10" fill="rgba(200,230,255,0.35)" stroke={OUTLINE} strokeWidth="2.2" />
-          <circle cx="65" cy="58" r="10" fill="rgba(200,230,255,0.35)" stroke={OUTLINE} strokeWidth="2.2" />
-          <line x1="45" y1="58" x2="55" y2="58" stroke={OUTLINE} strokeWidth="2" />
-        </>
+        <g>
+          <circle cx="72" cy="98" r="16" fill="rgba(180,220,255,0.45)" {...strokeProps()} />
+          <circle cx="128" cy="98" r="16" fill="rgba(180,220,255,0.45)" {...strokeProps()} />
+          <path d="M88 98 L112 98" stroke={OUTLINE} strokeWidth="3" strokeLinecap="round" />
+        </g>
       );
     case 'glasses_square':
       return (
-        <>
-          <rect x="24" y="52" width="22" height="14" rx="3" fill="rgba(200,230,255,0.35)" stroke={OUTLINE} strokeWidth="2.2" />
-          <rect x="54" y="52" width="22" height="14" rx="3" fill="rgba(200,230,255,0.35)" stroke={OUTLINE} strokeWidth="2.2" />
-          <line x1="46" y1="59" x2="54" y2="59" stroke={OUTLINE} strokeWidth="2" />
-        </>
+        <g>
+          <rect x="54" y="86" width="36" height="24" rx="6" fill="rgba(180,220,255,0.45)" {...strokeProps()} />
+          <rect x="110" y="86" width="36" height="24" rx="6" fill="rgba(180,220,255,0.45)" {...strokeProps()} />
+          <path d="M90 98 L110 98" stroke={OUTLINE} strokeWidth="3" />
+        </g>
       );
     case 'sunglasses':
       return (
-        <>
-          <path d="M22 58 Q35 50 48 58 L47 66 Q35 68 23 66 Z" fill="#111" stroke={OUTLINE} strokeWidth="1.8" />
-          <path d="M52 58 Q65 50 78 58 L77 66 Q65 68 53 66 Z" fill="#111" stroke={OUTLINE} strokeWidth="1.8" />
-          <path d="M48 58 Q50 55 52 58" stroke={OUTLINE} strokeWidth="2" fill="none" />
-        </>
+        <g>
+          <path d="M48 98 Q72 82 96 98 L94 110 Q72 116 50 110 Z" fill="#111" {...strokeProps({ strokeWidth: 2.5 })} />
+          <path d="M104 98 Q128 82 152 98 L150 110 Q128 116 106 110 Z" fill="#111" {...strokeProps({ strokeWidth: 2.5 })} />
+          <path d="M96 98 Q100 92 104 98" stroke={OUTLINE} strokeWidth="2.5" fill="none" />
+        </g>
       );
     case 'cap':
       return (
-        <>
-          <path d="M16 32 Q18 14 50 12 Q82 14 84 32 Q72 36 50 37 Q28 36 16 32 Z" fill="#333" stroke={OUTLINE} strokeWidth="1.8" />
-          <path d="M12 34 Q50 42 88 34 L90 38 Q50 46 10 38 Z" fill="#222" stroke={OUTLINE} strokeWidth="1.6" />
-        </>
+        <g>
+          <path
+            d="M32 68 Q36 38 100 34 Q164 38 168 68 Q148 76 100 78 Q52 76 32 68 Z"
+            fill="#2D2D2D"
+            {...strokeProps()}
+          />
+          <path
+            d="M28 72 Q100 88 172 72 L176 80 Q100 96 24 80 Z"
+            fill="#1a1a1a"
+            {...strokeProps({ strokeWidth: 2.5 })}
+          />
+        </g>
       );
     case 'beanie':
       return (
-        <>
-          <path d="M18 34 Q16 16 50 13 Q84 16 82 34 L80 42 Q50 48 20 42 Z" fill="#7C5CFF" stroke={OUTLINE} strokeWidth="1.8" />
-          <circle cx="50" cy="10" r="10" fill="#A78BFA" stroke={OUTLINE} strokeWidth="1.6" />
-        </>
+        <g>
+          <path
+            d="M40 72 Q38 42 100 36 Q162 42 160 72 L156 84 Q100 94 44 84 Z"
+            fill="#6C4DFF"
+            {...strokeProps()}
+          />
+          <circle cx="100" cy="28" r="18" fill="#9B7FFF" {...strokeProps()} />
+        </g>
       );
     case 'earrings':
       return (
-        <>
-          <circle cx="20" cy="66" r="4" fill="#FFD54F" stroke={OUTLINE} strokeWidth="1.2" />
-          <circle cx="80" cy="66" r="4" fill="#FFD54F" stroke={OUTLINE} strokeWidth="1.2" />
-        </>
+        <g>
+          <circle cx="38" cy="112" r="6" fill="#FFD700" {...strokeProps({ strokeWidth: 2 })} />
+          <circle cx="162" cy="112" r="6" fill="#FFD700" {...strokeProps({ strokeWidth: 2 })} />
+        </g>
       );
     case 'headband':
       return (
-        <path d="M18 34 Q50 42 82 34 L82 40 Q50 48 18 40 Z" fill="#FF6B8A" stroke={OUTLINE} strokeWidth="1.6" />
+        <path
+          d="M42 72 Q100 86 158 72 L158 82 Q100 96 42 82 Z"
+          fill="#FF5C8A"
+          {...strokeProps()}
+        />
       );
     default:
       return null;
   }
 }
 
-export function AvatarSVG({ config, size = 100, expression }) {
-  const uid = `bm${useId().replace(/:/g, '_')}`;
+export function AvatarSVG({ config, size = 200, expression }) {
+  const uid = `b${useId().replace(/:/g, '_')}`;
   const c = config || {};
   const bg = c.bg || '#5AC8FA';
   const skin = c.skinColor || '#FFCC9A';
   const hairStyle = c.hair?.style || 'short_clean';
   const hairColor = c.hair?.color || '#2C1810';
   const expr = expression || c.expression || 'neutral';
-  const mouthType = EXPRESSION_MOUTH_MAP[expr] || c.mouth?.type || 'smile';
-  const isLong = LONG_HAIR.includes(hairStyle);
+  const mouth = EXPRESSION_MOUTH_MAP[expr] || c.mouth?.type || 'smile';
+  const acc = c.accessory;
+  const hatCoversHair = acc === 'cap' || acc === 'beanie';
 
   return (
-    <svg width={size} height={size} viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 200 240"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="Avatar"
+    >
       <defs>
-        <linearGradient id={`${uid}_skin`} x1="30%" y1="0%" x2="70%" y2="100%">
-          <stop offset="0%" stopColor={hexBlend(skin, '#fff', 0.2)} />
-          <stop offset="100%" stopColor={hexBlend(skin, '#000', 0.08)} />
+        <radialGradient id={`${uid}_bg`} cx="50%" cy="42%" r="58%">
+          <stop offset="0%" stopColor={hexBlend(bg, '#fff', 0.28)} />
+          <stop offset="85%" stopColor={bg} />
+          <stop offset="100%" stopColor={hexAdjust(bg, -15)} />
+        </radialGradient>
+        <linearGradient id={`${uid}_skin`} x1="35%" y1="15%" x2="65%" y2="95%">
+          <stop offset="0%" stopColor={hexBlend(skin, '#fff', 0.28)} />
+          <stop offset="55%" stopColor={skin} />
+          <stop offset="100%" stopColor={hexBlend(skin, '#000', 0.12)} />
         </linearGradient>
         <radialGradient id={`${uid}_blush`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#FF8A9A" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#FF8A9A" stopOpacity="0" />
+          <stop offset="0%" stopColor="#FF7A96" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#FF7A96" stopOpacity="0" />
         </radialGradient>
-        <radialGradient id={`${uid}_bg`} cx="50%" cy="40%" r="65%">
-          <stop offset="0%" stopColor={hexBlend(bg, '#fff', 0.15)} />
-          <stop offset="100%" stopColor={bg} />
-        </radialGradient>
+        <linearGradient id={`${uid}_shirt`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={hexBlend(c.outfit?.color || '#5AC8FA', '#fff', 0.2)} />
+          <stop offset="100%" stopColor={hexAdjust(c.outfit?.color || '#5AC8FA', -18)} />
+        </linearGradient>
       </defs>
 
-      <rect width="100" height="130" fill={`url(#${uid}_bg)`} rx="8" />
+      <circle cx="100" cy="118" r="112" fill={`url(#${uid}_bg)`} />
 
-      {isLong && <HairBack style={hairStyle} color={hairColor} />}
+      {LONG.includes(hairStyle) && !hatCoversHair && <HairBack style={hairStyle} color={hairColor} />}
 
-      <Body skin={skin} />
-      <Outfit style={c.outfit?.style || 'tshirt'} color={c.outfit?.color || '#5AC8FA'} />
+      <Torso
+        skin={skin}
+        outfitStyle={c.outfit?.style || 'tshirt'}
+        outfitColor={c.outfit?.color || '#5AC8FA'}
+        uid={uid}
+      />
 
-      <Face skin={skin} faceShape={c.faceShape || 'oval'} uid={uid} />
+      <Head skin={skin} shape={c.faceShape || 'oval'} uid={uid} />
 
-      <Brow cx={35} cy={46} type={c.eyebrows?.type || 'natural'} />
-      <Brow cx={65} cy={46} type={c.eyebrows?.type || 'natural'} />
-      <Eye cx={35} cy={58} type={c.eyes?.type || 'round'} color={c.eyes?.color || '#4A3728'} />
-      <Eye cx={65} cy={58} type={c.eyes?.type || 'round'} color={c.eyes?.color || '#4A3728'} />
+      <Brow cx={72} cy={78} type={c.eyebrows?.type || 'natural'} />
+      <Brow cx={128} cy={78} type={c.eyebrows?.type || 'natural'} />
+      <Eye cx={72} cy={96} type={c.eyes?.type || 'round'} color={c.eyes?.color || '#4A3728'} />
+      <Eye cx={128} cy={96} type={c.eyes?.type || 'round'} color={c.eyes?.color || '#4A3728'} />
 
       <Nose type={c.nose?.type || 'button'} />
-      <Mouth type={mouthType} lip={c.mouth?.lipColor} expression={expr} />
+      <Mouth type={mouth} lip={c.mouth?.lipColor} expression={expr} />
 
-      <HairFront style={hairStyle} color={hairColor} />
+      {!hatCoversHair && <HairFront style={hairStyle} color={hairColor} />}
 
-      <Acc type={c.accessory} />
+      <Accessory type={acc} hairStyle={hairStyle} />
     </svg>
   );
 }

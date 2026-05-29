@@ -2,7 +2,7 @@
 
 export const DEFAULT_AVATAR_CONFIG = {
   body: 'standard',
-  skinColor: '#FFCC9A',
+  skinColor: '#FFDBAC',
   faceShape: 'oval',
   eyes: { type: 'round', color: '#4A3728' },
   eyebrows: { type: 'natural' },
@@ -12,7 +12,7 @@ export const DEFAULT_AVATAR_CONFIG = {
   hair: { style: 'short_clean', color: '#2C1810', isLong: false },
   outfit: { style: 'hoodie', color: '#5AC8FA' },
   accessory: 'none',
-  bg: '#5AC8FA',
+  bg: '#FF6B8A',
   expression: 'neutral',
 };
 

@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import PageShell from '@/components/layout/PageShell';
-import AvatarBuilder from '@/components/social/AvatarBuilder';
+import AvatarStudioEditor from '@/components/social/avatar/AvatarStudioEditor';
 import { useSocialProfile } from '@/hooks/useSocialProfile';
-import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { isGuestMode } from '@/components/guestStorage';
+import { SNAP } from '@/components/social/avatar/bitmojiTheme';
+import PageShell from '@/components/layout/PageShell';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
 
 export default function AvatarStudio() {
   const { socialProfile, isLoading, saveSocialProfile } = useSocialProfile({
@@ -15,11 +16,13 @@ export default function AvatarStudio() {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  const initialConfig =
-    config ??
-    socialProfile?.avatar_config ??
-    socialProfile?.avatar_style ??
-    undefined;
+  useEffect(() => {
+    if (socialProfile && config === null) {
+      const initial =
+        socialProfile.avatar_config || socialProfile.avatar_style || undefined;
+      if (initial) setConfig(initial);
+    }
+  }, [socialProfile, config]);
 
   const handleSave = async () => {
     if (!config) return;
@@ -30,7 +33,7 @@ export default function AvatarStudio() {
         avatar_style: config,
       });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2500);
+      setTimeout(() => setSaved(false), 2000);
     } finally {
       setSaving(false);
     }
@@ -38,13 +41,14 @@ export default function AvatarStudio() {
 
   if (isGuestMode()) {
     return (
-      <PageShell title="Avatar" subtitle="Skapa din look" backHref={createPageUrl('Dashboard')}>
+      <PageShell title="Din avatar" subtitle="Bitmoji" backHref={createPageUrl('Dashboard')}>
         <p className={sectionSubtitleClass}>
-          Skapa konto för att spara din avatar och visa den i Jämför och Social.
+          Skapa konto för att designa och spara din avatar.
         </p>
         <Link
           to={createPageUrl('CreateAccount')}
-          className="inline-flex mt-4 px-6 py-3 rounded-xl font-semibold bg-[#FFE566] text-[#1a1a1a] no-underline"
+          className="inline-flex mt-4 px-6 py-3 rounded-full font-bold no-underline"
+          style={{ background: SNAP.yellow, color: SNAP.text }}
         >
           Skapa konto
         </Link>
@@ -52,36 +56,22 @@ export default function AvatarStudio() {
     );
   }
 
+  if (isLoading && !config) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: SNAP.bg }}>
+        <p style={{ color: SNAP.textMuted }}>Laddar din avatar…</p>
+      </div>
+    );
+  }
+
   return (
-    <PageShell
-      title="Skapa avatar"
-      subtitle="Bitmoji-stil"
+    <AvatarStudioEditor
+      initialValue={config ?? socialProfile?.avatar_config ?? socialProfile?.avatar_style}
+      onChange={setConfig}
+      onSave={handleSave}
+      saved={saved}
+      saving={saving}
       backHref={createPageUrl('Dashboard')}
-      className="!pb-28"
-    >
-      <p className={`${sectionSubtitleClass} -mt-4 mb-4`}>
-        Bygg din karaktär som i Snapchat — sparas till din profil och syns när du jämför ekonomi
-        med andra.
-      </p>
-
-      {isLoading ? (
-        <div className="py-20 text-center text-white/50">Laddar…</div>
-      ) : (
-        <AvatarBuilder
-          value={initialConfig}
-          onChange={setConfig}
-          onSave={handleSave}
-          saved={saved}
-        />
-      )}
-
-      <p className={`${sectionSubtitleClass} text-center mt-6`}>
-        Tips: sätt också ett @namn under{' '}
-        <Link to={createPageUrl('Social')} className="text-white/70 underline">
-          Social
-        </Link>{' '}
-        så andra känner igen dig.
-      </p>
-    </PageShell>
+    />
   );
 }
