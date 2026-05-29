@@ -45,6 +45,8 @@ export default function Social() {
 
   const [form, setForm] = useState({
     username: '',
+    display_name: '',
+    city: '',
     bio: '',
     occupation: '',
     age: '',
@@ -231,6 +233,11 @@ export default function Social() {
                     </div>
                   </div>
                   <div>
+                    <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Visningsnamn</p>
+                    <Input value={form.display_name} onChange={e => setForm(f => ({ ...f, display_name: e.target.value }))}
+                      placeholder="t.ex. Alex" className="h-11 rounded-xl text-sm" />
+                  </div>
+                  <div>
                     <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Bio / Status</p>
                     <Input value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
                       placeholder="Vad håller du på med just nu?" className="h-11 rounded-xl text-sm" />
@@ -246,6 +253,11 @@ export default function Social() {
                       <Input type="number" value={form.age} onChange={e => setForm(f => ({ ...f, age: e.target.value }))}
                         placeholder="25" className="h-11 rounded-xl text-sm" />
                     </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Stad</p>
+                    <Input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                      placeholder="Stockholm" className="h-11 rounded-xl text-sm" />
                   </div>
                 </div>
               </div>
@@ -369,12 +381,15 @@ export default function Social() {
 
               {/* Privacy summary */}
               <div className="mt-4 p-4 rounded-2xl" style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.2)' }}>
-                <p className="text-xs font-bold mb-1" style={{ color: '#0D7377' }}>Vad dina vänner ser</p>
+                <p className="text-xs font-bold mb-1" style={{ color: '#0D7377' }}>Vad andra ser</p>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                  {form.privacy_level === 'full' && 'Vänner kan se dina faktiska belopp och fördelning för valda kategorier.'}
-                  {form.privacy_level === 'hybrid' && 'Vänner ser bara procentuell fördelning — inga kronbelopp visas.'}
-                  {form.privacy_level === 'ghost' && 'Vänner ser bara din avatar och framsteg. Ingen ekonomisk information delas.'}
+                  {form.privacy_level === 'full' && 'I Jämför kan andra se kronor och procent om du publicerar din ekonomi.'}
+                  {form.privacy_level === 'hybrid' && 'I Jämför visas bara procent — inga kronbelopp — om du publicerar.'}
+                  {form.privacy_level === 'ghost' && 'Du kan inte publicera ekonomi i Jämför i Ghost-läge.'}
                 </p>
+                <Link to={createPageUrl('Galaxy')} className="text-xs font-semibold mt-2 inline-block" style={{ color: 'var(--color-accent)' }}>
+                  Gå till Jämför för att publicera →
+                </Link>
               </div>
             </motion.div>
           )}
