@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 
 export function useGamification(profile) {
   const updateStreak = useCallback(async () => {
-    if (!profile) return;
+    if (!profile?.id) return;
 
     const today = new Date().toISOString().split('T')[0];
     const lastLogin = profile.lastLoginDate?.split('T')[0];
@@ -93,7 +93,7 @@ export async function checkAndUnlockBadges(profile) {
     }
   }
 
-  if (newBadges.length > 0) {
+  if (newBadges.length > 0 && profile.id) {
     await base44.entities.FinancialProfile.update(profile.id, {
       unlockedBadges: [...currentBadges, ...newBadges]
     });

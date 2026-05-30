@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
+import { suggestCategory } from '@/lib/smartCategorization';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { toast } from 'sonner';
 
@@ -181,7 +182,7 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
                     const val = e.target.value;
                     setName(val);
                     if (val.length > 2) {
-                      setSuggestedCategory(categorizeLocal(val).category);
+                      setSuggestedCategory(suggestCategory(val));
                     }
                   }}
                   className="h-12 rounded-xl"
