@@ -23,6 +23,21 @@ Analys-krav:
 
 Returnera STRIKT JSON enligt schema.`;
 
+async function invokeWithFallback(base44, prompt, schema) {
+  const opts = { prompt, model: 'claude_sonnet_4_6', response_json_schema: schema };
+  try {
+    const result = await base44.asServiceRole.integrations.Core.InvokeLLM(opts);
+    return { result, model: 'claude_sonnet_4_6' };
+  } catch (primaryErr) {
+    console.warn('futureEngine primary failed:', primaryErr?.message);
+    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      ...opts,
+      model: 'gpt_5_5',
+    });
+    return { result, model: 'gpt_5_5_fallback' };
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -55,10 +70,7 @@ Senaste transaktioner (urval): ${JSON.stringify((transactions || []).slice(0, 80
 
 Skriv coach_meddelande (max 90 tecken), framtids_status, prognos_30_dagar (kort), och max 2 korta framtida_handelser.`;
 
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      model: 'gpt_5_5',
-      response_json_schema: {
+    const schema = {
         type: 'object',
         properties: {
           framtids_status: { type: 'string' },
@@ -80,10 +92,11 @@ Skriv coach_meddelande (max 90 tecken), framtids_status, prognos_30_dagar (kort)
           },
         },
         required: ['framtids_status', 'prognos_30_dagar', 'coach_meddelande', 'framtida_handelser'],
-      },
-    });
+      };
 
-    return Response.json(result);
+    const { result, model } = await invokeWithFallback(base44, prompt, schema);
+
+    return Response.json({ ...result, model });
   } catch (error) {
     console.error('futureEngine error:', error);
     return Response.json({ error: error.message }, { status: 500 });

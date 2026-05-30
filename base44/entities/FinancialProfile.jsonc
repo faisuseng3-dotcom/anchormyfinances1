@@ -145,6 +145,42 @@
         }
       }
     },
+    "plannedEvents": {
+      "type": "array",
+      "description": "Planerade h\u00e4ndelser i ekonomikalendern (datum, titel, belopp)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "title": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "social",
+              "food",
+              "travel",
+              "gift",
+              "health",
+              "other"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "plannedPurchases": {
       "type": "array",
       "description": "Planerade k\u00f6p i bevakningslistan",

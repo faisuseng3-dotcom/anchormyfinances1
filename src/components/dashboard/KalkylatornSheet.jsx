@@ -6,7 +6,7 @@ import {
   GitBranch,
   PieChart,
   Landmark,
-  TrendingUp,
+  CalendarDays,
   History,
   ChevronRight,
   X,
@@ -54,10 +54,10 @@ const CALC_ITEMS = [
     page: 'Loans',
   },
   {
-    id: 'future',
-    question: 'Hur ser nästa månader ut?',
-    hint: 'Prognos och kommande händelser',
-    icon: TrendingUp,
+    id: 'plan',
+    question: 'Planera min månaden',
+    hint: 'Middagar, resor och kommande utgifter',
+    icon: CalendarDays,
     page: 'FuturePulse',
   },
   {

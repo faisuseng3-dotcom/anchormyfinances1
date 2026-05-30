@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
-import { motion } from 'framer-motion';
-import { Sparkles, Loader2, TrendingUp, TrendingDown, Target } from 'lucide-react';
+import { askPersonalAdvisor } from '@/lib/personalAdvisor';
+import { Sparkles, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const formatNumber = (value) => {
@@ -36,30 +36,10 @@ export default function WeeklySummary({ profile }) {
       const totalFixedCosts = profile.housingCost + totalSubscriptions + totalLoanPayments;
       const monthlyMargin = profile.income - totalFixedCosts;
 
-      const prompt = `Du är en personlig ekonomicoach. Analysera användarens vecka och ge en kort sammanfattning (max 4 meningar).
-
-Användarens data:
-- Spenderat senaste 7 dagarna: ${totalSpent} kr
-- Mest spenderat på: ${topCategory ? topCategory[0] : 'N/A'} (${topCategory ? topCategory[1] : 0} kr)
-- Månadsinkomst: ${profile.income} kr
-- Månadsmarginal: ${monthlyMargin} kr
-- Buffert: ${profile.buffer} kr
-- Sparmål: ${profile.savingsGoal} kr
-
-Ge:
-1. En mening om veckans utgifter
-2. En åsikt om största utgiftskategorin
-3. Ett konkret råd för förbättring
-4. En uppmuntran
-
-Svara på SVENSKA, kort och personligt.`;
-
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt
-      });
+      const response = await askPersonalAdvisor({ scenario: 'weekly_summary' });
 
       setSummary({
-        text: response,
+        text: [response.summary, response.highlight, response.next_step].filter(Boolean).join(' '),
         totalSpent,
         topCategory: topCategory ? { name: topCategory[0], amount: topCategory[1] } : null,
         purchaseCount: last7Days.length

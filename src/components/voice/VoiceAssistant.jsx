@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
+import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mic, MicOff, Volume2, Loader2, Sparkles } from 'lucide-react';
@@ -97,39 +98,8 @@ export default function VoiceAssistant({ isOpen, onClose }) {
     setIsProcessing(true);
 
     try {
-      // Prepare financial context
-      const totalSubscriptions = (profile?.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
-      const totalLoanPayments = (profile?.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
-      const totalFixedCosts = (profile?.housingCost || 0) + totalSubscriptions + totalLoanPayments;
-      const monthlyMargin = (profile?.income || 0) - totalFixedCosts;
-      const totalDebt = (profile?.loans || []).reduce((sum, l) => sum + l.totalAmount, 0);
+      let question = text;
 
-      const contextPrompt = `Du är en professionell och hjälpsam ekonomiassistent. Svara alltid på svenska med tydliga, korta meningar.
-
-Användarens ekonomi:
-- Inkomst: ${profile?.income || 0} kr/mån
-- Boende: ${profile?.housingCost || 0} kr/mån
-- Abonnemang: ${totalSubscriptions} kr/mån
-- Lån: ${totalLoanPayments} kr/mån
-- Marginal: ${monthlyMargin} kr/mån
-- Buffert: ${profile?.buffer || 0} kr
-- Sparmål: ${profile?.savingsGoal || 0} kr (${profile?.savingsGoalName || 'ej satt'})
-- Skuld totalt: ${totalDebt} kr
-
-Fråga: "${text}"
-
-REGLER – följ dessa strikt:
-1. Svara med 2–3 korta, tydliga meningar. Aldrig mer.
-2. Använd aldrig orden: typ, hörru, liksom, alltså, okej, ba, asså.
-3. Inga fyllnadsord eller utfyllnadsfraser i början av meningen.
-4. Tala sakligt och precist – som en kunnig bankrådgivare.
-5. Inga bullet points, rubriker eller specialtecken. Ren löptext för tal.
-6. Avrunda belopp till närmaste hundratal. Skriv ut siffror som ord när det passar tal.
-7. Avsluta med ett konkret, kort råd eller konstaterande.
-
-Svar:`;
-
-      // Detect loan registration intent
       const loanMatch = text.match(/(?:lån|skuld|kredit)[^0-9]*(\d[\d\s]*)\s*kr/i);
       if (loanMatch) {
         const amount = parseInt(loanMatch[1].replace(/\s/g, ''));
@@ -140,12 +110,12 @@ Svar:`;
             loans: [...existingLoans, newLoan]
           });
           localStorage.setItem('user_debt', amount);
+          question += ` (Jag har just registrerat ett lån på ${amount} kr i profilen.)`;
         }
       }
 
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: contextPrompt + (loanMatch ? '\n\nOBS: AI:n har precis sparat detta lån i profilen. Bekräfta det i svaret och hänvisa till Lånintelligens-sidan.' : '')
-      });
+      const advisor = await askPersonalAdvisor({ scenario: 'question', question });
+      const response = advisor.answer || advisor.message || 'Jag kunde inte formulera ett svar just nu.';
 
       const assistantMessage = {
         role: 'assistant',

@@ -5,7 +5,7 @@ import { X, Sparkles, Loader2 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { categorizeLocal } from '@/lib/categoryRouter';
+import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { toast } from 'sonner';
 
 const categories = [
@@ -80,23 +80,17 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile,
     const remaining = monthlyMargin - totalSpent;
 
     try {
-      const aiResponse = await base44.integrations.Core.InvokeLLM({
-        prompt: `Du är en ekonomicoach. Användaren registrerade just ett köp:
-- Köp: ${name}
-- Belopp: ${parseNumber(amount)} kr
-- Kategori: ${category}
-
-Ekonomisk situation:
-- Månadsinkomst: ${profile.income} kr
-- Fasta kostnader: ${totalFixedCosts} kr
-- Total spenderat denna månad: ${totalSpent} kr
-- Kvar att spendera: ${remaining} kr
-
-Ge ett kort råd (max 2 meningar) på SVENSKA. Var uppmuntrande om det är OK, varnande om det börjar bli tight.`,
+      const aiResponse = await askPersonalAdvisor({
+        scenario: 'expense_feedback',
+        transaction: {
+          name,
+          amount: parseNumber(amount),
+          category,
+        },
       });
 
       setAiInsight({
-        text: aiResponse,
+        text: aiResponse.message || aiResponse.answer,
         remaining,
         totalSpent
       });

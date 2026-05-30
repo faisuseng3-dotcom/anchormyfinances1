@@ -5,6 +5,7 @@ import { useFuturePulse } from '@/hooks/useFuturePulse';
 import { createPageUrl } from '@/utils';
 import { DashboardDivider, DashboardSection, DashboardStatStrip } from './DashboardChrome';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
+import { getUpcomingPreview, EVENT_COLORS } from '@/lib/planCalendarEngine';
 
 const DETAIL_PATH = createPageUrl('FuturePulse');
 
@@ -93,14 +94,14 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
 
   return (
     <DashboardSection
-      title="Framtidspuls"
+      title="Planera månaden"
       subtitle={
         isLoading
-          ? 'Beräknar…'
-          : `${forecast?.status_emoji || ''} ${forecast?.status_label || ''}`.trim()
+          ? 'Laddar…'
+          : `${forecast?.status_emoji || ''} ${forecast?.status_label || 'Ekonomikalender'}`.trim()
       }
       actionHref={DETAIL_PATH}
-      actionLabel="Öppna"
+      actionLabel="Öppna kalender"
     >
       <Link
         to={DETAIL_PATH}
@@ -137,6 +138,33 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
 
             <TimelinePreview tidslinje={forecast.tidslinje} statusKey={statusKey} />
 
+            {profile && (() => {
+              const upcoming = getUpcomingPreview(profile, 4);
+              if (!upcoming.length) return null;
+              return (
+                <>
+                  <DashboardDivider className="my-2" />
+                  <div className="pointer-events-none space-y-2 py-1">
+                    {upcoming.map((ev, i) => (
+                      <div key={`${ev.id}-${i}`} className="flex items-center gap-2.5">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ background: ev.color || EVENT_COLORS.planned }}
+                        />
+                        <span className="text-[12px] text-white/40 w-14 flex-shrink-0 tabular-nums">{ev.dayLabel}</span>
+                        <span className="text-[14px] text-white/80 truncate flex-1">{ev.title}</span>
+                        {ev.amount !== 0 && (
+                          <span className="text-[13px] text-white/50 tabular-nums flex-shrink-0">
+                            {ev.amount > 0 ? '+' : '−'}{Math.abs(ev.amount).toLocaleString('sv-SE')}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              );
+            })()}
+
             {events.length > 0 && (
               <>
                 <DashboardDivider className="my-1" />
@@ -149,7 +177,7 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
             )}
 
             <div className="flex items-center justify-center gap-1 pt-4 text-[14px] font-medium text-white/60">
-              Visa 60-dagarsprognos
+              Öppna kalender
               <ChevronRight className="w-4 h-4" />
               {(isLoading || isFetching) && (
                 <Loader2 className="w-3.5 h-3.5 animate-spin ml-1" />

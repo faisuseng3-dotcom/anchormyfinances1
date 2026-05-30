@@ -18,7 +18,7 @@ import {
   sectionMetaClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
-import { base44 } from '@/api/base44Client';
+import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 
 const CATEGORY_ICONS = {
   entertainment: Music,
@@ -43,34 +43,12 @@ export default function Optimize() {
   const findAlternatives = async (subscription, index) => {
     setOptimizingId(index);
     try {
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `Du är en svensk privatekonomi-expert. Användaren betalar ${subscription.amount} kr/mån för "${subscription.name}" (kategori: ${subscription.category}).
-
-Ge 2–3 konkreta, verkliga alternativ som kan vara billigare. Svenska tjänster. Kort och tydligt.
-
-Svara som JSON:
-{
-  "alternatives": [{ "name": "", "price": "", "savings": "", "description": "", "url": "" }],
-  "tips": ""
-}`,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            alternatives: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  name: { type: 'string' },
-                  price: { type: 'string' },
-                  savings: { type: 'string' },
-                  description: { type: 'string' },
-                  url: { type: 'string' },
-                },
-              },
-            },
-            tips: { type: 'string' },
-          },
+      const response = await askPersonalAdvisor({
+        scenario: 'subscription_alternatives',
+        subscription: {
+          name: subscription.name,
+          amount: subscription.amount,
+          category: subscription.category,
         },
       });
       setSuggestions((prev) => ({ ...prev, [index]: response }));

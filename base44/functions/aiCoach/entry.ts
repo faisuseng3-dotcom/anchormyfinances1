@@ -1,5 +1,25 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 
+const ADVISOR_RULES = `Du är Anchors personliga ekonomirådgivare. Svara på SVENSKA, kort och empatiskt.
+Referera alltid användarens egna siffror — generiska råd är förbjudna.`;
+
+async function invokeAdvisor(base44, prompt) {
+  try {
+    const message = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt,
+      model: 'claude_sonnet_4_6',
+    });
+    return { message, model: 'claude_sonnet_4_6' };
+  } catch (err) {
+    console.warn('aiCoach primary failed:', err?.message);
+    const message = await base44.asServiceRole.integrations.Core.InvokeLLM({
+      prompt,
+      model: 'gpt_5_5',
+    });
+    return { message, model: 'gpt_5_5_fallback' };
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
@@ -11,79 +31,54 @@ Deno.serve(async (req) => {
 
     const { scenarioType, profile, transaction } = await req.json();
 
-    // Different coaching prompts based on user state
+    const profiles = await base44.asServiceRole.entities.FinancialProfile.filter({
+      created_by: user.email,
+    });
+    const fullProfile = profiles[0] || profile;
+
     let prompt = '';
 
     if (scenarioType === 'expense_registered') {
       const { name, amount, category, remaining, monthlyMargin, totalSpent } = transaction;
-      const percentUsed = Math.round((totalSpent / monthlyMargin) * 100);
+      const percentUsed = monthlyMargin > 0 ? Math.round((totalSpent / monthlyMargin) * 100) : 0;
 
-      if (percentUsed > 80) {
-        prompt = `Du är en ekonomicoach med empati och styrka. Användaren registrerade ett köp och är nu på ${percentUsed}% av sin månadsmarginal.
-        
-INTE varning eller sträng ton. Istället: erkenning, stöd och vägen framåt.
+      prompt = `${ADVISOR_RULES}
 
-Köp: ${name} (${amount} kr)
-Kategori: ${category}
-Status: ${percentUsed}% av marginalen använd
+Användaren registrerade: ${name} (${amount} kr, ${category}).
+Marginal: ${monthlyMargin} kr/mån. Spenderat denna månad: ${totalSpent} kr (${percentUsed}% av marginal).
+Kvar: ${remaining} kr.
 
-Skriv ett kort meddelande (max 2 meningar) på SVENSKA som:
-1. Erkänner situationen utan att döma
-2. Visar att du är där för att stödja
-3. Ger ett konkret nästa steg
-
-Exempel ton: "Tuff vecka ekonomiskt! Det är helt okej - vi tar oss igenom detta tillsammans."`;
-      } else if (percentUsed > 50) {
-        prompt = `Du är en ekonomicoach. Användaren registrerade ett köp och är nu på ${percentUsed}% av sin månadsmarginal.
-
-Köp: ${name} (${amount} kr)
-Kategori: ${category}
-Kvar: ${remaining} kr
-
-Skriv ett uppmuntrande meddelande (max 2 meningar) på SVENSKA som både validerar och motiverar.`;
-      } else {
-        prompt = `Du är en ekonomicoach. Användaren registrerade ett köp.
-
-Köp: ${name} (${amount} kr)
-Du har ${remaining} kr kvar att spendera säkert denna månad.
-
-Ge ett kort, uppmuntrande meddelande (max 2 meningar) på SVENSKA. Fokus på: du har kontroll och gör bra val.`;
-      }
+Skriv max 2 meningar — erkänn, stöd, ett konkret nästa steg med deras siffror.`;
     } else if (scenarioType === 'low_buffer') {
       const { buffer, income } = profile;
-      const months = (buffer / income).toFixed(1);
+      const months = income > 0 ? (buffer / income).toFixed(1) : '?';
 
-      prompt = `Du är en empatkonomisk coach. Användarens buffert räcker för ${months} månader av utgifter.
+      prompt = `${ADVISOR_RULES}
 
-Din roll: INTE att skrämma utan att guida mot bättre dagar.
-
-Skriv ett kort, empatiskt meddelande (max 2 meningar) på SVENSKA som:
-1. Erkänner utmaningen
-2. Visar vägen framåt utan att döma
-3. Motiverar nästa steg`;
+Buffert: ${buffer} kr (ca ${months} månaders inkomst som referens).
+Skriv max 2 empatiska meningar med ett konkret steg.`;
     } else if (scenarioType === 'savings_milestone') {
       const { savedAmount, goalAmount, milestone } = transaction;
-      const percent = Math.round((savedAmount / goalAmount) * 100);
+      prompt = `${ADVISOR_RULES}
 
-      prompt = `Du är en ekonomicoach som firar framsteg. Användaren just sparade till milstolpe: ${milestone}% av sitt sparmål (${savedAmount} kr av ${goalAmount} kr).
-
-Skriv ett kort, verkligt glada gratismeddelande (max 2 meningar) på SVENSKA.
-Tone: "Boom!", "Yesss!", "Du är awesome!"`;
+Milstolpe: ${milestone}% av sparmål (${savedAmount} kr av ${goalAmount} kr).
+Skriv max 2 glada meningar med deras siffror.`;
     } else if (scenarioType === 'streak') {
       const { dayCount } = transaction;
+      prompt = `${ADVISOR_RULES}
 
-      prompt = `Du är en ekonomicoach som motiverar. Användaren har logga in på ${dayCount} dagar i rad.
-
-Skriv ett kort, energifullt meddelande (max 2 meningar) på SVENSKA som firar detta.
-Fokus: konsistens är nyckeln, de ser förändringen redan.`;
+Inloggningsstreak: ${dayCount} dagar. Max 2 energifyllda meningar.`;
+    } else {
+      prompt = `${ADVISOR_RULES}\nSkriv ett kort personligt meddelande baserat på: ${JSON.stringify({ scenarioType, transaction })}`;
     }
 
-    const aiResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      model: 'automatic'
-    });
+    if (fullProfile?.income) {
+      prompt += `\n\nProfil: inkomst ${fullProfile.income} kr, buffert ${fullProfile.buffer || 0} kr, sparmål ${fullProfile.savingsGoalName || ''} ${fullProfile.savingsGoal || 0} kr.`;
+    }
 
-    return Response.json({ message: aiResponse });
+    const { message, model } = await invokeAdvisor(base44, prompt);
+
+    return Response.json({ message, model });
   } catch (error) {
     console.error('AI Coach error:', error);
     return Response.json({ error: error.message }, { status: 500 });

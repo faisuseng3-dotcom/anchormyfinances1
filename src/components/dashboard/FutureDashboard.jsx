@@ -22,6 +22,7 @@ import MLIBanner from '@/components/dashboard/MLIBanner';
 import { calculateMLI, getMLIToneConfig, resetActionDensity } from '@/lib/mliEngine';
 import SpendingHubModule from '@/components/dashboard/SpendingHubModule';
 import LeakageDetector from '@/components/dashboard/LeakageDetector';
+import PersonalAdvisorPanel from '@/components/dashboard/PersonalAdvisorPanel';
 
 export default function FutureDashboard({
   profile,
@@ -90,6 +91,10 @@ export default function FutureDashboard({
       <div className="relative z-10">
         <MLIBanner mli={mli} greeting={toneConfig.greeting} />
         <SpendableHero profile={profile} />
+
+        <div className={`${anchorZoneClass} mt-4`}>
+          <PersonalAdvisorPanel profile={profile} />
+        </div>
 
         {/* Primary actions — directly under hero so they stay reachable after import */}
         <div className={`${anchorZoneClass} mt-5 flex flex-col sm:flex-row gap-3`}>
