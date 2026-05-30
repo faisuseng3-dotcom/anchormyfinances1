@@ -229,9 +229,7 @@ Deno.serve(async (req) => {
       payload,
     } = body;
 
-    const profiles = await base44.asServiceRole.entities.FinancialProfile.filter({
-      created_by: user.email,
-    });
+    const profiles = await base44.entities.FinancialProfile.list('-updated_date', 5);
     const profile = profiles[0];
 
     if (!profile?.income) {
@@ -246,9 +244,7 @@ Deno.serve(async (req) => {
 
     let transactions = [];
     try {
-      transactions = await base44.asServiceRole.entities.Transaction.filter({
-        created_by: user.email,
-      });
+      transactions = await base44.entities.Transaction.list('-created_date', 500);
     } catch {
       transactions = profile.monthlyExpenses?.map((e, i) => ({
         type: 'expense',

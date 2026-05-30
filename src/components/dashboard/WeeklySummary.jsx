@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
+import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
@@ -8,7 +10,8 @@ const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
 };
 
-export default function WeeklySummary({ profile }) {
+export default function WeeklySummary() {
+  const { profile, transactions, isDemoMode } = useAdvisorContext();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +39,10 @@ export default function WeeklySummary({ profile }) {
       const totalFixedCosts = profile.housingCost + totalSubscriptions + totalLoanPayments;
       const monthlyMargin = profile.income - totalFixedCosts;
 
-      const response = await askPersonalAdvisor({ scenario: 'weekly_summary' });
+      const response = await askPersonalAdvisor(
+        { scenario: 'weekly_summary' },
+        { profile, transactions, isDemoMode },
+      );
 
       setSummary({
         text: [response.summary, response.highlight, response.next_step].filter(Boolean).join(' '),

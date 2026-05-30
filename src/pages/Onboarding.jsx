@@ -43,14 +43,14 @@ export default function Onboarding() {
     setLoading(true);
 
     const mergedData = { ...data, mode: data.mode || 'basic', onboardingCompleted: true };
-    const { pendingImportRows = [], ...profilePayload } = mergedData;
+    const { pendingImportRows = [], totalLoans, ...profilePayload } = mergedData;
 
-    if (mergedData.totalLoans > 0 && (!mergedData.loans || mergedData.loans.length === 0)) {
-      mergedData.loans = [{
+    if (totalLoans > 0 && (!profilePayload.loans || profilePayload.loans.length === 0)) {
+      profilePayload.loans = [{
         name: 'Mitt lån',
-        totalAmount: mergedData.totalLoans,
+        totalAmount: totalLoans,
         interestRate: 10,
-        monthlyPayment: Math.round(mergedData.totalLoans / 48)
+        monthlyPayment: Math.round(totalLoans / 48),
       }];
     }
 

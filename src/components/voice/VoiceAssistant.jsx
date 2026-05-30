@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
-import { useQuery } from '@tanstack/react-query';
+import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mic, MicOff, Volume2, Loader2, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -16,13 +16,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
   const synthRef = useRef(window.speechSynthesis);
   const messagesEndRef = useRef(null);
 
-  const { data: profile } = useQuery({
-    queryKey: ['financialProfile'],
-    queryFn: async () => {
-      const profiles = await base44.entities.FinancialProfile.list();
-      return profiles[0] || null;
-    }
-  });
+  const { profile, transactions, isDemoMode } = useAdvisorContext();
 
   useEffect(() => {
     // Initialize speech recognition
@@ -114,7 +108,10 @@ export default function VoiceAssistant({ isOpen, onClose }) {
         }
       }
 
-      const advisor = await askPersonalAdvisor({ scenario: 'question', question });
+      const advisor = await askPersonalAdvisor(
+        { scenario: 'question', question },
+        { profile, transactions, isDemoMode },
+      );
       const response = advisor.answer || advisor.message || 'Jag kunde inte formulera ett svar just nu.';
 
       const assistantMessage = {

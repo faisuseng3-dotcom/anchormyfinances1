@@ -93,7 +93,7 @@ export default function FutureDashboard({
         <SpendableHero profile={profile} />
 
         <div className={`${anchorZoneClass} mt-4`}>
-          <PersonalAdvisorPanel profile={profile} />
+          <PersonalAdvisorPanel />
         </div>
 
         {/* Primary actions — directly under hero so they stay reachable after import */}

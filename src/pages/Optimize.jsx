@@ -6,7 +6,6 @@ import {
   Tv, Car, Heart, Apple, Shield, Music, MoreHorizontal, ExternalLink, Loader2, Sparkles,
 } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
-import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import {
   DashboardDivider,
   DashboardSection,
@@ -18,6 +17,7 @@ import {
   sectionMetaClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
+import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 
 const CATEGORY_ICONS = {
@@ -35,7 +35,7 @@ const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 export default function Optimize() {
   const [optimizingId, setOptimizingId] = useState(null);
   const [suggestions, setSuggestions] = useState({});
-  const { profile } = useFinancialProfile();
+  const { profile, transactions, isDemoMode } = useAdvisorContext();
 
   const subscriptions = profile?.subscriptions || [];
   const totalCost = subscriptions.reduce((sum, s) => sum + (s.amount || 0), 0);
@@ -43,14 +43,17 @@ export default function Optimize() {
   const findAlternatives = async (subscription, index) => {
     setOptimizingId(index);
     try {
-      const response = await askPersonalAdvisor({
-        scenario: 'subscription_alternatives',
-        subscription: {
-          name: subscription.name,
-          amount: subscription.amount,
-          category: subscription.category,
+      const response = await askPersonalAdvisor(
+        {
+          scenario: 'subscription_alternatives',
+          subscription: {
+            name: subscription.name,
+            amount: subscription.amount,
+            category: subscription.category,
+          },
         },
-      });
+        { profile, transactions, isDemoMode },
+      );
       setSuggestions((prev) => ({ ...prev, [index]: response }));
     } catch {
       setSuggestions((prev) => ({

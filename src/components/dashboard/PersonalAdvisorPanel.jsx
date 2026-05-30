@@ -2,15 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, Sparkles } from 'lucide-react';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
+import { hasAdvisorProfileData } from '@/lib/advisorProfile';
+import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
-export default function PersonalAdvisorPanel({ profile, refreshKey = 0 }) {
+export default function PersonalAdvisorPanel({ refreshKey = 0 }) {
+  const { profile, transactions, isDemoMode } = useAdvisorContext();
   const [briefing, setBriefing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!profile?.income) {
+    if (!hasAdvisorProfileData(profile)) {
       setLoading(false);
       setBriefing(null);
       return;
@@ -20,9 +23,19 @@ export default function PersonalAdvisorPanel({ profile, refreshKey = 0 }) {
     setLoading(true);
     setError(null);
 
-    askPersonalAdvisor({ scenario: 'dashboard_briefing' })
+    askPersonalAdvisor(
+      { scenario: 'dashboard_briefing' },
+      { profile, transactions, isDemoMode },
+    )
       .then((data) => {
-        if (!cancelled) setBriefing(data);
+        if (!cancelled) {
+          if (data?.needs_profile && hasAdvisorProfileData(profile)) {
+            setError('Kunde inte hämta personligt råd just nu.');
+            setBriefing(null);
+          } else {
+            setBriefing(data);
+          }
+        }
       })
       .catch(() => {
         if (!cancelled) setError('Kunde inte hämta personligt råd just nu.');
@@ -32,9 +45,9 @@ export default function PersonalAdvisorPanel({ profile, refreshKey = 0 }) {
       });
 
     return () => { cancelled = true; };
-  }, [profile?.id, profile?.income, profile?.buffer, refreshKey]);
+  }, [profile, transactions, isDemoMode, refreshKey]);
 
-  if (!profile?.income) return null;
+  if (!hasAdvisorProfileData(profile)) return null;
 
   return (
     <motion.section
@@ -61,7 +74,7 @@ export default function PersonalAdvisorPanel({ profile, refreshKey = 0 }) {
         <p className={`${sectionSubtitleClass} text-white/55`}>{error}</p>
       )}
 
-      {!loading && briefing && !error && (
+      {!loading && briefing && !error && !briefing.needs_profile && (
         <>
           <h3 className="text-[17px] font-bold text-white mb-1.5 leading-snug">
             {briefing.headline}

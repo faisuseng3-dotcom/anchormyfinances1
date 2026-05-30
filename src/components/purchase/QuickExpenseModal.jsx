@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
+import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { toast } from 'sonner';
 
 const categories = [
@@ -17,7 +18,9 @@ const categories = [
   { id: 'other', label: 'Övrigt' },
 ];
 
-export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile, prefilledName = '', prefilledAmount = '' }) {
+export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile: profileProp, prefilledName = '', prefilledAmount = '' }) {
+  const { profile: ctxProfile, transactions, isDemoMode } = useAdvisorContext();
+  const profile = profileProp || ctxProfile;
   const [name, setName] = useState(prefilledName);
   const [amount, setAmount] = useState(prefilledAmount);
   const [category, setCategory] = useState('');
@@ -80,14 +83,17 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile,
     const remaining = monthlyMargin - totalSpent;
 
     try {
-      const aiResponse = await askPersonalAdvisor({
-        scenario: 'expense_feedback',
-        transaction: {
-          name,
-          amount: parseNumber(amount),
-          category,
+      const aiResponse = await askPersonalAdvisor(
+        {
+          scenario: 'expense_feedback',
+          transaction: {
+            name,
+            amount: parseNumber(amount),
+            category,
+          },
         },
-      });
+        { profile, transactions, isDemoMode },
+      );
 
       setAiInsight({
         text: aiResponse.message || aiResponse.answer,
