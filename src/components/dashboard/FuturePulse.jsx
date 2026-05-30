@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { DashboardDivider, DashboardSection, DashboardStatStrip } from './DashboardChrome';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { getUpcomingPreview, EVENT_COLORS } from '@/lib/planCalendarEngine';
+import { mergePlannedEvents } from '@/lib/plannedEventsStorage';
 
 const DETAIL_PATH = createPageUrl('FuturePulse');
 
@@ -139,7 +140,7 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
             <TimelinePreview tidslinje={forecast.tidslinje} statusKey={statusKey} />
 
             {profile && (() => {
-              const upcoming = getUpcomingPreview(profile, 4);
+              const upcoming = getUpcomingPreview({ ...profile, plannedEvents: mergePlannedEvents(profile) }, 4);
               if (!upcoming.length) return null;
               return (
                 <>

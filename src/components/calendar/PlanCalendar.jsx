@@ -234,7 +234,7 @@ function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
   );
 }
 
-export default function PlanCalendar({ profile, onUpdateProfile }) {
+export default function PlanCalendar({ profile, onSavePlannedEvents }) {
   const today = useMemo(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -292,10 +292,10 @@ export default function PlanCalendar({ profile, onUpdateProfile }) {
   };
 
   const persistEvents = async (nextEvents) => {
-    if (!onUpdateProfile) return;
+    if (!onSavePlannedEvents) return;
     setSaving(true);
     try {
-      await onUpdateProfile({ plannedEvents: nextEvents });
+      await onSavePlannedEvents(nextEvents);
     } finally {
       setSaving(false);
     }

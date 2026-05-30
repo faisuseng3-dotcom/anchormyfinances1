@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PageShell from '@/components/layout/PageShell';
 import PlanCalendar from '@/components/calendar/PlanCalendar';
 import FuturePulseDetail from '@/components/futurepulse/FuturePulseDetail';
 import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
+import { usePlannedEvents } from '@/hooks/usePlannedEvents';
 import { useTransactions } from '@/hooks/useTransactions';
 import { anchorDividerClass } from '@/lib/anchorTheme';
 
 export default function FuturePulsePage() {
-  const { profile, updateProfile } = useFinancialProfile();
+  const { profile } = useFinancialProfile();
+  const { profileWithEvents, savePlannedEvents, syncFromLocalIfEmpty } = usePlannedEvents();
   const { transactions } = useTransactions({ limit: 1000 });
   const [showPrognos, setShowPrognos] = useState(false);
+
+  useEffect(() => {
+    syncFromLocalIfEmpty();
+  }, [syncFromLocalIfEmpty]);
 
   return (
     <PageShell
@@ -18,7 +24,10 @@ export default function FuturePulsePage() {
       subtitle="Ekonomikalender"
       backHref={createPageUrl('Dashboard')}
     >
-      <PlanCalendar profile={profile} onUpdateProfile={updateProfile} />
+      <PlanCalendar
+        profile={profileWithEvents || profile}
+        onSavePlannedEvents={savePlannedEvents}
+      />
 
       <div className={`${anchorDividerClass} my-8`} />
 
