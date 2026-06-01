@@ -4,19 +4,22 @@ import { X, TrendingUp, PiggyBank, Calendar } from 'lucide-react';
 import {
   anchorIconButtonClass,
   anchorPrimaryButtonClass,
+  anchorSecondaryButtonClass,
   elevatedSheet,
   sectionMetaClass,
   sectionSubtitleClass,
   sectionTitleClass,
 } from '@/lib/anchorTheme';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import { getConcernById } from '@/lib/onboardingFocus';
 
 const formatNumber = (value) =>
   value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
 
-export default function WelcomeAnalysis({ profile, onClose }) {
+export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
   if (!profile) return null;
 
+  const concern = getConcernById(profile.topConcern);
   const monthlyLeft = (profile.income || 0) - getTotalFixedCosts(profile);
   const yearSavings = Math.max(0, monthlyLeft) * 0.3 * 12;
   const monthsToGoal =
@@ -51,6 +54,13 @@ export default function WelcomeAnalysis({ profile, onClose }) {
     });
   }
 
+  const handlePrimary = () => {
+    if (concern?.action && onFirstAction) {
+      onFirstAction(concern.action);
+    }
+    onClose?.();
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -73,7 +83,7 @@ export default function WelcomeAnalysis({ profile, onClose }) {
             <p className={sectionMetaClass}>Översikt</p>
             <h2 className={`${sectionTitleClass} mt-0.5`}>Din ekonomi i korthet</h2>
             <p className={`${sectionSubtitleClass} mt-1`}>
-              Baserat på det du fyllt i under onboarding.
+              {concern?.hint || 'Baserat på det du fyllt i under onboarding.'}
             </p>
           </div>
           <button type="button" onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
@@ -99,8 +109,17 @@ export default function WelcomeAnalysis({ profile, onClose }) {
           ))}
         </div>
 
-        <button type="button" onClick={onClose} className={`w-full ${anchorPrimaryButtonClass}`}>
-          Fortsätt till översikten
+        {concern?.cta ? (
+          <button type="button" onClick={handlePrimary} className={`w-full ${anchorPrimaryButtonClass} mb-2`}>
+            {concern.cta}
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={onClose}
+          className={`w-full ${concern?.cta ? anchorSecondaryButtonClass : anchorPrimaryButtonClass}`}
+        >
+          {concern?.cta ? 'Gå till översikten' : 'Fortsätt till översikten'}
         </button>
       </motion.div>
     </motion.div>

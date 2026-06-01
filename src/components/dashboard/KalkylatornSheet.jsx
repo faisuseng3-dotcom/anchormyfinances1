@@ -4,10 +4,8 @@ import { Link } from 'react-router-dom';
 import {
   ShoppingBag,
   GitBranch,
-  PieChart,
   Landmark,
   CalendarDays,
-  History,
   ChevronRight,
   X,
 } from 'lucide-react';
@@ -21,6 +19,7 @@ import {
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
 import { DashboardDivider, DashboardListRow } from './DashboardChrome';
+import { sortCalcItems } from '@/lib/onboardingFocus';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -38,13 +37,6 @@ const CALC_ITEMS = [
     hint: 'Lön, sjukdagar eller pausa utgifter',
     icon: GitBranch,
     page: 'WhatIf',
-  },
-  {
-    id: 'budget',
-    question: 'Hur mycket har jag kvar i månaden?',
-    hint: 'Plan mot utfall per kategori',
-    icon: PieChart,
-    page: 'Budget',
   },
   {
     id: 'loans',
@@ -81,6 +73,10 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
   const [quickAmount, setQuickAmount] = useState('');
 
   const safeToSpend = useMemo(() => getSafeToSpend(profile), [profile]);
+  const calcItems = useMemo(
+    () => sortCalcItems(CALC_ITEMS, profile?.topConcern),
+    [profile?.topConcern],
+  );
 
   const quickInsight = useMemo(() => {
     const amount = parseFloat(String(quickAmount).replace(/\s/g, '').replace(',', '.'));
@@ -158,7 +154,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
                 </>
               )}
 
-              {CALC_ITEMS.map((item, i) => {
+              {calcItems.map((item, i) => {
                 const Icon = item.icon;
                 return (
                   <React.Fragment key={item.id}>

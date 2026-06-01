@@ -7,7 +7,7 @@ import QuickProblemStep from '@/components/onboarding/QuickProblemStep';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
 import PersonaStep from '@/components/onboarding/PersonaStep';
-import { applyConcernToProfile } from '@/lib/onboardingFocus';
+import { applyConcernToProfile, getPostOnboardingAction } from '@/lib/onboardingFocus';
 import { rowsToTransactions } from '@/lib/bankImportHelpers';
 
 export default function Onboarding() {
@@ -81,7 +81,9 @@ export default function Onboarding() {
         }
       })
       .catch(() => {});
-    navigate(createPageUrl('Dashboard'));
+    navigate(createPageUrl('Dashboard'), {
+      state: { anchorAction: getPostOnboardingAction(data.topConcern) },
+    });
   };
 
   const steps = [

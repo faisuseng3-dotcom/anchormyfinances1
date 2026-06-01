@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ProfileAvatar from './ProfileAvatar';
 import SquadMemberRow from './SquadMemberRow';
 import NudgeToast from './NudgeToast';
-import { Users, Target, Calendar, ChevronDown, Filter } from 'lucide-react';
+import { Users, Target, Calendar, ChevronDown, Filter, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 const CATEGORIES = [
   { id: 'all',           label: 'Allt' },
@@ -55,11 +56,26 @@ export default function SquadDashboard({ squad, memberProfiles, myProfile, myFin
         {/* Title */}
         <div className="flex items-center gap-3 mb-4">
           <span className="text-3xl">{squad.emoji || '🚀'}</span>
-          <div>
+          <div className="flex-1 min-w-0">
             <h3 className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>{squad.name}</h3>
             {squad.description && <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{squad.description}</p>}
           </div>
         </div>
+
+        {squad.invite_code && (
+          <button
+            type="button"
+            onClick={() => {
+              navigator.clipboard?.writeText(squad.invite_code);
+              toast.success('Inbjudningskod kopierad');
+            }}
+            className="w-full flex items-center justify-center gap-2 mb-4 py-2.5 rounded-xl text-xs font-bold"
+            style={{ background: 'rgba(255,255,255,0.06)', color: 'var(--color-accent)' }}
+          >
+            <Copy className="w-3.5 h-3.5" />
+            Bjud in: {squad.invite_code}
+          </button>
+        )}
 
         {/* Big progress */}
         <div className="mb-2">

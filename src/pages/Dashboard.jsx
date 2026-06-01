@@ -159,7 +159,18 @@ export default function Dashboard() {
         profile={profile} />
 
       <AnimatePresence>
-        {showWelcome && <WelcomeAnalysis profile={profile} onClose={() => setShowWelcome(false)} />}
+        {showWelcome && (
+          <WelcomeAnalysis
+            profile={profile}
+            onClose={() => setShowWelcome(false)}
+            onFirstAction={(action) => {
+              if (action === 'register') setShowExpenseModal(true);
+              if (action === 'debt') navigate(createPageUrl('Loans'));
+              if (action === 'savings') setShowTransactionHub(true);
+              if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
+            }}
+          />
+        )}
       </AnimatePresence>
       <BadgeUnlock badgeId={unlockedBadge} isVisible={showBadgeUnlock} onClose={() => setShowBadgeUnlock(false)} />
       <MagicEntryBox
