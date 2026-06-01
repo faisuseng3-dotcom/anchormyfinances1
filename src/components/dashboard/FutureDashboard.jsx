@@ -11,18 +11,14 @@ import {
   elevatedSheet,
 } from '@/lib/anchorTheme';
 import { DashboardDivider } from './DashboardChrome';
-import AIStoryBar from './AIStoryBar';
 import SpendableHero from './SpendableHero';
-import FuturePulse from './FuturePulse';
-import MoneyOverview from './MoneyOverview';
-import DebtCheck from './DebtCheck';
-import SavingsAndBudget from './SavingsAndBudget';
+import EconomicHealthCard from './EconomicHealthCard';
+import HomeFocusBanner from './HomeFocusBanner';
+import HomeTodaySection from './HomeTodaySection';
+import HomeWeekAhead from './HomeWeekAhead';
+import DashboardMorePanel from './DashboardMorePanel';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
-import MLIBanner from '@/components/dashboard/MLIBanner';
-import { calculateMLI, getMLIToneConfig, resetActionDensity } from '@/lib/mliEngine';
-import SpendingHubModule from '@/components/dashboard/SpendingHubModule';
-import LeakageDetector from '@/components/dashboard/LeakageDetector';
-import PersonalAdvisorPanel from '@/components/dashboard/PersonalAdvisorPanel';
+import { calculateMLI, resetActionDensity } from '@/lib/mliEngine';
 
 export default function FutureDashboard({
   profile,
@@ -30,6 +26,7 @@ export default function FutureDashboard({
   onOpenExpense,
   onOpenMagicEntry,
   onOpenTransactionHub,
+  onFocusAction,
   user,
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -41,7 +38,6 @@ export default function FutureDashboard({
     return calculateMLI(transactions || [], profile);
   }, [transactions, profile]);
 
-  const toneConfig = useMemo(() => getMLIToneConfig(mli), [mli]);
   const firstName = user?.full_name?.split(' ')[0] || 'Hej';
 
   const handleMagicEntry = () => {
@@ -54,7 +50,6 @@ export default function FutureDashboard({
 
   return (
     <div className="min-h-screen pb-36 relative overflow-x-hidden anchor-page">
-      {/* Soft top glow — Wallet-style depth */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
         style={{
@@ -75,11 +70,10 @@ export default function FutureDashboard({
         )}
       </AnimatePresence>
 
-      {/* Header — minimal, Monzo-style */}
       <header className={`relative z-10 ${anchorZoneClass} pt-10 sm:pt-12 pb-2 flex items-center justify-between`}>
         <div>
           <p className="text-[15px] text-white/50">{firstName}</p>
-          <h1 className="text-[22px] font-semibold text-white tracking-tight mt-0.5">Översikt</h1>
+          <h1 className="text-[22px] font-semibold text-white tracking-tight mt-0.5">Hem</h1>
         </div>
         <Link to={createPageUrl('Settings')} aria-label="Inställningar">
           <span className={anchorIconButtonClass}>
@@ -89,14 +83,15 @@ export default function FutureDashboard({
       </header>
 
       <div className="relative z-10">
-        <MLIBanner mli={mli} greeting={toneConfig.greeting} />
+        <EconomicHealthCard mli={mli} />
+        <HomeFocusBanner profile={profile} onAction={onFocusAction} />
         <SpendableHero profile={profile} />
 
-        <div className={`${anchorZoneClass} mt-4`}>
-          <PersonalAdvisorPanel />
+        <div className={`${anchorZoneClass} mt-4 space-y-4`}>
+          <HomeTodaySection />
+          <HomeWeekAhead profile={profile} />
         </div>
 
-        {/* Primary actions — directly under hero so they stay reachable after import */}
         <div className={`${anchorZoneClass} mt-5 flex flex-col sm:flex-row gap-3`}>
           <motion.button
             type="button"
@@ -117,40 +112,14 @@ export default function FutureDashboard({
             Kalkylator
           </motion.button>
         </div>
-        <div className={`${anchorZoneClass} mt-2 flex flex-col sm:flex-row gap-2 sm:gap-3`}>
-          <motion.button
-            type="button"
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onOpenExpense?.()}
-            className={`${anchorSecondaryButtonClass} w-full sm:flex-1 text-[14px]`}
-          >
-            Registrera utgift
-          </motion.button>
-          <Link
-            to={createPageUrl('Import')}
-            className={`${anchorSecondaryButtonClass} w-full sm:flex-1 text-center no-underline text-[14px] flex items-center justify-center`}
-          >
-            Importera CSV
-          </Link>
-        </div>
 
-        <AIStoryBar profile={profile} transactions={transactions} />
+        <DashboardDivider className="mx-5 sm:mx-6 my-8" />
 
-        <DashboardDivider className="mx-5 sm:mx-6 my-6" />
-
-        <FuturePulse profile={profile} transactions={transactions} />
-
-        <DashboardDivider className="mx-5 sm:mx-6 my-6" />
-
-        <MoneyOverview profile={profile} />
-        <div className="h-8" />
-        <DebtCheck profile={profile} />
-        <div className="h-8" />
-        <SavingsAndBudget profile={profile} />
-        <div className="h-8" />
-        <SpendingHubModule transactions={transactions || []} profile={profile} />
-        <div className="h-8" />
-        <LeakageDetector profile={profile} transactions={transactions} variant="dashboard" />
+        <DashboardMorePanel
+          profile={profile}
+          transactions={transactions}
+          onOpenExpense={onOpenExpense}
+        />
       </div>
 
       <KalkylatornSheet
@@ -159,7 +128,6 @@ export default function FutureDashboard({
         profile={profile}
       />
 
-      {/* Transaction drawer — single elevated surface */}
       <div className="fixed bottom-[76px] sm:bottom-[72px] left-0 right-0 z-40 flex justify-center pointer-events-none">
         <motion.button
           type="button"

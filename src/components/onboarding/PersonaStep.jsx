@@ -70,8 +70,8 @@ export default function PersonaStep({ data, onChange, onNext, onBack }) {
 
   return (
     <OnboardingStep
-      step={2}
-      totalSteps={3}
+      step={3}
+      totalSteps={4}
       title="Välj din ekonomiska nivå"
       subtitle="Du kan byta läge när som helst i inställningarna."
     >

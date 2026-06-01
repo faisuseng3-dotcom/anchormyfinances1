@@ -33,6 +33,16 @@
       "type": "string",
       "description": "Anv\u00e4ndarens h\u00f6gsta prioritet bland valda m\u00e5l \u2013 AI:ns huvudfokus"
     },
+    "topConcern": {
+      "type": "string",
+      "enum": [
+        "spending",
+        "debt",
+        "save",
+        "plan"
+      ],
+      "description": "St\u00f6rsta ekonomiska stressorn fr\u00e5n onboarding-quiz"
+    },
     "income": {
       "type": "number",
       "description": "M\u00e5natlig nettoinkomst"

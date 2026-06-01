@@ -11,7 +11,6 @@ import {
   TrendingUp,
   History,
   Plane,
-  ScanLine,
   Scissors,
   Target,
   PiggyBank,
@@ -75,13 +74,6 @@ const EXPLORE_TOOLS = [
     hint: 'Budget och kostnad per dag',
     icon: Plane,
     page: 'TravelPlanner',
-  },
-  {
-    id: 'resell',
-    question: 'Sälj något du inte använder',
-    hint: 'Skanna och få prisförslag',
-    icon: ScanLine,
-    page: 'ResellScanner',
   },
 ];
 

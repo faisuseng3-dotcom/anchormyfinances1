@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import SquadDashboard from '@/components/social/SquadDashboard';
 import SquadCreateModal from '@/components/social/SquadCreateModal';
+import SquadJoinCard from '@/components/social/SquadJoinCard';
 
 export default function Squads() {
   const queryClient = useQueryClient();
@@ -153,6 +154,8 @@ export default function Squads() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               className="space-y-4">
+
+              <SquadJoinCard squads={mySquads} />
 
               {mySquads.length === 0 ? (
                 <motion.div

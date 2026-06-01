@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, TrendingUp, Settings, Mic, ClipboardList, Globe, Plus, PlusCircle, ArrowLeftRight, PiggyBank } from 'lucide-react';
+import { Home, Settings, Mic, ClipboardList, Users, Plus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
@@ -11,6 +11,7 @@ import GuestBanner from '@/components/GuestBanner';
 import { isGuestMode } from '@/components/guestStorage';
 import { useAuth } from '@/lib/AuthContext';
 import ActionMenu from '@/components/nav/ActionMenu';
+import PlanQuickAddSheet from '@/components/plan/PlanQuickAddSheet';
 import PushNotificationManager from '@/components/notifications/PushNotificationManager';
 import ModeSwitch from '@/components/modes/ModeSwitch';
 import { useModeContext } from '@/components/modes/ModeContext';
@@ -21,17 +22,18 @@ import { isEmbeddedApp } from '@/lib/embedLayout';
 import { cn } from '@/lib/utils';
 
 const navItems = [
-  { icon: Home, page: 'Dashboard' },
-  { icon: Globe, page: 'Galaxy' },
+  { icon: Home, page: 'Dashboard', label: 'Hem' },
+  { icon: Users, page: 'Galaxy', label: 'Jämför' },
   null, // placeholder for center FAB
-  { icon: ClipboardList, page: 'TransactionHistory' },
-  { icon: Settings, page: 'Settings' },
+  { icon: ClipboardList, page: 'TransactionHistory', label: 'Historik' },
+  { icon: Settings, page: 'Settings', label: 'Inställningar' },
 ];
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [actionMenuOpen, setActionMenuOpen] = useState(false);
+  const [planSheetOpen, setPlanSheetOpen] = useState(false);
   const { isBusiness, toggleMode } = useModeContext();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -56,7 +58,17 @@ export default function Layout({ children, currentPageName }) {
     }
   }, [isBusiness]);
 
+  React.useEffect(() => {
+    const openPlan = () => setPlanSheetOpen(true);
+    window.addEventListener('anchor:open-plan', openPlan);
+    return () => window.removeEventListener('anchor:open-plan', openPlan);
+  }, []);
+
   const handleAction = (actionId) => {
+    if (actionId === 'plan') {
+      setPlanSheetOpen(true);
+      return;
+    }
     const onDashboard =
       location.pathname === '/' || location.pathname === createPageUrl('Dashboard');
     if (!onDashboard) {
@@ -350,6 +362,13 @@ export default function Layout({ children, currentPageName }) {
         />
       )}
 
+      {!hideNav && (
+        <PlanQuickAddSheet
+          isOpen={planSheetOpen}
+          onClose={() => setPlanSheetOpen(false)}
+        />
+      )}
+
       {/* Bottom Navigation */}
       {!hideNav && (
         <nav
@@ -386,7 +405,7 @@ export default function Layout({ children, currentPageName }) {
                   key={item.page}
                   to={createPageUrl(item.page)}
                   className="relative flex items-center justify-center w-11 h-11"
-                  aria-label={item.page}
+                  aria-label={item.label || item.page}
                 >
                   <motion.div
                     whileTap={{ scale: 0.85 }}

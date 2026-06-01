@@ -65,7 +65,10 @@ export default function Dashboard() {
   useEffect(() => {
     const action = location.state?.anchorAction;
     if (action === 'register') setShowExpenseModal(true);
+    if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
     if (action === 'transfer' || action === 'save') setShowTransactionHub(true);
+    if (action === 'debt') navigate(createPageUrl('Loans'));
+    if (action === 'savings') setShowTransactionHub(true);
     if (action) {
       navigate(location.pathname, { replace: true, state: {} });
     }
@@ -75,6 +78,7 @@ export default function Dashboard() {
     base44.analytics.track({ eventName: 'dashboard_viewed' });
     const handler = (e) => {
       if (e.detail.action === 'register') setShowExpenseModal(true);
+      if (e.detail.action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
       if (e.detail.action === 'transfer' || e.detail.action === 'save') setShowTransactionHub(true);
     };
     window.addEventListener('anchor:action', handler);
@@ -133,6 +137,12 @@ export default function Dashboard() {
         onOpenExpense={() => setShowExpenseModal(true)}
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
+        onFocusAction={(action) => {
+          if (action === 'register') setShowExpenseModal(true);
+          if (action === 'debt') navigate(createPageUrl('Loans'));
+          if (action === 'savings') setShowTransactionHub(true);
+          if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
+        }}
       />
       {isAlex && <AlexConflictAlert />}
 

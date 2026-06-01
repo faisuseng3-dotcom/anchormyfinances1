@@ -3,9 +3,11 @@ import { base44 } from '@/api/base44Client';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import QuickProblemStep from '@/components/onboarding/QuickProblemStep';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
 import PersonaStep from '@/components/onboarding/PersonaStep';
+import { applyConcernToProfile } from '@/lib/onboardingFocus';
 import { rowsToTransactions } from '@/lib/bankImportHelpers';
 
 export default function Onboarding() {
@@ -42,7 +44,10 @@ export default function Onboarding() {
   const handleComplete = async () => {
     setLoading(true);
 
-    const mergedData = { ...data, mode: data.mode || 'basic', onboardingCompleted: true };
+    const mergedData = applyConcernToProfile(
+      { ...data, mode: data.mode || 'basic', onboardingCompleted: true },
+      data.topConcern,
+    );
     const { pendingImportRows = [], totalLoans, ...profilePayload } = mergedData;
 
     if (totalLoans > 0 && (!profilePayload.loans || profilePayload.loans.length === 0)) {
@@ -80,26 +85,33 @@ export default function Onboarding() {
   };
 
   const steps = [
+    <QuickProblemStep
+      key="problem"
+      data={data}
+      onChange={setData}
+      onNext={() => setStep(1)}
+    />,
     <QuickGoalStep
       key="goal"
       data={data}
       onChange={setData}
-      onNext={() => setStep(1)}
+      onNext={() => setStep(2)}
+      onBack={() => setStep(0)}
     />,
     <QuickDataStep
       key="data"
       data={data}
       onChange={setData}
-      onNext={() => setStep(2)}
-      onBack={() => setStep(0)}
+      onNext={() => setStep(3)}
+      onBack={() => setStep(1)}
     />,
     <PersonaStep
       key="persona"
       data={data}
       onChange={setData}
       onNext={handleComplete}
-      onBack={() => setStep(1)}
-    />
+      onBack={() => setStep(2)}
+    />,
   ];
 
   const revolutBlue = 'linear-gradient(180deg, #2f5cff 0%, #1846e7 22%, #0a239e 52%, #060f4a 78%, #040814 100%)';
@@ -118,7 +130,7 @@ export default function Onboarding() {
     );
   }
 
-  const totalSteps = 3;
+  const totalSteps = 4;
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
   return (

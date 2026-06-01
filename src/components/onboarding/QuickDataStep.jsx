@@ -93,8 +93,8 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
 
   return (
     <OnboardingStep
-      step={1}
-      totalSteps={2}
+      step={2}
+      totalSteps={4}
       title="Ungefärliga siffror"
       subtitle="Fyll i ungefärliga värden. Du kan justera allt senare."
     >

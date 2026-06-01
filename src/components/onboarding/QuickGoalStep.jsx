@@ -70,8 +70,8 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
 
   return (
     <OnboardingStep
-      step={0}
-      totalSteps={2}
+      step={1}
+      totalSteps={4}
       title={showPriority ? "Vad är din högsta prioritet?" : "Vad vill du uppnå?"}
       subtitle={showPriority
         ? "Du valde flera mål. Vilket är viktigast just nu? AI:n fokuserar extra på detta."

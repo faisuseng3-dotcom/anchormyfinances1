@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, PlusCircle, ArrowLeftRight, PiggyBank } from 'lucide-react';
+import { X, PlusCircle, ArrowLeftRight, PiggyBank, CalendarDays } from 'lucide-react';
 
 const ACTIONS = [
   { id: 'register', label: 'Registrera', icon: PlusCircle, color: 'var(--color-accent)' },
+  { id: 'plan', label: 'Planera', icon: CalendarDays, color: '#6B9FFF' },
   { id: 'transfer', label: 'Flytta', icon: ArrowLeftRight, color: 'var(--color-success)' },
   { id: 'save', label: 'Spara', icon: PiggyBank, color: 'var(--color-warning)' },
 ];
@@ -29,7 +30,7 @@ export default function ActionMenu({ isOpen, onClose, onAction }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-            className="anchor-action-menu-pills fixed bottom-24 left-0 right-0 z-50 flex justify-center gap-4 px-6"
+            className="anchor-action-menu-pills fixed bottom-24 left-0 right-0 z-50 flex justify-center gap-3 px-4"
           >
             {ACTIONS.map((action, i) => {
               const Icon = action.icon;
