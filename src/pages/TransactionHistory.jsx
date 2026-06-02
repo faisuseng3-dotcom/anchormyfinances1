@@ -144,16 +144,14 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
         className="flex gap-2 px-5 pb-3 overflow-hidden">
             <button onClick={() => {onEdit(tx);setShowActions(false);}}
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold"
-          style={{ background: 'rgba(75,124,243,0.15)', color: 'var(--color-accent)', border: '1px solid rgba(75,124,243,0.3)' }}>
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-[#6B9FFF]/15 text-[#B8C9FF] border border-[#6B9FFF]/30">
               <Edit2 className="w-3.5 h-3.5" /> Redigera
             </button>
             <button onClick={() => {onDelete(tx.id);setShowActions(false);}}
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold"
-          style={{ background: 'rgba(217,95,95,0.15)', color: 'var(--color-danger)', border: '1px solid rgba(217,95,95,0.3)' }}>
+          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-rose-500/15 text-rose-200 border border-rose-400/30">
               <Trash2 className="w-3.5 h-3.5" /> Ta bort
             </button>
-            <button onClick={() => setShowActions(false)} className="w-9 h-9 flex items-center justify-center rounded-xl" style={{ background: 'var(--color-surface)', color: 'var(--color-text-muted)' }}>
+            <button onClick={() => setShowActions(false)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.08] text-white/50">
               <X className="w-4 h-4" />
             </button>
           </motion.div>

@@ -1,52 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
-import { askPersonalAdvisor } from '@/lib/personalAdvisor';
-import { hasAdvisorProfileData } from '@/lib/advisorProfile';
-import { buildFallbackBriefing } from '@/lib/economicHealth';
-import { useAdvisorContext } from '@/hooks/useAdvisorContext';
+import { useDashboardBriefing } from '@/hooks/useDashboardBriefing';
 import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
 export default function HomeTodaySection({ refreshKey = 0 }) {
-  const { profile, transactions, isDemoMode } = useAdvisorContext();
-  const [briefing, setBriefing] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { briefing, loading, hasProfile } = useDashboardBriefing(refreshKey);
 
-  useEffect(() => {
-    if (!hasAdvisorProfileData(profile)) {
-      setLoading(false);
-      setBriefing(null);
-      return;
-    }
-
-    let cancelled = false;
-    setLoading(true);
-
-    askPersonalAdvisor(
-      { scenario: 'dashboard_briefing' },
-      { profile, transactions, isDemoMode },
-    )
-      .then((data) => {
-        if (cancelled) return;
-        if (data?.needs_profile && hasAdvisorProfileData(profile)) {
-          setBriefing(buildFallbackBriefing(profile));
-        } else if (data && !data.needs_profile) {
-          setBriefing(data);
-        } else {
-          setBriefing(buildFallbackBriefing(profile));
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setBriefing(buildFallbackBriefing(profile));
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => { cancelled = true; };
-  }, [profile, transactions, isDemoMode, refreshKey]);
-
-  if (!hasAdvisorProfileData(profile)) return null;
+  if (!hasProfile) return null;
 
   const actions = briefing?.actions?.slice(0, 3) || [];
 

@@ -5,7 +5,7 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users } from 'lucide-react';
+import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users, GitBranch } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import {
   DashboardDivider,
@@ -280,10 +280,24 @@ export default function Settings() {
 
         <DashboardSection nested title="Mer">
           <DashboardListRow
-            href="/Social"
-            leading={<Users className="w-5 h-5 text-[#9FB5FF]" />}
-            title="Anchor Social"
-            subtitle="Profil, vänner & integritet"
+            href={createPageUrl('Galaxy')}
+            leading={<GitBranch className="w-5 h-5 text-[#9FB5FF]" />}
+            title="Jämför"
+            subtitle="Publicera och jämför ekonomiska fördelningar"
+          />
+          <DashboardDivider />
+          <DashboardListRow
+            href={createPageUrl('Social')}
+            leading={<Users className="w-5 h-5 text-white/60" />}
+            title="Social"
+            subtitle="Profil, vänner och @användarnamn"
+          />
+          <DashboardDivider />
+          <DashboardListRow
+            href={`${createPageUrl('Social')}?tab=privacy`}
+            leading={<Shield className="w-5 h-5 text-[#9FB5FF]" />}
+            title="Integritet & delning"
+            subtitle="Styr vad som syns i Jämför"
           />
           <DashboardDivider />
           <DashboardListRow
