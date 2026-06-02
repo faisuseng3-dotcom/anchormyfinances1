@@ -75,7 +75,7 @@ export function DashboardListRow({
 }) {
   const inner = (
     <>
-      {leading != null && <div className="flex-shrink-0 w-9 flex items-center justify-center">{leading}</div>}
+      {leading != null && <div className="flex-shrink-0 w-11 flex items-center justify-center">{leading}</div>}
       <div className="flex-1 min-w-0">
         <p className="text-[15px] font-medium text-white truncate">{title}</p>
         {subtitle && <p className={`${sectionMetaClass} mt-0.5 truncate`}>{subtitle}</p>}

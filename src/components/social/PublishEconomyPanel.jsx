@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Radio, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Radio, Eye, EyeOff, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
 import { useSocialProfile } from '@/hooks/useSocialProfile';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { isGuestMode } from '@/components/guestStorage';
@@ -20,11 +21,17 @@ import {
   inferGalaxyTags,
 } from '@/lib/galaxyEconomy';
 
-export default function PublishEconomyPanel() {
+export default function PublishEconomyPanel({ defaultCollapsed = false }) {
+  const queryClient = useQueryClient();
   const { socialProfile, isLoading: socialLoading, saveSocialProfile } = useSocialProfile();
   const { profile: financialProfile, isPersisted } = useFinancialProfile();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState(null);
+  const [expanded, setExpanded] = useState(!defaultCollapsed);
+
+  useEffect(() => {
+    setExpanded(!defaultCollapsed);
+  }, [defaultCollapsed]);
 
   const isGuest = isGuestMode();
   const published = Boolean(socialProfile?.economy_published);
@@ -46,6 +53,7 @@ export default function PublishEconomyPanel() {
           financialProfile?.displayName,
       });
       setMessage('Din ekonomi är publicerad. Andra kan nu se och använda din fördelning.');
+      queryClient.invalidateQueries({ queryKey: ['galaxyProfiles'] });
     } catch {
       setMessage('Kunde inte publicera. Försök igen.');
     } finally {
@@ -59,6 +67,7 @@ export default function PublishEconomyPanel() {
     try {
       await saveSocialProfile({ economy_published: false });
       setMessage('Din ekonomi är inte längre synlig för andra.');
+      queryClient.invalidateQueries({ queryKey: ['galaxyProfiles'] });
     } catch {
       setMessage('Kunde inte ta bort publiceringen.');
     } finally {
@@ -78,6 +87,7 @@ export default function PublishEconomyPanel() {
         galaxy_tags: inferGalaxyTags(socialProfile.occupation, financialProfile),
       });
       setMessage('Publiceringen är uppdaterad med din senaste budget.');
+      queryClient.invalidateQueries({ queryKey: ['galaxyProfiles'] });
     } catch {
       setMessage('Kunde inte uppdatera.');
     } finally {
@@ -113,10 +123,26 @@ export default function PublishEconomyPanel() {
   const snap = socialProfile?.economy_snapshot;
   const privacy = socialProfile?.privacy_level || 'hybrid';
 
+  const toggleExpanded = () => setExpanded((v) => !v);
+  const HeaderTag = published ? 'button' : 'div';
+
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-4 space-y-4">
-      <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-full bg-white/[0.08] flex items-center justify-center flex-shrink-0">
+    <div
+      className={`rounded-xl border px-4 py-4 space-y-4 mb-6 ${
+        published
+          ? 'border-emerald-500/20 bg-emerald-500/[0.06]'
+          : 'border-white/[0.08] bg-white/[0.03]'
+      }`}
+    >
+      <HeaderTag
+        {...(published ? { type: 'button', onClick: toggleExpanded } : {})}
+        className={`w-full flex items-start gap-3 text-left ${published ? 'cursor-pointer' : ''}`}
+      >
+        <div
+          className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+            published ? 'bg-emerald-500/15' : 'bg-white/[0.08]'
+          }`}
+        >
           {published ? (
             <Radio className="w-5 h-5 text-emerald-300" />
           ) : (
@@ -131,8 +157,15 @@ export default function PublishEconomyPanel() {
               : 'Publicera hur du fördelar lönen så andra kan jämföra och prova samma mall.'}
           </p>
         </div>
-      </div>
+        {published && (
+          <span className="text-white/40 mt-1 flex-shrink-0">
+            {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </span>
+        )}
+      </HeaderTag>
 
+      {(!published || expanded) && (
+        <>
       <div className="rounded-lg px-3 py-2.5 bg-white/[0.04] border border-white/[0.06]">
         <p className={sectionMetaClass}>
           {privacy === 'full' && (
@@ -202,6 +235,8 @@ export default function PublishEconomyPanel() {
         >
           Skapa @användarnamn först
         </Link>
+      )}
+        </>
       )}
     </div>
   );

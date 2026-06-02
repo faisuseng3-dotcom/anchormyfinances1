@@ -1,32 +1,20 @@
 import React, { useMemo, useState } from 'react';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { DashboardDivider, DashboardListRow, DashboardSection } from '@/components/dashboard/DashboardChrome';
-import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
+import { anchorInputClass, sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 import { cn } from '@/lib/utils';
 import { GALAXY_DEMO_PROFILES, GALAXY_FILTER_TAGS, matchScore } from '@/lib/galaxyProfiles';
 import { socialProfileToGalaxy } from '@/lib/galaxyEconomy';
 import ExpandedProfile from './ExpandedProfile';
-import ProfileAvatar from './ProfileAvatar';
+import GalaxyProfileRow from './GalaxyProfileRow';
 
-function ProfileRow({ profile, subtitle, onOpen, badge }) {
-  return (
-    <button type="button" onClick={() => onOpen(profile)} className="w-full text-left">
-      <DashboardListRow
-        leading={
-          <ProfileAvatar profile={profile} size={44} />
-        }
-        title={badge ? `${profile.display_name} (${badge})` : profile.display_name}
-        subtitle={subtitle}
-        trailing={profile.highlight || `${profile.savings_rate || 0} % sparar`}
-        trailingClassName="text-[13px] font-medium text-white/70 tabular-nums text-right max-w-[42%] truncate"
-      />
-    </button>
-  );
-}
-
-export default function GalaxyExplorer({ userFinancialProfile, currentUserId }) {
+export default function GalaxyExplorer({
+  userFinancialProfile,
+  currentUserId,
+  onStatsChange,
+}) {
   const [searchText, setSearchText] = useState('');
   const [activeTags, setActiveTags] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -82,25 +70,60 @@ export default function GalaxyExplorer({ userFinancialProfile, currentUserId }) 
   );
 
   const rowSubtitle = (p) =>
-    [p.occupation, p.age ? `${p.age} år` : null, p.city, p.isDemo ? 'Exempel' : null]
+    [p.occupation, p.age ? `${p.age} år` : null, p.city]
       .filter(Boolean)
       .join(' · ');
 
   const userCount = publishedSocial.length;
+  const exampleCount = GALAXY_DEMO_PROFILES.length;
+  const hasIncome = (userFinancialProfile?.income || 0) > 0;
+
+  React.useEffect(() => {
+    onStatsChange?.({ publishedCount: userCount, exampleCount });
+  }, [userCount, exampleCount, onStatsChange]);
+
+  const clearFilters = () => {
+    setSearchText('');
+    setActiveTags([]);
+  };
+
+  const listProfiles = (list, showMatch = false) =>
+    list.map((p, i) => (
+      <React.Fragment key={p.id}>
+        {i > 0 && <DashboardDivider />}
+        <GalaxyProfileRow
+          profile={p}
+          subtitle={rowSubtitle(p)}
+          onOpen={setSelectedProfile}
+          matchScore={p._match}
+          showMatch={showMatch}
+        />
+      </React.Fragment>
+    ));
 
   return (
     <div className="space-y-6">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35 pointer-events-none" />
         <input
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           placeholder="Sök yrke, stad eller @namn"
-          className="w-full rounded-xl pl-10 pr-4 py-3 text-[15px] outline-none bg-white/[0.08] border border-white/10 text-white placeholder:text-white/35"
+          className={`${anchorInputClass} pl-10`}
         />
+        {searchText && (
+          <button
+            type="button"
+            onClick={() => setSearchText('')}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
+            aria-label="Rensa sökning"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex gap-2 flex-wrap items-center">
         {GALAXY_FILTER_TAGS.map((tag) => {
           const active = activeTags.includes(tag);
           return (
@@ -116,49 +139,43 @@ export default function GalaxyExplorer({ userFinancialProfile, currentUserId }) 
                 'px-3 py-1.5 rounded-full text-[13px] font-medium transition-colors',
                 active
                   ? 'bg-white text-[#0a1628]'
-                  : 'bg-white/[0.06] text-white/55 border border-white/10',
+                  : 'bg-white/[0.06] text-white/55 border border-white/10 hover:border-white/20',
               )}
             >
               {tag}
             </button>
           );
         })}
+        {(activeTags.length > 0 || searchText) && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-[13px] font-medium text-white/45 hover:text-white/75 px-1"
+          >
+            Rensa
+          </button>
+        )}
       </div>
-
-      {userCount > 0 && (
-        <p className={sectionMetaClass}>
-          {userCount} {userCount === 1 ? 'person har' : 'personer har'} publicerat sin ekonomi
-        </p>
-      )}
 
       {ownPublished.length > 0 && (
         <DashboardSection nested title="Din publicering">
-          {ownPublished.map((p, i) => (
-            <React.Fragment key={p.id}>
-              {i > 0 && <DashboardDivider />}
-              <ProfileRow
-                profile={p}
-                subtitle={rowSubtitle(p)}
-                onOpen={setSelectedProfile}
-                badge="du"
-              />
-            </React.Fragment>
-          ))}
+          {listProfiles(ownPublished)}
         </DashboardSection>
       )}
 
-      {suggested.length > 0 && userFinancialProfile?.income > 0 && (
+      {suggested.length > 0 && hasIncome && (
         <DashboardSection nested title="Liknar din situation">
           <p className={`${sectionSubtitleClass} -mt-2 mb-2`}>
-            Baserat på inkomst och profil — börja här.
+            Matchar din inkomst och profil — bra startpunkt.
           </p>
-          {suggested.map((p, i) => (
-            <React.Fragment key={p.id}>
-              {i > 0 && <DashboardDivider />}
-              <ProfileRow profile={p} subtitle={rowSubtitle(p)} onOpen={setSelectedProfile} />
-            </React.Fragment>
-          ))}
+          {listProfiles(suggested, true)}
         </DashboardSection>
+      )}
+
+      {!hasIncome && filtered.some((p) => !p.isOwn && p._match > 0) && (
+        <p className={sectionMetaClass}>
+          Tips: fyll i inkomst under inställningar för att se kronbelopp och kopiera budgeter.
+        </p>
       )}
 
       <DashboardSection
@@ -178,26 +195,27 @@ export default function GalaxyExplorer({ userFinancialProfile, currentUserId }) 
                 ? 'Ingen har publicerat än — bli först, eller prova exempelprofilerna.'
                 : 'Prova ett annat filter eller sökord.'}
             </p>
+            {(activeTags.length > 0 || searchText) && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="mt-3 text-[14px] font-semibold text-[#9FB5FF] hover:text-white"
+              >
+                Rensa filter
+              </button>
+            )}
           </div>
         ) : (
-          (rest.length ? rest : filtered.filter((p) => !p.isOwn)).map((p, i) => (
-            <React.Fragment key={p.id}>
-              {i > 0 && <DashboardDivider />}
-              <ProfileRow profile={p} subtitle={rowSubtitle(p)} onOpen={setSelectedProfile} />
-            </React.Fragment>
-          ))
+          listProfiles(rest.length ? rest : filtered.filter((p) => !p.isOwn))
         )}
       </DashboardSection>
-
-      <p className={`${sectionMetaClass} text-center`}>
-        Exempelprofiler är illustrationer. Publicerade profiler visar det användaren valt att dela.
-      </p>
 
       {selectedProfile && (
         <ExpandedProfile
           profile={selectedProfile}
           onClose={() => setSelectedProfile(null)}
           userFinancialProfile={userFinancialProfile}
+          matchScore={selectedProfile._match}
         />
       )}
     </div>

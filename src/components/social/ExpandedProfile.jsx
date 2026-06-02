@@ -20,6 +20,7 @@ import { applyEconomyTemplate } from '@/lib/galaxyEconomy';
 import {
   compareWithUser,
   fmtKr,
+  formatMatchLabel,
   getSpendItems,
   insightLine,
 } from '@/lib/galaxyProfiles';
@@ -43,7 +44,7 @@ function BudgetRow({ label, pct, amountKr, showKr, color }) {
   );
 }
 
-export default function ExpandedProfile({ profile, onClose, userFinancialProfile }) {
+export default function ExpandedProfile({ profile, onClose, userFinancialProfile, matchScore = 0 }) {
   const [activated, setActivated] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -56,6 +57,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
   const tip = insightLine(comparison);
   const userIncome = comparison.userIncome;
   const isOwn = profile.isOwn;
+  const matchLabel = !isOwn && matchScore > 0 ? formatMatchLabel(matchScore) : null;
 
   const applyTemplate = async () => {
     if (!userIncome) return;
@@ -100,11 +102,16 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
           exit={{ y: '100%' }}
           transition={{ type: 'spring', stiffness: 380, damping: 36 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-2xl"
+          className="w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-t-[22px]"
           style={elevatedSheet()}
         >
-          <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-4 border-b border-white/[0.08] bg-[rgba(12,18,38,0.98)]">
-            <p className={sectionMetaClass}>{isOwn ? 'Din publicering' : 'Profil'}</p>
+          <div className="flex justify-center pt-3 pb-1">
+            <div className="w-9 h-1 rounded-full bg-white/20" />
+          </div>
+          <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-white/[0.08] bg-[rgba(12,18,38,0.98)]">
+            <p className={sectionMetaClass}>
+              {isOwn ? 'Din publicering' : matchLabel || 'Profil'}
+            </p>
             <button type="button" onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
               <X className="w-4 h-4" />
             </button>
@@ -130,10 +137,28 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                     </span>
                   )}
                 </div>
+                {profile.tags?.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {profile.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-white/[0.06] text-white/55 border border-white/[0.08]"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             {profile.bio && <p className={sectionSubtitleClass}>{profile.bio}</p>}
+
+            {profile.isDemo && (
+              <p className="text-[12px] text-white/40 rounded-lg px-3 py-2 bg-white/[0.03] border border-white/[0.06]">
+                Exempelprofil — illustration, inte en riktig användare.
+              </p>
+            )}
 
             {items.length > 0 ? (
               <div>

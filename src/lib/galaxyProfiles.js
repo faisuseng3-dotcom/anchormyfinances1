@@ -128,6 +128,13 @@ export function getSavingsPct(items) {
   return Math.max(0, 100 - spend);
 }
 
+/** Visuell match-etikett (0–7 skala → procentlikhet). */
+export function formatMatchLabel(score) {
+  if (!score || score <= 0) return null;
+  const pct = Math.min(98, 48 + score * 14);
+  return `${pct} % lik`;
+}
+
 export function matchScore(userProfile, profile) {
   if (!userProfile) return 0;
   let score = 0;
