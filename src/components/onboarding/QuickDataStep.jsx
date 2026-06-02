@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Wallet, Home, PiggyBank, CreditCard, ChevronRight, Plus, X } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
+import { anchorInputClass } from '@/lib/anchorTheme';
+import {
+  onboardingPrimaryBtn,
+  onboardingBackBtn,
+  onboardingFieldLabel,
+} from './onboardingUi';
 import SubscriptionDetective from './SubscriptionDetective';
 import OnboardingHistoryImport from './OnboardingHistoryImport';
 
@@ -101,12 +104,12 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
       <div className="space-y-5">
         {/* Income */}
         <div className="space-y-2">
-          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+          <label className={onboardingFieldLabel}>
             <Wallet className="w-4 h-4 text-[#9FB5FF]" />
-            Ungefärlig månadsinkomst (efter skatt)
-          </Label>
+            Månadsinkomst (efter skatt)
+          </label>
           <div className="relative">
-            <Input
+            <input
               type="text"
               placeholder="25 000"
               value={formatNumber(data.income)}
@@ -114,39 +117,39 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                 const val = parseNumber(e.target.value);
                 onChange({ ...data, income: Math.max(0, val) });
               }}
-              className="h-14 text-lg pr-12 rounded-xl"
+              className={`${anchorInputClass} h-14 text-lg pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9FB5FF]">kr</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
           </div>
         </div>
 
         {/* Fixed Costs — multi-row */}
         <div className="space-y-2">
-          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+          <label className={onboardingFieldLabel}>
             <Home className="w-4 h-4 text-[#9FB5FF]" />
             Fasta månadskostnader
-          </Label>
-          <p className="text-xs text-[#B7C2D9] -mt-1">Inkludera hyra, el, abonnemang, försäkringar och gym.</p>
+          </label>
+          <p className="text-[13px] text-white/45 -mt-1">Hyra, el, abonnemang, försäkringar m.m.</p>
 
           <div className="space-y-2">
             {costItems.map((item) => (
               <div key={item.id} className="flex gap-2 items-center">
-                <Input
+                <input
                   type="text"
                   value={item.label}
                   onChange={(e) => updateItem(item.id, 'label', e.target.value)}
                   placeholder="t.ex. Hyra"
-                  className="h-11 rounded-xl flex-1 text-sm"
+                  className={`${anchorInputClass} flex-1 h-11`}
                 />
                 <div className="relative w-32 flex-shrink-0">
-                  <Input
+                  <input
                     type="text"
                     value={item.amount}
                     onChange={(e) => updateItem(item.id, 'amount', e.target.value)}
                     placeholder={item.placeholder}
-                    className="h-11 rounded-xl pr-8 text-sm"
+                    className={`${anchorInputClass} h-11 pr-8`}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9FB5FF] text-xs">kr</span>
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs">kr</span>
                 </div>
                 {costItems.length > 1 && (
                   <button
@@ -218,39 +221,37 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
 
         {/* Optional: Savings */}
         <div className="space-y-2">
-          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+          <label className={onboardingFieldLabel}>
             <PiggyBank className="w-4 h-4 text-[#9FB5FF]" />
-            Nuvarande sparande (valfritt)
-          </Label>
+            Buffert / sparande (valfritt)
+          </label>
           <div className="relative">
-            <Input
+            <input
               type="text"
               placeholder="0"
               value={formatNumber(data.buffer)}
               onChange={(e) => onChange({ ...data, buffer: parseNumber(e.target.value) })}
-              className="h-14 text-lg pr-12 rounded-xl"
+              className={`${anchorInputClass} h-12 pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9FB5FF]">kr</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
           </div>
         </div>
 
-        {/* Optional: Loans */}
         <div className="space-y-2">
-          <Label className="text-[#D5E1FF] flex items-center gap-2 text-sm">
+          <label className={onboardingFieldLabel}>
             <CreditCard className="w-4 h-4 text-[#9FB5FF]" />
-            Eventuella lån (valfritt)
-          </Label>
+            Lån totalt (valfritt)
+          </label>
           <div className="relative">
-            <Input
+            <input
               type="text"
               placeholder="0"
               value={formatNumber(data.totalLoans || 0)}
               onChange={(e) => onChange({ ...data, totalLoans: parseNumber(e.target.value) })}
-              className="h-14 text-lg pr-12 rounded-xl"
+              className={`${anchorInputClass} h-12 pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#9FB5FF]">kr</span>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
           </div>
-          <p className="text-xs text-[#B7C2D9]">Totalt lånebelopp (billån, CSN, privatlån etc.)</p>
         </div>
 
         {/* Optional bank history import */}
@@ -261,38 +262,32 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
 
         {/* Preview */}
         {data.income > 0 && (
-          <div className="mt-2 p-4 rounded-2xl border border-[#7FA0FF]/30"
-            style={{ background: 'linear-gradient(180deg, rgba(18,29,58,0.72), rgba(14,24,46,0.65))' }}>
+          <div className="mt-2 p-4 rounded-2xl border border-[#6B9FFF]/25 bg-[#6B9FFF]/10">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-[#B7C2D9]">Ungefär kvar per månad</p>
-                <p className={`text-2xl font-bold mt-1 ${(data.income - totalFixed) < 0 ? 'text-rose-400' : 'text-white'}`}>
+                <p className="text-[13px] text-white/50">Ungefär kvar per månad</p>
+                <p className={`text-[24px] font-semibold mt-1 tabular-nums ${(data.income - totalFixed) < 0 ? 'text-rose-300' : 'text-white'}`}>
                   {formatNumber(data.income - totalFixed)} kr
                 </p>
                 {totalFixed > 0 && (
-                  <p className="text-xs text-[#9FB5FF] mt-0.5">
-                    {Math.round((totalFixed / data.income) * 100)}% går till fasta kostnader
+                  <p className="text-[12px] text-white/45 mt-0.5">
+                    {Math.round((totalFixed / data.income) * 100)}% till fasta kostnader
                   </p>
                 )}
               </div>
-              <ChevronRight className="w-5 h-5 text-[#9FB5FF]" />
+              <ChevronRight className="w-5 h-5 text-white/30" />
             </div>
           </div>
         )}
       </div>
 
       <div className="flex gap-3 mt-8">
-        <Button variant="outline" onClick={onBack} className="flex-1 h-14 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10">
+        <button type="button" onClick={onBack} className={onboardingBackBtn}>
           Tillbaka
-        </Button>
-        <Button
-          onClick={onNext}
-          disabled={!isValid}
-          className="flex-1 h-14 rounded-2xl font-semibold text-white"
-          style={{ background: 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' }}
-        >
-          Slutför
-        </Button>
+        </button>
+        <button type="button" onClick={onNext} disabled={!isValid} className={`${onboardingPrimaryBtn} flex-1`}>
+          Fortsätt
+        </button>
       </div>
     </OnboardingStep>
   );

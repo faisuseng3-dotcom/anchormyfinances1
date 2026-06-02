@@ -1,151 +1,121 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Button } from "@/components/ui/button";
 import OnboardingStep from './OnboardingStep';
 import { Check, Lock } from 'lucide-react';
+import { getRecommendedMode } from '@/lib/toolCatalog';
+import {
+  onboardingChoiceCard,
+  onboardingChoiceCheck,
+  onboardingPrimaryBtn,
+  onboardingBackBtn,
+} from './onboardingUi';
+import { cn } from '@/lib/utils';
 
 const PERSONAS = [
   {
     id: 'basic',
-    badge: 'BUDGET',
+    badge: 'Budget',
     title: 'Budget',
-    subtitle: 'Sluta oroa dig. Ha koll.',
-    description: 'Perfekt om du vill ha ett enkelt verktyg som håller koll på dina pengar utan krångel.',
-    features: [
-      'Utgiftskategorisering',
-      'Enkel månadsbudget',
-      'Bassparande & buffer',
-    ],
+    subtitle: 'Enkel koll utan krångel',
+    features: ['Utgifter & kategorier', 'Månadsbudget', 'Buffert'],
     locked: [],
-    gradient: 'from-slate-500 to-slate-600',
-    border: 'rgba(100,116,139,0.5)',
-    glow: 'rgba(100,116,139,0.2)',
-    color: '#94A3B8',
-    bg: 'rgba(100,116,139,0.08)',
   },
   {
     id: 'smart',
-    badge: 'SMART',
+    badge: 'Smart',
     title: 'Smart',
-    subtitle: 'Optimera. Hitta gratispengar.',
-    description: 'För dig som vill förbättra din ekonomi och låta AI:n hitta möjligheter du inte sett.',
-    features: [
-      'Allt i Budget',
-      'Möjlighets-Radarn',
-      'Dolda Prislappen',
-      'Skatte-Siaren (enkel)',
-    ],
-    locked: ['CFO-botarna', 'What-If-Simulatorn'],
-    gradient: 'from-indigo-500 to-blue-600',
-    border: 'rgba(99,102,241,0.5)',
-    glow: 'rgba(99,102,241,0.25)',
-    color: '#6366F1',
-    bg: 'rgba(99,102,241,0.08)',
+    subtitle: 'Optimering och AI-råd',
+    features: ['Allt i Budget', 'Möjlighetsradar', 'Personlig rådgivare på Hem'],
+    locked: [],
   },
   {
     id: 'pro',
-    badge: 'PRO',
+    badge: 'Pro',
     title: 'Pro',
-    subtitle: 'Total kontroll. CFO-nivå.',
-    description: 'En hel ledningsgrupp av AI-experter i fickan. För den som vill ha alla verktyg.',
-    features: [
-      'Allt i Smart',
-      'CFO Impact Reports',
-      'What-If-Simulatorn',
-      'De 4 AI-specialisterna',
-    ],
+    subtitle: 'Alla simulatorer och verktyg',
+    features: ['Allt i Smart', 'What-if & köpsimulator', 'Fler verktyg & rapporter'],
     locked: [],
-    gradient: 'from-violet-500 to-purple-700',
-    border: 'rgba(139,92,246,0.6)',
-    glow: 'rgba(139,92,246,0.3)',
-    color: '#8B5CF6',
-    bg: 'rgba(139,92,246,0.1)',
   },
 ];
 
 export default function PersonaStep({ data, onChange, onNext, onBack }) {
   const selected = data.mode || null;
+  const recommended = getRecommendedMode(data.topConcern);
 
-  const select = (id) => onChange({ ...data, mode: id });
+  useEffect(() => {
+    if (!data.mode && recommended) {
+      onChange({ ...data, mode: recommended });
+    }
+    // Förval vid första visning av steget
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <OnboardingStep
       step={3}
       totalSteps={4}
-      title="Välj din ekonomiska nivå"
-      subtitle="Du kan byta läge när som helst i inställningarna."
+      title="Välj din nivå"
+      subtitle="Du kan byta när som helst under Inställningar. Smart passar de flesta."
     >
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         {PERSONAS.map((p, i) => {
           const isSelected = selected === p.id;
+          const isRecommended = p.id === recommended;
           return (
             <motion.button
               key={p.id}
-              initial={{ opacity: 0, y: 12 }}
+              type="button"
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => select(p.id)}
-              className="w-full rounded-2xl p-5 text-left transition-all relative overflow-hidden"
-              style={{
-                background: isSelected ? p.bg : 'linear-gradient(180deg, rgba(17,24,39,0.74), rgba(15,23,42,0.58))',
-                border: `1px solid ${isSelected ? p.border : 'rgba(255,255,255,0.16)'}`,
-                boxShadow: isSelected ? `0 0 24px ${p.glow}` : '0 8px 24px rgba(2,6,23,0.2)',
-                backdropFilter: 'blur(12px)',
-              }}
+              transition={{ delay: i * 0.05 }}
+              onClick={() => onChange({ ...data, mode: p.id })}
+              className={cn(onboardingChoiceCard(isSelected), 'p-4')}
             >
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 rounded-xl flex-shrink-0 mt-0.5" style={{ background: p.bg, border: `1px solid ${p.border}` }} />
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-black px-2 py-0.5 rounded-full"
-                      style={{ background: `${p.color}22`, color: p.color }}>
+              <div className="flex items-start gap-3">
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-[#9FB5FF]">
                       {p.badge}
                     </span>
-                    <h3 className="font-bold text-white text-base">{p.title}</h3>
-                    <span className="text-xs text-[#B7C2D9] italic">– {p.subtitle}</span>
+                    {isRecommended && (
+                      <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-200/90 border border-emerald-500/25">
+                        Passar dig
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-[#B7C2D9] mb-3 leading-relaxed">{p.description}</p>
-
-                  <div className="space-y-1">
-                    {p.features.map((f, fi) => (
-                      <div key={fi} className="flex items-center gap-2 text-xs text-[#D5E1FF]">
-                        <Check className="w-3 h-3 flex-shrink-0" style={{ color: p.color }} />
+                  <p className="text-[16px] font-semibold text-white">{p.title}</p>
+                  <p className="text-[13px] text-white/50 mt-0.5">{p.subtitle}</p>
+                  <ul className="mt-3 space-y-1">
+                    {p.features.map((f) => (
+                      <li key={f} className="flex items-center gap-2 text-[12px] text-white/60">
+                        <Check className="w-3 h-3 text-[#9FB5FF] flex-shrink-0" />
                         {f}
-                      </div>
+                      </li>
                     ))}
-                    {p.locked.map((f, fi) => (
-                      <div key={fi} className="flex items-center gap-2 text-xs text-[#7F8FB0]">
+                    {p.locked.map((f) => (
+                      <li key={f} className="flex items-center gap-2 text-[12px] text-white/35">
                         <Lock className="w-3 h-3 flex-shrink-0" />
-                        {f} (låst)
-                      </div>
+                        {f}
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 </div>
-
-                {/* Selection indicator */}
-                <div className="flex-shrink-0 mt-1 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all"
-                  style={{ borderColor: isSelected ? p.color : 'rgba(255,255,255,0.2)', background: isSelected ? p.color : 'transparent' }}>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+                <div className={onboardingChoiceCheck(isSelected)}>
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#0a1628]" />}
                 </div>
               </div>
             </motion.button>
           );
         })}
+      </div>
 
-        <div className="flex gap-3 pt-2">
-          <Button variant="outline" onClick={onBack} className="flex-1 h-13 rounded-2xl border-white/20 bg-white/5 text-white hover:bg-white/10">
-            Tillbaka
-          </Button>
-          <Button
-            onClick={onNext}
-            disabled={!selected}
-            className="flex-1 h-13 rounded-2xl font-bold text-white"
-            style={{ background: selected ? 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' : 'rgba(255,255,255,0.12)' }}
-          >
-            Starta med {selected ? PERSONAS.find(p => p.id === selected)?.title : '…'}
-          </Button>
-        </div>
+      <div className="flex gap-3 mt-6">
+        <button type="button" onClick={onBack} className={onboardingBackBtn}>
+          Tillbaka
+        </button>
+        <button type="button" onClick={onNext} disabled={!selected} className={`${onboardingPrimaryBtn} flex-1`}>
+          {selected ? `Starta med ${PERSONAS.find((p) => p.id === selected)?.title}` : 'Välj nivå'}
+        </button>
       </div>
     </OnboardingStep>
   );

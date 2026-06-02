@@ -1,8 +1,10 @@
 /** Kartlägger onboarding-svar till produktfokus. */
+import { Wallet, Landmark, PiggyBank, CalendarDays } from 'lucide-react';
 
 export const TOP_CONCERNS = [
   {
     id: 'spending',
+    icon: Wallet,
     label: 'Jag vet inte vart pengarna tar vägen',
     mapsToGoal: 'control',
     hint: 'Börja med att registrera utgifter och se kvar att spendera på Hem.',
@@ -11,6 +13,7 @@ export const TOP_CONCERNS = [
   },
   {
     id: 'debt',
+    icon: Landmark,
     label: 'Jag är stressad över lån och skulder',
     mapsToGoal: 'improve',
     hint: 'Kolla skuld och marginal under Mer insikter, eller i Kalkylatorn.',
@@ -19,6 +22,7 @@ export const TOP_CONCERNS = [
   },
   {
     id: 'save',
+    icon: PiggyBank,
     label: 'Jag vill spara men får det inte att hända',
     mapsToGoal: 'save',
     hint: 'Sätt ett sparmål och följ marginalen varje månad.',
@@ -27,6 +31,7 @@ export const TOP_CONCERNS = [
   },
   {
     id: 'plan',
+    icon: CalendarDays,
     label: 'Jag vill veta vad som händer framåt',
     mapsToGoal: 'plan',
     hint: 'Lägg in kommande utgifter i Planera så inget överraskar.',
@@ -45,23 +50,8 @@ export function getPostOnboardingAction(concernId) {
   return concern?.action || 'register';
 }
 
-/** Prioritera kalkylator-rader utifrån onboarding-fokus. */
-const CALC_PRIORITY = {
-  spending: ['purchase', 'budget', 'plan', 'whatif', 'loans', 'history'],
-  debt: ['loans', 'whatif', 'purchase', 'plan', 'budget', 'history'],
-  save: ['plan', 'purchase', 'whatif', 'loans', 'budget', 'history'],
-  plan: ['plan', 'whatif', 'purchase', 'loans', 'budget', 'history'],
-};
-
-export function sortCalcItems(items, topConcern) {
-  const order = CALC_PRIORITY[topConcern];
-  if (!order) return items;
-  return [...items].sort((a, b) => {
-    const ai = order.indexOf(a.id);
-    const bi = order.indexOf(b.id);
-    return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-  });
-}
+/** @deprecated Use sortTools from toolCatalog.js */
+export { sortTools as sortCalcItems } from '@/lib/toolCatalog';
 
 export function applyConcernToProfile(data, concernId) {
   const concern = getConcernById(concernId);

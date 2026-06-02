@@ -1,15 +1,15 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
 import { Check } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
 import { TOP_CONCERNS } from '@/lib/onboardingFocus';
+import {
+  onboardingChoiceCard,
+  onboardingChoiceCheck,
+  onboardingPrimaryBtn,
+} from './onboardingUi';
 
 export default function QuickProblemStep({ data, onChange, onNext }) {
   const selected = data.topConcern || '';
-
-  const select = (id) => {
-    onChange({ ...data, topConcern: id });
-  };
 
   return (
     <OnboardingStep
@@ -21,28 +21,23 @@ export default function QuickProblemStep({ data, onChange, onNext }) {
       <div className="space-y-2.5">
         {TOP_CONCERNS.map((item) => {
           const isSelected = selected === item.id;
+          const Icon = item.icon;
           return (
             <button
               key={item.id}
               type="button"
-              onClick={() => select(item.id)}
-              className={`w-full p-4 rounded-2xl text-left transition-all border ${
-                isSelected ? 'border-[#7FA0FF] bg-[#7FA0FF]/10' : 'border-white/15 hover:border-white/30'
-              }`}
-              style={{
-                background: isSelected
-                  ? undefined
-                  : 'linear-gradient(180deg, rgba(17,24,39,0.72), rgba(15,23,42,0.58))',
-              }}
+              onClick={() => onChange({ ...data, topConcern: item.id })}
+              className={onboardingChoiceCard(isSelected)}
             >
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[15px] font-medium text-white leading-snug">{item.label}</p>
-                <div
-                  className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
-                    isSelected ? 'border-[#7FA0FF] bg-[#7FA0FF]' : 'border-white/20'
-                  }`}
-                >
-                  {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/[0.06] border border-white/[0.1] flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-5 h-5 text-[#9FB5FF]" />
+                </div>
+                <p className="text-[15px] font-medium text-white leading-snug flex-1 text-left">
+                  {item.label}
+                </p>
+                <div className={onboardingChoiceCheck(isSelected)}>
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#0a1628]" />}
                 </div>
               </div>
             </button>
@@ -50,14 +45,9 @@ export default function QuickProblemStep({ data, onChange, onNext }) {
         })}
       </div>
 
-      <Button
-        onClick={onNext}
-        disabled={!selected}
-        className="w-full h-14 mt-6 rounded-2xl font-semibold text-white"
-        style={{ background: 'linear-gradient(135deg, #7FA0FF 0%, #5B7CFA 100%)' }}
-      >
+      <button type="button" onClick={onNext} disabled={!selected} className={`${onboardingPrimaryBtn} mt-6`}>
         Fortsätt
-      </Button>
+      </button>
     </OnboardingStep>
   );
 }

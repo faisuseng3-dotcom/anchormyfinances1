@@ -1,65 +1,21 @@
 import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import {
-  ShoppingBag,
-  GitBranch,
-  Landmark,
-  CalendarDays,
-  ChevronRight,
-  X,
-} from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import { KALKYLATOR_TOOLS, sortTools } from '@/lib/toolCatalog';
 import {
   anchorIconButtonClass,
   anchorInputClass,
   anchorZoneClass,
   elevatedSheet,
+  sectionMetaClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
 import { DashboardDivider, DashboardListRow } from './DashboardChrome';
-import { sortCalcItems } from '@/lib/onboardingFocus';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
-
-const CALC_ITEMS = [
-  {
-    id: 'purchase',
-    question: 'Kan jag köpa det här?',
-    hint: 'Bil, bostad, resa eller annat större köp',
-    icon: ShoppingBag,
-    page: 'PurchaseSimulator',
-  },
-  {
-    id: 'whatif',
-    question: 'Vad händer om…?',
-    hint: 'Lön, sjukdagar eller pausa utgifter',
-    icon: GitBranch,
-    page: 'WhatIf',
-  },
-  {
-    id: 'loans',
-    question: 'Jämför ditt lån',
-    hint: 'Ränta, månadskostnad och extra betalningar',
-    icon: Landmark,
-    page: 'Loans',
-  },
-  {
-    id: 'plan',
-    question: 'Planera min månaden',
-    hint: 'Middagar, resor och kommande utgifter',
-    icon: CalendarDays,
-    page: 'FuturePulse',
-  },
-  {
-    id: 'history',
-    question: 'Hur har det gått över tid?',
-    hint: 'Din ekonomi månad för månad',
-    icon: History,
-    page: 'FinancialHistory',
-  },
-];
 
 function getSafeToSpend(profile) {
   if (!profile) return 0;
@@ -74,7 +30,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
 
   const safeToSpend = useMemo(() => getSafeToSpend(profile), [profile]);
   const calcItems = useMemo(
-    () => sortCalcItems(CALC_ITEMS, profile?.topConcern),
+    () => sortTools(KALKYLATOR_TOOLS, profile?.topConcern),
     [profile?.topConcern],
   );
 
@@ -115,7 +71,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[24px] overflow-hidden max-h-[78vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[22px] overflow-hidden max-h-[78vh] flex flex-col"
             style={elevatedSheet()}
           >
             <div className="flex justify-center pt-3 pb-1 shrink-0">
@@ -133,10 +89,19 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
             </div>
 
             <div className={`${anchorZoneClass} overflow-y-auto pb-10`}>
+              {profile?.income > 0 && (
+                <div className="rounded-xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 mb-4">
+                  <p className={sectionMetaClass}>Kvar den här månaden</p>
+                  <p className="text-[22px] font-semibold text-white tabular-nums mt-0.5">
+                    {fmt(safeToSpend)} kr
+                  </p>
+                </div>
+              )}
+
               {profile && (
                 <>
-                  <p className="text-[13px] font-medium text-white/45 mb-2">Snabbräkning</p>
-                  <div className="flex gap-2">
+                  <p className={sectionMetaClass}>Snabbräkning</p>
+                  <div className="flex gap-2 mt-1.5">
                     <input
                       type="text"
                       inputMode="decimal"
@@ -163,8 +128,8 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
                       href={createPageUrl(item.page)}
                       onClick={handleClose}
                       leading={
-                        <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center">
-                          <Icon className="w-5 h-5 text-white/85" />
+                        <div className="w-10 h-10 rounded-xl bg-[#6B9FFF]/12 border border-[#6B9FFF]/20 flex items-center justify-center">
+                          <Icon className="w-5 h-5 text-[#9FB5FF]" />
                         </div>
                       }
                       title={item.question}
@@ -178,7 +143,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
               <Link
                 to={createPageUrl('ProTools')}
                 onClick={handleClose}
-                className="flex items-center justify-center gap-1 py-2 text-[14px] font-medium text-white/45 hover:text-white/65 no-underline"
+                className="flex items-center justify-center gap-1 py-2 text-[14px] font-medium text-white/45 hover:text-white/70 no-underline"
               >
                 Fler verktyg
                 <ChevronRight className="w-4 h-4" />
