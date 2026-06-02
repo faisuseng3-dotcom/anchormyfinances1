@@ -1,79 +1,121 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Search, UserPlus, Users, Shield, User, ChevronRight, Check, Copy } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Search, UserPlus, Users, Shield, User, Check, Copy, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
+import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
 import ProfilePhotoUpload from '@/components/social/ProfilePhotoUpload';
 import ProfileAvatar from '@/components/social/ProfileAvatar';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
-import { Input } from '@/components/ui/input';
+import SocialPrivacySummary from '@/components/social/SocialPrivacySummary';
+import SocialSquadsLink from '@/components/social/SocialSquadsLink';
+import { useSocialProfile } from '@/hooks/useSocialProfile';
+import {
+  anchorInputClass,
+  anchorPrimaryButtonClass,
+  anchorIconButtonClass,
+  sectionMetaClass,
+  sectionSubtitleClass,
+} from '@/lib/anchorTheme';
+import { cn } from '@/lib/utils';
 
 const TABS = [
-  { id: 'profile',  label: 'Profil',    Icon: User },
-  { id: 'friends',  label: 'Vänner',    Icon: Users },
-  { id: 'privacy',  label: 'Integritet',Icon: Shield },
+  { id: 'profile', label: 'Profil', Icon: User },
+  { id: 'friends', label: 'Vänner', Icon: Users },
+  { id: 'privacy', label: 'Integritet', Icon: Shield },
 ];
+
+const EMPTY_FORM = {
+  username: '',
+  display_name: '',
+  city: '',
+  bio: '',
+  occupation: '',
+  age: '',
+  interests: [],
+  profile_photo_url: null,
+  privacy_level: 'hybrid',
+  shared_categories: [],
+  friends: [],
+};
+
+function profileToForm(profile) {
+  if (!profile) return { ...EMPTY_FORM };
+  return {
+    ...EMPTY_FORM,
+    ...profile,
+    age: profile.age ?? '',
+  };
+}
 
 export default function Social() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('profile');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState(
+    TABS.some((t) => t.id === tabParam) ? tabParam : 'profile',
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState(null);
   const [searching, setSearching] = useState(false);
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Load current user's SocialProfile
-  const { data: socialProfile, isLoading } = useQuery({
-    queryKey: ['socialProfile'],
-    queryFn: async () => {
-      const user = await base44.auth.me();
-      const results = await base44.entities.SocialProfile.filter({ user_id: user.id });
-      return results[0] || null;
-    }
-  });
-
-  const [form, setForm] = useState({
-    username: '',
-    display_name: '',
-    city: '',
-    bio: '',
-    occupation: '',
-    age: '',
-    interests: [],
-    profile_photo_url: null,
-    privacy_level: 'hybrid',
-    shared_categories: [],
-    friends: [],
-  });
+  const { socialProfile, isLoading, saveSocialProfile } = useSocialProfile();
+  const [form, setForm] = useState(EMPTY_FORM);
 
   useEffect(() => {
-    if (socialProfile) setForm({ ...form, ...socialProfile });
-  }, [socialProfile]);
+    if (socialProfile) setForm(profileToForm(socialProfile));
+  }, [socialProfile?.id]);
+
+  useEffect(() => {
+    if (tabParam && TABS.some((t) => t.id === tabParam)) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const setTab = (id) => {
+    setActiveTab(id);
+    setSearchParams(id === 'profile' ? {} : { tab: id }, { replace: true });
+  };
 
   const saveMutation = useMutation({
-    mutationFn: async (data) => {
-      const user = await base44.auth.me();
-      if (socialProfile?.id) {
-        return base44.entities.SocialProfile.update(socialProfile.id, data);
-      } else {
-        return base44.entities.SocialProfile.create({ ...data, user_id: user.id });
-      }
-    },
+    mutationFn: async (data) => saveSocialProfile(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['socialProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['friendProfiles'] });
       setSaving(false);
-    }
+    },
+    onError: () => {
+      setSaving(false);
+      toast.error('Kunde inte spara. Försök igen.');
+    },
   });
 
   const handleSave = () => {
+    if (!form.username?.trim()) {
+      toast.error('Användarnamn krävs');
+      setTab('profile');
+      return;
+    }
     setSaving(true);
-    saveMutation.mutate(form);
+    saveMutation.mutate(form, {
+      onSuccess: () => toast.success('Profil sparad'),
+    });
   };
+
+  const savePrivacy = useCallback(
+    (patch) => {
+      const next = { ...form, ...patch };
+      setForm(next);
+      setSaving(true);
+      saveMutation.mutate(next);
+    },
+    [form, saveMutation],
+  );
 
   const handlePhotoChange = (url) => {
     const next = { ...form, profile_photo_url: url || null };
@@ -86,24 +128,32 @@ export default function Social() {
     if (!searchQuery.trim()) return;
     setSearching(true);
     setSearchResult(null);
-    const results = await base44.entities.SocialProfile.filter({ username: searchQuery.trim().replace('@', '') });
-    setSearchResult(results[0] || 'not_found');
-    setSearching(false);
+    try {
+      const results = await base44.entities.SocialProfile.filter({
+        username: searchQuery.trim().replace('@', ''),
+      });
+      setSearchResult(results[0] || 'not_found');
+    } finally {
+      setSearching(false);
+    }
   };
 
-  const addFriend = async (friendProfile) => {
+  const addFriend = (friendProfile) => {
     if (!friendProfile?.user_id) return;
     const updatedFriends = [...new Set([...(form.friends || []), friendProfile.user_id])];
-    setForm(f => ({ ...f, friends: updatedFriends }));
-    saveMutation.mutate({ ...form, friends: updatedFriends });
+    const next = { ...form, friends: updatedFriends };
+    setForm(next);
+    saveMutation.mutate(next);
     setSearchResult(null);
     setSearchQuery('');
+    toast.success(`@${friendProfile.username} tillagd`);
   };
 
   const removeFriend = (friendProfile) => {
-    const updatedFriends = (form.friends || []).filter(id => id !== friendProfile.user_id);
-    setForm(f => ({ ...f, friends: updatedFriends }));
-    saveMutation.mutate({ ...form, friends: updatedFriends });
+    const updatedFriends = (form.friends || []).filter((id) => id !== friendProfile.user_id);
+    const next = { ...form, friends: updatedFriends };
+    setForm(next);
+    saveMutation.mutate(next);
   };
 
   const { data: friendProfiles = [] } = useQuery({
@@ -111,11 +161,13 @@ export default function Social() {
     queryFn: async () => {
       if (!form.friends?.length) return [];
       const results = await Promise.all(
-        form.friends.map(uid => base44.entities.SocialProfile.filter({ user_id: uid }).then(r => r[0]))
+        form.friends.map((uid) =>
+          base44.entities.SocialProfile.filter({ user_id: uid }).then((r) => r[0]),
+        ),
       );
       return results.filter(Boolean);
     },
-    enabled: (form.friends?.length || 0) > 0
+    enabled: (form.friends?.length || 0) > 0,
   });
 
   const copyUsername = () => {
@@ -123,265 +175,302 @@ export default function Social() {
     navigator.clipboard.writeText(`@${form.username}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    toast.success('Användarnamn kopierat');
   };
+
+  const headerAction = (
+    <button
+      type="button"
+      onClick={handleSave}
+      disabled={saving}
+      className={`${anchorPrimaryButtonClass} !h-10 !px-4 !text-[14px] disabled:opacity-60`}
+    >
+      {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Spara'}
+    </button>
+  );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />
+      <div className="min-h-screen flex items-center justify-center anchor-page">
+        <Loader2 className="w-8 h-8 animate-spin text-white/40" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: 'var(--color-background-primary)' }}>
-      {/* Header */}
-      <div className="px-5 pt-8 pb-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Link to={createPageUrl('Dashboard')}>
-            <button className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'var(--color-surface)' }}>
-              <ArrowLeft className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
+    <PageShell
+      title="Social"
+      subtitle="Profil, vänner och integritet"
+      backHref={createPageUrl('Dashboard')}
+      action={headerAction}
+      className="!pb-28"
+    >
+      <SocialSquadsLink />
+
+      <div className="flex rounded-2xl p-1 bg-white/[0.06] border border-white/[0.08] -mt-2 mb-2">
+        {TABS.map((tab) => {
+          const active = activeTab === tab.id;
+          const Ic = tab.Icon;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setTab(tab.id)}
+              className={cn(
+                'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-[13px] font-semibold transition-colors',
+                active ? 'bg-white text-[#0a1628]' : 'text-white/50 hover:text-white/70',
+              )}
+            >
+              <Ic className="w-3.5 h-3.5" />
+              {tab.label}
             </button>
-          </Link>
-          <h1 className="text-xl font-bold" style={{ color: 'var(--color-text-primary)' }}>Anchor Social</h1>
-        </div>
-        <button onClick={handleSave} disabled={saving}
-          className="px-5 py-2 rounded-full text-sm font-semibold text-white disabled:opacity-60"
-          style={{ background: 'var(--color-accent)' }}>
-          {saving ? 'Sparar...' : 'Spara'}
-        </button>
+          );
+        })}
       </div>
 
-      {/* Squads CTA */}
-      <div className="px-5 mb-4">
-        <button onClick={() => navigate('/Squads')}
-          className="w-full flex items-center justify-between p-4 rounded-2xl"
-          style={{ background: 'linear-gradient(135deg, rgba(75,124,243,0.12), rgba(167,139,250,0.12))', border: '1px solid rgba(75,124,243,0.25)' }}>
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🚀</span>
-            <div className="text-left">
-              <p className="text-sm font-black" style={{ color: 'var(--color-text-primary)' }}>Savings Squads</p>
-              <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Spara ihop med vänner mot gemensamma mål</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
-        </button>
-      </div>
-
-      {/* Tab bar */}
-      <div className="px-5 mb-5">
-        <div className="flex rounded-2xl p-1" style={{ background: 'var(--color-surface)' }}>
-          {TABS.map(tab => {
-            const active = activeTab === tab.id;
-            const Ic = tab.Icon;
-            return (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all"
-                style={{
-                  background: active ? 'var(--color-accent)' : 'transparent',
-                  color: active ? 'white' : 'var(--color-text-muted)',
-                }}>
-                <Ic className="w-3.5 h-3.5" />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="px-5 space-y-5">
-        <AnimatePresence mode="wait">
-
-          {/* ── TAB: Profil ── */}
-          {activeTab === 'profile' && (
-            <motion.div key="profile"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="space-y-5">
-
-              {/* Profilbild + username */}
-              <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <div className="flex items-center gap-4 mb-5">
-                  <ProfilePhotoUpload
-                    profile={form}
-                    size={64}
-                    onPhotoChange={handlePhotoChange}
-                    disabled={saving}
-                  />
-                  <div className="flex-1">
-                    <p className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>
-                      {form.username ? `@${form.username}` : 'Sätt ett användarnamn'}
-                    </p>
-                    {form.display_name && (
-                      <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{form.display_name}</p>
-                    )}
-                    <p className="text-[11px] mt-1" style={{ color: 'var(--color-text-muted)' }}>
-                      Tryck på kameran för att ladda upp profilbild
-                    </p>
-                  </div>
-                  <button onClick={copyUsername} disabled={!form.username}
-                    className="w-9 h-9 rounded-full flex items-center justify-center"
-                    style={{ background: 'var(--color-surface)' }}>
-                    {copied ? <Check className="w-4 h-4" style={{ color: '#0D7377' }} /> : <Copy className="w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />}
-                  </button>
+      <AnimatePresence mode="wait">
+        {activeTab === 'profile' && (
+          <motion.div
+            key="profile"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="space-y-4"
+          >
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] p-5">
+              <div className="flex items-center gap-4 mb-5">
+                <ProfilePhotoUpload
+                  profile={form}
+                  size={64}
+                  onPhotoChange={handlePhotoChange}
+                  disabled={saving}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[17px] font-semibold text-white truncate">
+                    {form.username ? `@${form.username}` : 'Sätt ett användarnamn'}
+                  </p>
+                  {form.display_name && (
+                    <p className={sectionSubtitleClass}>{form.display_name}</p>
+                  )}
+                  <p className={`${sectionMetaClass} mt-1`}>
+                    Tryck på kameran för att byta profilbild
+                  </p>
                 </div>
-
-                {/* Form fields */}
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Användarnamn</p>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold" style={{ color: 'var(--color-text-muted)' }}>@</span>
-                      <Input value={form.username} onChange={e => setForm(f => ({ ...f, username: e.target.value.replace(/\s/g, '').toLowerCase() }))}
-                        placeholder="ankare123" className="pl-7 h-11 rounded-xl text-sm" />
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Visningsnamn</p>
-                    <Input value={form.display_name} onChange={e => setForm(f => ({ ...f, display_name: e.target.value }))}
-                      placeholder="t.ex. Alex" className="h-11 rounded-xl text-sm" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Bio / Status</p>
-                    <Input value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
-                      placeholder="Vad håller du på med just nu?" className="h-11 rounded-xl text-sm" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Yrke / Studier</p>
-                      <Input value={form.occupation} onChange={e => setForm(f => ({ ...f, occupation: e.target.value }))}
-                        placeholder="ex. Student, Ingenjör" className="h-11 rounded-xl text-sm" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Ålder</p>
-                      <Input type="number" value={form.age} onChange={e => setForm(f => ({ ...f, age: e.target.value }))}
-                        placeholder="25" className="h-11 rounded-xl text-sm" />
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold mb-1" style={{ color: 'var(--color-text-muted)' }}>Stad</p>
-                    <Input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                      placeholder="Stockholm" className="h-11 rounded-xl text-sm" />
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  onClick={copyUsername}
+                  disabled={!form.username}
+                  className={anchorIconButtonClass}
+                  aria-label="Kopiera användarnamn"
+                >
+                  {copied ? (
+                    <Check className="w-4 h-4 text-emerald-300" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                </button>
               </div>
 
-
-            </motion.div>
-          )}
-
-          {/* ── TAB: Vänner ── */}
-          {activeTab === 'friends' && (
-            <motion.div key="friends"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              className="space-y-4">
-
-              {/* Search */}
-              <div className="rounded-2xl p-4" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-text-muted)' }}>Hitta vänner</p>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--color-text-muted)' }} />
-                    <Input
-                      value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && handleSearch()}
-                      placeholder="@användarnamn"
-                      className="pl-9 h-11 rounded-xl text-sm"
+              <div className="space-y-4">
+                <label className="block">
+                  <span className={sectionMetaClass}>Användarnamn</span>
+                  <div className="relative mt-1.5">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[15px] text-white/40">
+                      @
+                    </span>
+                    <input
+                      value={form.username}
+                      onChange={(e) =>
+                        setForm((f) => ({
+                          ...f,
+                          username: e.target.value.replace(/\s/g, '').toLowerCase(),
+                        }))
+                      }
+                      placeholder="ankare123"
+                      className={`${anchorInputClass} pl-8`}
                     />
                   </div>
-                  <button onClick={handleSearch} disabled={searching}
-                    className="px-4 h-11 rounded-xl text-sm font-bold text-white"
-                    style={{ background: 'var(--color-accent)' }}>
-                    Sök
-                  </button>
+                </label>
+                <label className="block">
+                  <span className={sectionMetaClass}>Visningsnamn</span>
+                  <input
+                    value={form.display_name}
+                    onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                    placeholder="t.ex. Alex"
+                    className={`${anchorInputClass} mt-1.5`}
+                  />
+                </label>
+                <label className="block">
+                  <span className={sectionMetaClass}>Bio</span>
+                  <input
+                    value={form.bio}
+                    onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+                    placeholder="Vad håller du på med just nu?"
+                    className={`${anchorInputClass} mt-1.5`}
+                  />
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="block">
+                    <span className={sectionMetaClass}>Yrke / studier</span>
+                    <input
+                      value={form.occupation}
+                      onChange={(e) => setForm((f) => ({ ...f, occupation: e.target.value }))}
+                      placeholder="Student"
+                      className={`${anchorInputClass} mt-1.5`}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className={sectionMetaClass}>Ålder</span>
+                    <input
+                      type="number"
+                      value={form.age}
+                      onChange={(e) => setForm((f) => ({ ...f, age: e.target.value }))}
+                      placeholder="25"
+                      className={`${anchorInputClass} mt-1.5`}
+                    />
+                  </label>
                 </div>
+                <label className="block">
+                  <span className={sectionMetaClass}>Stad</span>
+                  <input
+                    value={form.city}
+                    onChange={(e) => setForm((f) => ({ ...f, city: e.target.value }))}
+                    placeholder="Stockholm"
+                    className={`${anchorInputClass} mt-1.5`}
+                  />
+                </label>
+              </div>
+            </div>
 
-                {/* Search result */}
-                {searching && (
-                  <div className="mt-3 text-center text-xs" style={{ color: 'var(--color-text-muted)' }}>Söker...</div>
-                )}
-                {searchResult === 'not_found' && (
-                  <p className="mt-3 text-xs text-center" style={{ color: 'var(--color-text-muted)' }}>Ingen användare hittades</p>
-                )}
-                {searchResult && searchResult !== 'not_found' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 flex items-center gap-3 p-3 rounded-2xl"
-                    style={{ background: 'var(--color-surface)', border: '1px solid rgba(13,115,119,0.3)' }}>
-                    <ProfileAvatar profile={searchResult} size={48} />
-                    <div className="flex-1">
-                      <p className="text-sm font-bold" style={{ color: 'var(--color-text-primary)' }}>@{searchResult.username}</p>
-                      {searchResult.bio && <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{searchResult.bio}</p>}
-                    </div>
-                    <button onClick={() => addFriend(searchResult)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-white"
-                      style={{ background: 'var(--color-accent)' }}>
-                      <UserPlus className="w-3.5 h-3.5" /> Adda
-                    </button>
-                  </motion.div>
-                )}
+            <p className={sectionMetaClass}>
+              Yrke och stad används i Jämför för att matcha dig med liknande profiler.
+            </p>
+          </motion.div>
+        )}
+
+        {activeTab === 'friends' && (
+          <motion.div
+            key="friends"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="space-y-4"
+          >
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] p-4">
+              <p className={sectionMetaClass}>Hitta vänner</p>
+              <div className="flex gap-2 mt-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35" />
+                  <input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                    placeholder="@användarnamn"
+                    className={`${anchorInputClass} pl-10`}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  disabled={searching}
+                  className={`${anchorPrimaryButtonClass} !h-12 !px-4 shrink-0`}
+                >
+                  {searching ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sök'}
+                </button>
               </div>
 
-              {/* Friends list */}
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--color-text-muted)' }}>
-                  Dina vänner ({friendProfiles.length})
+              {searchResult === 'not_found' && (
+                <p className={`${sectionSubtitleClass} mt-3 text-center`}>
+                  Ingen användare hittades
                 </p>
-                {friendProfiles.length === 0 ? (
-                  <div className="py-8 text-center rounded-2xl" style={{ background: 'var(--color-surface)' }}>
-                    <Users className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--color-text-muted)' }} />
-                    <p className="text-sm font-semibold" style={{ color: 'var(--color-text-secondary)' }}>Inga vänner ännu</p>
-                    <p className="text-xs mt-1" style={{ color: 'var(--color-text-muted)' }}>Sök på deras @användarnamn för att adda dem</p>
+              )}
+              {searchResult && searchResult !== 'not_found' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-3 flex items-center gap-3 p-3 rounded-xl border border-[#6B9FFF]/25 bg-[#6B9FFF]/10"
+                >
+                  <ProfileAvatar profile={searchResult} size={48} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-semibold text-white">
+                      @{searchResult.username}
+                    </p>
+                    {searchResult.bio && (
+                      <p className={sectionSubtitleClass}>{searchResult.bio}</p>
+                    )}
                   </div>
-                ) : (
-                  <div className="space-y-2">
-                    {friendProfiles.map((fp, i) => (
-                      <SocialFriendCard key={fp.id} friend={fp} index={i} onRemove={removeFriend} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          )}
+                  <button
+                    type="button"
+                    onClick={() => addFriend(searchResult)}
+                    className={`${anchorPrimaryButtonClass} !h-9 !px-3 !text-[13px]`}
+                  >
+                    <UserPlus className="w-3.5 h-3.5" />
+                    Lägg till
+                  </button>
+                </motion.div>
+              )}
+            </div>
 
-          {/* ── TAB: Integritet ── */}
-          {activeTab === 'privacy' && (
-            <motion.div key="privacy"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}>
-              <div className="rounded-2xl p-5" style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--color-text-muted)' }}>Integritetsinställningar</p>
-                <PrivacyMatrix
-                  privacyLevel={form.privacy_level}
-                  sharedCategories={form.shared_categories}
-                  onPrivacyChange={level => setForm(f => ({ ...f, privacy_level: level }))}
-                  onCategoriesChange={cats => setForm(f => ({ ...f, shared_categories: cats }))}
-                />
-              </div>
+            <div>
+              <p className={sectionMetaClass}>Dina vänner ({friendProfiles.length})</p>
+              {friendProfiles.length === 0 ? (
+                <div className="py-10 text-center rounded-2xl border border-white/[0.08] bg-white/[0.03] mt-2">
+                  <Users className="w-8 h-8 mx-auto text-white/25 mb-2" />
+                  <p className="text-[15px] font-medium text-white">Inga vänner ännu</p>
+                  <p className={sectionSubtitleClass}>
+                    Sök på @användarnamn för att lägga till någon
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2 mt-2">
+                  {friendProfiles.map((fp, i) => (
+                    <SocialFriendCard key={fp.id} friend={fp} index={i} onRemove={removeFriend} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
 
-              {/* Privacy summary */}
-              <div className="mt-4 p-4 rounded-2xl" style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.2)' }}>
-                <p className="text-xs font-bold mb-1" style={{ color: '#0D7377' }}>Vad andra ser</p>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                  {form.privacy_level === 'full' && 'I Jämför kan andra se kronor och procent om du publicerar din ekonomi.'}
-                  {form.privacy_level === 'hybrid' && 'I Jämför visas bara procent — inga kronbelopp — om du publicerar.'}
-                  {form.privacy_level === 'ghost' && 'Du kan inte publicera ekonomi i Jämför i Ghost-läge.'}
-                </p>
-                <Link to={createPageUrl('Galaxy')} className="text-xs font-semibold mt-2 inline-block" style={{ color: 'var(--color-accent)' }}>
-                  Gå till Jämför för att publicera →
-                </Link>
-              </div>
-            </motion.div>
-          )}
+        {activeTab === 'privacy' && (
+          <motion.div
+            key="privacy"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="space-y-4"
+          >
+            <SocialPrivacySummary
+              privacyLevel={form.privacy_level}
+              isPublished={Boolean(socialProfile?.economy_published)}
+              username={form.username}
+            />
 
-        </AnimatePresence>
-      </div>
-    </div>
+            <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] p-5">
+              <PrivacyMatrix
+                privacyLevel={form.privacy_level}
+                sharedCategories={form.shared_categories}
+                onPrivacyChange={(level) => {
+                  savePrivacy({
+                    privacy_level: level,
+                    ...(level === 'ghost' ? { economy_published: false } : {}),
+                  });
+                  if (level === 'ghost') {
+                    toast.message('Ghost-läge — ekonomi dold i Jämför');
+                  }
+                }}
+                onCategoriesChange={(cats) => savePrivacy({ shared_categories: cats })}
+              />
+            </div>
+
+            {form.privacy_level === 'ghost' && socialProfile?.economy_published && (
+              <p className="text-[14px] text-amber-200/90 leading-relaxed rounded-xl px-4 py-3 border border-amber-400/20 bg-amber-400/10">
+                Ghost-läge avpublicerade din ekonomi i Jämför automatiskt.
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </PageShell>
   );
 }

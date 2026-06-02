@@ -177,7 +177,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
           {privacy === 'ghost' && 'Ghost-läge: inget kan publiceras'}
         </p>
         <Link
-          to={createPageUrl('Social')}
+          to={`${createPageUrl('Social')}?tab=privacy`}
           className="text-[13px] font-medium text-white/55 hover:text-white/80 mt-1 inline-block"
         >
           Ändra under Social → Integritet
