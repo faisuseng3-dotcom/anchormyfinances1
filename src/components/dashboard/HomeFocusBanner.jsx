@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { getConcernById } from '@/lib/onboardingFocus';
-import { anchorZoneClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { dashZone, dashPill } from '@/lib/dashboardTheme';
 
-export default function HomeFocusBanner({ profile, onAction }) {
+export default function HomeFocusBanner({ profile, onAction, variant = 'default' }) {
   const concern = useMemo(() => getConcernById(profile?.topConcern), [profile?.topConcern]);
   if (!concern) return null;
 
@@ -16,25 +16,39 @@ export default function HomeFocusBanner({ profile, onAction }) {
     onAction?.(concern.action);
   };
 
-  return (
-    <div className={anchorZoneClass}>
-      <div className="rounded-xl px-4 py-3 border border-[#6B9FFF]/25 bg-[#6B9FFF]/10">
-        <p className="text-[12px] text-[#9FB5FF] font-medium uppercase tracking-wide">Ditt fokus</p>
-        <p className="text-[14px] text-white/85 mt-1 leading-relaxed">{concern.hint}</p>
+  if (variant === 'chip') {
+    return (
+      <div className={dashZone}>
         {concern.action === 'plan' ? (
-          <Link
-            to={createPageUrl('FuturePulse')}
-            className="inline-block mt-2 text-[14px] font-semibold text-white hover:text-white/90 no-underline"
-          >
-            {concern.cta} →
+          <Link to={createPageUrl('FuturePulse')} className={`${dashPill} no-underline hover:bg-white/[0.1]`}>
+            <span className="text-white/90">{concern.cta}</span>
+            <span className="text-white/35">→</span>
           </Link>
         ) : (
-          <button type="button" onClick={handleCta} className="mt-2 text-[14px] font-semibold text-white hover:text-white/90">
-            {concern.cta} →
+          <button type="button" onClick={handleCta} className={dashPill}>
+            <span className="text-white/90">{concern.cta}</span>
+            <span className="text-white/35">→</span>
           </button>
         )}
       </div>
-      <p className={`${sectionSubtitleClass} mt-2`}>Baserat på vad du valde i onboarding.</p>
+    );
+  }
+
+  return (
+    <div className={dashZone}>
+      <p className="text-[14px] text-white/55">{concern.hint}</p>
+      {concern.action === 'plan' ? (
+        <Link
+          to={createPageUrl('FuturePulse')}
+          className="inline-block mt-2 text-[14px] font-semibold text-white no-underline"
+        >
+          {concern.cta} →
+        </Link>
+      ) : (
+        <button type="button" onClick={handleCta} className="mt-2 text-[14px] font-semibold text-white">
+          {concern.cta} →
+        </button>
+      )}
     </div>
   );
 }

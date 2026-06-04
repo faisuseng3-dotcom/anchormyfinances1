@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Radio } from 'lucide-react';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { hasAdvisorProfileData } from '@/lib/advisorProfile';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
-import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { dashLabel, dashSignalLine, techInset, techInsetBg } from '@/lib/appSurface';
 
 export default function PersonalAdvisorPanel({ refreshKey = 0 }) {
   const { profile, transactions, isDemoMode } = useAdvisorContext();
@@ -23,14 +23,11 @@ export default function PersonalAdvisorPanel({ refreshKey = 0 }) {
     setLoading(true);
     setError(null);
 
-    askPersonalAdvisor(
-      { scenario: 'dashboard_briefing' },
-      { profile, transactions, isDemoMode },
-    )
+    askPersonalAdvisor({ scenario: 'dashboard_briefing' }, { profile, transactions, isDemoMode })
       .then((data) => {
         if (!cancelled) {
           if (data?.needs_profile && hasAdvisorProfileData(profile)) {
-            setError('Kunde inte hämta personligt råd just nu.');
+            setError('Kunde inte hämta signal just nu.');
             setBriefing(null);
           } else {
             setBriefing(data);
@@ -38,13 +35,15 @@ export default function PersonalAdvisorPanel({ refreshKey = 0 }) {
         }
       })
       .catch(() => {
-        if (!cancelled) setError('Kunde inte hämta personligt råd just nu.');
+        if (!cancelled) setError('Kunde inte hämta signal just nu.');
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [profile, transactions, isDemoMode, refreshKey]);
 
   if (!hasAdvisorProfileData(profile)) return null;
@@ -53,56 +52,31 @@ export default function PersonalAdvisorPanel({ refreshKey = 0 }) {
     <motion.section
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl p-4 border border-white/[0.08]"
-      style={{
-        background: 'linear-gradient(145deg, rgba(13,115,119,0.12) 0%, rgba(75,124,243,0.08) 100%)',
-      }}
+      className={`${techInset} p-4`}
     >
-      <div className="flex items-center gap-2 mb-2">
-        <Sparkles className="w-4 h-4 text-[#9AE6B4]" />
-        <p className={sectionMetaClass}>Din personliga rådgivare</p>
-      </div>
-
-      {loading && (
-        <div className="flex items-center gap-2 py-3 text-white/50 text-sm">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          Analyserar din ekonomi…
+      <div className={techInsetBg} />
+      <div className="relative z-10">
+        <div className="flex items-center gap-2 mb-2">
+          <Radio className="w-3.5 h-3.5 text-cyan-400/70" />
+          <p className={dashLabel}>Live-signal</p>
         </div>
-      )}
 
-      {!loading && error && (
-        <p className={`${sectionSubtitleClass} text-white/55`}>{error}</p>
-      )}
+        {loading && (
+          <div className="flex items-center gap-2 py-3 text-white/45 text-sm font-light">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Synkar…
+          </div>
+        )}
 
-      {!loading && briefing && !error && !briefing.needs_profile && (
-        <>
-          <h3 className="text-[17px] font-bold text-white mb-1.5 leading-snug">
-            {briefing.headline}
-          </h3>
-          <p className={`${sectionSubtitleClass} leading-relaxed mb-3`}>
-            {briefing.message}
-          </p>
+        {!loading && error && <p className="text-[14px] text-white/50 font-light">{error}</p>}
 
-          {briefing.actions?.length > 0 && (
-            <ul className="space-y-2">
-              {briefing.actions.slice(0, 3).map((action, i) => (
-                <li
-                  key={i}
-                  className="rounded-xl px-3 py-2.5 bg-white/[0.04] border border-white/[0.06]"
-                >
-                  <p className="text-[14px] font-semibold text-white">{action.title}</p>
-                  <p className="text-[12px] text-white/55 mt-0.5">{action.detail}</p>
-                  {action.impact_kr > 0 && (
-                    <p className="text-[12px] text-emerald-300/90 mt-1">
-                      Uppskattad effekt: {Math.round(action.impact_kr).toLocaleString('sv-SE')} kr
-                    </p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </>
-      )}
+        {!loading && briefing && !error && !briefing.needs_profile && (
+          <div className={dashSignalLine}>
+            <h3 className="text-[17px] font-medium text-white leading-snug">{briefing.headline}</h3>
+            <p className="text-[14px] text-white/50 mt-2 leading-relaxed font-light">{briefing.message}</p>
+          </div>
+        )}
+      </div>
     </motion.section>
   );
 }

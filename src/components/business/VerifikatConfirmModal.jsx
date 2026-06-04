@@ -71,7 +71,7 @@ export default function VerifikatConfirmModal({ transactions, onConfirm, onCance
               style={{ background: 'rgba(220,38,38,0.07)', border: '1px solid rgba(220,38,38,0.25)' }}>
               <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: '#dc2626' }} />
               <p className="text-xs font-semibold" style={{ color: '#dc2626' }}>
-                {totalNeedsReview} rad{totalNeedsReview > 1 ? 'er' : ''} med låg AI-konfidens — kontrollera kontona
+                {totalNeedsReview} rad{totalNeedsReview > 1 ? 'er' : ''} med låg säkerhet — kontrollera kontona
               </p>
             </div>
           )}

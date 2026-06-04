@@ -25,8 +25,8 @@ const PERSONAS = [
     id: 'smart',
     badge: 'Smart',
     title: 'Smart',
-    subtitle: 'Optimering och AI-råd',
-    features: ['Allt i Budget', 'Möjlighetsradar', 'Personlig rådgivare på Hem'],
+    subtitle: 'Optimering och signaler på Hem',
+    features: ['Allt i Budget', 'Möjlighetsradar', 'Live-signal och verktyg'],
     locked: [],
   },
   {

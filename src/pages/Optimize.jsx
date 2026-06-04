@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Tv, Car, Heart, Apple, Shield, Music, MoreHorizontal, ExternalLink, Loader2, Sparkles,
+  Tv, Car, Heart, Apple, Shield, Music, MoreHorizontal, ExternalLink, Loader2, ArrowLeftRight,
 } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import {
@@ -119,7 +119,7 @@ export default function Optimize() {
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <>
-                          <Sparkles className="w-4 h-4" />
+                          <ArrowLeftRight className="w-4 h-4" />
                           Jämför
                         </>
                       )}

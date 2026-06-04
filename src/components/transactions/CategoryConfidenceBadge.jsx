@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, AlertCircle } from 'lucide-react';
+import { Check, AlertCircle } from 'lucide-react';
 import { categorizeLocal, confidenceLabel } from '@/lib/categoryRouter';
 
 /**
@@ -18,7 +18,7 @@ export default function CategoryConfidenceBadge({ vendor, label, amount, classNa
         className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 ${className}`}
         title="Säker kategori"
       >
-        <Sparkles className="w-2.5 h-2.5" />
+        <Check className="w-2.5 h-2.5" />
         Säker
       </span>
     );

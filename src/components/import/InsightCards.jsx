@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, TrendingDown, Target, Coffee, Loader2, ChevronRight } from 'lucide-react';
+import { LineChart, TrendingDown, Target, Coffee, Loader2, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 export default function InsightCards({ profile, transactions }) {
@@ -53,7 +53,7 @@ Generera 3 konkreta, proaktiva tips på svenska. Varje tips ska ha: title (kort 
     <div className="rounded-3xl overflow-hidden" style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: 'var(--shadow-sm)' }}>
       <div className="px-5 pt-4 pb-3 flex items-center gap-3" style={{ borderBottom: '1px solid #F0F2F5' }}>
         <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(13,115,119,0.1)' }}>
-          <Sparkles className="w-4 h-4" style={{ color: '#0D7377' }} />
+          <LineChart className="w-4 h-4" style={{ color: '#0D7377' }} />
         </div>
         <div className="flex-1">
           <p className="text-sm font-bold" style={{ color: '#1A2332' }}>AI Coach</p>

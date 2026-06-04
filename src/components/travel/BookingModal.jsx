@@ -82,7 +82,7 @@ export default function BookingModal({ pkg, onClose }) {
                 Du skickas nu till <span className="text-indigo-300">{provider}</span>
               </p>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Din AI-coach väntar här när du är klar!<br/>
+                Din reseplan väntar här när du är klar!<br/>
                 Stäng fliken för att komma tillbaka till Anchor.
               </p>
             </div>

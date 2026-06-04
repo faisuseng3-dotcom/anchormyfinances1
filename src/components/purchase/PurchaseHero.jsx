@@ -1,7 +1,8 @@
 import React from 'react';
 import { ShoppingBag } from 'lucide-react';
+import TechHero from '@/components/ui/TechHero';
 import { getMonthlyMargin } from '@/lib/financialUtils';
-import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { dashLabel } from '@/lib/appSurface';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -10,30 +11,22 @@ export default function PurchaseHero({ profile }) {
   const threshold = profile?.impulseThreshold || 700;
 
   return (
-    <div className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-4 -mt-2 mb-2">
-      <div className="flex items-start gap-3">
-        <div className="w-11 h-11 rounded-xl bg-[#6B9FFF]/15 border border-[#6B9FFF]/25 flex items-center justify-center flex-shrink-0">
-          <ShoppingBag className="w-5 h-5 text-[#9FB5FF]" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[17px] font-semibold text-white">Köpråd</p>
-          <p className={`${sectionSubtitleClass} mt-1`}>
-            Klistra in annonslänk eller ladda upp bild — vi räknar mot din månadsbudget.
-          </p>
-        </div>
-      </div>
+    <TechHero label="Köpråd" title="Länk, bild eller större köp" accent="blue">
       {margin > 0 && (
-        <div className="flex gap-4 mt-3 pt-3 border-t border-white/[0.08]">
+        <div className="flex gap-6 mt-4 pt-3 border-t border-white/[0.08]">
           <div>
-            <p className={sectionMetaClass}>Marginal</p>
-            <p className="text-[16px] font-semibold text-white tabular-nums">{fmt(margin)} kr</p>
+            <p className={dashLabel}>Marginal</p>
+            <p className="text-[18px] font-light text-white tabular-nums">{fmt(margin)} kr</p>
           </div>
           <div>
-            <p className={sectionMetaClass}>Impulsgräns</p>
-            <p className="text-[16px] font-semibold text-white tabular-nums">{fmt(threshold)} kr</p>
+            <p className={dashLabel}>Impulsgräns</p>
+            <p className="text-[18px] font-light text-white tabular-nums">{fmt(threshold)} kr</p>
           </div>
         </div>
       )}
-    </div>
+      <div className="absolute top-5 right-5 w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08]">
+        <ShoppingBag className="w-5 h-5 text-cyan-300/80" />
+      </div>
+    </TechHero>
   );
 }

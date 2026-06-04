@@ -1,15 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { X, TrendingUp, PiggyBank, Calendar } from 'lucide-react';
-import {
-  anchorIconButtonClass,
-  anchorPrimaryButtonClass,
-  anchorSecondaryButtonClass,
-  elevatedSheet,
-  sectionMetaClass,
-  sectionSubtitleClass,
-  sectionTitleClass,
-} from '@/lib/anchorTheme';
+import { techCta, techCtaGhost, dashLabel } from '@/lib/appSurface';
+import { anchorIconButtonClass, elevatedSheet } from '@/lib/anchorTheme';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
 import { getConcernById } from '@/lib/onboardingFocus';
 
@@ -35,13 +28,11 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
       icon: TrendingUp,
       label: 'Kvar efter fasta kostnader',
       value: `${formatNumber(monthlyLeft)} kr/mån`,
-      sub: 'Ungefärlig marginal',
     },
     {
       icon: PiggyBank,
       label: 'Om du sparar 30%',
-      value: `${formatNumber(yearSavings)} kr`,
-      sub: 'på ett år',
+      value: `${formatNumber(yearSavings)} kr/år`,
     },
   ];
 
@@ -49,15 +40,12 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
     rows.push({
       icon: Calendar,
       label: profile.savingsGoalName || 'Sparmål',
-      value: `cirka ${monthsToGoal} mån`,
-      sub: 'med nuvarande tempo',
+      value: `~${monthsToGoal} mån`,
     });
   }
 
   const handlePrimary = () => {
-    if (concern?.action && onFirstAction) {
-      onFirstAction(concern.action);
-    }
+    if (concern?.action && onFirstAction) onFirstAction(concern.action);
     onClose?.();
   };
 
@@ -66,8 +54,7 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-[#030610]/85 backdrop-blur-lg"
       onClick={onClose}
     >
       <motion.div
@@ -75,15 +62,17 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.96, opacity: 0, y: 12 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl p-6"
+        className="w-full max-w-md rounded-[28px] p-6 ring-1 ring-inset ring-white/[0.1]"
         style={elevatedSheet()}
       >
-        <div className="flex items-start justify-between gap-3 mb-5">
+        <div className="flex items-start justify-between gap-3 mb-6">
           <div>
-            <p className={sectionMetaClass}>Översikt</p>
-            <h2 className={`${sectionTitleClass} mt-0.5`}>Din ekonomi i korthet</h2>
-            <p className={`${sectionSubtitleClass} mt-1`}>
-              {concern?.hint || 'Baserat på det du fyllt i under onboarding.'}
+            <p className={dashLabel}>Start</p>
+            <h2 className="text-[24px] font-light text-white tracking-tight mt-1">
+              Din ekonomi i korthet
+            </h2>
+            <p className="text-[14px] text-white/45 mt-2 font-light leading-relaxed">
+              {concern?.hint || 'Utifrån det du just fyllt i.'}
             </p>
           </div>
           <button type="button" onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
@@ -91,36 +80,31 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
           </button>
         </div>
 
-        <div className="space-y-3 mb-6">
-          {rows.map(({ icon: Icon, label, value, sub }) => (
-            <div
+        <ul className="space-y-3 mb-6">
+          {rows.map(({ icon: Icon, label, value }) => (
+            <li
               key={label}
-              className="flex items-center gap-3 rounded-xl px-4 py-3 border border-white/[0.08] bg-white/[0.03]"
+              className="flex items-center gap-3 py-3 border-b border-white/[0.06] last:border-0"
             >
-              <div className="w-10 h-10 rounded-full bg-white/[0.06] flex items-center justify-center flex-shrink-0">
-                <Icon className="w-5 h-5 text-white/75" />
+              <div className="w-10 h-10 rounded-2xl bg-white/[0.05] flex items-center justify-center ring-1 ring-white/[0.08]">
+                <Icon className="w-4 h-4 text-cyan-300/80" />
               </div>
-              <div className="min-w-0">
-                <p className={sectionMetaClass}>{label}</p>
-                <p className="text-[20px] font-semibold text-white tabular-nums leading-tight">{value}</p>
-                <p className={sectionMetaClass}>{sub}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-[13px] text-white/45">{label}</p>
+                <p className="text-[16px] font-medium text-white tabular-nums">{value}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
 
-        {concern?.cta ? (
-          <button type="button" onClick={handlePrimary} className={`w-full ${anchorPrimaryButtonClass} mb-2`}>
-            {concern.cta}
+        <div className="flex flex-col gap-2">
+          <button type="button" onClick={handlePrimary} className={`${techCta} w-full`}>
+            {concern?.cta || 'Kom igång'}
           </button>
-        ) : null}
-        <button
-          type="button"
-          onClick={onClose}
-          className={`w-full ${concern?.cta ? anchorSecondaryButtonClass : anchorPrimaryButtonClass}`}
-        >
-          {concern?.cta ? 'Gå till översikten' : 'Fortsätt till översikten'}
-        </button>
+          <button type="button" onClick={onClose} className={`${techCtaGhost} w-full`}>
+            Utforska själv
+          </button>
+        </div>
       </motion.div>
     </motion.div>
   );

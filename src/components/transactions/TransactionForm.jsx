@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, Sparkles, Loader2 } from 'lucide-react';
+import { X, Check, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 import { saveOverride } from '@/lib/enrichmentEngine';
@@ -167,7 +167,7 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
               {aiConfidence === 'high' && (
                 <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
                   style={{ background: 'rgba(13,115,119,0.2)', color: '#0D7377' }}>
-                  <Sparkles className="w-2.5 h-2.5" /> Säker
+                  <Check className="w-2.5 h-2.5" /> Säker
                 </span>
               )}
               {aiConfidence === 'low' && (

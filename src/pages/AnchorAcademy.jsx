@@ -6,8 +6,10 @@ import { ACADEMY_LESSONS } from '@/lib/anchorBrain';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
-import { sectionMetaClass, sectionSubtitleClass, elevatedSheet } from '@/lib/anchorTheme';
+import { dashLabel, techInset, techInsetBg, techCta } from '@/lib/appSurface';
+import { anchorIconButtonClass, elevatedSheet } from '@/lib/anchorTheme';
 import { motion, AnimatePresence } from 'framer-motion';
+import { X, Loader2 } from 'lucide-react';
 
 export default function AnchorAcademy() {
   const { profile, updateProfile } = useFinancialProfile();
@@ -39,35 +41,40 @@ export default function AnchorAcademy() {
 
   return (
     <PageShell
-      title="Anchor Academy"
-      subtitle="60 sekunder — rätt kunskap, rätt tillfälle"
+      title="Lektioner"
+      subtitle="Grundkunskap kopplad till din ekonomi"
       backHref={createPageUrl('Dashboard')}
     >
-      <p className={`${sectionSubtitleClass} -mt-2 mb-4`}>
-        Endast var femte ung vuxen klarar grundfrågor om ränta och inflation. Vi fyller
-        gapet med lektioner kopplade till din ekonomi — inte generisk skoltavla.
+      <p className="text-[15px] text-white/50 font-light leading-relaxed -mt-2">
+        Korta förklaringar om ränta, inflation och osynliga utgifter — utan skolbokston.
       </p>
 
-      <div className="space-y-2">
+      <ul className="space-y-2">
         {ACADEMY_LESSONS.map((lesson) => {
           const done = completed.includes(lesson.id);
           return (
-            <button
-              key={lesson.id}
-              type="button"
-              onClick={() => openLesson(lesson)}
-              className="w-full flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 text-left"
-            >
-              <GraduationCap className="w-5 h-5 text-emerald-300 shrink-0" />
-              <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-medium text-white">{lesson.title}</p>
-                <p className={sectionMetaClass}>{lesson.topic}</p>
-              </div>
-              {done && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
-            </button>
+            <li key={lesson.id}>
+              <button
+                type="button"
+                onClick={() => openLesson(lesson)}
+                className={`${techInset} w-full text-left p-4`}
+              >
+                <div className={techInsetBg} />
+                <div className="relative z-10 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-violet-500/15 flex items-center justify-center ring-1 ring-violet-400/25">
+                    <GraduationCap className="w-5 h-5 text-violet-300/90" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-medium text-white">{lesson.title}</p>
+                    <p className={dashLabel}>{lesson.topic}</p>
+                  </div>
+                  {done && <Check className="w-4 h-4 text-emerald-400 shrink-0" />}
+                </div>
+              </button>
+            </li>
           );
         })}
-      </div>
+      </ul>
 
       <AnimatePresence>
         {active && (
@@ -75,7 +82,7 @@ export default function AnchorAcademy() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-end justify-center bg-black/60"
+            className="fixed inset-0 z-50 flex items-end justify-center bg-[#030610]/80 backdrop-blur-lg"
             onClick={() => setActive(null)}
           >
             <motion.div
@@ -83,26 +90,31 @@ export default function AnchorAcademy() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md rounded-t-[22px] px-5 py-6 max-h-[80vh] overflow-y-auto"
+              className="w-full max-w-md rounded-t-[32px] px-6 py-6 max-h-[80vh] overflow-y-auto"
               style={elevatedSheet()}
             >
-              <p className={sectionMetaClass}>{active.title}</p>
+              <div className="flex justify-between items-center mb-4">
+                <p className={dashLabel}>~{active.durationSec} sek</p>
+                <button type="button" onClick={() => setActive(null)} className={anchorIconButtonClass}>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
               {loading ? (
-                <p className="text-white/50 py-6">Laddar lektion…</p>
+                <div className="flex items-center gap-2 py-8 text-white/45">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Laddar…
+                </div>
               ) : (
                 <>
-                  <p className="text-[16px] text-white mt-3 leading-relaxed whitespace-pre-wrap">
+                  <h3 className="text-[24px] font-light text-white">{content?.title || active.title}</h3>
+                  <p className="text-[15px] text-white/55 mt-4 leading-relaxed font-light whitespace-pre-wrap">
                     {content?.body}
                   </p>
                   {content?.takeaway && (
-                    <p className="text-[14px] text-[#9FB5FF] mt-4">{content.takeaway}</p>
+                    <p className="text-[14px] text-cyan-300/80 mt-4">{content.takeaway}</p>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => markDone(active.id)}
-                    className="w-full mt-6 h-11 rounded-xl bg-white text-[#0a1628] font-semibold text-[15px]"
-                  >
-                    Markera som klar
+                  <button type="button" onClick={() => markDone(active.id)} className={`${techCta} w-full mt-8`}>
+                    Klar
                   </button>
                 </>
               )}

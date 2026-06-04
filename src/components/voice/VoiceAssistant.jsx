@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mic, MicOff, Volume2, Loader2, Sparkles } from 'lucide-react';
+import { X, Mic, MicOff, Volume2, Loader2, Radio } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 export default function VoiceAssistant({ isOpen, onClose }) {
@@ -195,7 +195,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-end"
+        className="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-end"
         onClick={onClose}
       >
         <motion.div
@@ -204,18 +204,18 @@ export default function VoiceAssistant({ isOpen, onClose }) {
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full bg-gradient-to-b from-white to-slate-50 rounded-t-3xl shadow-2xl max-h-[85vh] flex flex-col"
+          className="w-full rounded-t-[28px] shadow-2xl max-h-[85vh] flex flex-col ring-1 ring-inset ring-white/10"
+          style={{ background: 'linear-gradient(180deg, #0a1628 0%, #050d28 100%)' }}
         >
-          {/* Header */}
-          <div className="p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="p-6 pb-4 border-b border-white/[0.08] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-2xl bg-[#0D7377]/25 ring-1 ring-[#0FDEBD]/30 flex items-center justify-center">
+                <Radio className="w-5 h-5 text-[#0FDEBD]" />
               </div>
               <div>
-                <h2 className="font-semibold text-slate-900">AI-coach</h2>
-                <p className="text-xs text-slate-500">
-                  {isListening ? 'Lyssnar...' : isProcessing ? 'Analyserar...' : isSpeaking ? 'Svarar...' : 'Redo att hjälpa'}
+                <h2 className="font-semibold text-white">Röstrådgivare</h2>
+                <p className="text-xs text-white/45">
+                  {isListening ? 'Lyssnar…' : isProcessing ? 'Bearbetar…' : isSpeaking ? 'Läser upp…' : 'Redo'}
                 </p>
               </div>
             </div>
@@ -223,22 +223,21 @@ export default function VoiceAssistant({ isOpen, onClose }) {
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="rounded-full"
+              className="rounded-full text-white/70 hover:text-white hover:bg-white/10"
             >
               <X className="w-5 h-5" />
             </Button>
           </div>
 
-          {/* Messages */}
           <div className="flex-1 overflow-y-auto p-6 space-y-4">
             {messages.length === 0 && (
               <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                  <Mic className="w-8 h-8 text-purple-600" />
+                <div className="w-16 h-16 rounded-2xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center mx-auto mb-4">
+                  <Mic className="w-8 h-8 text-[#0FDEBD]" />
                 </div>
-                <h3 className="font-semibold text-slate-900 mb-2">Prata med din AI-coach</h3>
-                <p className="text-sm text-slate-500 max-w-xs mx-auto">
-                  Fråga om dina köp, ekonomi eller få råd. Jag analyserar din situation i realtid.
+                <h3 className="font-semibold text-white mb-2">Prata med Anchor</h3>
+                <p className="text-sm text-white/50 max-w-xs mx-auto">
+                  Fråga om budget, köp eller sparande — svar bygger på din profil och transaktioner.
                 </p>
               </div>
             )}
@@ -253,8 +252,8 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                     message.role === 'user'
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-white border border-slate-100 text-slate-900'
+                      ? 'bg-[#0D7377] text-white'
+                      : 'bg-white/[0.06] ring-1 ring-white/10 text-white/90'
                   }`}
                 >
                   <p className="text-sm leading-relaxed">{message.content}</p>
@@ -279,10 +278,10 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                 animate={{ opacity: 1 }}
                 className="flex justify-start"
               >
-                <div className="bg-white border border-slate-100 rounded-2xl px-4 py-3">
-                  <div className="flex items-center gap-2 text-slate-500">
+                <div className="bg-white/[0.06] ring-1 ring-white/10 rounded-2xl px-4 py-3">
+                  <div className="flex items-center gap-2 text-white/50">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">Analyserar din ekonomi...</span>
+                    <span className="text-sm">Bearbetar…</span>
                   </div>
                 </div>
               </motion.div>
@@ -294,8 +293,8 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                 animate={{ opacity: 1 }}
                 className="flex justify-end"
               >
-                <div className="bg-purple-100 rounded-2xl px-4 py-3 max-w-[80%]">
-                  <p className="text-sm text-purple-900">{transcript}</p>
+                <div className="bg-[#0D7377]/20 ring-1 ring-[#0FDEBD]/20 rounded-2xl px-4 py-3 max-w-[80%]">
+                  <p className="text-sm text-white/80">{transcript}</p>
                 </div>
               </motion.div>
             )}
@@ -304,7 +303,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
           </div>
 
           {/* Microphone Button */}
-          <div className="p-6 pt-4 border-t border-slate-100">
+          <div className="p-6 pt-4 border-t border-white/[0.08]">
             <div className="flex items-center justify-center gap-4">
               {isSpeaking && (
                 <Button
@@ -333,7 +332,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                     repeat: isListening ? Infinity : 0
                   }}
                   className={`absolute inset-0 rounded-full ${
-                    isListening ? 'bg-purple-400' : 'bg-purple-500'
+                    isListening ? 'bg-[#0FDEBD]/50' : 'bg-[#0D7377]/60'
                   } blur-xl`}
                 />
                 <motion.div
@@ -341,8 +340,8 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                   className={`relative w-16 h-16 rounded-full flex items-center justify-center ${
                     isListening
                       ? 'bg-gradient-to-br from-rose-500 to-rose-600'
-                      : 'bg-gradient-to-br from-purple-500 to-purple-600'
-                  } shadow-lg`}
+                      : 'bg-gradient-to-br from-[#0D7377] to-[#0a4f52]'
+                  } shadow-lg ring-2 ring-[#0FDEBD]/30`}
                 >
                   {isProcessing ? (
                     <Loader2 className="w-7 h-7 text-white animate-spin" />

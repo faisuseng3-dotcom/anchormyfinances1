@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
   Camera, Code, Scissors, Briefcase, Zap, ArrowRight,
-  CheckCircle2, Building2, Sparkles, TrendingUp, Clock,
+  CheckCircle2, Building2, TrendingUp, Clock,
   Receipt, Shield, BarChart3, ChevronRight, Loader2, Store
 } from 'lucide-react';
 
@@ -452,7 +452,7 @@ function StepPainPoints({ persona, onNext }) {
           cursor: selected.length > 0 ? 'pointer' : 'not-allowed',
         }}
       >
-        Aktivera min AI-setup <ChevronRight className="w-4 h-4" />
+        Aktivera min setup <ChevronRight className="w-4 h-4" />
       </motion.button>
     </motion.div>
   );
@@ -504,7 +504,7 @@ function StepIntegrations({ persona, onNext }) {
             >
               {isSuggested && !sel && (
                 <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
-                  style={{ background: 'rgba(212,175,55,0.2)', color: '#D4AF37' }}>AI</span>
+                  style={{ background: 'rgba(212,175,55,0.2)', color: '#D4AF37' }}>Rek</span>
               )}
               <span className="text-2xl">{intg.emoji}</span>
               <span className="text-xs font-bold" style={{ color: sel ? '#D4AF37' : '#F0EAD6' }}>{intg.name}</span>
@@ -519,7 +519,7 @@ function StepIntegrations({ persona, onNext }) {
         className="w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
         style={{ background: 'linear-gradient(135deg, #b8942a 0%, #D4AF37 100%)', color: '#0D1B2A' }}
       >
-        Generera min profil <Sparkles className="w-4 h-4" />
+        Skapa min profil <Zap className="w-4 h-4" />
       </motion.button>
     </motion.div>
   );
@@ -575,7 +575,7 @@ function StepHoroscope({ persona, onComplete }) {
         style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.05) 100%)', border: '1.5px solid rgba(212,175,55,0.4)' }}
       >
         <div className="flex gap-3">
-          <Sparkles className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#D4AF37' }} />
+          <TrendingUp className="w-5 h-5 flex-shrink-0 mt-0.5" style={{ color: '#D4AF37' }} />
           <p className="text-sm leading-relaxed font-medium" style={{ color: '#F0EAD6' }}>
             {h.insight}
           </p>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, X } from 'lucide-react';
+import { FlaskConical, X } from 'lucide-react';
 import { useDemoMode } from './DemoMode';
 
 export default function DemoToggle() {
@@ -17,7 +17,7 @@ export default function DemoToggle() {
         border: `1px solid ${isDemoMode ? 'rgba(234,88,12,0.25)' : 'rgba(13,115,119,0.2)'}`,
       }}
     >
-      {isDemoMode ? <X className="w-3 h-3" /> : <Sparkles className="w-3 h-3" />}
+      {isDemoMode ? <X className="w-3 h-3" /> : <FlaskConical className="w-3 h-3" />}
       {isDemoMode ? 'Stäng Demo' : 'Demo-läge'}
     </motion.button>
   );

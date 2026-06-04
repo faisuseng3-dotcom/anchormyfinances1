@@ -85,7 +85,7 @@ export default function NegotiationHubModal({ isOpen, onClose }) {
 
             {/* AI Script */}
             <div className="mb-5">
-              <p className="text-xs text-slate-500 mb-2 uppercase tracking-wider">AI-genererat förhandlingsmanus</p>
+              <p className="text-xs text-slate-500 mb-2 tracking-wide">Förhandlingsmanus</p>
               <div
                 className="p-3 rounded-xl text-xs text-slate-300 leading-relaxed"
                 style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}

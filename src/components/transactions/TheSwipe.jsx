@@ -38,7 +38,7 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
           <Zap className="w-4 h-4 text-amber-400" />
         </div>
         <div className="flex-1">
-          <p className="text-amber-200 text-sm font-semibold mb-1">AI-Coach 🧠</p>
+          <p className="text-amber-200 text-sm font-semibold mb-1">Rådgivare</p>
           <p className="text-slate-300 text-xs leading-relaxed">{message}</p>
           <div className="flex gap-2 mt-3">
             <button

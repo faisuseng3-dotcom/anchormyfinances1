@@ -10,6 +10,18 @@ export const bizDividerClass = 'h-px bg-[#E8ECF0]';
 /** Flat block on #F4F6F8 canvas — no white card shadow */
 export const bizBlockClass = 'py-1';
 
+/** Soft inset panel — business light theme */
+export const bizInset =
+  'relative overflow-hidden rounded-[22px] bg-white ring-1 ring-inset ring-[#E8ECF0] shadow-[0_1px_3px_rgba(26,35,50,0.04)]';
+
+export const bizLabel = 'text-[12px] font-medium text-[#9AA5B4]';
+
+export const bizCta =
+  'inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full text-[14px] font-semibold text-white bg-[#0D7377] hover:bg-[#0a6569] transition-colors disabled:opacity-50';
+
+export const bizCtaGhost =
+  'inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full text-[14px] font-medium text-[#1A2332] bg-[#EEF1F4] hover:bg-[#E8ECF0] transition-colors';
+
 export function BusinessSection({
   title,
   subtitle,

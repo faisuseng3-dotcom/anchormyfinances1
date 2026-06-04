@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clipboard, Sparkles, Check, X, Loader2, ChevronRight, Bot, AlertTriangle } from 'lucide-react';
+import { Clipboard, ScanLine, Check, X, Loader2, ChevronRight, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import VerifikatConfirmModal from '@/components/business/VerifikatConfirmModal';
 
@@ -53,7 +53,7 @@ export default function SmartPasteImport({ onBooked }) {
           vendor: tx.vendor || tx.description,
           category: tx.category || 'other',
           note: `Konto: ${tx.accountCode} — ${tx.accountName}`,
-          aiNote: `AI-bokfört: ${tx.accountCode} ${tx.accountName}. Moms: ${tx.vatRate}%`,
+          aiNote: `Auto: ${tx.accountCode} ${tx.accountName}. Moms: ${tx.vatRate}%`,
           aiAgent: 'SmartPaste',
           context: 'BUSINESS',
         });
@@ -102,8 +102,8 @@ export default function SmartPasteImport({ onBooked }) {
           <Clipboard className="w-5 h-5" style={{ color: '#0D7377' }} />
         </div>
         <div>
-          <p className="text-sm font-black" style={{ color: '#1A2332' }}>Snabb-import (Klistra in)</p>
-          <p className="text-xs" style={{ color: '#9AA5B4' }}>AI tolkar & bokför direkt från din nätbank</p>
+          <p className="text-sm font-semibold" style={{ color: '#1A2332' }}>Snabb-import</p>
+          <p className="text-xs" style={{ color: '#9AA5B4' }}>Klistra in banktext — vi tolkar och föreslår konton</p>
         </div>
       </div>
 
@@ -134,8 +134,8 @@ export default function SmartPasteImport({ onBooked }) {
                 color: text.trim() ? '#fff' : '#9AA5B4',
               }}
             >
-              <Sparkles className="w-4 h-4" />
-              Analysera med AI
+              <ScanLine className="w-4 h-4" />
+              Tolka transaktioner
             </motion.button>
           </motion.div>
         )}
@@ -145,8 +145,8 @@ export default function SmartPasteImport({ onBooked }) {
           <motion.div key="parsing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="flex flex-col items-center justify-center gap-3 py-12">
             <Loader2 className="w-8 h-8 animate-spin" style={{ color: '#0D7377' }} />
-            <p className="text-sm font-semibold" style={{ color: '#4A5568' }}>AI tolkar din banktext...</p>
-            <p className="text-xs" style={{ color: '#9AA5B4' }}>Strukturerar, kategoriserar & bokför</p>
+            <p className="text-sm font-semibold" style={{ color: '#4A5568' }}>Tolkar banktext…</p>
+            <p className="text-xs" style={{ color: '#9AA5B4' }}>Strukturerar och matchar konton</p>
           </motion.div>
         )}
 
@@ -154,7 +154,7 @@ export default function SmartPasteImport({ onBooked }) {
         {phase === 'review' && (
           <motion.div key="review" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
             <div className="px-5 pt-4 pb-2 flex items-center justify-between">
-              <p className="text-xs font-black uppercase tracking-wide" style={{ color: '#4A5568' }}>
+              <p className="text-xs font-semibold tracking-wide" style={{ color: '#4A5568' }}>
                 {parsed.length} tolkade transaktioner — granska
               </p>
               <button onClick={reset} className="text-xs font-semibold" style={{ color: '#9AA5B4' }}>Rensa</button>
@@ -166,7 +166,7 @@ export default function SmartPasteImport({ onBooked }) {
                 style={{ background: 'rgba(220,38,38,0.07)', border: '1px solid rgba(220,38,38,0.25)' }}>
                 <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#dc2626' }} />
                 <p className="text-xs font-semibold" style={{ color: '#dc2626' }}>
-                  {parsed.filter(t => t.needs_review).length} rad{parsed.filter(t => t.needs_review).length > 1 ? 'er' : ''} markerade för granskning (AI-konfidens &lt;90%)
+                  {parsed.filter(t => t.needs_review).length} rad{parsed.filter(t => t.needs_review).length > 1 ? 'er' : ''} markerade för granskning (säkerhet &lt;90%)
                 </p>
               </div>
             )}
@@ -257,7 +257,6 @@ export default function SmartPasteImport({ onBooked }) {
           </motion.div>
         )}
 
-        {/* DONE: AI insight */}
         {phase === 'done' && (
           <motion.div key="done" initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
             className="p-5 space-y-4">
@@ -265,7 +264,7 @@ export default function SmartPasteImport({ onBooked }) {
               style={{ background: 'rgba(13,115,119,0.08)', border: '1.5px solid rgba(13,115,119,0.2)' }}>
               <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: '#0D7377' }}>
-                <Bot className="w-4 h-4 text-white" />
+                <Check className="w-4 h-4 text-white" />
               </div>
               <p className="text-sm leading-relaxed" style={{ color: '#1A2332' }}>{aiInsight}</p>
             </div>

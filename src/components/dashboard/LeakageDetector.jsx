@@ -1,18 +1,27 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { CheckCircle2, Sparkles } from 'lucide-react';
+import { CheckCircle2, Smartphone, Copy, Coffee, Wallet } from 'lucide-react';
 import { runLeakageDetector, fmtLeakageSek } from '@/lib/leakageEngine';
 import { createPageUrl } from '@/utils';
 import { useLeakageExplanations } from '@/hooks/useLeakageExplanations';
 import { DashboardDivider, DashboardListRow, DashboardSection } from './DashboardChrome';
-import { sectionSubtitleClass } from '@/lib/anchorTheme';
+import { dashLabel } from '@/lib/appSurface';
 
 const TYPE_ICON = {
-  subscription: '📱',
-  duplicate: '🎬',
-  habit: '☕',
-  forgotten: '💸',
+  subscription: Smartphone,
+  duplicate: Copy,
+  habit: Coffee,
+  forgotten: Wallet,
 };
+
+function LeakIcon({ type }) {
+  const Icon = TYPE_ICON[type] || Wallet;
+  return (
+    <div className="w-10 h-10 rounded-2xl bg-amber-400/10 flex items-center justify-center ring-1 ring-amber-400/20">
+      <Icon className="w-4 h-4 text-amber-200/90" />
+    </div>
+  );
+}
 
 export default function LeakageDetector({ profile, transactions, variant = 'dashboard', className = '', nested = false }) {
   const result = useMemo(
@@ -31,11 +40,14 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
 
   if (!transactions?.length) {
     return (
-      <DashboardSection nested={nested} title="Läckage" subtitle="Hitta dolda abonnemang" className={className}>
-        <p className={sectionSubtitleClass}>
-          Importera transaktioner så skannar vi efter onödiga utgifter.
+      <DashboardSection nested={nested} title="Dolda flöden" subtitle="Hitta återkommande utgifter" className={className}>
+        <p className="text-[14px] text-white/45 font-light">
+          Importera transaktioner så skannar vi mönster.
         </p>
-        <Link to="/Import" className="anchor-btn-primary inline-flex mt-4 px-5 text-sm">
+        <Link
+          to="/Import"
+          className="inline-flex mt-4 h-10 px-5 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08] no-underline items-center"
+        >
           Importera
         </Link>
       </DashboardSection>
@@ -44,10 +56,10 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
 
   if (!hasLeaks && variant === 'dashboard') {
     return (
-      <DashboardSection nested={nested} title="Läckage" className={className}>
+      <DashboardSection nested={nested} title="Dolda flöden" className={className}>
         <div className="flex items-center gap-3 py-1">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-          <p className="text-[15px] text-white/80">Inga uppenbara läckage just nu.</p>
+          <p className="text-[15px] text-white/75 font-light">Inga uppenbara läckage just nu.</p>
         </div>
       </DashboardSection>
     );
@@ -59,7 +71,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
     <DashboardSection
       nested={nested}
       id="leakage-detector"
-      title="Läckage"
+      title="Dolda flöden"
       subtitle={headline}
       className={className}
       actionHref={
@@ -69,62 +81,54 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
       }
       actionLabel={variant === 'dashboard' ? `Alla ${leaks.length}` : undefined}
     >
-      <p className={`${sectionSubtitleClass} mb-3`}>
-        <span className="text-amber-200/90 font-semibold">{fmtLeakageSek(totalMonthlyLeak)} kr/mån</span>
+      <p className={`${dashLabel} mb-3`}>
+        <span className="text-amber-200/90">{fmtLeakageSek(totalMonthlyLeak)} kr/mån</span>
         {' · '}
         {savingsStory}
       </p>
 
       <div>
         {visibleLeaks.map((leak, i) => {
-          const aiText = explanations[leak.id];
+          const note = explanations[leak.id];
           const subtitle =
             variant === 'full'
               ? leak.description
-              : aiText
-                ? aiText.slice(0, 72) + (aiText.length > 72 ? '…' : '')
+              : note
+                ? note.slice(0, 72) + (note.length > 72 ? '…' : '')
                 : leak.action;
 
+          const rowProps = {
+            leading: <LeakIcon type={leak.type} />,
+            title: leak.title,
+            subtitle,
+            trailing: (
+              <span className="text-[15px] font-semibold text-amber-200/90 tabular-nums">
+                {fmtLeakageSek(leak.monthlyAmount)}/mån
+              </span>
+            ),
+          };
+
           return (
-          <React.Fragment key={leak.id}>
-            {i > 0 && <DashboardDivider />}
-            {leak.actionLink ? (
-              <DashboardListRow
-                href={leak.actionLink.startsWith('/') ? leak.actionLink : `/${leak.actionLink}`}
-                leading={<span className="text-lg">{TYPE_ICON[leak.type] || '💸'}</span>}
-                title={leak.title}
-                subtitle={subtitle}
-                trailing={
-                  <span className="text-[15px] font-semibold text-amber-200/90 tabular-nums">
-                    {fmtLeakageSek(leak.monthlyAmount)}/mån
-                  </span>
-                }
-              />
-            ) : (
-              <DashboardListRow
-                leading={<span className="text-lg">{TYPE_ICON[leak.type] || '💸'}</span>}
-                title={leak.title}
-                subtitle={subtitle}
-                trailing={
-                  <span className="text-[15px] font-semibold text-amber-200/90 tabular-nums">
-                    {fmtLeakageSek(leak.monthlyAmount)}/mån
-                  </span>
-                }
-              />
-            )}
-            {variant === 'full' && aiText && (
-              <p className="text-[13px] text-white/50 pb-2 pl-12 flex items-start gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#9FB5FF] flex-shrink-0 mt-0.5" />
-                {aiText}
-              </p>
-            )}
-          </React.Fragment>
+            <React.Fragment key={leak.id}>
+              {i > 0 && <DashboardDivider />}
+              {leak.actionLink ? (
+                <DashboardListRow
+                  href={leak.actionLink.startsWith('/') ? leak.actionLink : `/${leak.actionLink}`}
+                  {...rowProps}
+                />
+              ) : (
+                <DashboardListRow {...rowProps} />
+              )}
+              {variant === 'full' && note && (
+                <p className="text-[13px] text-white/45 pb-2 pl-14 font-light leading-relaxed">{note}</p>
+              )}
+            </React.Fragment>
           );
         })}
       </div>
 
       {variant === 'full' && (
-        <p className="text-[12px] text-white/40 mt-4 pt-3 border-t border-white/[0.08]">
+        <p className="text-[12px] text-white/35 mt-4 pt-3 border-t border-white/[0.08] tabular-nums">
           {fmtLeakageSek(totalMonthlyLeak)} kr/mån · {fmtLeakageSek(totalMonthlyLeak * 12)} kr/år
         </p>
       )}

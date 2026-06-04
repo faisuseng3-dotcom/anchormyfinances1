@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingDown, TrendingUp, Sparkles, RefreshCw } from 'lucide-react';
+import { TrendingDown, TrendingUp, MapPin, RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -183,7 +183,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
           </>
         ) : (
           <>
-            <Sparkles className="w-5 h-5 mr-2" />
+            <MapPin className="w-5 h-5 mr-2" />
             Hitta smarta alternativ
           </>
         )}
@@ -235,7 +235,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
           {/* Optimizations */}
           <div className="space-y-3">
             <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-400" />
+              <MapPin className="w-5 h-5 text-[#0FDEBD]" />
               Smart Swap-förslag
             </h3>
             {optimizations.map((opt, i) => (

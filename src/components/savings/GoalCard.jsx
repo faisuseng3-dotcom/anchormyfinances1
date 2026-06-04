@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Flame, PiggyBank, Shield, Sparkles } from 'lucide-react';
+import { Calendar, Flame, PiggyBank, Shield, TrendingUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import SavingsDepositModal from './SavingsDepositModal';
 import { DashboardDivider, DashboardListRow } from '@/components/dashboard/DashboardChrome';
@@ -173,7 +173,7 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
           <>
             <DashboardDivider className="mx-5" />
             <div className="mx-5 mb-4 flex gap-3 rounded-xl px-4 py-3 bg-white/[0.03] border border-white/[0.06]">
-              <Sparkles className="w-5 h-5 flex-shrink-0 text-white/40 mt-0.5" />
+              <TrendingUp className="w-5 h-5 flex-shrink-0 text-white/40 mt-0.5" />
               <p className="text-[14px] text-white/75 leading-relaxed">
                 Med pengar du har kvar varje månad kan du vara klar om cirka{' '}
                 <strong className="text-white/90">

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, Layers } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import { anchorZoneClass, anchorSecondaryButtonClass } from '@/lib/anchorTheme';
+import { dashZone, dashLabel } from '@/lib/dashboardTheme';
 import { DashboardDivider } from './DashboardChrome';
 import FuturePulse from './FuturePulse';
 import MoneyOverview from './MoneyOverview';
@@ -10,62 +10,61 @@ import DebtCheck from './DebtCheck';
 import SavingsAndBudget from './SavingsAndBudget';
 import SpendingHubModule from './SpendingHubModule';
 import LeakageDetector from './LeakageDetector';
-import AIStoryBar from './AIStoryBar';
 import WeeklySummary from './WeeklySummary';
+import SignalStrip from './SignalStrip';
 import PassivityCalculator from '@/components/anchorBrain/PassivityCalculator';
 
-export default function DashboardMorePanel({
-  profile,
-  transactions,
-  onOpenExpense,
-}) {
+export default function DashboardMorePanel({ profile, transactions, onOpenExpense }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={anchorZoneClass}>
+    <div className={dashZone}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between py-3 text-left group"
+        className="w-full flex items-center justify-between py-4 text-left group"
       >
-        <span className="text-[15px] font-semibold text-white/80 group-hover:text-white transition-colors">
-          Mer insikter
+        <span className="flex items-center gap-2">
+          <Layers className="w-4 h-4 text-white/35" />
+          <span className="text-[15px] font-medium text-white/70 group-hover:text-white transition-colors">
+            Djupdyk
+          </span>
         </span>
-        {open ? (
-          <ChevronUp className="w-5 h-5 text-white/40" />
-        ) : (
-          <ChevronDown className="w-5 h-5 text-white/40" />
-        )}
+        <ChevronDown
+          className={`w-5 h-5 text-white/35 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {open && (
-        <div className="space-y-8 pb-4">
-          <div className="flex flex-col sm:flex-row gap-2">
+        <div className="space-y-10 pb-6 pt-2">
+          <div className="flex gap-2">
             <button
               type="button"
               onClick={onOpenExpense}
-              className={`${anchorSecondaryButtonClass} w-full text-[14px] h-11`}
+              className="flex-1 h-11 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08]"
             >
-              Registrera utgift
+              + Utgift
             </button>
             <Link
               to={createPageUrl('Import')}
-              className={`${anchorSecondaryButtonClass} w-full text-center no-underline text-[14px] h-11 flex items-center justify-center`}
+              className="flex-1 h-11 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08] flex items-center justify-center no-underline"
             >
-              Importera CSV
+              Importera
             </Link>
           </div>
 
-          <PassivityCalculator profile={profile} />
-          <AIStoryBar profile={profile} transactions={transactions} />
+          <SignalStrip profile={profile} transactions={transactions} />
+
+          <div>
+            <p className={`${dashLabel} mb-3`}>Framtidskostnad</p>
+            <PassivityCalculator profile={profile} variant="inset" />
+          </div>
+
           <WeeklySummary />
 
-          <DashboardDivider />
+          <DashboardDivider className="opacity-30" />
 
           <FuturePulse profile={profile} transactions={transactions} />
-
-          <DashboardDivider />
-
           <MoneyOverview profile={profile} />
           <DebtCheck profile={profile} />
           <SavingsAndBudget profile={profile} />

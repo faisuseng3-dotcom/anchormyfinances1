@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Send, Loader2, AlertCircle } from 'lucide-react';
+import { Zap, X, Send, Loader2, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { categorizeTransaction } from '@/lib/categoryRouter';
 import { saveOverride } from '@/lib/enrichmentEngine';
-
-const CATEGORY_EMOJIS = {
-  food: '🍔',
-  transport: '🚌',
-  entertainment: '🎮',
-  shopping: '🛍️',
-  health: '💪',
-  home: '🏠',
-  savings: '💰',
-  income: '💵',
-  other: '📦',
-};
+import { elevatedSheet } from '@/lib/anchorTheme';
+import { techCta, techCtaGhost, dashLabel } from '@/lib/appSurface';
 
 const CATEGORY_LABELS = {
   food: 'Mat',
@@ -102,128 +92,115 @@ Lämna kategori tom — den sätts separat.`,
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.4)' }}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-[#030610]/75 backdrop-blur-md p-4"
           onClick={(e) => e.target === e.currentTarget && onClose?.()}
         >
           <motion.div
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
-            className="w-full max-w-md rounded-3xl p-6 space-y-4"
-            style={{ background: '#fff', boxShadow: '0 -4px 40px rgba(0,0,0,0.15)' }}
+            className="w-full max-w-md rounded-[28px] p-5 space-y-4 ring-1 ring-inset ring-white/[0.1]"
+            style={elevatedSheet()}
+            onClick={(e) => e.stopPropagation()}
           >
+            <div className="flex justify-center -mt-1 mb-1">
+              <div className="w-9 h-1 rounded-full bg-white/15" />
+            </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4" style={{ color: '#0D7377' }} />
-                <p className="font-bold text-sm" style={{ color: '#1A2332' }}>
-                  Magisk inmatning
-                </p>
+                <Zap className="w-4 h-4 text-cyan-300/80" />
+                <p className="text-[15px] font-medium text-white">Snabb inmatning</p>
               </div>
-              <button type="button" onClick={onClose}>
-                <X className="w-4 h-4" style={{ color: '#9AA5B4' }} />
+              <button type="button" onClick={onClose} className="text-white/40 hover:text-white/70">
+                <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="rounded-2xl p-1" style={{ background: '#F4F6F8' }}>
-              <textarea
-                className="w-full bg-transparent p-3 text-sm resize-none focus:outline-none"
-                style={{ color: '#1A2332', minHeight: 72 }}
-                placeholder='Skriv fritt, t.ex. "Lunch på stan 145kr" eller "Tidning igår 49kr"'
-                value={text}
-                onChange={(e) => {
-                  setText(e.target.value);
-                  setParsed(null);
-                }}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    handleParse();
-                  }
-                }}
-              />
-            </div>
+
+            <textarea
+              className="w-full rounded-2xl p-3 text-[15px] resize-none focus:outline-none focus:ring-1 focus:ring-white/20 bg-white/[0.06] text-white placeholder:text-white/35"
+              style={{ minHeight: 80 }}
+              placeholder='T.ex. "Lunch 145 kr" eller "Tidning igår 49 kr"'
+              value={text}
+              onChange={(e) => {
+                setText(e.target.value);
+                setParsed(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleParse();
+                }
+              }}
+            />
+
             {!parsed && (
               <button
                 type="button"
                 onClick={handleParse}
                 disabled={loading || !text.trim()}
-                className="w-full py-3 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2"
-                style={{ background: '#0D7377', opacity: !text.trim() ? 0.5 : 1 }}
+                className={`${techCta} w-full`}
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                {loading ? 'Analyserar...' : 'Analysera'}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Tolkar…
+                  </>
+                ) : (
+                  'Tolka text'
+                )}
               </button>
             )}
+
             {parsed && (
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-2xl p-4 space-y-3"
-                style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.15)' }}
+                className="rounded-[20px] p-4 space-y-3 ring-1 ring-inset ring-cyan-400/20 bg-cyan-400/5"
               >
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold" style={{ color: '#0D7377' }}>
-                    Hittade transaktion
-                  </p>
+                  <p className={dashLabel}>Förslag</p>
                   {parsed.needsReview && (
-                    <span className="flex items-center gap-1 text-[10px] font-semibold text-amber-700">
+                    <span className="flex items-center gap-1 text-[11px] text-amber-300/90">
                       <AlertCircle className="w-3 h-3" />
-                      Granska kategori
+                      Granska
                     </span>
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="grid grid-cols-2 gap-3 text-[13px]">
                   <div>
-                    <span style={{ color: '#9AA5B4' }}>Beskrivning</span>
-                    <p className="font-bold" style={{ color: '#1A2332' }}>
-                      {parsed.description}
-                    </p>
+                    <span className="text-white/40">Beskrivning</span>
+                    <p className="text-white font-medium mt-0.5">{parsed.description}</p>
                   </div>
                   <div>
-                    <span style={{ color: '#9AA5B4' }}>Belopp</span>
-                    <p className="font-bold" style={{ color: parsed.amount < 0 ? '#E53E3E' : '#0D7377' }}>
+                    <span className="text-white/40">Belopp</span>
+                    <p className={`font-medium tabular-nums mt-0.5 ${parsed.amount < 0 ? 'text-rose-300' : 'text-emerald-300'}`}>
                       {parsed.amount} kr
                     </p>
                   </div>
                   <div>
-                    <span style={{ color: '#9AA5B4' }}>Datum</span>
-                    <p className="font-bold" style={{ color: '#1A2332' }}>
-                      {parsed.date}
-                    </p>
+                    <span className="text-white/40">Datum</span>
+                    <p className="text-white font-medium mt-0.5">{parsed.date}</p>
                   </div>
                   <div>
-                    <span style={{ color: '#9AA5B4' }}>Kategori</span>
-                    <p className="font-bold" style={{ color: '#1A2332' }}>
-                      {CATEGORY_EMOJIS[parsed.category] || '📦'}{' '}
+                    <span className="text-white/40">Kategori</span>
+                    <p className="text-white font-medium mt-0.5">
                       {CATEGORY_LABELS[parsed.category] || parsed.category}
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setParsed(null)}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-semibold"
-                    style={{ background: '#ECEEF1', color: '#4A5568' }}
-                  >
+                  <button type="button" onClick={() => setParsed(null)} className={`${techCtaGhost} flex-1`}>
                     Ändra
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleSave}
-                    disabled={saving}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white flex items-center justify-center gap-1"
-                    style={{ background: '#0D7377' }}
-                  >
+                  <button type="button" onClick={handleSave} disabled={saving} className={`${techCta} flex-1`}>
                     {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
                     Spara
                   </button>
                 </div>
               </motion.div>
             )}
-            <p className="text-[10px] text-center" style={{ color: '#9AA5B4' }}>
-              Tryck Enter för att analysera snabbt
-            </p>
+
+            <p className="text-[11px] text-center text-white/35">Enter = tolka</p>
           </motion.div>
         </motion.div>
       )}

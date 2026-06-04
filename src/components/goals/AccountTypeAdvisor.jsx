@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Landmark } from 'lucide-react';
 
 const ACCOUNT_TYPES = {
   fast: {
@@ -107,15 +107,15 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
           <button onClick={fetchAdvice}
             className={`w-full py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${type.textColor}`}
             style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${type.border}` }}>
-            <Sparkles className="w-3.5 h-3.5" />
-            Få CFO-råd om kontotyp
+            <Landmark className="w-3.5 h-3.5" />
+            Få råd om kontotyp
           </button>
         )}
 
         {loading && (
           <div className="flex items-center gap-2 py-2">
             <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
-            <span className="text-xs text-slate-400">CFO-Analytikern tänker…</span>
+            <span className="text-xs text-slate-400">Analyserar…</span>
           </div>
         )}
 
@@ -124,7 +124,7 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               className="flex items-start gap-2 mt-1">
               <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Sparkles className="w-3.5 h-3.5 text-white/70" />
+                <Landmark className="w-3.5 h-3.5 text-white/70" />
               </div>
               <p className="text-xs text-slate-200 leading-relaxed">{advice}</p>
             </motion.div>

@@ -619,7 +619,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
             <Plane className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1">
-            <div className="text-[10px] text-indigo-400 font-bold mb-1.5 uppercase tracking-widest">Steg 1 · Smart Analys</div>
+            <div className="text-[10px] text-indigo-400 font-medium mb-1.5 tracking-wide">Steg 1 · Reseanalys</div>
             <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 space-y-2">
               <div className="grid grid-cols-2 gap-2">
                 {a?.destination && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-slate-500 mb-0.5">Destination</div><div className="text-white font-semibold">{a.destination}</div></div>}
@@ -638,7 +638,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
       if (!msg.timeline?.dates?.length) return null;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11">
-          <div className="text-[10px] text-indigo-400 font-bold mb-1.5 uppercase tracking-widest">Steg 2 · Reseplan</div>
+          <div className="text-[10px] text-indigo-400 font-medium mb-1.5 tracking-wide">Steg 2 · Reseplan</div>
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-3">
               <Calendar className="w-3.5 h-3.5 text-indigo-400" />
@@ -665,7 +665,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
     if (msg.type === 'packages') {
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11 space-y-3">
-          <div className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest">Dina 3 resvägar</div>
+          <div className="text-[10px] text-indigo-400 font-medium tracking-wide">Dina 3 resvägar</div>
           <DiscoveryCarousel
             packages={msg.packages || []}
             selectedPkg={selectedPkg}
@@ -698,7 +698,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
       const tight = msg.budgetCheck.marginPerDay < 200;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11">
-          <div className="text-[10px] text-indigo-400 font-bold mb-1.5 uppercase tracking-widest">Steg 3 · Budget-koll</div>
+          <div className="text-[10px] text-indigo-400 font-medium mb-1.5 tracking-wide">Steg 3 · Budget-koll</div>
           <div className={`rounded-2xl p-4 border ${tight ? 'bg-rose-500/8 border-rose-500/25' : 'bg-emerald-500/8 border-emerald-500/25'}`}>
             <div className="flex items-center gap-2 mb-3">
               <div className={`w-2 h-2 rounded-full ${tight ? 'bg-rose-400' : 'bg-emerald-400'}`}

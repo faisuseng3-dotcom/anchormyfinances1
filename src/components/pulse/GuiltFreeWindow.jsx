@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { formatNumber } from './pulseEngine';
 
 export default function GuiltFreeWindow({ amount, nextCriticalName, nextCriticalDays }) {
@@ -29,7 +29,7 @@ export default function GuiltFreeWindow({ amount, nextCriticalName, nextCritical
       <div className="relative">
         <div className="flex items-center gap-2 mb-4">
           <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${config.color} flex items-center justify-center shadow-lg`}>
-            <Sparkles className="w-4 h-4 text-white" />
+            <Shield className="w-4 h-4 text-white" />
           </div>
           <div>
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Guilt-Free Window</p>

@@ -147,7 +147,7 @@ export default function Landing() {
                 Anchor Personal
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'var(--color-text-muted)' }}>
-                Privatbudget, sparande &amp; AI-coaching
+                Privatbudget, signaler och verktyg
               </p>
             </div>
             {selectedMode === 'personal' && (

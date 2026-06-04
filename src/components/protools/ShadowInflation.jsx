@@ -158,7 +158,7 @@ Svara ENDAST med JSON.`,
 
         <Button onClick={handleAiScan} disabled={scanning}
           className="w-full mt-4 h-10 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-sm font-bold text-white hover:opacity-90">
-          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Skannar dina priser…</> : '🔍 Djup AI-inflationsskanning'}
+          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Skannar dina priser…</> : 'Djup inflationsskanning'}
         </Button>
       </div>
 

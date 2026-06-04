@@ -96,11 +96,7 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
   return (
     <DashboardSection
       title="Planera månaden"
-      subtitle={
-        isLoading
-          ? 'Laddar…'
-          : `${forecast?.status_emoji || ''} ${forecast?.status_label || 'Ekonomikalender'}`.trim()
-      }
+      subtitle={isLoading ? 'Synkar…' : forecast?.status_label || 'Ekonomikalender'}
       actionHref={DETAIL_PATH}
       actionLabel="Öppna kalender"
     >

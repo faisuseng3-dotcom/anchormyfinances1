@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import AnchorKey from './AnchorKey';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Compass } from 'lucide-react';
 
 export default function SignupConfirmation({ profile, persona, onContinue }) {
   return (
@@ -68,7 +68,7 @@ export default function SignupConfirmation({ profile, persona, onContinue }) {
         >
           {[
             { label: 'Minne', value: '∞', sub: 'månaders historia' },
-            { label: 'AI-Botar', value: '3', sub: 'aktiva assistenter' },
+            { label: 'Signaler', value: '3', sub: 'aktiva spår' },
             { label: 'Enheter', value: '∞', sub: 'alltid synkad' },
           ].map((stat, i) => (
             <div
@@ -91,7 +91,7 @@ export default function SignupConfirmation({ profile, persona, onContinue }) {
           whileTap={{ scale: 0.97 }}
           className="w-full h-14 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30"
         >
-          <Sparkles className="w-5 h-5" />
+          <Compass className="w-5 h-5" />
           Utforska din dashboard
           <ArrowRight className="w-5 h-5" />
         </motion.button>

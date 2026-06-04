@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, FileText, Zap, CheckCircle2, Sparkles } from 'lucide-react';
+import { X, Upload, FileText, Zap, CheckCircle2, ScanLine } from 'lucide-react';
 
 const STEPS = [
   { text: 'Läser av 142 transaktioner...', duration: 900 },
@@ -64,11 +64,11 @@ export default function MagicImport({ onClose, onComplete }) {
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)' }}>
-              <Sparkles className="w-4 h-4" style={{ color: '#D4AF37' }} />
+              <ScanLine className="w-4 h-4" style={{ color: '#D4AF37' }} />
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>Magic Import</p>
-              <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>AI bygger din ekonomiavdelning</p>
+              <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>Vi strukturerar din ekonomiavdelning</p>
             </div>
           </div>
           {phase !== 'processing' && (

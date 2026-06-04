@@ -32,7 +32,7 @@ const POPULAR_SERVICES = [
 
 const GROUP_LABELS = {
   streaming: '🎬 Streaming & Musik',
-  other: '🤖 AI-verktyg & SaaS',
+  other: 'Verktyg & SaaS',
   health: '💪 Hälsa & Träning',
 };
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { X, Loader2, ChevronRight, ChevronLeft, Sparkles, BookOpen } from 'lucide-react';
+import { X, Loader2, ChevronRight, ChevronLeft, LineChart, BookOpen } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TriggerLibrary from './TriggerLibrary';
@@ -12,7 +12,7 @@ const STRATEGIES = [
   { id: 'fixed', icon: '💳', title: 'Fast överföring', desc: 'Dra ett fast belopp varje månad.' },
   { id: 'dopamine', icon: '⚡', title: 'Dopamin-spararen', desc: 'Spara varje gång du hoppar över ett impulsinköp.' },
   { id: 'leftover', icon: '🌙', title: 'Rest-spararen', desc: 'Flytta det som är kvar dagen innan lön hit.' },
-  { id: 'custom', icon: '🛠️', title: 'Eget Schema', desc: 'Bygg din egen spar-regel med AI-triggers.' },
+  { id: 'custom', icon: '🛠️', title: 'Eget schema', desc: 'Bygg din egen sparregel med automatiska triggers.' },
 ];
 
 const FREQUENCIES = [
@@ -108,7 +108,7 @@ Detaljer:
 - Frekvens: ${freqLabel}
 - Belopp: ${customAmount} ${customAmountType === 'percent' ? '% av inkomsten' : 'kr'}
 - Månadsekvivalent: ~${monthly} kr/mån
-- AI-trigger: ${triggerLabel}
+- Trigger: ${triggerLabel}
 - Nuvarande marginal: ${margin} kr/mån
 
 Svara på svenska med 2-3 meningar. Bekräfta om schemat är hållbart, och ge ett smart tips om hur de kan maximera effekten av sin valda trigger. Var entusiastisk men realistisk.`,
@@ -288,7 +288,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                     </span>
                   </div>
                   {monthlyNeeded() > margin && (
-                    <p className="text-xs text-rose-300 mt-2">⚠ Överstiger din nuvarande marginal ({margin.toLocaleString('sv-SE')} kr). AI:n ger råd i nästa steg.</p>
+                    <p className="text-xs text-rose-300 mt-2">Överstiger din nuvarande marginal ({margin.toLocaleString('sv-SE')} kr). Insikt i nästa steg.</p>
                   )}
                 </motion.div>
               )}
@@ -301,17 +301,17 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
               {loadingAi ? (
                 <div className="flex flex-col items-center gap-3 py-8">
                   <Loader2 className="w-8 h-8 text-purple-400 animate-spin" />
-                  <p className="text-slate-400 text-sm">CFO-Analytikern räknar på din plan…</p>
+                  <p className="text-slate-400 text-sm">Räknar på din plan…</p>
                 </div>
               ) : aiInsight && (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
                   className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)' }}>
                   <div className="flex items-start gap-3">
                     <div className="w-9 h-9 rounded-xl bg-purple-600/30 flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="w-5 h-5 text-purple-300" />
+                      <LineChart className="w-5 h-5 text-[#0FDEBD]" />
                     </div>
                     <div>
-                      <p className="text-xs text-purple-300 font-semibold mb-1">CFO-Analytikern</p>
+                      <p className="text-xs text-[#0FDEBD] font-semibold mb-1">Sparinsikt</p>
                       <p className="text-sm text-slate-200 leading-relaxed">{aiInsight.message}</p>
                     </div>
                   </div>
@@ -379,7 +379,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {customAmount && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                       className="p-3 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                      <p className="text-xs text-slate-400">CFO-simulering</p>
+                      <p className="text-xs text-slate-400">Simulering</p>
                       <p className="text-sm font-bold text-emerald-400 mt-0.5">
                         ≈ {customMonthlyEquivalent().toLocaleString('sv-SE')} kr / månad
                       </p>
@@ -394,7 +394,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {/* AI Trigger */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs text-slate-400">AI-trigger (valfri)</p>
+                      <p className="text-xs text-slate-400">Automatisk trigger (valfritt)</p>
                       <button onClick={() => setShowTriggerLib(!showTriggerLib)}
                         className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300">
                         <BookOpen className="w-3 h-3" />
@@ -425,14 +425,14 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {customAmount && (
                     <button onClick={fetchCustomAi} disabled={loadingCustomAi}
                       className="w-full py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-indigo-600 to-purple-600 text-white flex items-center justify-center gap-2">
-                      {loadingCustomAi ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyserar…</> : <><Sparkles className="w-4 h-4" /> Få CFO-feedback</>}
+                      {loadingCustomAi ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyserar…</> : <><LineChart className="w-4 h-4" /> Få sparinsikt</>}
                     </button>
                   )}
 
                   {customAiMsg && (
                     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
                       className="p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)' }}>
-                      <p className="text-xs text-purple-300 font-semibold mb-1">🤖 CFO-Analytikern</p>
+                      <p className="text-xs text-[#0FDEBD] font-semibold mb-1">Sparinsikt</p>
                       <p className="text-xs text-slate-200 leading-relaxed">{customAiMsg.message}</p>
                     </motion.div>
                   )}
@@ -465,7 +465,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
               {/* Account Type Advisor */}
               <div className="text-left">
-                <p className="text-xs text-slate-500 mb-2 uppercase tracking-widest font-semibold">CFO-råd: Var ska pengarna ligga?</p>
+                <p className="text-xs text-slate-500 mb-2 tracking-wide font-semibold">Var ska pengarna ligga?</p>
                 <AccountTypeAdvisor
                   months={monthsUntil()}
                   isBuffer={false}

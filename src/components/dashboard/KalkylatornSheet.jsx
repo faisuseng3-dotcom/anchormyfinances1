@@ -71,7 +71,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 32, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[22px] overflow-hidden max-h-[78vh] flex flex-col"
+            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[32px] overflow-hidden max-h-[78vh] flex flex-col"
             style={elevatedSheet()}
           >
             <div className="flex justify-center pt-3 pb-1 shrink-0">

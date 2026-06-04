@@ -183,7 +183,7 @@ Ge en KONKRET rekommendation på svenska (2-3 meningar). Var specifik om belopp 
                 size="sm"
                 className="w-full mt-3 h-9 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs"
               >
-                {loading ? <><Loader2 className="w-3 h-3 mr-2 animate-spin" />Analyserar…</> : 'CFO-analys av perioden'}
+                {loading ? <><Loader2 className="w-3 h-3 mr-2 animate-spin" />Analyserar…</> : 'Analysera perioden'}
               </Button>
             )}
           </motion.div>

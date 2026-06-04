@@ -451,7 +451,7 @@ function ClosingStep({ isAB, companyName, locked, onLock }) {
             className="w-full rounded-2xl py-3 font-bold text-sm flex items-center justify-center gap-2"
             style={{ background: '#0D7377', color: '#fff', opacity: locked ? 0.5 : 1 }}>
             {generating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-            Generera verifikat med AI
+            Generera verifikat automatiskt
           </button>
         ) : (
           <div className="space-y-3">

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Brain, Calendar, Sparkles, ChevronRight } from 'lucide-react';
+import { TrendingUp, Brain, Calendar, Radio, ChevronRight } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import QuickStats from '@/components/dashboard/QuickStats';
 
@@ -191,7 +191,7 @@ Ge konkreta råd med beräknade effekter i kronor och över tid. Var specifik oc
               >
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                    <Sparkles className="w-5 h-5 text-white" />
+                    <Radio className="w-5 h-5 text-white" />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-white mb-1">{insight.title}</h4>

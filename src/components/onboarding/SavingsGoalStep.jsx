@@ -2,7 +2,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Target, Sparkles } from 'lucide-react';
+import { Target, PiggyBank } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
 
 const suggestions = [
@@ -40,7 +40,7 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
         {/* Suggestions */}
         <div>
           <Label className="text-slate-300 text-sm flex items-center gap-2 mb-3">
-            <Sparkles className="w-4 h-4 text-amber-500" />
+            <PiggyBank className="w-4 h-4 text-amber-500" />
             Populära sparmål
           </Label>
           <div className="grid grid-cols-2 gap-2">

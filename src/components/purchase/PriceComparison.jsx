@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, TrendingDown, TrendingUp, Store, Package, Truck, Bell, BellOff, Sparkles } from 'lucide-react';
+import { X, ExternalLink, TrendingDown, TrendingUp, Store, Package, Truck, Bell, BellOff, Scale } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -78,14 +78,14 @@ export default function PriceComparison({
 
           {/* Economic Impact */}
           {economicImpact && (
-            <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl">
+            <div className="p-4 rounded-xl ring-1 ring-[#0D7377]/15" style={{ background: 'rgba(13,115,119,0.06)' }}>
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 rounded-lg bg-[#0D7377] flex items-center justify-center">
+                  <Scale className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-purple-900">AI-analys</p>
-                  <p className="text-sm text-purple-700 mt-1">
+                  <p className="text-sm font-medium text-[#1A2332]">Budgetsignal</p>
+                  <p className="text-sm text-[#4A5568] mt-1">
                     {budgetPercentage > 0 && budgetPercentage < 100 
                       ? `Billigaste alternativet motsvarar ${budgetPercentage}% av din fria månadsbudget.`
                       : budgetPercentage >= 100
@@ -93,8 +93,8 @@ export default function PriceComparison({
                       : `Detta köp är inom din budget.`}
                   </p>
                   {priceDiff > 500 && (
-                    <p className="text-sm text-purple-700 mt-1">
-                      💡 Genom att välja billigaste alternativet sparar du {formatNumber(priceDiff)} kr.
+                    <p className="text-sm text-[#4A5568] mt-1">
+                      Genom att välja billigaste alternativet sparar du {formatNumber(priceDiff)} kr.
                     </p>
                   )}
                 </div>

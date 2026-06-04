@@ -37,7 +37,7 @@ const EVENTS = [
     vatRate: 25,
     hasReceipt: true,
     iconKey: 'software',
-    bookedBy: 'Anchor AI',
+    bookedBy: 'Automatiskt',
     type: 'expense',
   },
   {
@@ -55,7 +55,7 @@ const EVENTS = [
     vatRate: 10,
     hasReceipt: true,
     iconKey: 'travel',
-    bookedBy: 'Anchor AI',
+    bookedBy: 'Automatiskt',
     type: 'expense',
   },
   {
@@ -73,7 +73,7 @@ const EVENTS = [
     vatRate: 0,
     hasReceipt: false,
     iconKey: 'income',
-    bookedBy: 'Anchor AI',
+    bookedBy: 'Automatiskt',
     type: 'income',
   },
   {
@@ -91,7 +91,7 @@ const EVENTS = [
     vatRate: 25,
     hasReceipt: false,
     iconKey: 'equipment',
-    bookedBy: 'Anchor AI',
+    bookedBy: 'Automatiskt',
     type: 'expense',
   },
   {
@@ -109,7 +109,7 @@ const EVENTS = [
     vatRate: 12,
     hasReceipt: false,
     iconKey: 'dining',
-    bookedBy: 'Anchor AI',
+    bookedBy: 'Automatiskt',
     type: 'expense',
   },
 ];
@@ -142,7 +142,7 @@ function ReceiptBadge() {
 
 function VerifikatModal({ event, onClose }) {
   const handleDownload = () => {
-    const content = `VERIFIKAT — Bokfört via Anchor AI\n${'='.repeat(40)}\nHändelse: ${event.description}\nLeverantör: ${event.vendor}\nDatum: ${event.date} ${event.time}\n\nKonto: ${event.account} (${event.accountLabel})\nMotkonto: ${event.counterAccount} (${event.counterLabel})\nBelopp: ${Math.abs(event.amount).toLocaleString('sv-SE')} kr\nMoms ${event.vatRate}%: ${event.vat.toFixed(2)} kr\n\nBokfört av: ${event.bookedBy}\n${'='.repeat(40)}\n`;
+    const content = `VERIFIKAT — Anchor\n${'='.repeat(40)}\nHändelse: ${event.description}\nLeverantör: ${event.vendor}\nDatum: ${event.date} ${event.time}\n\nKonto: ${event.account} (${event.accountLabel})\nMotkonto: ${event.counterAccount} (${event.counterLabel})\nBelopp: ${Math.abs(event.amount).toLocaleString('sv-SE')} kr\nMoms ${event.vatRate}%: ${event.vat.toFixed(2)} kr\n\nBokfört av: ${event.bookedBy}\n${'='.repeat(40)}\n`;
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, TrendingUp, ArrowRight, Sparkles } from 'lucide-react';
+import { X, TrendingUp, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import confetti from 'canvas-confetti';
 
@@ -50,7 +50,7 @@ export default function WealthOptimizerModal({ isOpen, onConfirm, onClose }) {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-slate-500 mb-6">Ränte-optimering · AI-identifierad</p>
+            <p className="text-xs text-slate-500 mb-6">Ränte-optimering · signalidentifierad</p>
 
             {/* Transfer animation */}
             <div className="flex items-center gap-3 mb-6">
@@ -94,13 +94,13 @@ export default function WealthOptimizerModal({ isOpen, onConfirm, onClose }) {
                 animate={{ scale: 1, opacity: 1 }}
                 className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-indigo-500/20 border border-indigo-500/30"
               >
-                <Sparkles className="w-5 h-5 text-indigo-400" />
+                <CheckCircle2 className="w-5 h-5 text-indigo-400" />
                 <p className="text-sm font-bold text-indigo-300">Kapital optimerat! +110 kr/mån</p>
               </motion.div>
             ) : (
               <div className="flex gap-3">
                 <Button onClick={handleConfirm} className="flex-1 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90 text-white text-sm font-semibold shadow-lg shadow-indigo-500/30">
-                  <Sparkles className="w-4 h-4 mr-1.5" />
+                  <ArrowRight className="w-4 h-4 mr-1.5" />
                   Bekräfta överföring
                 </Button>
                 <Button onClick={onClose} variant="outline" className="rounded-xl border-white/10 hover:bg-white/5 text-slate-300 text-sm px-4">

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Check, X } from 'lucide-react';
+import { ScanLine, Check, X } from 'lucide-react';
 import { saveOverride } from '@/lib/enrichmentEngine';
 
 /**
@@ -30,7 +30,7 @@ export default function CategoryOverridePrompt({ vendor, newCategory, categoryLa
       >
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(13,115,119,0.1)' }}>
-            <Sparkles className="w-4 h-4" style={{ color: '#0D7377' }} />
+            <ScanLine className="w-4 h-4" style={{ color: '#0D7377' }} />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold mb-1" style={{ color: 'var(--color-text-primary)' }}>

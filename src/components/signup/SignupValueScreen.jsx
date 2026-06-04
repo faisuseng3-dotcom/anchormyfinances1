@@ -13,8 +13,8 @@ const perks = [
   {
     icon: Bot,
     emoji: '🤖',
-    title: 'Personliga AI-Botar',
-    desc: 'Dina botar lär känna ditt beteende och ger bättre råd ju längre du använder appen.',
+    title: 'Personliga signaler',
+    desc: 'Anchor lär känna ditt beteende och ger skarpare insikter ju längre du använder appen.',
     color: 'from-purple-500 to-pink-600',
   },
   {

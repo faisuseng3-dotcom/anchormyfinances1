@@ -170,7 +170,7 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
       )}
       {ocrData && (
         <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.25)' }}>
-          <p className="text-xs font-bold mb-1" style={{ color: '#3DAA7A' }}>✓ AI läste kvittot automatiskt</p>
+          <p className="text-xs font-bold mb-1" style={{ color: '#3DAA7A' }}>Kvittot tolkades automatiskt</p>
           <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.7)' }}>
             {ocrData.vendor} · {ocrData.total?.toFixed(2)} kr · Moms {ocrData.vatRate}% ({ocrData.vatAmount?.toFixed(2)} kr)
           </p>

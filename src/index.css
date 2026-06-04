@@ -197,6 +197,15 @@
     @apply flex items-center gap-3 py-3.5 w-full text-left transition-opacity active:opacity-60;
   }
 
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Elevated sheet only — not for every dashboard block */
   .anchor-glass-card {
     border-radius: 20px;

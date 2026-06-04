@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { FileUp, Sparkles } from 'lucide-react';
+import { FileUp, Radio } from 'lucide-react';
 
 export default function CommandCenter({ onMagicEntry }) {
   return (
@@ -69,7 +69,7 @@ export default function CommandCenter({ onMagicEntry }) {
             }}
           >
             <motion.div animate={{ rotate: [0, 20, -20, 0] }} transition={{ duration: 3.5, repeat: Infinity, delay: 1 }}>
-              <Sparkles className="w-4 h-4" style={{ color: '#A78BFA' }} />
+              <Radio className="w-4 h-4" style={{ color: '#0FDEBD' }} />
             </motion.div>
           </motion.div>
           <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(167,139,250,0.6)' }}>MAGISK</p>

@@ -1,8 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart } from 'lucide-react';
 import { MOOD_OPTIONS, moodToToneMode } from '@/lib/anchorBrain';
-import { sectionMetaClass, sectionSubtitleClass, anchorPrimaryButtonClass } from '@/lib/anchorTheme';
+import { dashLabel } from '@/lib/dashboardTheme';
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -11,65 +10,49 @@ function todayKey() {
 export default function EconomicMoodCheckIn({ onComplete }) {
   const [selected, setSelected] = React.useState(null);
 
-  const handleContinue = () => {
-    if (!selected) return;
+  const handlePick = (id) => {
+    setSelected(id);
     onComplete({
-      sessionMood: selected,
+      sessionMood: id,
       sessionMoodDate: todayKey(),
-      toneMode: moodToToneMode(selected),
+      toneMode: moodToToneMode(id),
     });
   };
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-white/[0.12] bg-white/[0.06] px-4 py-4"
+      className="py-6 text-center"
     >
-      <div className="flex items-start gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-[#6B9FFF]/15 border border-[#6B9FFF]/25 flex items-center justify-center flex-shrink-0">
-          <Heart className="w-5 h-5 text-[#9FB5FF]" />
-        </div>
-        <div>
-          <p className={sectionMetaClass}>Först känslan, sedan siffrorna</p>
-          <h2 className="text-[17px] font-semibold text-white mt-0.5">
-            Hur mår din ekonomi idag?
-          </h2>
-          <p className={`${sectionSubtitleClass} mt-1`}>
-            Stress och pengar hänger ihop — vi anpassar tonen innan du ser belopp.
-          </p>
-        </div>
-      </div>
+      <p className={dashLabel}>Innan siffrorna</p>
+      <h2 className="text-[22px] font-light text-white mt-2 tracking-tight">
+        Hur känns ekonomin idag?
+      </h2>
 
-      <div className="space-y-2">
+      <div className="flex flex-wrap justify-center gap-2.5 mt-6">
         {MOOD_OPTIONS.map((m) => {
           const on = selected === m.id;
           return (
-            <button
+            <motion.button
               key={m.id}
               type="button"
-              onClick={() => setSelected(m.id)}
-              className={`w-full text-left rounded-xl px-3.5 py-3 border transition-colors ${
+              whileTap={{ scale: 0.96 }}
+              onClick={() => handlePick(m.id)}
+              className={`px-5 py-3 rounded-full text-[14px] font-medium transition-all ${
                 on
-                  ? 'border-[#6B9FFF]/50 bg-[#6B9FFF]/12'
-                  : 'border-white/[0.08] bg-white/[0.03]'
+                  ? 'bg-white text-[#050d28] shadow-[0_0_32px_rgba(255,255,255,0.2)]'
+                  : 'bg-white/[0.06] text-white/75 ring-1 ring-white/[0.1] hover:bg-white/[0.1]'
               }`}
             >
-              <p className="text-[15px] font-medium text-white">{m.label}</p>
-              <p className="text-[13px] text-white/45 mt-0.5">{m.sub}</p>
-            </button>
+              {m.label}
+            </motion.button>
           );
         })}
       </div>
-
-      <button
-        type="button"
-        disabled={!selected}
-        onClick={handleContinue}
-        className={`${anchorPrimaryButtonClass} w-full mt-4`}
-      >
-        Fortsätt till min pengometer
-      </button>
+      <p className="text-[12px] text-white/35 mt-4 max-w-[260px] mx-auto">
+        Vi anpassar hur mycket som visas — inget skuldbeläggning.
+      </p>
     </motion.section>
   );
 }

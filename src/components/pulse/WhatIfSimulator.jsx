@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X } from 'lucide-react';
+import { GitBranch, X } from 'lucide-react';
 import { formatNumber, getGuiltFreeAmount } from './pulseEngine';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
@@ -47,7 +47,7 @@ export default function WhatIfSimulator({ events, currentBalance, onWhatIfChange
       <div className="p-4 space-y-3">
         <div className="flex items-center gap-2">
           <motion.div animate={{ rotate: [0, 20, -20, 0] }} transition={{ duration: 4, repeat: Infinity, delay: 1 }}>
-            <Sparkles className="w-4 h-4" style={{ color: '#A78BFA' }} />
+            <GitBranch className="w-4 h-4" style={{ color: '#0FDEBD' }} />
           </motion.div>
           <p className="text-[9px] font-black tracking-widest" style={{ color: 'rgba(167,139,250,0.7)' }}>
             WHAT-IF PROJEKTION

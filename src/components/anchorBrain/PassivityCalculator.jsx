@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlarmClock } from 'lucide-react';
 import { futureValueMonthly, costOfWaiting } from '@/lib/financialUtils';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
-import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { dashLabel } from '@/lib/dashboardTheme';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
-export default function PassivityCalculator({ profile }) {
+export default function PassivityCalculator({ profile, variant = 'default' }) {
   const [monthly, setMonthly] = useState(500);
   const [years, setYears] = useState(30);
   const [story, setStory] = useState(null);
@@ -43,17 +42,28 @@ export default function PassivityCalculator({ profile }) {
     };
   }, [monthly, years, fv, waitCost, profile]);
 
-  return (
-    <section className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-4">
-      <div className="flex items-center gap-2 mb-3">
-        <AlarmClock className="w-4 h-4 text-amber-300" />
-        <p className={sectionMetaClass}>Vad kostar din passivitet?</p>
-      </div>
-      <p className={`${sectionSubtitleClass} mb-4`}>
-        Välfärdsstaten ger stöd — men framtida du betalar för varje månad utan sparande.
-      </p>
+  const wrapClass =
+    variant === 'inset'
+      ? 'relative rounded-[24px] p-5 overflow-hidden'
+      : 'rounded-2xl border border-white/[0.08] px-4 py-4';
 
-      <label className="block text-[13px] text-white/50 mb-1">Spara per månad (kr)</label>
+  return (
+    <section
+      className={wrapClass}
+      style={
+        variant === 'inset'
+          ? {
+              background:
+                'linear-gradient(160deg, rgba(251, 191, 36, 0.08) 0%, rgba(255,255,255,0.02) 50%)',
+            }
+          : undefined
+      }
+    >
+      {variant === 'inset' && (
+        <div className="absolute inset-0 ring-1 ring-inset ring-white/[0.08] rounded-[24px] pointer-events-none" />
+      )}
+
+      <label className={`${dashLabel} block mb-3`}>Spara {fmt(monthly)} kr/mån</label>
       <input
         type="range"
         min={100}
@@ -61,28 +71,27 @@ export default function PassivityCalculator({ profile }) {
         step={100}
         value={monthly}
         onChange={(e) => setMonthly(Number(e.target.value))}
-        className="w-full accent-[#6B9FFF]"
+        className="w-full accent-amber-400/90"
       />
-      <p className="text-[22px] font-semibold text-white tabular-nums mt-1">{fmt(monthly)} kr/mån</p>
 
-      <label className="block text-[13px] text-white/50 mt-4 mb-1">Tidshorisont (år)</label>
+      <label className={`${dashLabel} block mt-4 mb-2`}>Horisont {years} år</label>
       <input
         type="range"
         min={5}
         max={40}
         value={years}
         onChange={(e) => setYears(Number(e.target.value))}
-        className="w-full accent-[#6B9FFF]"
+        className="w-full accent-violet-400/80"
       />
 
-      <div className="mt-4 pt-4 border-t border-white/[0.08] grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4 mt-5">
         <div>
-          <p className="text-[12px] text-white/40">Om {years} år</p>
-          <p className="text-[18px] font-semibold text-emerald-300/95 tabular-nums">{fmt(fv)} kr</p>
+          <p className="text-[11px] text-white/35">Värde om {years} år</p>
+          <p className="text-[22px] font-light text-white tabular-nums">{fmt(fv)}</p>
         </div>
         <div>
-          <p className="text-[12px] text-white/40">1 månad väntan kostar</p>
-          <p className="text-[18px] font-semibold text-amber-200/95 tabular-nums">~{fmt(waitCost)} kr</p>
+          <p className="text-[11px] text-white/35">1 månad väntan</p>
+          <p className="text-[22px] font-light text-amber-200/90 tabular-nums">−{fmt(waitCost)}</p>
         </div>
       </div>
 
@@ -90,13 +99,10 @@ export default function PassivityCalculator({ profile }) {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-[15px] font-medium text-white mt-4 leading-snug"
+          className="text-[14px] text-white/55 mt-4 font-light leading-relaxed relative z-10"
         >
           {story.wake_line}
         </motion.p>
-      )}
-      {story?.story && (
-        <p className={`${sectionSubtitleClass} mt-2 leading-relaxed`}>{story.story}</p>
       )}
     </section>
   );

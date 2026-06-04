@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 
 const PROCESSING_STEPS = [
   'Laddar upp bild…',
-  'AI läser kvittot…',
+  'Läser kvittot…',
   'Identifierar leverantör…',
   'Extraherar belopp & moms…',
   'Förbereder bokföringspost…',
@@ -138,7 +138,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
             <Camera className="w-4 h-4" style={{ color: '#D4AF37' }} />
             <p className="font-bold text-sm" style={{ color: '#F0EAD6' }}>
               {phase === 'upload' ? 'Fota kvitto / faktura' :
-               phase === 'processing' ? 'AI analyserar…' :
+               phase === 'processing' ? 'Tolkar kvitto…' :
                phase === 'review' ? 'Granska & bekräfta' :
                '✓ Sparad!'}
             </p>
@@ -168,7 +168,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                   </div>
                   <div className="text-center">
                     <p className="font-bold text-sm" style={{ color: '#F0EAD6' }}>Fota eller ladda upp kvitto</p>
-                    <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.55)' }}>JPG, PNG, PDF · AI läser av data automatiskt</p>
+                    <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.55)' }}>JPG, PNG, PDF · data läses av automatiskt</p>
                   </div>
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full"
                     style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}>
@@ -221,7 +221,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                     style={{ background: 'rgba(61,170,122,0.1)', border: '1px solid rgba(61,170,122,0.25)' }}>
                     <CheckCircle2 className="w-4 h-4" style={{ color: '#3DAA7A' }} />
                     <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>
-                      AI läste kvittot med {extracted.confidence}% säkerhet — granska och justera vid behov
+                      Kvitto tolkat med {extracted.confidence}% säkerhet — granska och justera vid behov
                     </p>
                   </div>
                 )}
@@ -260,7 +260,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                   </div>
                   <div>
                     <label className="text-[10px] font-bold uppercase tracking-wider mb-1 block"
-                      style={{ color: 'rgba(155,173,184,0.45)' }}>Konto (AI-förslag)</label>
+                      style={{ color: 'rgba(155,173,184,0.45)' }}>Konto (förslag)</label>
                     <select value={form.account} onChange={e => setForm(prev => ({ ...prev, account: e.target.value }))}
                       className="w-full h-11 px-3 rounded-xl text-sm font-bold"
                       style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>

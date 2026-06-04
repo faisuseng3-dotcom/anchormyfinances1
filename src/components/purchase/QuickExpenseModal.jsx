@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { X, Sparkles, Loader2 } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -277,43 +277,36 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
             animate={{ opacity: 1, scale: 1 }}
             className="py-4"
           >
-            <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-              <motion.div
+            <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/30 flex items-center justify-center mx-auto mb-4">
+              <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-3xl text-emerald-600"
+                transition={{ delay: 0.15 }}
+                className="text-2xl text-emerald-300"
               >
                 ✓
-              </motion.div>
+              </motion.span>
             </div>
 
-            <h3 className="text-xl font-bold text-slate-900 text-center mb-2">
-              Köp registrerat!
+            <h3 className="text-xl font-medium text-white text-center mb-4">
+              Registrerat
             </h3>
 
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-5 mb-4">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-purple-500 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-purple-900 mb-2">AI-analys</p>
-                  <p className="text-sm text-purple-700 leading-relaxed">{aiInsight.text}</p>
-                </div>
-              </div>
+            <div className="rounded-[20px] p-4 mb-4 ring-1 ring-inset ring-white/[0.1] bg-white/[0.05]">
+              <p className="text-[12px] text-white/40 mb-2">Efter köpet</p>
+              <p className="text-[14px] text-white/70 leading-relaxed font-light">{aiInsight.text}</p>
             </div>
 
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <div className="p-4 bg-slate-50 rounded-xl text-center">
-                <p className="text-xs text-slate-500 mb-1">Kvar denna månad</p>
-                <p className="text-xl font-bold text-slate-900">
+              <div className="py-3 text-center rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.06]">
+                <p className="text-[11px] text-white/40 mb-1">Kvar i månaden</p>
+                <p className="text-lg font-medium text-white tabular-nums">
                   {aiInsight.remaining.toLocaleString()} kr
                 </p>
               </div>
-              <div className="p-4 bg-slate-50 rounded-xl text-center">
-                <p className="text-xs text-slate-500 mb-1">Total spenderat</p>
-                <p className="text-xl font-bold text-slate-900">
+              <div className="py-3 text-center rounded-2xl bg-white/[0.04] ring-1 ring-white/[0.06]">
+                <p className="text-[11px] text-white/40 mb-1">Spenderat</p>
+                <p className="text-lg font-medium text-white tabular-nums">
                   {aiInsight.totalSpent.toLocaleString()} kr
                 </p>
               </div>
@@ -321,7 +314,7 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
 
             <Button
               onClick={handleClose}
-              className="w-full h-12 rounded-xl bg-slate-800 hover:bg-slate-900"
+              className="w-full h-12 rounded-full bg-white text-[#050d28] hover:bg-white/95 font-semibold"
             >
               Stäng
             </Button>

@@ -67,7 +67,7 @@ export default function MarginModal({ isOpen, onClose, profile }) {
                 </div>
                 <div>
                   <p className="text-base font-bold text-white">Marginal-Booster</p>
-                  <p className="text-xs text-slate-500">AI-optimering av dina utgifter</p>
+                  <p className="text-xs text-slate-500">Utgiftsoptimering</p>
                 </div>
               </div>
               <button onClick={onClose} className="text-slate-600 hover:text-white transition-colors">

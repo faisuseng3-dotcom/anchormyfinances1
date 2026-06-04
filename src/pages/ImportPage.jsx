@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -16,7 +16,7 @@ export default function ImportPage() {
   const [parsedRows, setParsedRows] = useState(null);
   const [step, setStep] = useState('upload');
   const [saving, setSaving] = useState(false);
-  const [analyzeLabel, setAnalyzeLabel] = useState('AI kategoriserar dina transaktioner...');
+  const [analyzeLabel, setAnalyzeLabel] = useState('Kategoriserar transaktioner…');
 
   const handleFileParsed = async (rows, headers) => {
     setStep('analyzing');
@@ -26,7 +26,7 @@ export default function ImportPage() {
 
   const handlePdfFile = async (file) => {
     setStep('analyzing');
-    setAnalyzeLabel('Läser din PDF med AI...');
+    setAnalyzeLabel('Läser PDF…');
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     const result = await base44.integrations.Core.InvokeLLM({
       prompt: `Bank-PDF. Extrahera transaktioner: date, description, amount (negativ=utgift).`,
@@ -57,7 +57,7 @@ export default function ImportPage() {
 
   const handlePasteText = async (text) => {
     setStep('analyzing');
-    setAnalyzeLabel('AI tolkar inklistrad text...');
+    setAnalyzeLabel('Tolkar inklistrad text…');
     const result = await base44.integrations.Core.InvokeLLM({
       prompt: `Extrahera transaktioner från banktext:\n${text.slice(0, 8000)}`,
       response_json_schema: {
@@ -96,7 +96,7 @@ export default function ImportPage() {
     const { categories, stats } = await categorizePipeline(base44, items);
 
     if (stats.llmUsed > 0) {
-      setAnalyzeLabel(`${stats.localOnly} lokalt · ${stats.llmUsed} via AI`);
+      setAnalyzeLabel(`${stats.localOnly} lokalt · ${stats.llmUsed} tolkade`);
     }
 
     setParsedRows(
@@ -188,7 +188,7 @@ export default function ImportPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="flex flex-col items-center py-20 gap-4 text-center"
             >
-              <Sparkles className="w-8 h-8 text-[#0D7377]" />
+              <CheckCircle2 className="w-8 h-8 text-[#0D7377]" />
               <p className="text-[20px] font-semibold text-[#1A2332]">Import klar</p>
               <p className={bizSubtitleClass}>Transaktionerna är sparade och kategoriserade.</p>
               <Link

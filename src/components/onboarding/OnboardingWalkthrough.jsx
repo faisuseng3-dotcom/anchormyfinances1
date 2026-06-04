@@ -8,7 +8,7 @@ const STEPS = [
     targetId: 'walkthrough-safe-to-spend',
     emoji: '💚',
     title: 'Ditt ekonomiska lugn',
-    text: 'Sluta gissa. Här ser du exakt hur mycket du kan spendera idag utan att sabba din budget eller dina sparmål. Din AI-coach har redan räknat bort räkningar och buffert.',
+    text: 'Sluta gissa. Här ser du exakt hur mycket du kan spendera idag utan att sabba din budget eller dina sparmål. Anchor har redan räknat bort räkningar och buffert.',
   },
   {
     id: 'forecast',
@@ -22,14 +22,14 @@ const STEPS = [
     targetId: 'walkthrough-resell',
     emoji: '📸',
     title: 'Tjäna pengar direkt',
-    text: 'Har du prylar som ligger och skräpar? Fota dem! Vår AI hittar bästa priset på marknaden och visar direkt hur försäljningen boostar din 5-årsprognos.',
+    text: 'Har du prylar som ligger och skräpar? Fota dem! Anchor hittar bästa priset på marknaden och visar hur försäljningen påverkar din 5-årsprognos.',
   },
   {
     id: 'simulator',
     targetId: 'walkthrough-simulator',
     emoji: '🧠',
     title: 'Testa framtiden',
-    text: 'Ska du köpa en ny bil eller börja plugga? Simulatorn låter dig testa "Tänk om"-scenarier innan du tar beslutet. AI:n räknar ut konsekvenserna åt dig.',
+    text: 'Ska du köpa en ny bil eller börja plugga? Simulatorn låter dig testa "Tänk om"-scenarier innan du tar beslutet. Anchor räknar ut konsekvenserna åt dig.',
   },
 ];
 

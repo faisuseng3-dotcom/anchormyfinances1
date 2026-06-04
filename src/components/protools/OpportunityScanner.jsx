@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Coins, Loader2, ChevronRight, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Coins, Loader2, ChevronRight, Radar, CheckCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -183,7 +183,7 @@ Svara ENDAST med JSON.`,
 
         <Button onClick={handleDeepScan} disabled={scanning}
           className="w-full h-11 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 font-bold text-white hover:opacity-90">
-          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Jagar gratispengar…</> : <><Sparkles className="w-4 h-4 mr-2" />Starta djupskanning</>}
+          {scanning ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Jagar gratispengar…</> : <><Radar className="w-4 h-4 mr-2" />Starta djupskanning</>}
         </Button>
       </div>
 

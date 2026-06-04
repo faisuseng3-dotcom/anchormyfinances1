@@ -135,7 +135,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
               className="flex-1 py-2 rounded-xl text-xs font-bold text-white"
               style={{ background: pasteValue.trim() ? '#0D7377' : '#9AA5B4' }}
             >
-              Analysera med AI ✨
+              Tolka och kategorisera
             </button>
           </div>
         </motion.div>

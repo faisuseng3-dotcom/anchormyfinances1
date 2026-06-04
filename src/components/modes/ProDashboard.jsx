@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, TrendingUp, Target, AlertTriangle, Sparkles, Calendar } from 'lucide-react';
+import { Zap, TrendingUp, Target, AlertTriangle, Radio, Calendar } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { Button } from "@/components/ui/button";
 import QuickStats from '@/components/dashboard/QuickStats';
@@ -146,7 +146,7 @@ Svara professionellt som en senior finansiell strateg.`;
       >
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-xl bg-white/20 flex items-center justify-center">
-            <Sparkles className="w-7 h-7 text-white" />
+            <Radio className="w-7 h-7 text-white" />
           </div>
           <div className="text-left flex-1">
             <h3 className="font-bold text-white text-lg">Beslutsmotor</h3>

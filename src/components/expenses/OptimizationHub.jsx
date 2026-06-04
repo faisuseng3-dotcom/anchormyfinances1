@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Zap, ShoppingCart, Coffee, Star, Sparkles } from 'lucide-react';
+import { X, Zap, ShoppingCart, Coffee, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
@@ -24,7 +24,7 @@ function BasketSwap({ item }) {
         </div>
       </div>
       <div className="p-3 rounded-xl mb-4" style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}>
-        <p className="text-xs text-indigo-300">✦ AI-förslag: Identisk kasse hos Willys sparar dig <span className="font-bold text-white">{fmt(saving)} kr/mån</span>. Ekologiska mejeriprodukter kan bytas mot liknande utan att offra kvaliteten.</p>
+        <p className="text-xs text-indigo-300">Förslag: Identisk kasse hos Willys sparar dig <span className="font-bold text-white">{fmt(saving)} kr/mån</span>. Ekologiska mejeriprodukter kan bytas mot liknande utan att offra kvaliteten.</p>
       </div>
       <Button className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold py-5">
         <ShoppingCart className="w-4 h-4 mr-2" /> Uppdatera min smarta inköpslista
@@ -131,7 +131,7 @@ function HappinessMap({ feelings, item }) {
         ))}
       </div>
       {loved > 0 && (
-        <p className="text-xs text-emerald-400 mt-3 italic">✦ Uppfattat – AI skyddar din livskvalitetsbudget för {loved} post{loved > 1 ? 'er' : ''}.</p>
+        <p className="text-xs text-emerald-400 mt-3 italic">Uppfattat – vi skyddar din livskvalitetsbudget för {loved} post{loved > 1 ? 'er' : ''}.</p>
       )}
     </div>
   );

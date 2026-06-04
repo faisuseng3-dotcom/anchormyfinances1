@@ -4,7 +4,7 @@ import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
 import { Scissors, Target, PiggyBank, Users } from 'lucide-react';
 import { DashboardDivider, DashboardListRow, DashboardSection } from '@/components/dashboard/DashboardChrome';
-import { sectionMetaClass } from '@/lib/anchorTheme';
+import { dashLabel } from '@/lib/appSurface';
 import { PROTOOLS_SCENARIOS, PROTOOLS_EXPLORE, sortTools } from '@/lib/toolCatalog';
 import ProToolsHero from '@/components/protools/ProToolsHero';
 import AIGuru from '@/components/protools/mastery/AIGuru';
@@ -29,7 +29,7 @@ const DEEP_MODULES = [
   },
   {
     id: 'ai_guru',
-    title: 'Vad ger extra sparande?',
+    title: 'Effekt av extra sparande',
     hint: 'Se effekten per månad och per år',
     icon: PiggyBank,
     component: AIGuru,
@@ -45,8 +45,8 @@ const DEEP_MODULES = [
 
 function ToolIcon({ icon: Icon }) {
   return (
-    <div className="w-10 h-10 rounded-xl bg-[#6B9FFF]/12 border border-[#6B9FFF]/20 flex items-center justify-center">
-      <Icon className="w-5 h-5 text-[#9FB5FF]" />
+    <div className="w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08]">
+      <Icon className="w-5 h-5 text-cyan-300/80" />
     </div>
   );
 }
@@ -80,8 +80,8 @@ export default function ProTools() {
       <ProToolsHero profile={profile} />
 
       {profile?.topConcern && (
-        <p className={`${sectionMetaClass} -mt-2 mb-4`}>
-          Sorterat efter vad du valde i onboarding.
+        <p className={`${dashLabel} -mt-1 mb-4`}>
+          Prioriterat utifrån ditt fokus
         </p>
       )}
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Zap } from 'lucide-react';
+import { X, Radio, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function AINotificationOverlay({ notification, onAction, onDismiss }) {
@@ -52,7 +52,7 @@ export default function AINotificationOverlay({ notification, onAction, onDismis
 
               <div className="flex-1 min-w-0">
                 <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold border mb-1 ${badgeColor}`}>
-                  <Sparkles className="w-2.5 h-2.5" />
+                  <Radio className="w-2.5 h-2.5" />
                   {badge}
                 </div>
                 <p className="text-sm font-bold text-white leading-snug">{headline}</p>

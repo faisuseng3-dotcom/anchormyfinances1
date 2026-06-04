@@ -79,9 +79,8 @@ export default function BudgetDashboard() {
         ))}
       </DashboardSection>
 
-      <p className={`text-center ${sectionSubtitleClass} mt-2 px-2`}>
-        Baserat på utgifter registrerade eller importerade den här månaden. Gränser kan också
-        kopieras från Jämför.
+      <p className={`text-center ${sectionSubtitleClass} mt-2 px-2 font-light`}>
+        Uppdateras från dina transaktioner den här månaden. Gränser kan kopieras från Jämför.
       </p>
 
       {editCategory && (

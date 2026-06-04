@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Coffee, Car, Film, Heart, Zap, Package, Home, Wifi, Shield, Star, Minus, DollarSign, ChevronDown, ChevronRight, Sparkles } from 'lucide-react';
+import { ShoppingCart, Coffee, Car, Film, Heart, Zap, Package, Home, Wifi, Shield, Star, Minus, DollarSign, ChevronDown, ChevronRight, TrendingDown } from 'lucide-react';
 import OptimizationHub from './OptimizationHub';
 import { toast } from 'sonner';
 
@@ -121,7 +121,7 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
                     <span className="text-xs font-bold text-white uppercase tracking-wider">{cfg.emoji} {cfg.label}</span>
                     {isHighOpt && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: `${cfg.color}25`, color: cfg.color }}>
-                        ✦ AI-optimering
+                        Sparförslag
                       </span>
                     )}
                   </div>
@@ -192,8 +192,8 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
                     {isHighOpt && (
                       <div className="px-4 pb-3 pt-1">
                         <p className="text-xs text-slate-500 italic" style={{ color: cfg.color + 'bb' }}>
-                          <Sparkles className="inline w-3 h-3 mr-1" />
-                          AI ser optimeringspotential i {cfg.label.toLowerCase()} – klicka på en post för analys
+                          <TrendingDown className="inline w-3 h-3 mr-1" />
+                          Sparpotential i {cfg.label.toLowerCase()} – klicka på en post för analys
                         </p>
                       </div>
                     )}

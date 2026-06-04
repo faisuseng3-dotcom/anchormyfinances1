@@ -18,7 +18,7 @@ export default function WarningBanner({ count, onReview }) {
           <p className="text-[14px] font-medium text-[#DC2626]">
             {count} transaktion{count > 1 ? 'er' : ''} behöver granskning
           </p>
-          <p className="text-[12px] text-[#9AA5B4]">AI är osäker på BAS-konto</p>
+          <p className="text-[12px] text-[#9AA5B4]">Osäker BAS-matchning — granska kontot</p>
         </div>
       </div>
       {onReview && (

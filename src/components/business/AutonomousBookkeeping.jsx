@@ -93,7 +93,7 @@ function SIEExport() {
 }
 
 const TABS = [
-  { id: 'feed', label: 'AI-feed', icon: Zap },
+  { id: 'feed', label: 'Signal-feed', icon: Zap },
   { id: 'live', label: 'Live-balans', icon: Clock },
   { id: 'export', label: 'Export & Moms', icon: Shield },
 ];
@@ -115,7 +115,7 @@ export default function AutonomousBookkeeping() {
           </div>
           <div>
             <p className="text-xs font-bold" style={{ color: '#D4AF37' }}>THE AUTONOMOUS LEDGER</p>
-            <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.6)' }}>AI sköter löpande bokföring i realtid</p>
+            <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.6)' }}>Automatisk löpande bokföring i realtid</p>
           </div>
         </div>
       </div>

@@ -228,7 +228,7 @@ export default function AgentHub({ profile }) {
             <Bot className="w-5 h-5 text-purple-400" />
             <h3 className="font-semibold text-white">Ledningsgruppen</h3>
           </div>
-          <p className="text-xs text-slate-500 mb-4">Fyra specialiserade AI-agenter. Välj en specialist eller ställ en komplex fråga till CFO-Analytikern för att aktivera samanalys från alla.</p>
+          <p className="text-xs text-slate-500 mb-4">Fyra specialiserade rådgivare. Välj en specialist eller ställ en komplex fråga för samanalys från alla.</p>
           <div className="grid grid-cols-2 gap-3">
             {AGENTS.map((agent, i) => (
               <motion.button key={agent.id}

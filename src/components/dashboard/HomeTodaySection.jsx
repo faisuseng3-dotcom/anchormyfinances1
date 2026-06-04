@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Radio } from 'lucide-react';
 import { useDashboardBriefing } from '@/hooks/useDashboardBriefing';
-import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { dashLabel, dashSignalLine } from '@/lib/dashboardTheme';
 
 export default function HomeTodaySection({ refreshKey = 0, toneMode = 'normal' }) {
   const { briefing, loading, hasProfile } = useDashboardBriefing(refreshKey);
@@ -10,26 +10,30 @@ export default function HomeTodaySection({ refreshKey = 0, toneMode = 'normal' }
 
   if (!hasProfile) return null;
 
-  const actions = briefing?.actions?.slice(0, 3) || [];
+  const actions = briefing?.actions?.slice(0, soft ? 1 : 3) || [];
 
   return (
-    <section className="rounded-2xl border border-white/[0.08] bg-white/[0.04] overflow-hidden">
-      <div className="px-4 pt-4 pb-2">
-        <p className={sectionMetaClass}>Idag</p>
+    <section>
+      <div className="flex items-center gap-2 mb-3">
+        <Radio className="w-3.5 h-3.5 text-cyan-400/70" />
+        <p className={dashLabel}>Live-signal</p>
+      </div>
+
+      <div className={dashSignalLine}>
         {loading ? (
-          <div className="flex items-center gap-2 py-4 text-white/50 text-sm">
+          <div className="flex items-center gap-2 py-2 text-white/45 text-sm font-light">
             <Loader2 className="w-4 h-4 animate-spin" />
-            Räknar utifrån din profil…
+            Synkar…
           </div>
         ) : (
           <>
             {briefing?.headline && (
-              <h3 className="text-[16px] font-semibold text-white mt-1 leading-snug">
+              <h3 className="text-[18px] font-medium text-white leading-snug tracking-tight">
                 {briefing.headline}
               </h3>
             )}
             {briefing?.message && (
-              <p className={`${sectionSubtitleClass} mt-1.5 leading-relaxed`}>
+              <p className="text-[14px] text-white/50 mt-2 leading-relaxed font-light">
                 {briefing.message}
               </p>
             )}
@@ -37,29 +41,25 @@ export default function HomeTodaySection({ refreshKey = 0, toneMode = 'normal' }
         )}
       </div>
 
-      {!loading && !soft && actions.length > 0 && (
-        <ul className="border-t border-white/[0.06]">
+      {!loading && actions.length > 0 && (
+        <ul className="mt-5 space-y-3">
           {actions.map((action, i) => (
             <motion.li
               key={`${action.title}-${i}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: i * 0.05 }}
-              className="px-4 py-3 border-b border-white/[0.04] last:border-0"
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.06 }}
+              className="flex gap-3 items-start"
             >
-              <div className="flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-white/[0.08] flex items-center justify-center text-[12px] font-semibold text-white/70 flex-shrink-0">
-                  {i + 1}
-                </span>
-                <div className="min-w-0">
-                  <p className="text-[14px] font-medium text-white">{action.title}</p>
-                  <p className="text-[12px] text-white/50 mt-0.5 leading-relaxed">{action.detail}</p>
-                  {action.impact_kr > 0 && (
-                    <p className="text-[12px] text-emerald-300/90 mt-1 tabular-nums">
-                      +{Math.round(action.impact_kr).toLocaleString('sv-SE')} kr/mån möjlig effekt
-                    </p>
-                  )}
-                </div>
+              <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-cyan-400/80 flex-shrink-0" />
+              <div className="min-w-0">
+                <p className="text-[14px] font-medium text-white/90">{action.title}</p>
+                <p className="text-[12px] text-white/45 mt-0.5 leading-relaxed">{action.detail}</p>
+                {action.impact_kr > 0 && (
+                  <p className="text-[12px] text-emerald-400/80 mt-1 tabular-nums">
+                    +{Math.round(action.impact_kr).toLocaleString('sv-SE')} kr/mån
+                  </p>
+                )}
               </div>
             </motion.li>
           ))}
