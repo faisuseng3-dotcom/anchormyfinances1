@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import QuickProblemStep from '@/components/onboarding/QuickProblemStep';
@@ -10,18 +10,25 @@ import PersonaStep from '@/components/onboarding/PersonaStep';
 import SwedishBasicsFoundationStep from '@/components/onboarding/SwedishBasicsFoundationStep';
 import { applyConcernToProfile, getPostOnboardingAction } from '@/lib/onboardingFocus';
 import { rowsToTransactions } from '@/lib/bankImportHelpers';
+import { isFoundationTestMode } from '@/lib/foundationTestMode';
+import { toast } from 'sonner';
+
+const FOUNDATIONS_STEP = 3;
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const [step, setStep] = useState(0);
+  const [searchParams] = useSearchParams();
+  const testFoundations = isFoundationTestMode(searchParams);
+  const [step, setStep] = useState(testFoundations ? FOUNDATIONS_STEP : 0);
 
   useEffect(() => {
+    if (testFoundations) return;
     base44.entities.FinancialProfile.list().then((profiles) => {
       if (profiles.length > 0 && profiles[0].onboardingCompleted) {
         navigate(createPageUrl('Dashboard'), { replace: true });
       }
     });
-  }, [navigate]);
+  }, [navigate, testFoundations]);
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
@@ -97,6 +104,33 @@ export default function Onboarding() {
     });
   };
 
+  const handleFoundationsTestExit = async () => {
+    if (!data.foundationsCompleted?.includes('school_gap')) {
+      toast.message('Avbrutet — inget sparat (kräv godkänt quiz först).');
+      navigate(createPageUrl('Dashboard'));
+      return;
+    }
+    setLoading(true);
+    try {
+      const profiles = await base44.entities.FinancialProfile.list();
+      if (profiles.length > 0) {
+        const p = profiles[0];
+        await base44.entities.FinancialProfile.update(p.id, {
+          foundationsCompleted: [...new Set([...(p.foundationsCompleted || []), 'school_gap'])],
+          academyCompleted: [
+            ...new Set([...(p.academyCompleted || []), 'swedish_economy_basics']),
+          ],
+        });
+      }
+      toast.success('Grundkurs sparad på profilen (testläge).');
+    } catch {
+      toast.error('Kunde inte spara — försök igen.');
+    } finally {
+      setLoading(false);
+      navigate(createPageUrl('Dashboard'));
+    }
+  };
+
   const steps = [
     <QuickProblemStep key="problem" data={data} onChange={setData} onNext={() => setStep(1)} />,
     <QuickGoalStep key="goal" data={data} onChange={setData} onNext={() => setStep(2)} onBack={() => setStep(0)} />,
@@ -111,8 +145,10 @@ export default function Onboarding() {
     <PersonaStep key="persona" data={data} onChange={setData} onNext={handleComplete} onBack={() => setStep(3)} />,
   ];
 
-  const totalSteps = 5;
-  const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
+  const totalSteps = testFoundations ? 1 : 5;
+  const progressPercent = testFoundations
+    ? 100
+    : Math.round(((step + 1) / totalSteps) * 100);
 
   if (loading) {
     return (
@@ -141,10 +177,24 @@ export default function Onboarding() {
           />
         </div>
         <div className="flex justify-between px-5 sm:px-6 py-2.5 bg-[#040814]/80 backdrop-blur-md border-b border-white/[0.06]">
-          <span className="text-[13px] text-white/50">Steg {step + 1} av {totalSteps}</span>
+          <span className="text-[13px] text-white/50">
+            {testFoundations ? 'Test — grundkurs' : `Steg ${step + 1} av ${totalSteps}`}
+          </span>
           <span className="text-[13px] text-white/50 tabular-nums">{progressPercent}%</span>
         </div>
       </div>
+
+      {testFoundations && (
+        <div className="mt-[calc(env(safe-area-inset-top)+3.25rem)] px-5 sm:px-6 pt-3">
+          <div className="max-w-md mx-auto rounded-xl px-4 py-3 bg-amber-500/15 ring-1 ring-amber-400/30 text-[13px] text-amber-100/90 leading-relaxed">
+            <strong className="font-semibold text-amber-50">Testläge.</strong> Du hoppar direkt till
+            quizet. Efter godkänt sparas bara grundkursen — övrig onboarding ändras inte.{' '}
+            <Link to={createPageUrl('Dashboard')} className="underline text-amber-50/90">
+              Avbryt
+            </Link>
+          </div>
+        </div>
+      )}
 
       <AnimatePresence mode="wait">{steps[step]}</AnimatePresence>
     </div>

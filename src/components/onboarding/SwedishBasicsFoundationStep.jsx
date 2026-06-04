@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 
 const MODULE = MODULE_SCHOOL_GAP;
 
-export default function SwedishBasicsFoundationStep({ data, onChange, onNext, onBack }) {
+export default function SwedishBasicsFoundationStep({ data, onChange, onNext, onBack, testMode = false }) {
   const [phase, setPhase] = useState('read');
   const [cardIndex, setCardIndex] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -257,7 +257,7 @@ export default function SwedishBasicsFoundationStep({ data, onChange, onNext, on
             <div className="flex gap-3 pt-2">
               {grade.passed ? (
                 <button type="button" onClick={onNext} className={`${onboardingPrimaryBtn} w-full`}>
-                  Fortsätt
+                  {testMode ? 'Spara och tillbaka till appen' : 'Fortsätt'}
                 </button>
               ) : (
                 <>
