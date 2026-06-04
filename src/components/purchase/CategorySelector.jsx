@@ -22,11 +22,13 @@ export default function CategorySelector({ selected, onSelect }) {
               onClick={() => onSelect(cat.id)}
               leading={
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    isSelected ? 'bg-white/15 ring-1 ring-white/25' : 'bg-white/[0.06]'
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
+                    isSelected
+                      ? 'bg-[#6B9FFF]/20 border-[#6B9FFF]/40'
+                      : 'bg-[#6B9FFF]/10 border-white/[0.08]'
                   }`}
                 >
-                  <Icon className="w-5 h-5 text-white/85" />
+                  <Icon className="w-5 h-5 text-[#9FB5FF]" />
                 </div>
               }
               title={cat.name}

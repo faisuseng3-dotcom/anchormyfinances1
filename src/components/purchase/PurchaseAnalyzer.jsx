@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link2, Upload, Loader2, ShoppingBag, AlertTriangle } from 'lucide-react';
+import { Link2, Upload, Loader2, ShoppingBag, AlertTriangle, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   anchorInputClass,
   anchorPrimaryButtonClass,
+  anchorSecondaryButtonClass,
   anchorIconButtonClass,
   sectionMetaClass,
   sectionSubtitleClass,
@@ -189,9 +190,10 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                 setImageFile(null);
                 setImagePreview(null);
               }}
-              className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/60 text-white text-xs flex items-center justify-center"
+              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center"
+              aria-label="Ta bort bild"
             >
-              ✕
+              <X className="w-3.5 h-3.5 text-white" />
             </button>
           </div>
         )}
@@ -220,7 +222,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="space-y-3"
+            className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-4 space-y-3"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -337,14 +339,14 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                     <button
                       type="button"
                       onClick={() => setShieldChoice('cheaper')}
-                      className={`${anchorIconButtonClass} h-10 w-auto px-3 rounded-xl text-[13px]`}
+                      className={`${anchorSecondaryButtonClass} h-10 px-3 text-[13px]`}
                     >
                       Hitta billigare
                     </button>
                     <button
                       type="button"
                       onClick={() => setShieldChoice('buy')}
-                      className={`${anchorIconButtonClass} h-10 w-auto px-3 rounded-xl text-[13px]`}
+                      className={`${anchorSecondaryButtonClass} h-10 px-3 text-[13px]`}
                     >
                       Köp ändå
                     </button>

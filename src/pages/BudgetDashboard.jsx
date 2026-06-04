@@ -3,15 +3,14 @@ import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
-import { motion } from 'framer-motion';
 import PageShell from '@/components/layout/PageShell';
 import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { createPageUrl } from '@/utils';
+import { TRACKED_BUDGET_CATEGORIES } from '@/lib/budgetCategories';
+import BudgetHero from '@/components/budget/BudgetHero';
 import BudgetCategoryRow from '@/components/budget/BudgetCategoryRow';
 import SetBudgetModal from '@/components/budget/SetBudgetModal';
-
-const TRACKED_CATEGORIES = ['food', 'transport', 'entertainment', 'travel', 'health', 'home', 'shopping', 'other'];
 
 function getMonthRange() {
   const now = new Date();
@@ -27,11 +26,10 @@ export default function BudgetDashboard() {
   const { profile } = useFinancialProfile();
   const { transactions = [] } = useTransactions();
 
-  // Aggregate expenses for current month per category
   const monthlySpent = useMemo(() => {
     const { start, end } = getMonthRange();
     const spent = {};
-    transactions.forEach(tx => {
+    transactions.forEach((tx) => {
       if (!['expense', 'shopping'].includes(tx.type) && tx.amount >= 0) return;
       const date = new Date(tx.created_date);
       if (date < start || date > end) return;
@@ -42,9 +40,11 @@ export default function BudgetDashboard() {
   }, [transactions]);
 
   const budgetLimits = profile?.budgetLimits || {};
-
   const totalBudgeted = Object.values(budgetLimits).reduce((s, v) => s + v, 0);
-  const totalSpent = TRACKED_CATEGORIES.reduce((s, cat) => s + (monthlySpent[cat] || 0), 0);
+  const totalSpent = TRACKED_BUDGET_CATEGORIES.reduce(
+    (s, cat) => s + (monthlySpent[cat] || 0),
+    0,
+  );
 
   const handleSaveBudget = async (category, amount) => {
     if (!profile) return;
@@ -58,33 +58,15 @@ export default function BudgetDashboard() {
   const monthName = now.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' });
 
   return (
-    <PageShell title="Budget" subtitle={monthName} backHref={createPageUrl('Dashboard')}>
-      {totalBudgeted > 0 && (
-        <DashboardSection nested title="Total budget">
-          <div className="flex items-end justify-between mb-3">
-            <p className="text-[32px] font-semibold text-white tabular-nums leading-none">
-              {totalSpent.toLocaleString('sv-SE')} <span className="text-lg font-normal text-white/45">kr</span>
-            </p>
-            <p className={sectionSubtitleClass}>av {totalBudgeted.toLocaleString('sv-SE')} kr</p>
-          </div>
-          <div className="w-full h-1 rounded-full overflow-hidden bg-white/[0.08]">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min((totalSpent / totalBudgeted) * 100, 100)}%` }}
-              transition={{ duration: 0.8, ease: 'easeOut' }}
-              className="h-full rounded-full"
-              style={{
-                background: totalSpent / totalBudgeted >= 1 ? '#FF8A9A'
-                  : totalSpent / totalBudgeted >= 0.8 ? '#FCD34D'
-                  : 'linear-gradient(90deg, #5B8CFF, #A8C4FF)'
-              }}
-            />
-          </div>
-        </DashboardSection>
-      )}
+    <PageShell title="Budget" subtitle="Plan mot utfall" backHref={createPageUrl('Dashboard')}>
+      <BudgetHero
+        totalSpent={totalSpent}
+        totalBudgeted={totalBudgeted}
+        monthName={monthName}
+      />
 
       <DashboardSection nested title="Kategorier" subtitle="Tryck för att ändra gräns">
-        {TRACKED_CATEGORIES.map((cat, i) => (
+        {TRACKED_BUDGET_CATEGORIES.map((cat, i) => (
           <React.Fragment key={cat}>
             {i > 0 && <DashboardDivider />}
             <BudgetCategoryRow
@@ -97,8 +79,9 @@ export default function BudgetDashboard() {
         ))}
       </DashboardSection>
 
-      <p className={`text-center ${sectionSubtitleClass} mt-2`}>
-        Baserat på transaktioner importerade eller registrerade denna månad
+      <p className={`text-center ${sectionSubtitleClass} mt-2 px-2`}>
+        Baserat på utgifter registrerade eller importerade den här månaden. Gränser kan också
+        kopieras från Jämför.
       </p>
 
       {editCategory && (

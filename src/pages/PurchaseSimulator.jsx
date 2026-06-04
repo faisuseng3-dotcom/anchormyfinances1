@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { base44 } from '@/api/base44Client';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
@@ -7,6 +6,7 @@ import ModeGate from '@/components/ModeGate';
 import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
 import CategorySelector from '@/components/purchase/CategorySelector';
 import PurchaseAnalyzer from '@/components/purchase/PurchaseAnalyzer';
+import PurchaseHero from '@/components/purchase/PurchaseHero';
 import VehicleAnalysis from '@/components/purchase/categories/VehicleAnalysis';
 import HousingAnalysis from '@/components/purchase/categories/HousingAnalysis';
 import ElectronicsAnalysis from '@/components/purchase/categories/ElectronicsAnalysis';
@@ -15,9 +15,7 @@ import { anchorGhostButtonClass } from '@/lib/anchorTheme';
 
 export default function PurchaseSimulator() {
   const [selectedCategory, setSelectedCategory] = useState(null);
-
   const { profile, isLoading } = useFinancialProfile();
-
   const currentMode = profile?.mode || 'basic';
 
   if (isLoading) {
@@ -31,18 +29,20 @@ export default function PurchaseSimulator() {
   return (
     <PageShell
       title="Kan jag köpa det här?"
-      subtitle="Klistra in länk, ladda upp bild eller välj typ av köp"
+      subtitle="Simulera större köp"
       backHref={createPageUrl('Dashboard')}
     >
       <ModeGate feature="purchase_simulator" mode={currentMode}>
-        <DashboardSection title="Snabbkoll" subtitle="Länk eller bild från annons">
+        <PurchaseHero profile={profile} />
+
+        <DashboardSection nested title="Snabbkoll" subtitle="Länk eller bild från annons">
           <PurchaseAnalyzer profile={profile} />
         </DashboardSection>
 
         <DashboardDivider className="my-6" />
 
         {!selectedCategory ? (
-          <DashboardSection title="Eller välj typ av köp">
+          <DashboardSection nested title="Större köp" subtitle="Fordons-, bostads- och eventanalys">
             <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
           </DashboardSection>
         ) : (
@@ -54,18 +54,12 @@ export default function PurchaseSimulator() {
             >
               ← Byt typ av köp
             </button>
-            {selectedCategory === 'vehicle' && (
-              <VehicleAnalysis mode={currentMode} profile={profile} />
-            )}
-            {selectedCategory === 'housing' && (
-              <HousingAnalysis mode={currentMode} profile={profile} />
-            )}
+            {selectedCategory === 'vehicle' && <VehicleAnalysis mode={currentMode} profile={profile} />}
+            {selectedCategory === 'housing' && <HousingAnalysis mode={currentMode} profile={profile} />}
             {selectedCategory === 'electronics' && (
               <ElectronicsAnalysis mode={currentMode} profile={profile} />
             )}
-            {selectedCategory === 'event' && (
-              <EventAnalysis mode={currentMode} profile={profile} />
-            )}
+            {selectedCategory === 'event' && <EventAnalysis mode={currentMode} profile={profile} />}
           </>
         )}
       </ModeGate>
