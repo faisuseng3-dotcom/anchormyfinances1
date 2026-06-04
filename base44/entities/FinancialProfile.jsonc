@@ -263,6 +263,39 @@
       "type": "boolean",
       "description": "Om onboarding \u00e4r slutf\u00f6rd"
     },
+    "city": {
+      "type": "string",
+      "description": "Stad f\u00f6r empatisk kontext (t.ex. Stockholm)"
+    },
+    "sessionMood": {
+      "type": "string",
+      "enum": ["calm", "stressed", "motivated"],
+      "description": "Dagens ekonomiska hum\u00f6r"
+    },
+    "sessionMoodDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum f\u00f6r senaste hum\u00f6r-incheckning"
+    },
+    "toneMode": {
+      "type": "string",
+      "enum": ["soft", "normal", "coach"],
+      "description": "AI- och UI-ton f\u00f6r sessionen"
+    },
+    "communicationStyle": {
+      "type": "string",
+      "enum": ["reassuring", "balanced", "direct"],
+      "description": "Kommunikationsstil fr\u00e5n onboarding (beteende, inte k\u00f6n)"
+    },
+    "academyCompleted": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Klara Anchor Academy-lektioner"
+    },
+    "lastAcademyLessonId": {
+      "type": "string",
+      "description": "Senast visade lektion"
+    },
     "dailyLoginStreak": {
       "type": "integer",
       "default": 0,

@@ -6,6 +6,8 @@ import {
   History,
   CalendarDays,
   Plane,
+  GraduationCap,
+  AlarmClock,
 } from 'lucide-react';
 
 /** Snabbkalkylator på Hem (4 kärnval). */
@@ -66,6 +68,21 @@ export const PROTOOLS_EXPLORE = [
     hint: 'Budget och kostnad per dag',
     icon: Plane,
     page: 'TravelPlanner',
+  },
+  {
+    id: 'academy',
+    question: 'Anchor Academy',
+    hint: '60-sekunders lektioner för din situation',
+    icon: GraduationCap,
+    page: 'AnchorAcademy',
+  },
+  {
+    id: 'passivity',
+    question: 'Vad kostar passivitet?',
+    hint: 'Ränta på ränta och priset av att vänta',
+    icon: AlarmClock,
+    page: 'Dashboard',
+    anchorHash: 'passivity',
   },
 ];
 

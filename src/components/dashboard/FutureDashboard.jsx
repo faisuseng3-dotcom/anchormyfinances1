@@ -11,7 +11,7 @@ import {
   elevatedSheet,
 } from '@/lib/anchorTheme';
 import { DashboardDivider } from './DashboardChrome';
-import SpendableHero from './SpendableHero';
+import AnchorBrainSection from '@/components/anchorBrain/AnchorBrainSection';
 import EconomicHealthCard from './EconomicHealthCard';
 import HomeFocusBanner from './HomeFocusBanner';
 import HomeTodaySection from './HomeTodaySection';
@@ -23,6 +23,7 @@ import { calculateMLI, resetActionDensity } from '@/lib/mliEngine';
 export default function FutureDashboard({
   profile,
   transactions,
+  updateProfile,
   onOpenExpense,
   onOpenMagicEntry,
   onOpenTransactionHub,
@@ -85,10 +86,17 @@ export default function FutureDashboard({
       <div className="relative z-10">
         <EconomicHealthCard mli={mli} />
         <HomeFocusBanner profile={profile} onAction={onFocusAction} />
-        <SpendableHero profile={profile} />
+
+        <div className={`${anchorZoneClass} mt-3`}>
+          <AnchorBrainSection
+            profile={profile}
+            transactions={transactions}
+            updateProfile={updateProfile}
+          />
+        </div>
 
         <div className={`${anchorZoneClass} mt-4 space-y-4`}>
-          <HomeTodaySection />
+          <HomeTodaySection toneMode={profile?.toneMode} />
           <HomeWeekAhead profile={profile} />
         </div>
 

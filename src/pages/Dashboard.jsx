@@ -28,7 +28,7 @@ export default function Dashboard() {
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showMagicEntry, setShowMagicEntry] = useState(false);
   const { isAlexMode: isAlex } = useDemoMode();
-  const { profile, isLoading, invalidate, isPersisted } = useFinancialProfile();
+  const { profile, isLoading, invalidate, isPersisted, updateProfile } = useFinancialProfile();
   const { transactions: txs } = useTransactions();
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
@@ -133,6 +133,7 @@ export default function Dashboard() {
       <FutureDashboard
         profile={profile}
         transactions={txs}
+        updateProfile={updateProfile}
         user={isAlex ? { full_name: 'Alex Lindqvist' } : undefined}
         onOpenExpense={() => setShowExpenseModal(true)}
         onOpenMagicEntry={() => setShowMagicEntry(true)}

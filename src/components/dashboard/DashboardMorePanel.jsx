@@ -12,6 +12,7 @@ import SpendingHubModule from './SpendingHubModule';
 import LeakageDetector from './LeakageDetector';
 import AIStoryBar from './AIStoryBar';
 import WeeklySummary from './WeeklySummary';
+import PassivityCalculator from '@/components/anchorBrain/PassivityCalculator';
 
 export default function DashboardMorePanel({
   profile,
@@ -55,6 +56,7 @@ export default function DashboardMorePanel({
             </Link>
           </div>
 
+          <PassivityCalculator profile={profile} />
           <AIStoryBar profile={profile} transactions={transactions} />
           <WeeklySummary />
 

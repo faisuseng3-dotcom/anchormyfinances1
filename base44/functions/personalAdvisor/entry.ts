@@ -76,6 +76,21 @@ function buildSnapshot(profile, transactions) {
       payment_kr: l.monthlyPayment || 0,
     })),
     budget_limits: profile.budgetLimits || {},
+    session_mood: profile.sessionMood || null,
+    tone_mode: profile.toneMode || null,
+    communication_style: profile.communicationStyle || 'balanced',
+    city: profile.city || null,
+    top_concern: profile.topConcern || null,
+    pengometer: {
+      remaining_week_kr: Math.max(0, Math.round((margin / 30) * 7 - spentLast7)),
+      remaining_this_month_kr: Math.round(margin - spentThisMonth),
+      spent_last_7_days_kr: Math.round(spentLast7),
+    },
+    subscription_scan: {
+      total_kr: Math.round(
+        (profile.subscriptions || []).reduce((s: number, x: { amount?: number }) => s + (x.amount || 0), 0),
+      ),
+    },
   };
 }
 
@@ -160,17 +175,56 @@ const SCHEMAS = {
     properties: { answer: { type: 'string' } },
     required: ['answer'],
   },
+  subscription_scan: {
+    type: 'object',
+    properties: {
+      headline: { type: 'string' },
+      insight: { type: 'string' },
+      share_caption: { type: 'string' },
+    },
+    required: ['headline', 'insight', 'share_caption'],
+  },
+  academy_lesson: {
+    type: 'object',
+    properties: {
+      title: { type: 'string' },
+      body: { type: 'string' },
+      takeaway: { type: 'string' },
+      cta: { type: 'string' },
+    },
+    required: ['title', 'body', 'takeaway', 'cta'],
+  },
+  pengometer_line: {
+    type: 'object',
+    properties: {
+      feeling_line: { type: 'string' },
+      tip: { type: 'string' },
+    },
+    required: ['feeling_line', 'tip'],
+  },
+  passivity_wake: {
+    type: 'object',
+    properties: {
+      headline: { type: 'string' },
+      story: { type: 'string' },
+      wake_line: { type: 'string' },
+    },
+    required: ['headline', 'story', 'wake_line'],
+  },
 };
 
 function buildScenarioPrompt(scenario, snapshot, extras) {
   const base = `${ADVISOR_RULES}\n\nEkonomisk snapshot (ENDA sanning — använd dessa siffror):\n${JSON.stringify(snapshot, null, 2)}\n`;
 
   switch (scenario) {
-    case 'dashboard_briefing':
+    case 'dashboard_briefing': {
+      const soft = snapshot.tone_mode === 'soft';
       return `${base}
-Scenario: Daglig personlig briefing på dashboard.
-Skriv headline (max 8 ord), message (2–3 meningar med deras marginal/buffert/utgifter), och 2–3 actions med konkret impact_kr där möjligt.
-Returnera JSON enligt schema.`;
+Scenario: Daglig personlig briefing på Hem.
+${soft ? 'Stressad användare — mjuk ton, max 1 kort action.' : 'headline (max 8 ord), message (2–3 meningar), 2–3 actions med impact_kr.'}
+Nämn pengometer.remaining_week_kr om relevant. Aldrig skuldbeläggning.
+Returnera JSON.`;
+    }
 
     case 'weekly_summary':
       return `${base}
@@ -208,6 +262,26 @@ Användarens fråga: "${extras.question || ''}"
 Svara som personlig rådgivare med deras siffror. answer: 2–4 meningar.
 Returnera JSON.`;
 
+    case 'subscription_scan':
+      return `${base}
+Scenario: Prenumerationsscanner. subscription_scan.total_kr är sanning.
+headline med total_kr (delbar). insight: 2 meningar. share_caption: kort delningstext.
+Returnera JSON.`;
+
+    case 'academy_lesson':
+      return `${base}
+Scenario: Anchor Academy 60s lektion. Enkelt språk om grundbegrepp. body max 120 ord. Returnera JSON.`;
+
+    case 'pengometer_line':
+      return `${base}
+Scenario: Pengometer känslolinje. feeling_line: 1 mening om remaining_week_kr. tip: 1 råd.
+Returnera JSON.`;
+
+    case 'passivity_wake':
+      return `${base}
+Scenario: Passivitetsväckarklocka. payload: ${JSON.stringify(extras.payload || {})}.
+story 2–3 meningar, wake_line 1 stark mening. Returnera JSON.`;
+
     default:
       return `${base}\nScenario: ${scenario}\nReturnera JSON med message.`;
   }
@@ -227,6 +301,7 @@ Deno.serve(async (req) => {
       subscription,
       coachType,
       payload,
+      lesson,
     } = body;
 
     const profiles = await base44.entities.FinancialProfile.list('-updated_date', 5);
@@ -264,6 +339,7 @@ Deno.serve(async (req) => {
       subscription,
       coachType,
       payload,
+      lesson,
     });
 
     const { result, model } = await invokeWithFallback(base44, prompt, schema);

@@ -4,8 +4,9 @@ import { Loader2 } from 'lucide-react';
 import { useDashboardBriefing } from '@/hooks/useDashboardBriefing';
 import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
-export default function HomeTodaySection({ refreshKey = 0 }) {
+export default function HomeTodaySection({ refreshKey = 0, toneMode = 'normal' }) {
   const { briefing, loading, hasProfile } = useDashboardBriefing(refreshKey);
+  const soft = toneMode === 'soft';
 
   if (!hasProfile) return null;
 
@@ -36,7 +37,7 @@ export default function HomeTodaySection({ refreshKey = 0 }) {
         )}
       </div>
 
-      {!loading && actions.length > 0 && (
+      {!loading && !soft && actions.length > 0 && (
         <ul className="border-t border-white/[0.06]">
           {actions.map((action, i) => (
             <motion.li

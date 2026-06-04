@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import OnboardingStep from './OnboardingStep';
 import { Check, Lock } from 'lucide-react';
 import { getRecommendedMode } from '@/lib/toolCatalog';
+import { COMMUNICATION_STYLES } from '@/lib/anchorBrain';
 import {
   onboardingChoiceCard,
   onboardingChoiceCheck,
@@ -57,6 +58,24 @@ export default function PersonaStep({ data, onChange, onNext, onBack }) {
       title="Välj din nivå"
       subtitle="Du kan byta när som helst under Inställningar. Smart passar de flesta."
     >
+      <p className="text-[14px] text-white/50 mb-3">Hur vill du helst få råd? (beteende, inte kön)</p>
+      <div className="space-y-2 mb-5">
+        {COMMUNICATION_STYLES.map((s) => {
+          const on = (data.communicationStyle || 'balanced') === s.id;
+          return (
+            <button
+              key={s.id}
+              type="button"
+              onClick={() => onChange({ ...data, communicationStyle: s.id })}
+              className={cn(onboardingChoiceCard(on), 'p-3')}
+            >
+              <p className="text-[14px] font-medium text-white text-left">{s.label}</p>
+              <p className="text-[12px] text-white/45 text-left mt-0.5">{s.sub}</p>
+            </button>
+          );
+        })}
+      </div>
+
       <div className="space-y-2.5">
         {PERSONAS.map((p, i) => {
           const isSelected = selected === p.id;

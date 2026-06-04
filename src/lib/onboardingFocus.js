@@ -60,11 +60,19 @@ export function applyConcernToProfile(data, concernId) {
   if (!goals.includes(concern.mapsToGoal)) {
     goals.push(concern.mapsToGoal);
   }
+  const styleByConcern = {
+    spending: 'reassuring',
+    debt: 'reassuring',
+    save: 'balanced',
+    plan: 'balanced',
+  };
+
   return {
     ...data,
     topConcern: concernId,
     userGoals: goals,
     primaryGoal: data.primaryGoal || concern.mapsToGoal,
     userGoal: data.userGoal || concern.mapsToGoal,
+    communicationStyle: data.communicationStyle || styleByConcern[concernId] || 'balanced',
   };
 }

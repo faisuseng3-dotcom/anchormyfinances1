@@ -1,4 +1,4 @@
-import { ADVISOR_SYSTEM_RULES, buildAdvisorSnapshot } from '@/lib/buildAdvisorContext';
+import { buildAdvisorSnapshot, getAdvisorSystemRules } from '@/lib/buildAdvisorContext';
 
 export const ADVISOR_SCHEMAS = {
   dashboard_briefing: {
@@ -50,6 +50,42 @@ export const ADVISOR_SCHEMAS = {
     },
     required: ['alternatives', 'tips'],
   },
+  subscription_scan: {
+    type: 'object',
+    properties: {
+      headline: { type: 'string' },
+      insight: { type: 'string' },
+      share_caption: { type: 'string' },
+    },
+    required: ['headline', 'insight', 'share_caption'],
+  },
+  academy_lesson: {
+    type: 'object',
+    properties: {
+      title: { type: 'string' },
+      body: { type: 'string' },
+      takeaway: { type: 'string' },
+      cta: { type: 'string' },
+    },
+    required: ['title', 'body', 'takeaway', 'cta'],
+  },
+  pengometer_line: {
+    type: 'object',
+    properties: {
+      feeling_line: { type: 'string' },
+      tip: { type: 'string' },
+    },
+    required: ['feeling_line', 'tip'],
+  },
+  passivity_wake: {
+    type: 'object',
+    properties: {
+      headline: { type: 'string' },
+      story: { type: 'string' },
+      wake_line: { type: 'string' },
+    },
+    required: ['headline', 'story', 'wake_line'],
+  },
   coach_message: {
     type: 'object',
     properties: { message: { type: 'string' } },
@@ -68,20 +104,56 @@ export const ADVISOR_SCHEMAS = {
 };
 
 export function buildAdvisorScenarioPrompt(scenario, snapshot, extras = {}) {
-  const base = `${ADVISOR_SYSTEM_RULES}\n\nEkonomisk snapshot (ENDA sanning — använd dessa siffror):\n${JSON.stringify(snapshot, null, 2)}\n`;
+  const profile = extras.profile || null;
+  const rules = getAdvisorSystemRules(profile);
+  const base = `${rules}\n\nEkonomisk snapshot (ENDA sanning — använd dessa siffror):\n${JSON.stringify(snapshot, null, 2)}\n`;
 
   switch (scenario) {
-    case 'dashboard_briefing':
+    case 'dashboard_briefing': {
+      const soft = snapshot.tone_mode === 'soft';
       return `${base}
-Scenario: Daglig personlig briefing på dashboard.
-Skriv headline (max 8 ord), message (2–3 meningar med deras marginal/buffert/utgifter), och 2–3 actions med konkret impact_kr där möjligt.
+Scenario: Daglig personlig briefing på Hem.
+${soft ? 'Användaren är stressad — max 1 kort action, mjuk ton.' : 'Skriv headline (max 8 ord), message (2–3 meningar), 2–3 actions med impact_kr.'}
+Nämn gärna pengometer.remaining_week_kr om relevant.
 Returnera JSON enligt schema.`;
+    }
 
     case 'weekly_summary':
       return `${base}
 Scenario: Veckosammanfattning.
-Fokusera på spent_last_7_days_kr och top_spending_categories. summary (3 meningar), highlight (1 mening), next_step (1 konkret handling).
+Fokusera på spent_last_7_days_kr och pengometer. summary (3 meningar), highlight (1 mening), next_step (1 handling).
 Returnera JSON.`;
+
+    case 'subscription_scan':
+      return `${base}
+Scenario: Prenumerationsscanner — "många bäckar små".
+subscription_scan.total_kr och items är sanning. headline ska innehålla total_kr (delbar på sociala medier).
+insight: 2 meningar om vad det betyder för marginalen. share_caption: kort text användaren kan dela.
+Returnera JSON.`;
+
+    case 'academy_lesson': {
+      const lesson = extras.lesson || {};
+      return `${base}
+Scenario: Anchor Academy — 60 sekunders lektion om "${lesson.topic || lesson.title}".
+body: max 120 ord, enkelt språk som förklarar grundbegrepp (Lund-studien: unga saknar ofta ränta/inflation-kunskap).
+takeaway: 1 mening. cta: 1 konkret handling i appen.
+Returnera JSON.`;
+    }
+
+    case 'pengometer_line':
+      return `${base}
+Scenario: Pengometer — digital sedelbunt.
+pengometer.remaining_week_kr är huvudsiffran. feeling_line: 1 mening som gör kvarvarande pengar kännbara (inte teknisk).
+tip: 1 kort råd utifrån fill_percent. Returnera JSON.`;
+
+    case 'passivity_wake': {
+      const { monthly_kr, fv_kr, wait_cost_kr, years } = extras.payload || {};
+      return `${base}
+Scenario: Passivitetsväckarklocka.
+Användaren sparar ${monthly_kr} kr/mån. Om ${years} år: ${fv_kr} kr. Varje månad de väntar kostar ca ${wait_cost_kr} kr i framtida värde.
+story: 2–3 meningar, ingen skuld — visa möjlighet. wake_line: 1 stark mening.
+Returnera JSON.`;
+    }
 
     case 'subscription_alternatives': {
       const sub = extras.subscription || {};
@@ -95,9 +167,8 @@ Returnera JSON.`;
       const tx = extras.transaction || {};
       return `${base}
 Scenario: Användaren registrerade precis "${tx.name}" ${tx.amount} kr (${tx.category}).
-remaining_this_month_kr: ${snapshot.remaining_this_month_kr}. spent_percent_of_margin: ${snapshot.spent_percent_of_margin}%.
-message: max 2 meningar, referera kvarvarande marginal eller dagligt utrymme (${snapshot.suggested_daily_spend_kr} kr/dag).
-Returnera JSON.`;
+remaining_this_month_kr: ${snapshot.remaining_this_month_kr}. pengometer.remaining_week_kr: ${snapshot.pengometer?.remaining_week_kr}.
+message: max 2 meningar. Returnera JSON.`;
     }
 
     case 'coach_message':

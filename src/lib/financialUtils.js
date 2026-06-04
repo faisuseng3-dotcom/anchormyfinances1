@@ -44,3 +44,20 @@ export function getFixedCostBreakdown(profile) {
 
   return items;
 }
+
+/** Framtida värde: månadssparande i månader med årlig avkastning (decimal, t.ex. 0.07). */
+export function futureValueMonthly(monthlyKr, months, annualRate = 0.07) {
+  const m = Math.max(0, months);
+  const pmt = Math.max(0, monthlyKr);
+  if (m === 0 || pmt === 0) return 0;
+  const r = annualRate / 12;
+  if (r === 0) return pmt * m;
+  return Math.round(pmt * ((Math.pow(1 + r, m) - 1) / r));
+}
+
+/** Kostnad av att vänta X månader innan man börjar spara monthlyKr/mån. */
+export function costOfWaiting(monthlyKr, waitMonths, horizonMonths = 360, annualRate = 0.07) {
+  const withNow = futureValueMonthly(monthlyKr, horizonMonths, annualRate);
+  const withDelay = futureValueMonthly(monthlyKr, Math.max(0, horizonMonths - waitMonths), annualRate);
+  return Math.max(0, withNow - withDelay);
+}

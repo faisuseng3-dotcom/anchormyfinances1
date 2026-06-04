@@ -15,8 +15,8 @@ export default function QuickProblemStep({ data, onChange, onNext }) {
     <OnboardingStep
       step={0}
       totalSteps={4}
-      title="Vad stressar dig mest just nu?"
-      subtitle="Vi anpassar Anchor efter ditt största problem — du kan ändra senare."
+      title="Systemet är svårt — vad känns tyngst?"
+      subtitle="Det är inte ditt fel. Vi anpassar Anchor efter din situation — du kan ändra senare."
     >
       <div className="space-y-2.5">
         {TOP_CONCERNS.map((item) => {

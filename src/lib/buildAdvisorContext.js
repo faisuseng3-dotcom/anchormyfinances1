@@ -6,6 +6,7 @@ import {
   getMonthlyMargin,
   getFixedCostBreakdown,
 } from '@/lib/financialUtils';
+import { enrichAdvisorSnapshot, getToneInstructions } from '@/lib/anchorBrain';
 
 const EXPENSE_TYPES = new Set(['expense', 'savings_deposit', 'transfer_to_savings']);
 
@@ -51,7 +52,7 @@ export function buildAdvisorSnapshot(profile, transactions = []) {
   const spentPctOfMargin = margin > 0 ? (spentThisMonth / margin) * 100 : 0;
   const dailySafeSpend = margin > 0 ? Math.round(Math.max(0, margin - spentThisMonth) / Math.max(1, 30 - now.getDate())) : 0;
 
-  return {
+  const base = {
     user_label: profile.display_name || profile.savingsGoalName || 'Användaren',
     income_kr: income,
     fixed_costs_kr: Math.round(fixed),
@@ -83,6 +84,13 @@ export function buildAdvisorSnapshot(profile, transactions = []) {
     })),
     budget_limits: profile.budgetLimits || {},
   };
+
+  return enrichAdvisorSnapshot(profile, transactions, base);
+}
+
+export function getAdvisorSystemRules(profile) {
+  const tone = profile ? getToneInstructions(profile) : '';
+  return `${ADVISOR_SYSTEM_RULES}\n\n${tone}`;
 }
 
 export const ADVISOR_SYSTEM_RULES = `Du är Anchors personliga ekonomirådgivare — som en erfaren privatekonomisk rådgivare, inte en generisk chatbot.
@@ -93,4 +101,5 @@ KRITISKT:
 - Ge aldrig generiska råd som "spara mer" utan att koppla till deras marginal eller mål.
 - Svenska, lugn och tydlig ton. Inga emojis om inte scenario ber om det.
 - Gissa inte siffror som inte finns i kontexten.
-- Om data saknas: säg vad användaren bör fylla i (t.ex. inkomst).`;
+- Om data saknas: säg vad användaren bör fylla i (t.ex. inkomst).
+- Om tone_mode är soft: håll svar korta; inga skuldbeläggningar.`;

@@ -28,6 +28,8 @@ export default function Onboarding() {
     userGoals: [],
     primaryGoal: '',
     topConcern: '',
+    city: '',
+    communicationStyle: 'balanced',
     income: 0,
     housingCost: 0,
     buffer: 0,

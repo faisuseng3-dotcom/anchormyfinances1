@@ -83,11 +83,13 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
   const snapshot = buildAdvisorSnapshot(activeProfile, activeTransactions);
   const schema = ADVISOR_SCHEMAS[scenario] || ADVISOR_SCHEMAS.coach_message;
   const prompt = buildAdvisorScenarioPrompt(scenario, snapshot, {
+    profile: activeProfile,
     question,
     transaction,
     subscription,
     coachType,
     payload,
+    lesson: params.lesson,
   });
 
   const result = await invokeLlmWithFallback(prompt, schema);

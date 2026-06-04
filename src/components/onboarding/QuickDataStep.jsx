@@ -9,6 +9,7 @@ import {
 } from './onboardingUi';
 import SubscriptionDetective from './SubscriptionDetective';
 import OnboardingHistoryImport from './OnboardingHistoryImport';
+import { CITY_PRESETS } from '@/lib/anchorBrain';
 
 const DEFAULT_COST_ITEMS = [
   { id: 'housing', label: 'Hyra / Boende', amount: '', placeholder: '10 000' },
@@ -99,9 +100,25 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
       step={2}
       totalSteps={4}
       title="Ungefärliga siffror"
-      subtitle="Fyll i ungefärliga värden. Du kan justera allt senare."
+      subtitle="Storstad är dyrt — vi utgår från din verklighet, inte perfekt budget."
     >
       <div className="space-y-5">
+        <div className="space-y-2">
+          <label className={onboardingFieldLabel}>Var bor du?</label>
+          <select
+            value={data.city || ''}
+            onChange={(e) => onChange({ ...data, city: e.target.value })}
+            className={`${anchorInputClass} h-12`}
+          >
+            <option value="">Välj stad</option>
+            {CITY_PRESETS.map((c) => (
+              <option key={c} value={c === 'Övrig stad' ? 'Sverige' : c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Income */}
         <div className="space-y-2">
           <label className={onboardingFieldLabel}>
