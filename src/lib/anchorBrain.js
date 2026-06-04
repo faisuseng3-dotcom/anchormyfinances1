@@ -182,6 +182,13 @@ export const ACADEMY_LESSONS = [
     durationSec: 60,
     topic: 'buffert och stress',
   },
+  {
+    id: 'swedish_economy_basics',
+    title: 'Sverige — grunderna',
+    trigger: 'foundations',
+    durationSec: 90,
+    topic: 'inflation, ränta och risk i Sverige',
+  },
 ];
 
 export function getTriggeredAcademyLesson(profile, pengometer, subScan) {
@@ -204,6 +211,10 @@ export function getTriggeredAcademyLesson(profile, pengometer, subScan) {
     candidates.push('cashless_blindness');
   }
   if (!completed.includes('cashless_blindness')) candidates.push('cashless_blindness');
+  const foundations = profile?.foundationsCompleted || [];
+  if (foundations.includes('school_gap') && !completed.includes('swedish_economy_basics')) {
+    candidates.unshift('swedish_economy_basics');
+  }
 
   const id = candidates.find((lid) => ACADEMY_LESSONS.some((l) => l.id === lid)) || 'cashless_blindness';
   return ACADEMY_LESSONS.find((l) => l.id === id) || ACADEMY_LESSONS[0];

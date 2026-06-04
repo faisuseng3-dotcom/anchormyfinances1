@@ -46,7 +46,7 @@ export default function AnchorAcademy() {
       backHref={createPageUrl('Dashboard')}
     >
       <p className="text-[15px] text-white/50 font-light leading-relaxed -mt-2">
-        Korta förklaringar om ränta, inflation och osynliga utgifter — utan skolbokston.
+        Korta förklaringar om svensk inflation, ränta, buffert och ISK — utan skolbokston.
       </p>
 
       <ul className="space-y-2">

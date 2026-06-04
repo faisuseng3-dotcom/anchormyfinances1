@@ -7,6 +7,7 @@ import QuickProblemStep from '@/components/onboarding/QuickProblemStep';
 import QuickGoalStep from '@/components/onboarding/QuickGoalStep';
 import QuickDataStep from '@/components/onboarding/QuickDataStep';
 import PersonaStep from '@/components/onboarding/PersonaStep';
+import SwedishBasicsFoundationStep from '@/components/onboarding/SwedishBasicsFoundationStep';
 import { applyConcernToProfile, getPostOnboardingAction } from '@/lib/onboardingFocus';
 import { rowsToTransactions } from '@/lib/bankImportHelpers';
 
@@ -42,6 +43,7 @@ export default function Onboarding() {
     plannedPurchases: [],
     monthlyExpenses: [],
     pendingImportRows: [],
+    foundationsCompleted: [],
   });
 
   const handleComplete = async () => {
@@ -52,6 +54,12 @@ export default function Onboarding() {
       data.topConcern,
     );
     const { pendingImportRows = [], totalLoans, ...profilePayload } = mergedData;
+
+    if (profilePayload.foundationsCompleted?.includes('school_gap')) {
+      profilePayload.academyCompleted = [
+        ...new Set([...(profilePayload.academyCompleted || []), 'swedish_economy_basics']),
+      ];
+    }
 
     if (totalLoans > 0 && (!profilePayload.loans || profilePayload.loans.length === 0)) {
       profilePayload.loans = [{
@@ -93,10 +101,17 @@ export default function Onboarding() {
     <QuickProblemStep key="problem" data={data} onChange={setData} onNext={() => setStep(1)} />,
     <QuickGoalStep key="goal" data={data} onChange={setData} onNext={() => setStep(2)} onBack={() => setStep(0)} />,
     <QuickDataStep key="data" data={data} onChange={setData} onNext={() => setStep(3)} onBack={() => setStep(1)} />,
-    <PersonaStep key="persona" data={data} onChange={setData} onNext={handleComplete} onBack={() => setStep(2)} />,
+    <SwedishBasicsFoundationStep
+      key="swedish-basics"
+      data={data}
+      onChange={setData}
+      onNext={() => setStep(4)}
+      onBack={() => setStep(2)}
+    />,
+    <PersonaStep key="persona" data={data} onChange={setData} onNext={handleComplete} onBack={() => setStep(3)} />,
   ];
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const progressPercent = Math.round(((step + 1) / totalSteps) * 100);
 
   if (loading) {

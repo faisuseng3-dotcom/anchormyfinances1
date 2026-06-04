@@ -292,6 +292,11 @@
       "items": { "type": "string" },
       "description": "Klara Anchor Academy-lektioner"
     },
+    "foundationsCompleted": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Godkända Anchor Foundations-moduler (t.ex. school_gap)"
+    },
     "lastAcademyLessonId": {
       "type": "string",
       "description": "Senast visade lektion"
