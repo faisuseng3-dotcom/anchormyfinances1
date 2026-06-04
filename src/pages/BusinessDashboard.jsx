@@ -65,7 +65,7 @@ export default function BusinessDashboard() {
   const allTransactions = isReset ? manualTransactions : [...manualTransactions, ...biz.recentTransactions];
 
   return (
-    <div className="min-h-screen" style={{ background: '#F4F6F8' }}>
+    <div className="min-h-screen min-h-[100dvh] overflow-x-hidden w-full max-w-lg mx-auto" style={{ background: '#F4F6F8' }}>
       {/* Modals */}
       <AnimatePresence>
         {showScanner && (
@@ -84,7 +84,8 @@ export default function BusinessDashboard() {
         )}
       </AnimatePresence>
       {/* Top header — consistent across all tabs */}
-      <div className="px-5 pt-5 pb-5 flex items-center justify-between"
+      <div
+        className="px-4 sm:px-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] pb-5 flex items-center justify-between"
         style={{
           background: 'linear-gradient(160deg, #0D7377 0%, #074f52 100%)',
           borderRadius: '0 0 28px 28px',
@@ -109,7 +110,7 @@ export default function BusinessDashboard() {
       </div>
 
       {/* Tab content */}
-      <div className="pb-28 pt-5">
+      <div className="pt-5 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px)+1rem)]">
         {loading && (
           <div className="px-5 space-y-4">
             <SkeletonHero />

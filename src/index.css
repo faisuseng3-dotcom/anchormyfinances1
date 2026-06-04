@@ -6,6 +6,13 @@
 
 @layer base {
   :root {
+    --anchor-nav-height: 5.5rem;
+    --anchor-safe-top: env(safe-area-inset-top, 0px);
+    --anchor-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --anchor-page-pad-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 1.25rem);
+    --anchor-dashboard-pad-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 6.5rem);
+    --anchor-voice-fab-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 0.65rem);
+    --anchor-flow-btn-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 4.25rem);
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -204,6 +211,44 @@
 
   .scrollbar-none::-webkit-scrollbar {
     display: none;
+  }
+
+  .anchor-mobile-frame {
+    width: 100%;
+    max-width: 32rem;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .anchor-page-pad-bottom {
+    padding-bottom: var(--anchor-page-pad-bottom);
+  }
+
+  .anchor-dashboard-pad-bottom {
+    padding-bottom: var(--anchor-dashboard-pad-bottom);
+  }
+
+  .anchor-safe-top {
+    padding-top: max(0.75rem, var(--anchor-safe-top));
+  }
+
+  @media (max-width: 380px) {
+    .anchor-dock-label-long {
+      display: none;
+    }
+    .anchor-dock-label-short {
+      display: inline;
+    }
+  }
+
+  @media (min-width: 381px) {
+    .anchor-dock-label-long {
+      display: inline;
+    }
+    .anchor-dock-label-short {
+      display: none;
+    }
   }
 
   /* Elevated sheet only — not for every dashboard block */

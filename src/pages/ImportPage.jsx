@@ -134,7 +134,7 @@ export default function ImportPage() {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: '#F4F6F8' }}>
+    <div className="min-h-screen min-h-[100dvh] pb-20 overflow-x-hidden w-full max-w-lg mx-auto" style={{ background: '#F4F6F8' }}>
       <BusinessPageHeader
         title="Importera"
         subtitle="CSV, PDF eller klistra in"

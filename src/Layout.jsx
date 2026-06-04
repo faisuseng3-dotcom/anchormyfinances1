@@ -90,6 +90,13 @@ export default function Layout({ children, currentPageName }) {
       {isGuestMode() && !hideNav && <GuestBanner />}
       <style>{`
         :root {
+          --anchor-nav-height: 5.5rem;
+          --anchor-safe-top: env(safe-area-inset-top, 0px);
+          --anchor-safe-bottom: env(safe-area-inset-bottom, 0px);
+          --anchor-page-pad-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 1.25rem);
+          --anchor-dashboard-pad-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 6.5rem);
+          --anchor-voice-fab-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 0.65rem);
+          --anchor-flow-btn-bottom: calc(var(--anchor-nav-height) + var(--anchor-safe-bottom) + 4.25rem);
           /* Anchor Revolut — global tokens */
           --anchor-page-gradient: linear-gradient(165deg, #1a3dff 0%, #0f2a9e 28%, #081858 55%, #050d28 82%, #030610 100%);
           --color-background-primary: #040814;
@@ -138,6 +145,7 @@ export default function Layout({ children, currentPageName }) {
           background: var(--anchor-page-gradient);
           color: var(--color-text-primary);
           min-height: 100vh;
+          min-height: 100dvh;
         }
 
         .anchor-app {
@@ -190,6 +198,7 @@ export default function Layout({ children, currentPageName }) {
         
         #root {
           min-height: 100vh;
+          min-height: 100dvh;
         }
 
         html.anchor-embedded #root,
@@ -313,7 +322,7 @@ export default function Layout({ children, currentPageName }) {
         )}
         style={
           !embedded && !hideNav
-            ? { paddingBottom: 'max(5.5rem, calc(env(safe-area-inset-bottom) + 5.5rem))' }
+            ? { paddingBottom: 'var(--anchor-page-pad-bottom)' }
             : {}
         }
       >
@@ -331,11 +340,13 @@ export default function Layout({ children, currentPageName }) {
             onClick={() => setVoiceOpen(true)}
             className={cn(
               'rounded-full flex items-center justify-center w-12 h-12 border border-white/12 hover:border-white/20 transition-colors',
-              embedded
-                ? 'anchor-voice-fab'
-                : `fixed z-40 ${isMobile ? 'bottom-28 right-4' : 'bottom-24 right-6'}`,
+              embedded ? 'anchor-voice-fab' : 'fixed z-40 right-4 sm:right-6',
+              !embedded && !isMobile && 'bottom-24',
             )}
-            style={{ background: 'var(--color-surface)' }}
+            style={{
+              background: 'var(--color-surface)',
+              ...(!embedded && isMobile ? { bottom: 'var(--anchor-voice-fab-bottom)' } : {}),
+            }}
             aria-label="Open voice assistant"
           >
             <Mic className="w-5 h-5" style={{ color: 'var(--color-text-primary)' }} />

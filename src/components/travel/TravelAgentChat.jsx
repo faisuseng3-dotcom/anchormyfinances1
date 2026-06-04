@@ -726,7 +726,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-220px)] min-h-[520px]">
+    <div className="flex flex-col flex-1 min-h-[min(420px,55dvh)] max-h-[min(640px,72dvh)]">
       {bookingPkg && <BookingModal pkg={bookingPkg} onClose={() => setBookingPkg(null)} />}
       {/* CFO status bubble — floats top right when active */}
       <AnimatePresence>

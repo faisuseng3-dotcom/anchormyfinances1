@@ -165,7 +165,7 @@ function VerifikatModal({ event, onClose }) {
         animate={{ y: 0 }}
         exit={{ y: 60 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-t-3xl overflow-hidden bg-[#F4F6F8] shadow-[0_-8px_32px_rgba(26,35,50,0.12)]"
+        className="w-full max-w-lg mx-auto rounded-t-3xl overflow-hidden bg-[#F4F6F8] shadow-[0_-8px_32px_rgba(26,35,50,0.12)] pb-[env(safe-area-inset-bottom,0px)]"
       >
         <div className="px-5 pt-5 pb-4 flex items-center justify-between bg-white border-b border-[#E8ECF0]">
           <div className="flex items-center gap-3 min-w-0">
@@ -265,7 +265,7 @@ export default function ActivityStream() {
                 )}
               </div>
               <p
-                className={`text-[15px] font-semibold tabular-nums flex-shrink-0 ${
+                className={`text-[14px] sm:text-[15px] font-semibold tabular-nums flex-shrink-0 max-w-[38%] text-right truncate ${
                   event.amount > 0 ? 'text-[#0D7377]' : 'text-[#1A2332]'
                 }`}
               >

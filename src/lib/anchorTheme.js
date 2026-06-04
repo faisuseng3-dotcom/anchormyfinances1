@@ -46,7 +46,8 @@ export const sectionMetaClass = 'text-[13px] font-medium text-white/45 tabular-n
 export const sectionLabelClassLegacy =
   'text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45';
 
-export const anchorPageClass = 'min-h-screen pb-32 overflow-x-hidden anchor-page';
+export const anchorPageClass =
+  'min-h-screen min-h-[100dvh] overflow-x-hidden anchor-page anchor-page-pad-bottom';
 
 // Slightly tighter horizontal padding on the smallest screens
 export const anchorZoneClass = 'px-4 sm:px-6';

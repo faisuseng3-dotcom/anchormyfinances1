@@ -21,8 +21,9 @@ export default function DashboardActionDock({ onMagicEntry, onOpenCalculator, on
         onClick={onMagicEntry}
         className={`${dashDockBtn} bg-white text-[#050d28] shadow-[0_0_40px_rgba(255,255,255,0.15)]`}
       >
-        <Zap className="w-4 h-4" />
-        Snabb inmatning
+        <Zap className="w-4 h-4 shrink-0" />
+        <span className="anchor-dock-label-long truncate">Snabb inmatning</span>
+        <span className="anchor-dock-label-short truncate">Snabb</span>
       </motion.button>
       <motion.button
         type="button"

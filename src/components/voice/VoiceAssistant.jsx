@@ -204,7 +204,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
           exit={{ y: '100%' }}
           transition={{ type: 'spring', damping: 30, stiffness: 300 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full rounded-t-[28px] shadow-2xl max-h-[85vh] flex flex-col ring-1 ring-inset ring-white/10"
+          className="w-full max-w-lg mx-auto rounded-t-[28px] shadow-2xl max-h-[min(85dvh,720px)] flex flex-col ring-1 ring-inset ring-white/10"
           style={{ background: 'linear-gradient(180deg, #0a1628 0%, #050d28 100%)' }}
         >
           <div className="p-6 pb-4 border-b border-white/[0.08] flex items-center justify-between">

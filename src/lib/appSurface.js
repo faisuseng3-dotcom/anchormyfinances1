@@ -31,9 +31,11 @@ export const techHeroMesh =
   'absolute inset-0 opacity-80 pointer-events-none';
 
 /** Undertext under sidtitlar */
-export const techPageTitle = 'text-[28px] sm:text-[30px] font-light tracking-tight text-white';
+export const techPageTitle =
+  'text-[24px] sm:text-[30px] font-light tracking-tight text-white break-words';
 
-export const techPageBackHeader = 'px-5 sm:px-7 pt-9 sm:pt-11 pb-5';
+export const techPageBackHeader =
+  'px-4 sm:px-7 pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:pt-11 pb-5 w-full max-w-lg mx-auto box-border';
 
 /** Ersätt "Genererar…" / AI-knappar */
 export const techCta =

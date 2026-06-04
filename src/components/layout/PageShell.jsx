@@ -26,7 +26,7 @@ export default function PageShell({
   ) : null;
 
   return (
-    <div className={`${anchorPageClass} ${className}`}>
+    <div className={`${anchorPageClass} anchor-mobile-frame ${className}`}>
       <header className={`${techPageBackHeader} flex items-center justify-between gap-3`}>
         <div className="flex items-center gap-3 min-w-0">
           {backButton}
@@ -37,7 +37,7 @@ export default function PageShell({
         </div>
         {action && <div className="shrink-0">{action}</div>}
       </header>
-      <div className="px-5 sm:px-7 space-y-7 pb-10">{children}</div>
+      <div className="px-4 sm:px-7 space-y-7 pb-10 w-full max-w-lg mx-auto box-border">{children}</div>
     </div>
   );
 }

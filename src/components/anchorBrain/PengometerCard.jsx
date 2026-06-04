@@ -79,7 +79,7 @@ export default function PengometerCard({ profile, transactions, toneMode = 'norm
               key={pengometer.headline_kr}
               initial={{ opacity: 0, scale: 0.92 }}
               animate={{ opacity: 1, scale: 1 }}
-              className={`${dashHeroNumber} text-[2.75rem]`}
+              className={`${dashHeroNumber} text-[2.35rem] sm:text-[2.75rem]`}
             >
               {fmt(pengometer.headline_kr)}
             </motion.span>
@@ -90,14 +90,14 @@ export default function PengometerCard({ profile, transactions, toneMode = 'norm
         <p className={dashLabel}>{pengometer.headline_label}</p>
 
         {!soft && (
-          <div className="flex gap-6 mt-5 text-[13px] text-white/42 tabular-nums">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 mt-5 text-[12px] sm:text-[13px] text-white/42 tabular-nums">
             <span>{fmt(pengometer.remaining_month_kr)} kr / mån</span>
             <span>~{fmt(pengometer.remaining_today_kr)} kr idag</span>
           </div>
         )}
 
         {line?.feeling_line && (
-          <p className="text-[15px] text-white/55 mt-4 max-w-[300px] leading-relaxed font-light">
+          <p className="text-[14px] sm:text-[15px] text-white/55 mt-4 max-w-[min(300px,90vw)] px-2 leading-relaxed font-light">
             {line.feeling_line}
           </p>
         )}

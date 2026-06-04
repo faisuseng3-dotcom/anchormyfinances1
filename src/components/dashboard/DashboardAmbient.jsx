@@ -5,7 +5,7 @@ export default function DashboardAmbient() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden>
       <div
-        className="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[140%] h-[55%] opacity-90"
+        className="absolute -top-[20%] left-1/2 -translate-x-1/2 w-full max-w-[140%] h-[45%] sm:h-[55%] opacity-90"
         style={{
           background:
             'radial-gradient(ellipse 70% 100% at 50% 0%, rgba(56, 120, 255, 0.35) 0%, transparent 70%)',

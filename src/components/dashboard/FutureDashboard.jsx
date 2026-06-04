@@ -52,7 +52,7 @@ export default function FutureDashboard({
   };
 
   return (
-    <div className="min-h-screen pb-40 relative overflow-x-hidden anchor-page">
+    <div className="min-h-screen min-h-[100dvh] relative overflow-x-hidden anchor-page anchor-dashboard-pad-bottom anchor-mobile-frame">
       <DashboardAmbient />
 
       <AnimatePresence>
@@ -71,7 +71,7 @@ export default function FutureDashboard({
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-[13px] text-white/40 capitalize">{weekdayLabel()}</p>
-            <h1 className="text-[32px] sm:text-[36px] font-light tracking-tight text-white mt-0.5">
+            <h1 className="text-[28px] sm:text-[36px] font-light tracking-tight text-white mt-0.5 break-words">
               Hej {firstName}
             </h1>
           </div>
@@ -131,7 +131,10 @@ export default function FutureDashboard({
         profile={profile}
       />
 
-      <div className="fixed bottom-[76px] sm:bottom-[72px] left-0 right-0 z-40 flex justify-center pointer-events-none">
+      <div
+        className="fixed left-0 right-0 z-40 flex justify-center pointer-events-none max-w-lg mx-auto"
+        style={{ bottom: 'var(--anchor-flow-btn-bottom)' }}
+      >
         <motion.button
           type="button"
           onClick={() => setDrawerOpen(true)}
@@ -159,13 +162,13 @@ export default function FutureDashboard({
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 34, stiffness: 320 }}
-              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[32px] overflow-hidden max-h-[72vh]"
+              className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[32px] overflow-hidden max-h-[min(72dvh,520px)] max-w-lg mx-auto"
               style={elevatedSheet()}
             >
               <div className="flex justify-center pt-4 pb-2">
                 <div className="w-10 h-1 rounded-full bg-white/15" />
               </div>
-              <div className={`${dashZone} pb-12`}>
+              <div className={`${dashZone} pb-[max(3rem,env(safe-area-inset-bottom,0px))]`}>
                 <p className="text-[13px] text-white/40 mb-4">Snabbval</p>
                 <div className="space-y-1">
                   {[
