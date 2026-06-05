@@ -12,6 +12,7 @@ import {
 import TrafficLight from '@/components/pulse/TrafficLight';
 import PaydayCountdown from '@/components/pulse/PaydayCountdown';
 import PurchaseCheck from '@/components/pulse/PurchaseCheck';
+import { SkeletonCard, SkeletonLine } from '@/components/loading/SkeletonBlocks';
 
 /** Tidigare Pulse-sidan — inbäddad i Planera. */
 export default function PulseNowPanel() {
@@ -37,11 +38,14 @@ export default function PulseNowPanel() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center py-16">
-        <div
-          className="w-8 h-8 border-2 rounded-full animate-spin"
-          style={{ borderColor: 'rgba(15,222,189,0.2)', borderTopColor: '#0FDEBD' }}
-        />
+      <div className="space-y-4">
+        <SkeletonCard className="space-y-3">
+          <SkeletonLine width="w-1/3" />
+          <SkeletonLine width="w-2/3" />
+        </SkeletonCard>
+        <SkeletonCard>
+          <SkeletonLine width="w-full" className="h-20" />
+        </SkeletonCard>
       </div>
     );
   }

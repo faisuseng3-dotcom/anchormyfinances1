@@ -7,6 +7,8 @@ import {
   compactFuturePulse,
   enrichFuturePulseDetail,
 } from '@/lib/futurePulseEngine';
+import { detectSpendingPatterns } from '@/lib/onDeviceMl';
+import { indexFromPatterns } from '@/lib/aiMemory';
 
 export async function fetchFuturePulse(profile, transactions, { compact = true } = {}) {
   const personalTxs = (transactions || []).filter((t) => t.context !== 'BUSINESS');
@@ -14,6 +16,10 @@ export async function fetchFuturePulse(profile, transactions, { compact = true }
   const localRaw = computeLocalFuturePulse(profile, personalTxs, 60, maxEvents);
   const payload = summarizeForFutureEngine(profile, personalTxs);
   const patterns = extractPatterns(profile, personalTxs);
+  const onDevicePatterns = detectSpendingPatterns(personalTxs);
+  if (onDevicePatterns.patterns?.length) {
+    indexFromPatterns(onDevicePatterns.patterns);
+  }
 
   let merged = localRaw;
   try {

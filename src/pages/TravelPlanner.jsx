@@ -9,6 +9,7 @@ import SmartTravelPlanner from '@/components/travel/SmartTravelPlanner';
 import ProTravelPlanner from '@/components/travel/ProTravelPlanner';
 import TravelAgentChat from '@/components/travel/TravelAgentChat';
 import { anchorSecondaryButtonClass } from '@/lib/anchorTheme';
+import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
 
 export default function TravelPlanner() {
   const [activeTab, setActiveTab] = useState('agent');
@@ -18,11 +19,7 @@ export default function TravelPlanner() {
   const currentMode = profile?.mode || 'basic';
 
   if (isLoading) {
-    return (
-      <PageShell title="Planera en resa" backHref={createPageUrl('Dashboard')}>
-        <p className="text-[15px] text-white/45 py-8 text-center">Laddar…</p>
-      </PageShell>
-    );
+    return <PageShellSkeleton sections={2} />;
   }
 
   return (

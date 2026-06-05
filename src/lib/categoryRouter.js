@@ -1,6 +1,6 @@
 /**
  * categoryRouter — lagerad kategorisering för precision:
- * 1) användar-overrides  2) regler  3) liknande handlare  4) LLM (Claude → GPT)
+ * 1) användar-overrides  2) regler  3) liknande handlare  4) LLM (GPT Mini → GPT)
  */
 
 import { getOverrides } from '@/lib/enrichmentEngine';
@@ -183,7 +183,7 @@ export function categorizeBatchLocal(items) {
 }
 
 /**
- * LLM-lager via Base44-funktion (Claude → GPT fallback på servern).
+ * LLM-lager via Base44-funktion (GPT Mini → GPT fallback på servern).
  */
 export async function categorizeWithLLM(base44, items, { recentTransactions = [] } = {}) {
   if (!items?.length) return [];
@@ -233,7 +233,7 @@ export async function categorizePipeline(base44, items, options = {}) {
       return {
         category: clampCategory(llm.category),
         confidence: llm.confidence,
-        source: llm.model?.includes('claude') ? 'llm_claude' : 'llm_gpt',
+        source: llm.model?.includes('claude') ? 'llm_claude' : llm.model?.includes('mini') ? 'llm_gpt_mini' : 'llm_gpt',
         needsReview: llm.needs_review ?? llm.confidence < LLM_CONFIDENCE_THRESHOLD,
         normalizedVendor: local.normalizedVendor,
         model: llm.model,
@@ -277,7 +277,7 @@ export async function categorizeTransaction(base44, vendorOrLabel, { amount, use
       return {
         category: clampCategory(llm.category),
         confidence: llm.confidence,
-        source: llm.model?.includes('claude') ? 'llm_claude' : 'llm_gpt',
+        source: llm.model?.includes('claude') ? 'llm_claude' : llm.model?.includes('mini') ? 'llm_gpt_mini' : 'llm_gpt',
         needsReview: llm.needs_review ?? llm.confidence < LLM_CONFIDENCE_THRESHOLD,
         normalizedVendor: local.normalizedVendor,
         confidenceLabel: confidenceLabel(llm.confidence),

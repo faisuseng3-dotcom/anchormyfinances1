@@ -20,6 +20,8 @@ import DashboardMorePanel from './DashboardMorePanel';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import { calculateMLI, resetActionDensity } from '@/lib/mliEngine';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
+import QuickExpenseFab from './QuickExpenseFab';
+import QuickExpenseSheet from './QuickExpenseSheet';
 
 function weekdayLabel() {
   return new Date().toLocaleDateString('sv-SE', { weekday: 'long' });
@@ -38,6 +40,7 @@ export default function FutureDashboard({
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [magicSpotlight, setMagicSpotlight] = useState(false);
   const [kalkylatornOpen, setKalkylatornOpen] = useState(false);
+  const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
 
   const mli = useMemo(() => {
     resetActionDensity();
@@ -45,6 +48,14 @@ export default function FutureDashboard({
   }, [transactions, profile]);
 
   useProactiveWeekPush(profile);
+
+  const openQuickExpense = () => setQuickExpenseOpen(true);
+
+  React.useEffect(() => {
+    const open = () => setQuickExpenseOpen(true);
+    window.addEventListener('anchor:open-quick-expense', open);
+    return () => window.removeEventListener('anchor:open-quick-expense', open);
+  }, []);
 
   const firstName = user?.full_name?.split(' ')[0] || 'du';
 
@@ -125,7 +136,7 @@ export default function FutureDashboard({
           <DashboardActionDock
             onMagicEntry={handleMagicEntry}
             onOpenCalculator={() => setKalkylatornOpen(true)}
-            onOpenExpense={onOpenExpense}
+            onOpenExpense={openQuickExpense}
           />
         </div>
 
@@ -141,6 +152,13 @@ export default function FutureDashboard({
       <KalkylatornSheet
         isOpen={kalkylatornOpen}
         onClose={() => setKalkylatornOpen(false)}
+        profile={profile}
+      />
+
+      <QuickExpenseFab onClick={openQuickExpense} />
+      <QuickExpenseSheet
+        isOpen={quickExpenseOpen}
+        onClose={() => setQuickExpenseOpen(false)}
         profile={profile}
       />
 
@@ -185,7 +203,7 @@ export default function FutureDashboard({
                 <p className="text-[13px] text-white/40 mb-4">Snabbval</p>
                 <div className="space-y-1">
                   {[
-                    { label: 'Registrera utgift', icon: Zap, action: () => { setDrawerOpen(false); onOpenExpense(); } },
+                    { label: 'Registrera utgift', icon: Zap, action: () => { setDrawerOpen(false); openQuickExpense(); } },
                     { label: 'Spara pengar', icon: PiggyBank, action: () => { setDrawerOpen(false); onOpenTransactionHub(); } },
                     { label: 'Historik', icon: TrendingUp, href: createPageUrl('TransactionHistory') },
                   ].map((item) => {

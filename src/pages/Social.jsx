@@ -23,6 +23,7 @@ import {
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
 import { cn } from '@/lib/utils';
+import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
 
 const TABS = [
   { id: 'profile', label: 'Profil', Icon: User },
@@ -191,11 +192,7 @@ export default function Social() {
   );
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center anchor-page">
-        <Loader2 className="w-8 h-8 animate-spin text-white/40" />
-      </div>
-    );
+    return <PageShellSkeleton sections={3} />;
   }
 
   return (

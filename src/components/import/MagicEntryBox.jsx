@@ -7,6 +7,8 @@ import { categorizeTransaction } from '@/lib/categoryRouter';
 import { saveOverride } from '@/lib/enrichmentEngine';
 import { elevatedSheet } from '@/lib/anchorTheme';
 import { techCta, techCtaGhost, dashLabel } from '@/lib/appSurface';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const CATEGORY_LABELS = {
   food: 'Mat',
@@ -21,10 +23,10 @@ const CATEGORY_LABELS = {
 };
 
 export default function MagicEntryBox({ isOpen, onClose, onSaved }) {
+  const { createTransaction } = useOptimisticTransactions();
   const [text, setText] = useState('');
   const [parsed, setParsed] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
 
   const handleParse = async () => {
     if (!text.trim()) return;
@@ -61,26 +63,25 @@ Lämna kategori tom — den sätts separat.`,
     setLoading(false);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!parsed) return;
-    setSaving(true);
-    await base44.entities.Transaction.create({
+
+    const payload = {
       type: (parsed.amount || 0) > 0 ? 'income' : 'expense',
-      amount: parsed.amount,
+      amount: Math.abs(parsed.amount),
       label: parsed.description,
       vendor: parsed.description,
       category: parsed.category || 'other',
-      context: 'PERSONAL',
-    });
+    };
+
+    createTransaction(payload);
 
     if (parsed.description && parsed.category) {
       saveOverride(parsed.description, parsed.category);
     }
 
-    toast.success('Transaktion sparad');
     setText('');
     setParsed(null);
-    setSaving(false);
     onSaved?.();
     onClose?.();
   };
@@ -141,10 +142,7 @@ Lämna kategori tom — den sätts separat.`,
                 className={`${techCta} w-full`}
               >
                 {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Tolkar…
-                  </>
+                  'Tolkar…'
                 ) : (
                   'Tolka text'
                 )}
@@ -192,8 +190,8 @@ Lämna kategori tom — den sätts separat.`,
                   <button type="button" onClick={() => setParsed(null)} className={`${techCtaGhost} flex-1`}>
                     Ändra
                   </button>
-                  <button type="button" onClick={handleSave} disabled={saving} className={`${techCta} flex-1`}>
-                    {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+                  <button type="button" onClick={handleSave} className={`${techCta} flex-1`}>
+                    <Send className="w-3 h-3" />
                     Spara
                   </button>
                 </div>

@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
 
 const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach — som en varm, klok vän som kan räkna.
 
@@ -96,21 +97,6 @@ function buildSnapshot(profile, transactions) {
   };
 }
 
-async function invokeWithFallback(base44, prompt, schema) {
-  const opts = { prompt, model: 'claude_sonnet_4_6' };
-  if (schema) opts.response_json_schema = schema;
-  try {
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM(opts);
-    return { result, model: 'claude_sonnet_4_6' };
-  } catch (err) {
-    console.warn('personalAdvisor primary failed:', err?.message);
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      ...opts,
-      model: 'gpt_5_5',
-    });
-    return { result, model: 'gpt_5_5_fallback' };
-  }
-}
 
 const SCHEMAS = {
   dashboard_briefing: {
@@ -213,6 +199,21 @@ const SCHEMAS = {
     },
     required: ['headline', 'story', 'wake_line'],
   },
+  voice_expense_parse: {
+    type: 'object',
+    properties: {
+      amount: { type: 'number' },
+      vendor: { type: 'string' },
+      category: { type: 'string' },
+      confirm_line: { type: 'string' },
+    },
+    required: ['amount', 'vendor', 'category', 'confirm_line'],
+  },
+  voice_quick_answer: {
+    type: 'object',
+    properties: { answer: { type: 'string' } },
+    required: ['answer'],
+  },
 };
 
 function buildScenarioPrompt(scenario, snapshot, extras) {
@@ -284,6 +285,17 @@ Returnera JSON.`;
 Scenario: Passivitetsväckarklocka. payload: ${JSON.stringify(extras.payload || {})}.
 story 2–3 meningar, wake_line 1 stark mening. Returnera JSON.`;
 
+    case 'voice_expense_parse':
+      return `${base}
+Scenario: Röstinmatning. Tolka: "${extras.question || ''}"
+Extrahera amount, vendor, category. confirm_line: 1 vänlig bekräftelse.
+Returnera JSON.`;
+
+    case 'voice_quick_answer':
+      return `${base}
+Scenario: Snabbt röstsvar. Fråga: "${extras.question || ''}"
+answer: max 2 meningar med viktigaste siffran. Returnera JSON.`;
+
     default:
       return `${base}\nScenario: ${scenario}\nReturnera JSON med message.`;
   }
@@ -344,7 +356,11 @@ Deno.serve(async (req) => {
       lesson,
     });
 
-    const { result, model } = await invokeWithFallback(base44, prompt, schema);
+    const { result, model } = await invokeLlmForTask(base44, {
+      prompt,
+      response_json_schema: schema,
+      scenario,
+    });
 
     if (scenario === 'question') {
       return Response.json({ ...result, model, snapshot_summary: { margin: snapshot.monthly_margin_kr } });

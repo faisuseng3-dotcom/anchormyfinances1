@@ -13,6 +13,7 @@ import HousingAnalysis from '@/components/purchase/categories/HousingAnalysis';
 import ElectronicsAnalysis from '@/components/purchase/categories/ElectronicsAnalysis';
 import EventAnalysis from '@/components/purchase/categories/EventAnalysis';
 import { anchorGhostButtonClass } from '@/lib/anchorTheme';
+import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
 
 export default function PurchaseSimulator() {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -20,11 +21,7 @@ export default function PurchaseSimulator() {
   const currentMode = profile?.mode || 'basic';
 
   if (isLoading) {
-    return (
-      <PageShell title="Kan jag köpa det här?" backHref={createPageUrl('Dashboard')}>
-        <p className="text-[15px] text-white/45 py-8 text-center">Laddar…</p>
-      </PageShell>
-    );
+    return <PageShellSkeleton sections={2} />;
   }
 
   return (

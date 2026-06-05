@@ -7,20 +7,16 @@ import {
 } from '@/lib/personalAdvisorPrompts';
 import { hasAdvisorProfileData, isLocalAdvisorProfile } from '@/lib/advisorProfile';
 import { sanitizeAdvisorResponse } from '@/lib/coachingCopy';
+import { invokeLlmForTask } from '@/lib/aiModelRouter';
+import { recallRelevantMemories, formatMemoryContext, rememberInsight } from '@/lib/aiMemory';
 
-async function invokeLlmWithFallback(prompt, schema) {
-  const opts = { prompt, model: 'claude_sonnet_4_6', response_json_schema: schema };
-  try {
-    const result = await base44.integrations.Core.InvokeLLM(opts);
-    return { ...result, model: 'claude_sonnet_4_6' };
-  } catch (err) {
-    console.warn('personalAdvisor client primary model failed:', err?.message);
-    const result = await base44.integrations.Core.InvokeLLM({
-      ...opts,
-      model: 'gpt_5_5',
-    });
-    return { ...result, model: 'gpt_5_5_fallback' };
-  }
+async function invokeLlmWithFallback(prompt, schema, scenario) {
+  const { result, model } = await invokeLlmForTask(base44, {
+    prompt,
+    response_json_schema: schema,
+    scenario,
+  });
+  return { ...result, model };
 }
 
 async function loadAdvisorContextFromApi() {
@@ -83,6 +79,10 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
 
   const snapshot = buildAdvisorSnapshot(activeProfile, activeTransactions);
   const schema = ADVISOR_SCHEMAS[scenario] || ADVISOR_SCHEMAS.coach_message;
+  const memoryQuery = question || transaction?.name || scenario;
+  const memories = recallRelevantMemories(memoryQuery, { limit: 4 });
+  const memoryBlock = formatMemoryContext(memories);
+
   const prompt = buildAdvisorScenarioPrompt(scenario, snapshot, {
     profile: activeProfile,
     question,
@@ -91,13 +91,23 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
     coachType,
     payload,
     lesson: params.lesson,
-  });
+  }) + memoryBlock;
 
-  const result = await invokeLlmWithFallback(prompt, schema);
+  const result = await invokeLlmWithFallback(prompt, schema, scenario);
+
+  const headline = result.headline || result.message || result.answer;
+  if (headline && scenario !== 'voice_expense_parse') {
+    rememberInsight({ text: headline.slice(0, 280), type: 'coach', tags: [scenario] });
+  }
+  if (question) {
+    rememberInsight({ text: question.slice(0, 200), type: 'question', tags: [scenario] });
+  }
+
   return sanitizeAdvisorResponse({
     ...result,
     snapshot_summary: { margin: snapshot.monthly_margin_kr },
     _source: 'client',
+    _memories_used: memories.length,
   });
 }
 

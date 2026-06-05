@@ -2,6 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
+import {
+  isVoiceExpenseUtterance,
+  isVoiceQuickQuestion,
+  parseVoiceExpenseLocal,
+} from '@/lib/voiceExpenseParse';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mic, MicOff, Volume2, Loader2, Radio } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -17,6 +23,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
   const messagesEndRef = useRef(null);
 
   const { profile, transactions, isDemoMode } = useAdvisorContext();
+  const { createTransaction } = useOptimisticTransactions();
 
   useEffect(() => {
     // Initialize speech recognition
@@ -108,11 +115,43 @@ export default function VoiceAssistant({ isOpen, onClose }) {
         }
       }
 
-      const advisor = await askPersonalAdvisor(
-        { scenario: 'question', question },
-        { profile, transactions, isDemoMode },
-      );
-      const response = advisor.answer || advisor.message || 'Jag kunde inte formulera ett svar just nu.';
+      let response;
+
+      if (isVoiceExpenseUtterance(text)) {
+        const parsed = parseVoiceExpenseLocal(text);
+        if (parsed) {
+          createTransaction({
+            type: 'expense',
+            amount: parsed.amount,
+            label: parsed.label,
+            vendor: parsed.vendor,
+            category: parsed.category,
+          });
+          response = `Okej, ${parsed.amount} kr på ${parsed.vendor} är registrerat.`;
+        } else {
+          const advisor = await askPersonalAdvisor(
+            { scenario: 'voice_expense_parse', question: text },
+            { profile, transactions, isDemoMode },
+          );
+          if (advisor.amount) {
+            createTransaction({
+              type: 'expense',
+              amount: advisor.amount,
+              label: advisor.vendor,
+              vendor: advisor.vendor,
+              category: advisor.category || 'other',
+            });
+          }
+          response = advisor.confirm_line || `Registrerat ${advisor.amount || ''} kr.`;
+        }
+      } else {
+        const scenario = isVoiceQuickQuestion(text) ? 'voice_quick_answer' : 'question';
+        const advisor = await askPersonalAdvisor(
+          { scenario, question },
+          { profile, transactions, isDemoMode },
+        );
+        response = advisor.answer || advisor.message || 'Jag kunde inte formulera ett svar just nu.';
+      }
 
       const assistantMessage = {
         role: 'assistant',

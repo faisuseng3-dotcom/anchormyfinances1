@@ -106,6 +106,21 @@ export const ADVISOR_SCHEMAS = {
     properties: { answer: { type: 'string' } },
     required: ['answer'],
   },
+  voice_expense_parse: {
+    type: 'object',
+    properties: {
+      amount: { type: 'number' },
+      vendor: { type: 'string' },
+      category: { type: 'string' },
+      confirm_line: { type: 'string' },
+    },
+    required: ['amount', 'vendor', 'category', 'confirm_line'],
+  },
+  voice_quick_answer: {
+    type: 'object',
+    properties: { answer: { type: 'string' } },
+    required: ['answer'],
+  },
 };
 
 export function buildAdvisorScenarioPrompt(scenario, snapshot, extras = {}) {
@@ -187,6 +202,20 @@ Returnera JSON.`;
       return `${base}
 Användarens fråga: "${extras.question || ''}"
 Svara som personlig coach med deras siffror. answer: 2–4 meningar i löpande prosa, inga listor.
+Returnera JSON.`;
+
+    case 'voice_expense_parse':
+      return `${base}
+Scenario: Röstinmatning av utgift. Tolka: "${extras.question || ''}"
+Extrahera amount (kr), vendor, category (food/transport/entertainment/shopping/other).
+confirm_line: max 1 mening som bekräftar registreringen vänligt.
+Returnera JSON.`;
+
+    case 'voice_quick_answer':
+      return `${base}
+Scenario: Snabbt röstsvar utan djupanalys.
+Fråga: "${extras.question || ''}"
+answer: max 2 korta meningar med deras viktigaste siffra (t.ex. kvar denna vecka).
 Returnera JSON.`;
 
     case 'analysis_coach':

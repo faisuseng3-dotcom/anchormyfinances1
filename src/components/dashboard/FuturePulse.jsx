@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Loader2, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useFuturePulse } from '@/hooks/useFuturePulse';
 import { createPageUrl } from '@/utils';
 import { DashboardDivider, DashboardSection, DashboardStatStrip } from './DashboardChrome';
@@ -176,8 +177,8 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
             <div className="flex items-center justify-center gap-1 pt-4 text-[14px] font-medium text-white/60">
               Öppna kalender
               <ChevronRight className="w-4 h-4" />
-              {(isLoading || isFetching) && (
-                <Loader2 className="w-3.5 h-3.5 animate-spin ml-1" />
+              {isFetching && !isLoading && (
+                <Skeleton className="h-3 w-3 rounded-full ml-1" />
               )}
             </div>
           </>

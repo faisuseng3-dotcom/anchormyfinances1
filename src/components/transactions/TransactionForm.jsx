@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X, Check, Loader2 } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { useQueryClient } from '@tanstack/react-query';
-import { saveOverride } from '@/lib/enrichmentEngine';
 import { categorizeTransaction } from '@/lib/categoryRouter';
 import CategoryOverridePrompt from './CategoryOverridePrompt';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const CATEGORIES = [
   { value: 'food', label: 'Mat' },
@@ -23,6 +23,7 @@ const CATEGORIES = [
 const PAYMENT_METHODS = ['Konto', 'Kredit', 'Klarna', 'Swish', 'Kontant'];
 
 export default function TransactionForm({ existingTx, onSuccess, onClose }) {
+  const { createTransaction, updateTransaction } = useOptimisticTransactions();
   const [isExpense, setIsExpense] = useState(existingTx ? !['income', 'savings_withdrawal', 'transfer_to_spending'].includes(existingTx.type) : true);
   const [amount, setAmount] = useState(existingTx ? String(Math.abs(existingTx.amount)) : '');
   const [label, setLabel] = useState(existingTx?.label || '');
@@ -30,9 +31,8 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
   const [category, setCategory] = useState(existingTx?.category || 'other');
   const [paymentMethod, setPaymentMethod] = useState(existingTx?.paymentMethod || 'Konto');
   const [note, setNote] = useState(existingTx?.note || '');
-  const [saving, setSaving] = useState(false);
-  const [overridePrompt, setOverridePrompt] = useState(null); // { vendor, newCategory, categoryLabel }
-  const [aiConfidence, setAiConfidence] = useState(null); // 'high'|'medium'|'low'
+  const [overridePrompt, setOverridePrompt] = useState(null);
+  const [aiConfidence, setAiConfidence] = useState(null);
   const [categorizing, setCategorizing] = useState(false);
 
   const handleVendorBlur = async () => {
@@ -53,16 +53,14 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
   const handleCategoryChange = (newCat) => {
     const prev = category;
     setCategory(newCat);
-    // If user manually overrides and there's a vendor, offer to remember
     if (vendor && newCat !== prev && existingTx) {
-      const catLabel = CATEGORIES.find(c => c.value === newCat)?.label || newCat;
+      const catLabel = CATEGORIES.find((c) => c.value === newCat)?.label || newCat;
       setOverridePrompt({ vendor, newCategory: newCat, categoryLabel: catLabel });
     }
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!amount || !label) return;
-    setSaving(true);
     const type = isExpense ? 'expense' : 'income';
     const data = {
       type,
@@ -73,13 +71,15 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
       paymentMethod,
       note: note || undefined,
     };
-    if (existingTx) {
-      await base44.entities.Transaction.update(existingTx.id, data);
-    } else {
-      await base44.entities.Transaction.create({ ...data, context: 'PERSONAL' });
+
+    onClose?.();
+    onSuccess?.();
+
+    if (existingTx && !String(existingTx.id).startsWith('opt-tx-')) {
+      updateTransaction(existingTx.id, data);
+    } else if (!existingTx) {
+      createTransaction(data);
     }
-    setSaving(false);
-    onSuccess();
   };
 
   return (
@@ -97,25 +97,25 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
         exit={{ y: '100%' }}
         transition={{ type: 'spring', damping: 28, stiffness: 300 }}
         className="w-full max-w-md rounded-t-3xl bg-[#111827] border border-white/10 p-6 pb-10"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-lg font-bold text-white">{existingTx ? 'Redigera' : 'Ny transaktion'}</h2>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center">
+          <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center">
             <X className="w-4 h-4 text-slate-400" />
           </button>
         </div>
 
-        {/* Expense / Income toggle */}
         <div className="flex rounded-2xl bg-white/5 p-1 mb-5">
           <button
+            type="button"
             onClick={() => setIsExpense(true)}
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${isExpense ? 'bg-red-500 text-white' : 'text-slate-400'}`}
           >
             − Utgift
           </button>
           <button
+            type="button"
             onClick={() => setIsExpense(false)}
             className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${!isExpense ? 'bg-emerald-500 text-white' : 'text-slate-400'}`}
           >
@@ -124,46 +124,42 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
         </div>
 
         <div className="space-y-3">
-          {/* Amount */}
           <div className="relative">
             <input
               type="number"
               inputMode="decimal"
               placeholder="0"
               value={amount}
-              onChange={e => setAmount(e.target.value)}
+              onChange={(e) => setAmount(e.target.value)}
               className="w-full rounded-2xl px-4 py-3.5 text-2xl font-bold text-center focus:outline-none"
               style={{ background: 'rgba(255,255,255,0.06)', color: isExpense ? '#f87171' : '#34d399', border: '1px solid rgba(255,255,255,0.1)' }}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm">kr</span>
           </div>
 
-          {/* Vendor */}
           <input
             type="text"
             placeholder="Butik / Plats (t.ex. Hemköp, Steam)"
             value={vendor}
-            onChange={e => setVendor(e.target.value)}
+            onChange={(e) => setVendor(e.target.value)}
             onBlur={handleVendorBlur}
             className="w-full rounded-2xl px-4 py-3 text-sm"
             style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
           />
 
-          {/* Label */}
           <input
             type="text"
             placeholder="Beskrivning *"
             value={label}
-            onChange={e => setLabel(e.target.value)}
+            onChange={(e) => setLabel(e.target.value)}
             className="w-full rounded-2xl px-4 py-3 text-sm"
             style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
           />
 
-          {/* Category picker */}
           <div>
             <div className="flex items-center gap-2 mb-2 px-1">
               <p className="text-xs text-slate-500">Kategori</p>
-              {categorizing && <Loader2 className="w-3 h-3 animate-spin text-slate-500" />}
+              {categorizing && <Skeleton className="h-3 w-12 rounded-full" />}
               {aiConfidence === 'high' && (
                 <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
                   style={{ background: 'rgba(13,115,119,0.2)', color: '#0D7377' }}>
@@ -178,9 +174,10 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
               )}
             </div>
             <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(c => (
+              {CATEGORIES.map((c) => (
                 <button
                   key={c.value}
+                  type="button"
                   onClick={() => handleCategoryChange(c.value)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
                     category === c.value
@@ -194,13 +191,13 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
             </div>
           </div>
 
-          {/* Payment method */}
           <div>
             <p className="text-xs text-slate-500 mb-2 px-1">Betalmetod</p>
             <div className="flex gap-2 flex-wrap">
-              {PAYMENT_METHODS.map(m => (
+              {PAYMENT_METHODS.map((m) => (
                 <button
                   key={m}
+                  type="button"
                   onClick={() => setPaymentMethod(m)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
                     paymentMethod === m
@@ -214,18 +211,16 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
             </div>
           </div>
 
-          {/* Note */}
           <input
             type="text"
             placeholder="Anteckning (valfri)"
             value={note}
-            onChange={e => setNote(e.target.value)}
+            onChange={(e) => setNote(e.target.value)}
             className="w-full rounded-2xl px-4 py-3 text-sm"
             style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
           />
         </div>
 
-        {/* Override prompt */}
         {overridePrompt && (
           <CategoryOverridePrompt
             vendor={overridePrompt.vendor}
@@ -235,18 +230,14 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
           />
         )}
 
-        {/* Save button */}
         <motion.button
+          type="button"
           whileTap={{ scale: 0.97 }}
           onClick={handleSave}
-          disabled={!amount || !label || saving}
+          disabled={!amount || !label}
           className="w-full mt-5 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-sm disabled:opacity-40 flex items-center justify-center gap-2"
         >
-          {saving ? (
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <><Check className="w-4 h-4" /> {existingTx ? 'Spara ändringar' : 'Spara transaktion'}</>
-          )}
+          <Check className="w-4 h-4" /> {existingTx ? 'Spara ändringar' : 'Spara transaktion'}
         </motion.button>
       </motion.div>
     </motion.div>

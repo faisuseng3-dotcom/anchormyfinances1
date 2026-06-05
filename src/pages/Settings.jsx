@@ -26,6 +26,8 @@ import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import GamificationSection from '@/components/gamification/GamificationSection';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AppStructurePanel from '@/components/settings/AppStructurePanel';
+import AnchorAIStackPanel from '@/components/settings/AnchorAIStackPanel';
+import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -121,11 +123,7 @@ export default function Settings() {
   };
 
   if (isLoading || !formData) {
-    return (
-      <div className="anchor-page min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 rounded-full animate-spin border-white/20 border-t-white/80" />
-      </div>
-    );
+    return <PageShellSkeleton sections={4} />;
   }
 
   const inputStyle = anchorInputClass;
@@ -286,6 +284,8 @@ export default function Settings() {
         </DashboardSection>
 
         <AppStructurePanel />
+
+        <AnchorAIStackPanel />
 
         <DashboardSection nested title="Mer">
           <DashboardListRow

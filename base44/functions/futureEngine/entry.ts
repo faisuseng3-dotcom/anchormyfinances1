@@ -1,6 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
 
-const SYSTEM_PROMPT = `Persona: Du är "Framtidssjälv" – Anchors prediktiva AI-motor. Du är expert på att läsa ekonomiska trender och förutse finansiella händelser i Sverige 2026.
+const SYSTEM_PROMPT = `Persona: Du är "Framtidssjälv" – Anchors prediktiva AI-motor (Gemini 2.5 Pro-lager). Du är expert på att läsa ekonomiska trender, beteendemönster och förutse finansiella händelser i Sverige 2026.
 
 Uppgift: Analysera användarens historiska transaktioner och profil. En lokal motor har redan beräknat tidslinje och saldon — du ska ENRICHA med lugn coach-ton och konkreta råd.
 
@@ -22,21 +23,6 @@ Analys-krav:
 - Personal: flagga abonnemangsdubletter och tighta perioder
 
 Returnera STRIKT JSON enligt schema.`;
-
-async function invokeWithFallback(base44, prompt, schema) {
-  const opts = { prompt, model: 'claude_sonnet_4_6', response_json_schema: schema };
-  try {
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM(opts);
-    return { result, model: 'claude_sonnet_4_6' };
-  } catch (primaryErr) {
-    console.warn('futureEngine primary failed:', primaryErr?.message);
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      ...opts,
-      model: 'gpt_5_5',
-    });
-    return { result, model: 'gpt_5_5_fallback' };
-  }
-}
 
 Deno.serve(async (req) => {
   try {
@@ -94,7 +80,11 @@ Skriv coach_meddelande (max 90 tecken), framtids_status, prognos_30_dagar (kort)
         required: ['framtids_status', 'prognos_30_dagar', 'coach_meddelande', 'framtida_handelser'],
       };
 
-    const { result, model } = await invokeWithFallback(base44, prompt, schema);
+    const { result, model } = await invokeLlmForTask(base44, {
+      prompt,
+      response_json_schema: schema,
+      task: 'pattern_forecast',
+    });
 
     return Response.json({ ...result, model });
   } catch (error) {

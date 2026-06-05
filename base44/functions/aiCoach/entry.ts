@@ -1,24 +1,16 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
+import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
 
 const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach. Svara på SVENSKA, kort, varmt och empatiskt.
 Referera alltid användarens egna siffror — generiska råd är förbjudna.
 ALDRIG ansvarsfriskrivningar. Fira framsteg när det finns.`;
 
 async function invokeAdvisor(base44, prompt) {
-  try {
-    const message = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      model: 'claude_sonnet_4_6',
-    });
-    return { message, model: 'claude_sonnet_4_6' };
-  } catch (err) {
-    console.warn('aiCoach primary failed:', err?.message);
-    const message = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      model: 'gpt_5_5',
-    });
-    return { message, model: 'gpt_5_5_fallback' };
-  }
+  const { result, model } = await invokeLlmForTask(base44, {
+    prompt,
+    task: 'coaching',
+  });
+  return { message: result, model };
 }
 
 Deno.serve(async (req) => {

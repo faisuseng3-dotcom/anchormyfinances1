@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
 
 const VALID_CATEGORIES = [
   'food',
@@ -52,25 +53,6 @@ const RESULT_SCHEMA = {
   required: ['results'],
 };
 
-async function invokeWithFallback(base44, prompt) {
-  try {
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      model: 'claude_sonnet_4_6',
-      response_json_schema: RESULT_SCHEMA,
-    });
-    return { result, model: 'claude_sonnet_4_6' };
-  } catch (primaryErr) {
-    console.warn('categorizeTransactions primary model failed:', primaryErr.message);
-    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt,
-      model: 'gpt_5_5',
-      response_json_schema: RESULT_SCHEMA,
-    });
-    return { result, model: 'gpt_5_5_fallback' };
-  }
-}
-
 function clampCategory(cat: string) {
   const c = (cat || 'other').toLowerCase().trim();
   return VALID_CATEGORIES.includes(c) ? c : 'other';
@@ -101,7 +83,11 @@ Deno.serve(async (req) => {
 
     const prompt = `${SYSTEM_PROMPT}${contextBlock}\n\nKategorisera varje rad. Returnera results med samma id.\n\n${listBlock}`;
 
-    const { result, model } = await invokeWithFallback(base44, prompt);
+    const { result, model } = await invokeLlmForTask(base44, {
+      prompt,
+      response_json_schema: RESULT_SCHEMA,
+      task: 'categorize',
+    });
 
     const results = (result.results || []).map((row) => ({
       id: row.id,

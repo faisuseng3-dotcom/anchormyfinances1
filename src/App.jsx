@@ -24,6 +24,7 @@ import YearEndClosing from './pages/YearEndClosing';
 import Pricing from './pages/Pricing';
 import Login from './pages/Login';
 import { DemoProvider } from '@/components/demo/DemoMode';
+import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -57,11 +58,7 @@ const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (authError) {

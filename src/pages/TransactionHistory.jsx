@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp, LineChart, BookOpen } from 'lucide-react';
@@ -19,6 +19,8 @@ import {
 } from '@/lib/historyTabs';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
+import { TransactionListSkeleton } from '@/components/loading/SkeletonBlocks';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
 import SegmentTabs from '@/components/ui/SegmentTabs';
@@ -131,7 +133,7 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         onTouchStart={handleLongPressStart} onTouchEnd={handleLongPressEnd}
         onMouseDown={handleLongPressStart} onMouseUp={handleLongPressEnd} onMouseLeave={handleLongPressEnd}
         onClick={() => {if (!showActions) onEdit(tx);}}
-        className="flex items-center gap-3 py-3.5 cursor-pointer active:opacity-60"
+        className={`flex items-center gap-3 py-3.5 cursor-pointer active:opacity-60 ${tx._optimistic ? 'opacity-70' : ''}`}
         whileTap={{ scale: 0.99 }}>
         
         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
@@ -237,7 +239,7 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
 }
 
 export default function TransactionHistory() {
-  const queryClient = useQueryClient();
+  const { deleteTransaction } = useOptimisticTransactions();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { isBusiness } = useModeContext();
@@ -313,13 +315,12 @@ export default function TransactionHistory() {
   const totalIn = filtered.filter((t) => t.amount > 0).reduce((s, t) => s + t.amount, 0);
   const totalOut = filtered.filter((t) => t.amount < 0).reduce((s, t) => s + Math.abs(t.amount), 0);
 
-  const handleDelete = async (id) => {
-    await base44.entities.Transaction.delete(id);
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
+  const handleDelete = (id) => {
+    deleteTransaction(id);
   };
 
   const handleEdit = (tx) => {setEditingTx(tx);setShowForm(true);};
-  const handleFormSuccess = () => {setShowForm(false);setEditingTx(null);queryClient.invalidateQueries({ queryKey: ['transactions'] });};
+  const handleFormSuccess = () => {setShowForm(false);setEditingTx(null);};
 
   const activeFilterCount = [filterType, filterCategory].filter(Boolean).length;
 
@@ -461,11 +462,11 @@ export default function TransactionHistory() {
       )}
 
       {/* Loading */}
-      {isLoading &&
-      <div className="space-y-2 px-4 sm:px-5 mt-4">
-          {[1, 2, 3, 4, 5].map((i) => <div key={i} className="h-16 rounded-2xl skeleton" />)}
+      {isLoading && (
+        <div className="mt-4 px-1">
+          <TransactionListSkeleton rows={7} />
         </div>
-      }
+      )}
 
       {/* Empty state */}
       {!isLoading && transactions.length === 0 && (

@@ -1,67 +1,49 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { useQueryClient } from '@tanstack/react-query';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { QUICK_ACTIONS } from '@/lib/smartCategorization';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 export default function QuickActionExpense({ profile, onSuccess }) {
-  const queryClient = useQueryClient();
+  const { createTransaction } = useOptimisticTransactions();
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [amount, setAmount] = useState('');
-  const [submitting, setSubmitting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleQuickAdd = async (category) => {
+  const handleQuickAdd = (category) => {
     if (!amount || !profile) return;
 
-    setSubmitting(true);
-    try {
-      const action = QUICK_ACTIONS.find(a => a.category === category);
-      const label = action.label.split(' ')[0] || category;
+    const action = QUICK_ACTIONS.find((a) => a.category === category);
+    const label = action.label.split(' ')[0] || category;
+    const parsed = parseFloat(amount);
 
-      await base44.entities.Transaction.create({
-        type: 'expense',
-        amount: -Math.abs(parseFloat(amount)),
-        label,
-        vendor: '',
-        category,
-        paymentMethod: 'Konto',
-        note: ''
-      });
+    createTransaction({
+      type: 'expense',
+      amount: parsed,
+      label,
+      vendor: '',
+      category,
+      paymentMethod: 'Konto',
+      note: '',
+    });
 
-      // Update profile with new expense
-      const newExpense = {
-        name: label,
-        amount: parseFloat(amount),
-        date: new Date().toISOString().split('T')[0],
-        category
-      };
-      const updated = [...(profile.monthlyExpenses || []), newExpense];
-      await base44.entities.FinancialProfile.update(profile.id, {
-        monthlyExpenses: updated
-      });
+    const newExpense = {
+      name: label,
+      amount: parsed,
+      date: new Date().toISOString().split('T')[0],
+      category,
+    };
+    base44.entities.FinancialProfile.update(profile.id, {
+      monthlyExpenses: [...(profile.monthlyExpenses || []), newExpense],
+      ...(profile.totalXP !== undefined ? { totalXP: profile.totalXP + 10 } : {}),
+    }).catch(() => {});
 
-      queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
-      queryClient.invalidateQueries({ queryKey: ['transactions'] });
-
-      // XP award
-      if (profile.totalXP !== undefined) {
-        await base44.entities.FinancialProfile.update(profile.id, {
-          totalXP: profile.totalXP + 10
-        });
-      }
-
-      setAmount('');
-      setSelectedCategory(null);
-      setShowConfirm(false);
-      onSuccess?.();
-    } catch (error) {
-      console.error('Error adding expense:', error);
-    } finally {
-      setSubmitting(false);
-    }
+    setAmount('');
+    setSelectedCategory(null);
+    setShowConfirm(false);
+    onSuccess?.();
   };
 
   return (
@@ -119,10 +101,10 @@ export default function QuickActionExpense({ profile, onSuccess }) {
             </Button>
             <Button
               onClick={() => handleQuickAdd(selectedCategory)}
-              disabled={!amount || submitting}
+              disabled={!amount}
               className="flex-1 h-10 rounded-lg bg-emerald-500 hover:bg-emerald-600"
             >
-              {submitting ? 'Registrerar...' : 'Klar'}
+              Klar
             </Button>
           </div>
         </motion.div>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-mo
 import { X, Plus, ArrowLeftRight, History, Check, PiggyBank, TrendingUp, Zap } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { Button } from '@/components/ui/button';
 import TheSwipe from './TheSwipe';
 
@@ -32,29 +33,26 @@ function AddIncomeTab({ onSave }) {
     setTimeout(() => setParticles([]), 800);
   };
 
-  const handleSave = async () => {
-    if (amount <= 0 || saving) return;
-    setSaving(true);
-    // Haptic feedback
+  const handleSave = () => {
+    if (amount <= 0) return;
     if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
-    await onSave({ type: 'income', amount, label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label });
-    
-    // Award XP for income registration
-    try {
-      const profiles = await base44.entities.FinancialProfile.list();
-      if (profiles[0]) {
-        const currentXP = profiles[0].totalXP || 0;
-        await base44.entities.FinancialProfile.update(profiles[0].id, {
-          totalXP: currentXP + 15
+    onSave({
+      type: 'income',
+      amount,
+      label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label,
+    });
+
+    base44.entities.FinancialProfile.list()
+      .then((profiles) => {
+        if (!profiles[0]) return;
+        return base44.entities.FinancialProfile.update(profiles[0].id, {
+          totalXP: (profiles[0].totalXP || 0) + 15,
         });
-      }
-    } catch (e) {
-      console.error('XP award failed:', e);
-    }
+      })
+      .catch(() => {});
 
     triggerParticles();
     setDone(true);
-    setSaving(false);
     setTimeout(() => { setDone(false); setAmount(0); }, 2500);
   };
 
@@ -197,6 +195,7 @@ function HistoryTab() {
 export default function TransactionHub({ isOpen, onClose, profile }) {
   const [tab, setTab] = useState('income');
   const queryClient = useQueryClient();
+  const { createTransaction } = useOptimisticTransactions();
 
   // Always fetch fresh profile to avoid stale data bugs during consecutive operations
   const getFreshProfile = async () => {
@@ -204,49 +203,52 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
     return profiles[0] || null;
   };
 
-  const invalidateAll = () => {
-    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
-    queryClient.invalidateQueries({ queryKey: ['transactions'] });
-    queryClient.invalidateQueries({ queryKey: ['pulse'] });
-  };
-
-  const saveTransaction = async (txData) => {
-    await base44.entities.Transaction.create(txData);
+  const saveTransaction = (txData) => {
+    createTransaction(txData);
 
     if (txData.type === 'income' || txData.type === 'expense') {
-      // Always read fresh data before updating balance
-      const fresh = await getFreshProfile();
-      if (fresh?.id) {
-        const delta = txData.type === 'income' ? txData.amount : -txData.amount;
-        await base44.entities.FinancialProfile.update(fresh.id, {
-          buffer: Math.max(0, (fresh.buffer || 0) + delta),
-        });
-      }
+      getFreshProfile()
+        .then((fresh) => {
+          if (!fresh?.id) return;
+          const delta = txData.type === 'income' ? txData.amount : -txData.amount;
+          return base44.entities.FinancialProfile.update(fresh.id, {
+            buffer: Math.max(0, (fresh.buffer || 0) + delta),
+          });
+        })
+        .then(() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] }))
+        .catch(() => {});
     }
-
-    invalidateAll();
   };
 
-  const handleTransfer = async (direction, amount) => {
-    // Always read fresh data before transferring to avoid stale balance bugs
-    const fresh = await getFreshProfile();
-    if (!fresh?.id) return;
-
-    if (direction === 'to_savings') {
-      await base44.entities.FinancialProfile.update(fresh.id, {
-        savingsCurrentBalance: (fresh.savingsCurrentBalance || 0) + amount,
-        buffer: Math.max(0, (fresh.buffer || 0) - amount),
-      });
-      await base44.entities.Transaction.create({ type: 'transfer_to_savings', amount, label: `Överföring till Spar: +${fmt(amount)} kr` });
-    } else {
-      await base44.entities.FinancialProfile.update(fresh.id, {
-        savingsCurrentBalance: Math.max(0, (fresh.savingsCurrentBalance || 0) - amount),
-        buffer: (fresh.buffer || 0) + amount,
-      });
-      await base44.entities.Transaction.create({ type: 'transfer_to_spending', amount, label: `Överföring från Spar: +${fmt(amount)} kr` });
-    }
-
-    invalidateAll();
+  const handleTransfer = (direction, amount) => {
+    getFreshProfile()
+      .then((fresh) => {
+        if (!fresh?.id) return null;
+        if (direction === 'to_savings') {
+          return base44.entities.FinancialProfile.update(fresh.id, {
+            savingsCurrentBalance: (fresh.savingsCurrentBalance || 0) + amount,
+            buffer: Math.max(0, (fresh.buffer || 0) - amount),
+          }).then(() => {
+            createTransaction({
+              type: 'transfer_to_savings',
+              amount,
+              label: `Överföring till Spar: +${fmt(amount)} kr`,
+            });
+          });
+        }
+        return base44.entities.FinancialProfile.update(fresh.id, {
+          savingsCurrentBalance: Math.max(0, (fresh.savingsCurrentBalance || 0) - amount),
+          buffer: (fresh.buffer || 0) + amount,
+        }).then(() => {
+          createTransaction({
+            type: 'transfer_to_spending',
+            amount,
+            label: `Överföring från Spar: +${fmt(amount)} kr`,
+          });
+        });
+      })
+      .then(() => queryClient.invalidateQueries({ queryKey: ['financialProfile'] }))
+      .catch(() => {});
   };
 
   const TABS = [

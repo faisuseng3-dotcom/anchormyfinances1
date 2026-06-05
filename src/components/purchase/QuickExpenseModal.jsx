@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
-import { X, Loader2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,6 +9,7 @@ import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { suggestCategory } from '@/lib/smartCategorization';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { toast } from 'sonner';
+import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 
 const categories = [
   { id: 'food', label: 'Mat & Dryck' },
@@ -21,11 +22,11 @@ const categories = [
 
 export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile: profileProp, prefilledName = '', prefilledAmount = '' }) {
   const { profile: ctxProfile, transactions, isDemoMode } = useAdvisorContext();
+  const { createTransaction } = useOptimisticTransactions();
   const profile = profileProp || ctxProfile;
   const [name, setName] = useState(prefilledName);
   const [amount, setAmount] = useState(prefilledAmount);
   const [category, setCategory] = useState('');
-  const [analyzing, setAnalyzing] = useState(false);
   const [aiInsight, setAiInsight] = useState(null);
   const [suggestedCategory, setSuggestedCategory] = useState('');
 
@@ -56,26 +57,26 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
     return parseInt(value.replace(/\s/g, '')) || 0;
   };
 
-  const handleRegister = async () => {
-    if (!name || !amount || !category) return;
+  const handleRegister = () => {
+    if (!name || !amount || !category || !profile) return;
 
-    setAnalyzing(true);
+    const parsedAmount = parseNumber(amount);
+
+    createTransaction({
+      type: 'expense',
+      amount: parsedAmount,
+      label: name,
+      vendor: name,
+      category,
+    });
 
     const newExpense = {
       name,
-      amount: parseNumber(amount),
+      amount: parsedAmount,
       date: new Date().toISOString().split('T')[0],
-      category
+      category,
     };
-
     const newExpenses = [...(profile.monthlyExpenses || []), newExpense];
-
-    // Update profile
-    await base44.entities.FinancialProfile.update(profile.id, { 
-      monthlyExpenses: newExpenses 
-    });
-
-    // Generate AI insight
     const totalSpent = newExpenses.reduce((sum, exp) => sum + exp.amount, 0);
     const totalSubscriptions = (profile.subscriptions || []).reduce((sum, s) => sum + s.amount, 0);
     const totalLoanPayments = (profile.loans || []).reduce((sum, l) => sum + l.monthlyPayment, 0);
@@ -83,52 +84,50 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
     const monthlyMargin = profile.income - totalFixedCosts;
     const remaining = monthlyMargin - totalSpent;
 
-    try {
-      const aiResponse = await askPersonalAdvisor(
-        {
-          scenario: 'expense_feedback',
-          transaction: {
-            name,
-            amount: parseNumber(amount),
-            category,
-          },
-        },
-        { profile, transactions, isDemoMode },
-      );
+    setAiInsight({
+      text: 'Sparat — hämtar en kort kommentar…',
+      remaining,
+      totalSpent,
+    });
 
-      setAiInsight({
-        text: aiResponse.message || aiResponse.answer,
-        remaining,
-        totalSpent
-      });
-    } catch (error) {
-      console.error('AI insight error:', error);
-    }
+    base44.entities.FinancialProfile.update(profile.id, { monthlyExpenses: newExpenses }).catch(() => {});
+
+    askPersonalAdvisor(
+      {
+        scenario: 'expense_feedback',
+        transaction: { name, amount: parsedAmount, category },
+      },
+      { profile, transactions, isDemoMode },
+    )
+      .then((aiResponse) => {
+        setAiInsight({
+          text: aiResponse.message || aiResponse.answer,
+          remaining,
+          totalSpent,
+        });
+      })
+      .catch(() => {});
 
     base44.analytics.track({
       eventName: 'expense_registered',
-      properties: { category, amount: parseNumber(amount) }
+      properties: { category, amount: parsedAmount },
     });
 
-    // Award challenge points
     base44.functions.invoke('awardPoints', { event_type: 'expense_register' })
-      .then(r => {
+      .then((r) => {
         if (r?.data?.points > 0) {
           toast.success(`+${r.data.points} poäng till tävlingen!`, {
             description: 'Köp registrerat',
             duration: 3000,
-            style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' }
+            style: { background: 'linear-gradient(135deg, #1e1b4b, #1a2233)', color: '#a5b4fc', border: '1px solid rgba(99,102,241,0.4)' },
           });
         }
       })
       .catch(() => {});
-    // Award points for manual categorization
-    if (category) {
-      base44.functions.invoke('awardPoints', { event_type: 'expense_categorize' })
-        .catch(() => {});
-    }
 
-    setAnalyzing(false);
+    if (category) {
+      base44.functions.invoke('awardPoints', { event_type: 'expense_categorize' }).catch(() => {});
+    }
   };
 
   const handleClose = () => {
@@ -186,7 +185,6 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
                     }
                   }}
                   className="h-12 rounded-xl"
-                  disabled={analyzing}
                 />
               </div>
 
@@ -199,7 +197,6 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
                     value={formatNumber(parseNumber(amount))}
                     onChange={(e) => setAmount(e.target.value)}
                     className="h-12 rounded-xl pr-12"
-                    disabled={analyzing}
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
                 </div>
@@ -228,7 +225,7 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
 
               <div>
                 <label className="text-sm text-slate-300 mb-2 block">Kategori</label>
-                <Select value={category} onValueChange={(val) => { setCategory(val); setSuggestedCategory(''); }} disabled={analyzing}>
+                <Select value={category} onValueChange={(val) => { setCategory(val); setSuggestedCategory(''); }}>
                   <SelectTrigger className="h-12 rounded-xl">
                     <SelectValue placeholder="Välj kategori" />
                   </SelectTrigger>
@@ -257,17 +254,10 @@ export default function QuickExpenseModal({ isOpen, onClose, onSuccess, profile:
 
               <Button
                 onClick={handleRegister}
-                disabled={!name || !amount || !category || analyzing}
+                disabled={!name || !amount || !category}
                 className="w-full h-14 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-lg font-semibold shadow-lg mt-6"
               >
-                {analyzing ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                    Registrerar...
-                  </>
-                ) : (
-                  'Registrera köp'
-                )}
+                Registrera köp
               </Button>
             </div>
           </>

@@ -11,7 +11,7 @@ import { useTransactions } from '@/hooks/useTransactions';
 import { useDashboardPrefetch } from '@/hooks/useDashboardPrefetch';
 import { motion, AnimatePresence } from 'framer-motion';
 import FutureDashboard from '@/components/dashboard/FutureDashboard';
-import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
+import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import TransactionHub from '@/components/transactions/TransactionHub';
 import BadgeUnlock from '@/components/gamification/BadgeUnlock';
 import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
@@ -27,7 +27,6 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isAuthenticated, isLoadingAuth } = useAuth();
-  const [showExpenseModal, setShowExpenseModal] = useState(false);
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showMagicEntry, setShowMagicEntry] = useState(false);
   const { isAlexMode: isAlex } = useDemoMode();
@@ -72,7 +71,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const action = location.state?.anchorAction;
-    if (action === 'register') setShowExpenseModal(true);
+    if (action === 'register') window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'));
     if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
     if (action === 'transfer' || action === 'save') setShowTransactionHub(true);
     if (action === 'debt') navigate(createPageUrl('Loans'));
@@ -85,7 +84,7 @@ export default function Dashboard() {
   useEffect(() => {
     base44.analytics.track({ eventName: 'dashboard_viewed' });
     const handler = (e) => {
-      if (e.detail.action === 'register') setShowExpenseModal(true);
+      if (e.detail.action === 'register') window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'));
       if (e.detail.action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
       if (e.detail.action === 'transfer' || e.detail.action === 'save') setShowTransactionHub(true);
     };
@@ -114,11 +113,7 @@ export default function Dashboard() {
   if (!isLoadingAuth && !isAuthenticated && !isGuestMode()) return <Landing />;
 
   if (isLoadingAuth || isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 rounded-full animate-spin" style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />
-      </div>);
-
+    return <DashboardSkeleton />;
   }
 
   if (!profile) {
@@ -143,24 +138,17 @@ export default function Dashboard() {
         transactions={txs}
         updateProfile={updateProfile}
         user={isAlex ? { full_name: 'Alex Lindqvist' } : undefined}
-        onOpenExpense={() => setShowExpenseModal(true)}
+        onOpenExpense={() => window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'))}
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
         onFocusAction={(action) => {
-          if (action === 'register') setShowExpenseModal(true);
+          if (action === 'register') window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'));
           if (action === 'debt') navigate(createPageUrl('Loans'));
           if (action === 'savings') setShowTransactionHub(true);
           if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
         }}
       />
       {isAlex && <AlexConflictAlert />}
-
-      {/* Modals */}
-      <QuickExpenseModal
-        isOpen={showExpenseModal}
-        onClose={() => setShowExpenseModal(false)}
-        profile={profile}
-        onSuccess={() => { invalidate(); setShowExpenseModal(false); }} />
 
       <TransactionHub
         isOpen={showTransactionHub}
@@ -173,7 +161,7 @@ export default function Dashboard() {
             profile={profile}
             onClose={() => setShowWelcome(false)}
             onFirstAction={(action) => {
-              if (action === 'register') setShowExpenseModal(true);
+              if (action === 'register') window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'));
               if (action === 'debt') navigate(createPageUrl('Loans'));
               if (action === 'savings') setShowTransactionHub(true);
               if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
