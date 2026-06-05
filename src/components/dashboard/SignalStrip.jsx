@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Info, AlertCircle, TrendingUp } from 'lucide-react';
-import { runInsightEngine } from '@/lib/insightEngine';
+import { useInsightsBundle } from '@/hooks/useInsightsBundle';
 import InsightDetailModal from './InsightDetailModal';
 import { dashRail, dashLabel } from '@/lib/appSurface';
 
@@ -15,7 +15,7 @@ const TYPE_COLORS = {
 /** Tidigare AIStoryBar — regelbaserade signaler, ingen AI-badge. */
 export default function SignalStrip({ profile, transactions }) {
   const [activeInsight, setActiveInsight] = useState(null);
-  const insights = useMemo(() => runInsightEngine(profile, transactions), [profile, transactions]);
+  const { insights } = useInsightsBundle(profile, transactions);
 
   if (!insights.length) return null;
 

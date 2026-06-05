@@ -1,13 +1,9 @@
-import { Navigate, useSearchParams } from 'react-router-dom';
+import LegacyRedirect from '@/components/nav/LegacyRedirect';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { planeraTabHref } from '@/lib/planeraTabs';
 
 /** Legacy — sammanslagen med Planera. */
 export default function Pulse() {
-  const [searchParams] = useSearchParams();
-  const qs = searchParams.toString();
-  const target = planeraTabHref('nu');
-  return <Navigate to={qs ? `${target}&${qs}` : target} replace />;
+  return <LegacyRedirect page="Pulse" />;
 }
 
 export const pageSeo = pageSeoFor('FuturePulse');

@@ -282,7 +282,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                 </button>
                 {activated && (
                   <Link
-                    to={createPageUrl('BudgetDashboard')}
+                    to="/Budget"
                     onClick={onClose}
                     className={`w-full ${anchorSecondaryButtonClass} no-underline`}
                   >

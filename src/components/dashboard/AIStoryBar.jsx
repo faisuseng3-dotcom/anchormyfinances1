@@ -1,7 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Info, AlertCircle, TrendingUp } from 'lucide-react';
-import { runInsightEngine } from '@/lib/insightEngine';
+import { useInsightsBundle } from '@/hooks/useInsightsBundle';
 import InsightDetailModal from './InsightDetailModal';
 import { anchorZoneClass } from '@/lib/anchorTheme';
 
@@ -15,7 +15,7 @@ const TYPE_COLORS = {
 export default function AIStoryBar({ profile, transactions }) {
   const [activeInsight, setActiveInsight] = useState(null);
 
-  const insights = useMemo(() => runInsightEngine(profile, transactions), [profile, transactions]);
+  const { insights } = useInsightsBundle(profile, transactions);
 
   if (!insights.length) return null;
 

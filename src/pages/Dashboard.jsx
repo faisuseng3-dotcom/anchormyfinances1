@@ -8,6 +8,7 @@ import { isGuestMode } from '@/components/guestStorage';
 import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
+import { useDashboardPrefetch } from '@/hooks/useDashboardPrefetch';
 import { motion, AnimatePresence } from 'framer-motion';
 import FutureDashboard from '@/components/dashboard/FutureDashboard';
 import QuickExpenseModal from '@/components/purchase/QuickExpenseModal';
@@ -32,6 +33,7 @@ export default function Dashboard() {
   const { isAlexMode: isAlex } = useDemoMode();
   const { profile, isLoading, invalidate, isPersisted, updateProfile } = useFinancialProfile();
   const { transactions: txs } = useTransactions();
+  useDashboardPrefetch(profile);
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);

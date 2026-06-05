@@ -16,7 +16,7 @@ export default function ExpensesCard({ profile }) {
   const statusColor = usedPercent >= 90 ? 'var(--color-danger)' : usedPercent >= 60 ? 'var(--color-warning)' : 'var(--color-success)';
 
   return (
-    <Link to={createPageUrl('Expenses')}>
+    <Link to={createPageUrl('TransactionHistory')}>
       <motion.div
         whileTap={{ scale: 0.98 }}
         className="rounded-2xl p-5 cursor-pointer"

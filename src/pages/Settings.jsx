@@ -25,6 +25,7 @@ import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import GamificationSection from '@/components/gamification/GamificationSection';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
+import AppStructurePanel from '@/components/settings/AppStructurePanel';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -283,6 +284,8 @@ export default function Settings() {
             )}
           </div>
         </DashboardSection>
+
+        <AppStructurePanel />
 
         <DashboardSection nested title="Mer">
           <DashboardListRow

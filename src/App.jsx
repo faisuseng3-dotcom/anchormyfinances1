@@ -18,17 +18,12 @@ import BusinessOnboarding from './pages/BusinessOnboarding';
 import LedgerVault from './pages/LedgerVault';
 import Import from './pages/Import';
 import BudgetDashboard from './pages/BudgetDashboard';
-import SavingsGoals from './pages/SavingsGoals';
-import Insights from './pages/Insights';
-import { DemoProvider } from '@/components/demo/DemoMode';
 import Social from './pages/Social';
-import Squads from './pages/Squads';
 import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
-import AnchorAnalysis from './pages/AnchorAnalysis';
-import FuturePulse from './pages/FuturePulse';
-import Login from './pages/Login';
 import Pricing from './pages/Pricing';
+import Login from './pages/Login';
+import { DemoProvider } from '@/components/demo/DemoMode';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -61,7 +56,6 @@ const AuthenticatedApp = () => {
   const location = useLocation();
   const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -70,7 +64,6 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
@@ -79,7 +72,6 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Render the main app
   return (
     <Routes>
       <Route path="/Login" element={<Login />} />
@@ -105,6 +97,7 @@ const AuthenticatedApp = () => {
           />
         );
       })}
+      {/* Djupvyer — inte i bottennav */}
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       <Route path="/TermsOfService" element={<TermsOfService />} />
       <Route path="/Pricing" element={<Pricing />} />
@@ -125,11 +118,6 @@ const AuthenticatedApp = () => {
           <BudgetDashboard />
         </LayoutWrapper>
       } />
-      <Route path="/SavingsGoals" element={
-        <LayoutWrapper currentPageName="SavingsGoals">
-          <SavingsGoals />
-        </LayoutWrapper>
-      } />
       <Route path="/Social" element={
         <LayoutWrapper currentPageName="Social">
           <Social />
@@ -145,23 +133,7 @@ const AuthenticatedApp = () => {
           <Galaxy />
         </LayoutWrapper>
       } />
-      <Route path="/Squads" element={
-        <LayoutWrapper currentPageName="Squads">
-          <Squads />
-        </LayoutWrapper>
-      } />
       <Route path="/YearEndClosing" element={<YearEndClosing />} />
-      <Route path="/AnchorAnalysis" element={<AnchorAnalysis />} />
-      <Route path="/Insights" element={
-        <LayoutWrapper currentPageName="Insights">
-          <Insights />
-        </LayoutWrapper>
-      } />
-      <Route path="/FuturePulse" element={
-        <LayoutWrapper currentPageName="FuturePulse">
-          <FuturePulse />
-        </LayoutWrapper>
-      } />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
+import { useSearchParams } from 'react-router-dom';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
@@ -53,8 +54,19 @@ function ToolIcon({ icon: Icon }) {
 }
 
 export default function ProTools() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [activeModule, setActiveModule] = useState(null);
   const { profile } = useFinancialProfile();
+
+  useEffect(() => {
+    const deep = searchParams.get('deep');
+    if (!deep || !DEEP_MODULES.some((m) => m.id === deep)) return;
+    setActiveModule(deep);
+    const next = new URLSearchParams(searchParams);
+    next.delete('deep');
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- körs vid landning med ?deep=
+  }, []);
 
   const scenarios = useMemo(
     () => sortTools(PROTOOLS_SCENARIOS, profile?.topConcern),
@@ -74,7 +86,7 @@ export default function ProTools() {
 
   return (
     <PageShell
-      title="Fler verktyg"
+      title="Verktyg"
       subtitle="Räkna, simulera och följ upp"
       backHref={createPageUrl('Dashboard')}
     >

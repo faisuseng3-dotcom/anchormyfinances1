@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { DashboardSection } from './DashboardChrome';
 import { sectionMetaClass } from '@/lib/anchorTheme';
 
@@ -118,7 +119,7 @@ function SavingsGoalRow({ profile }) {
   const name = profile.savingsGoalName || 'Sparmål';
 
   return (
-    <Link to="/SavingsGoals" className="block no-underline py-3 active:opacity-70">
+    <Link to={createPageUrl('Settings')} className="block no-underline py-3 active:opacity-70">
       <div className="flex items-center gap-3">
         <span className="text-2xl">{emoji}</span>
         <div className="flex-1 min-w-0">

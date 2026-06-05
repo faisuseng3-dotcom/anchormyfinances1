@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { useDemoMode } from '@/components/demo/DemoMode';
+import { queryKeys } from '@/lib/queryKeys';
+import { fetchTransactions } from '@/lib/dataFetchers';
 
 /**
  * Transactions for the active session (API or demo preview).
@@ -16,13 +17,11 @@ export function useTransactions(options = {}) {
   const { isDemoMode, demoTransactions } = useDemoMode();
 
   const query = useQuery({
-    queryKey: ['transactions', order, limit, personalOnly],
-    queryFn: async () => {
-      const all = await base44.entities.Transaction.list(order, limit);
-      const list = all || [];
-      return personalOnly ? list.filter((t) => t.context !== 'BUSINESS') : list;
-    },
+    queryKey: queryKeys.transactions(order, limit, personalOnly),
+    queryFn: () => fetchTransactions({ order, limit, personalOnly }),
     enabled: enabled && !isDemoMode,
+    staleTime: 5 * 60 * 1000,
+    placeholderData: (prev) => prev,
   });
 
   const transactions = useMemo(() => {

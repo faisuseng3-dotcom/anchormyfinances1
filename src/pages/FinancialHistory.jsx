@@ -1,10 +1,9 @@
-import { Navigate } from 'react-router-dom';
+import LegacyRedirect from '@/components/nav/LegacyRedirect';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { historyTabHref } from '@/lib/historyTabs';
 
-/** Legacy — sammanslagen med Historik. */
+/** Legacy — trender finns under Historik. */
 export default function FinancialHistory() {
-  return <Navigate to={historyTabHref('trends')} replace />;
+  return <LegacyRedirect page="FinancialHistory" />;
 }
 
 export const pageSeo = pageSeoFor('TransactionHistory');

@@ -1,14 +1,7 @@
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
-import {
-  computeLocalFuturePulse,
-  summarizeForFutureEngine,
-  mergeFuturePulse,
-  extractPatterns,
-  compactFuturePulse,
-  enrichFuturePulseDetail,
-} from '@/lib/futurePulseEngine';
+import { queryKeys } from '@/lib/queryKeys';
+import { fetchFuturePulse } from '@/lib/futurePulseQuery';
 
 /**
  * @param {object} profile
@@ -22,33 +15,11 @@ export function useFuturePulse(profile, transactions, { compact = true, enabled 
   );
 
   return useQuery({
-    queryKey: ['futurePulse', profile?.id, personalTxs.length, compact ? 'compact' : 'full'],
-    queryFn: async () => {
-      const maxEvents = compact ? 2 : 6;
-      const localRaw = computeLocalFuturePulse(profile, personalTxs, 60, maxEvents);
-      const payload = summarizeForFutureEngine(profile, personalTxs);
-      const patterns = extractPatterns(profile, personalTxs);
-
-      let merged = localRaw;
-      try {
-        const res = await base44.functions.invoke('futureEngine', {
-          ...payload,
-          localBaseline: compactFuturePulse(localRaw),
-          patterns,
-          context: 'PERSONAL',
-        });
-        merged = mergeFuturePulse(localRaw, res.data);
-      } catch {
-        merged = localRaw;
-      }
-
-      if (compact) {
-        return compactFuturePulse(merged);
-      }
-      return enrichFuturePulseDetail(merged, profile);
-    },
+    queryKey: queryKeys.futurePulse(profile?.id, personalTxs.length, compact),
+    queryFn: () => fetchFuturePulse(profile, transactions, { compact }),
     enabled: enabled && !!profile,
     staleTime: 5 * 60 * 1000,
     retry: 1,
+    placeholderData: (prev) => prev,
   });
 }

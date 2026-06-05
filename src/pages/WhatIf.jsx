@@ -1,10 +1,9 @@
-import { Navigate } from 'react-router-dom';
+import LegacyRedirect from '@/components/nav/LegacyRedirect';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { planeraTabHref } from '@/lib/planeraTabs';
 
 /** Legacy — sammanslagen med Planera. */
 export default function WhatIf() {
-  return <Navigate to={planeraTabHref('scenario')} replace />;
+  return <LegacyRedirect page="WhatIf" />;
 }
 
 export const pageSeo = pageSeoFor('FuturePulse');

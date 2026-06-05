@@ -1,10 +1,9 @@
-import { Navigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import LegacyRedirect from '@/components/nav/LegacyRedirect';
 import { pageSeoFor } from '@/lib/pageSeo';
 
-/** Avpublicerad — passar inte Anchors kärnupplevelse (privat ekonomi). */
+/** Legacy — borttagen; tillbaka till Hem. */
 export default function ResellScanner() {
-  return <Navigate to={createPageUrl('Dashboard')} replace />;
+  return <LegacyRedirect page="ResellScanner" />;
 }
 
 export const pageSeo = pageSeoFor('Dashboard');

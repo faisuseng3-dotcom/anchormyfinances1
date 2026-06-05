@@ -1,7 +1,8 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { CheckCircle2, Smartphone, Copy, Coffee, Wallet } from 'lucide-react';
-import { runLeakageDetector, fmtLeakageSek } from '@/lib/leakageEngine';
+import { fmtLeakageSek } from '@/lib/leakageEngine';
+import { useInsightsBundle } from '@/hooks/useInsightsBundle';
 import { createPageUrl } from '@/utils';
 import { useLeakageExplanations } from '@/hooks/useLeakageExplanations';
 import { DashboardDivider, DashboardListRow, DashboardSection } from './DashboardChrome';
@@ -25,12 +26,8 @@ function LeakIcon({ type }) {
 }
 
 export default function LeakageDetector({ profile, transactions, variant = 'dashboard', className = '', nested = false }) {
-  const result = useMemo(
-    () => runLeakageDetector(profile, transactions),
-    [profile, transactions],
-  );
-
-  const { leaks, totalMonthlyLeak, headline, savingsStory, hasLeaks } = result;
+  const { leakage: result } = useInsightsBundle(profile, transactions);
+  const { leaks = [], totalMonthlyLeak = 0, headline = '', savingsStory = '', hasLeaks = false } = result || {};
   const showCount = variant === 'dashboard' ? 3 : leaks.length;
   const visibleLeaks = leaks.slice(0, showCount);
 

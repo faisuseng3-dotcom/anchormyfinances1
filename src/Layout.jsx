@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Home, Settings, Mic, ClipboardList, Users, Plus } from 'lucide-react';
+import { Mic, Plus } from 'lucide-react';
+import { CORE_VIEWS } from '@/lib/appStructure';
+import { prefetchRoute } from '@/lib/prefetchHub';
 import { motion, AnimatePresence } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
@@ -21,12 +23,14 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { isEmbeddedApp } from '@/lib/embedLayout';
 import { cn } from '@/lib/utils';
 
+/** 5 kärnflikar + FAB — Jämför och socialt ligger under Inställningar. */
 const navItems = [
-  { icon: Home, page: 'Dashboard', label: 'Hem' },
-  { icon: Users, page: 'Galaxy', label: 'Jämför' },
-  null, // placeholder for center FAB
-  { icon: ClipboardList, page: 'TransactionHistory', label: 'Historik' },
-  { icon: Settings, page: 'Settings', label: 'Inställningar' },
+  CORE_VIEWS[0],
+  CORE_VIEWS[1],
+  null,
+  CORE_VIEWS[2],
+  CORE_VIEWS[3],
+  CORE_VIEWS[4],
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -389,7 +393,7 @@ export default function Layout({ children, currentPageName }) {
           )}
           style={{ background: 'rgba(6, 14, 32, 0.82)' }}
         >
-          <div className="flex items-center justify-around py-2.5 max-w-md mx-auto px-3">
+          <div className="flex items-center justify-between py-2 max-w-lg mx-auto px-2 sm:px-3">
             {navItems.map((item, idx) => {
               // Center FAB
               if (item === null || item === undefined) {
@@ -411,16 +415,25 @@ export default function Layout({ children, currentPageName }) {
               const Icon = item.icon;
               const isActive = currentPageName === item.page;
 
+              const prefetchKey =
+                item.page === 'FuturePulse' ? 'FuturePulse'
+                  : item.page === 'TransactionHistory' ? 'TransactionHistory'
+                    : item.page === 'ProTools' ? 'ProTools'
+                      : null;
+
               return (
                 <Link
                   key={item.page}
                   to={createPageUrl(item.page)}
-                  className="relative flex items-center justify-center w-11 h-11"
+                  className="relative flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11"
                   aria-label={item.label || item.page}
+                  onMouseEnter={() => prefetchKey && prefetchRoute(prefetchKey)}
+                  onFocus={() => prefetchKey && prefetchRoute(prefetchKey)}
+                  onTouchStart={() => prefetchKey && prefetchRoute(prefetchKey)}
                 >
                   <motion.div
                     whileTap={{ scale: 0.85 }}
-                    className="flex items-center justify-center w-11 h-11 rounded-full transition-all"
+                    className="flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full transition-all"
                     style={{ background: isActive ? 'rgba(255,255,255,0.1)' : 'transparent' }}
                   >
                     <Icon

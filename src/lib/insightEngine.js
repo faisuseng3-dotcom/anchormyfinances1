@@ -135,7 +135,7 @@ export function runInsightEngine(profile, transactions) {
       why: 'Buffert delat med dina fasta kostnader visar hur många månader du klarar utan inkomst. Under en månad är marginalen för tunn för de flesta oväntade utgifter.',
       consequence: 'Det är inte panik — men det är dags att prioritera buffert före nya utgifter.',
       action: 'sätta upp en sparplan',
-      actionLink: '/SavingsGoals',
+      actionLink: '/Dashboard',
       data: { buffer, totalFixed, monthsOfBuffer },
     });
   } else if (monthsOfBuffer < 3) {
@@ -148,7 +148,7 @@ export function runInsightEngine(profile, transactions) {
       why: 'Tre månaders fasta kostnader i buffert är en vanlig tumregel i Sverige — den ger tid att hitta ny inkomst utan att behöva ta nya lån direkt.',
       consequence: 'Varje extra tusenlapp i buffert gör vardagen lugnare när något oväntat händer.',
       action: 'bygga bufferten',
-      actionLink: '/SavingsGoals',
+      actionLink: '/Dashboard',
       data: { monthsOfBuffer },
     });
   }

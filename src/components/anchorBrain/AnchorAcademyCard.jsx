@@ -7,8 +7,6 @@ import {
   scanSubscriptions,
 } from '@/lib/anchorBrain';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
 import {
   dashRailCard,
   dashRailCardBorder,
@@ -110,13 +108,6 @@ export default function AnchorAcademyCard({
                 >
                   {content?.cta || 'Klar'}
                 </button>
-                <Link
-                  to={createPageUrl('AnchorAcademy')}
-                  className="block text-center text-[13px] text-white/40 mt-4"
-                  onClick={() => setOpen(false)}
-                >
-                  Alla lektioner
-                </Link>
               </>
             )}
           </motion.div>

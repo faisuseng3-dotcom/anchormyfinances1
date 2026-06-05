@@ -22,7 +22,7 @@ export default function SpendableHero({ profile }) {
       <div className="flex justify-end mb-2">
         <motion.button
           whileTap={{ scale: 0.96 }}
-          onClick={() => navigate('/AnchorAnalysis')}
+          onClick={() => navigate('/TransactionHistory?tab=insights')}
           className="inline-flex items-center gap-1.5 text-[13px] font-medium text-white/70 hover:text-white"
         >
           <Anchor className="w-3.5 h-3.5" />

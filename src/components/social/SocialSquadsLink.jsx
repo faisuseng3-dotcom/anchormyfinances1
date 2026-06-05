@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Users, ChevronRight } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 
 export default function SocialSquadsLink() {
   const navigate = useNavigate();
@@ -8,7 +9,7 @@ export default function SocialSquadsLink() {
   return (
     <button
       type="button"
-      onClick={() => navigate('/Squads')}
+      onClick={() => navigate(`${createPageUrl('Social')}?tab=friends`)}
       className="w-full flex items-center justify-between p-4 rounded-2xl border border-[#6B9FFF]/25 bg-[#6B9FFF]/10 hover:bg-[#6B9FFF]/14 transition-colors"
     >
       <div className="flex items-center gap-3 text-left">

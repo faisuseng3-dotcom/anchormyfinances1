@@ -1,10 +1,9 @@
-import { Navigate } from 'react-router-dom';
+import LegacyRedirect from '@/components/nav/LegacyRedirect';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { historyTabHref } from '@/lib/historyTabs';
 
 /** Legacy — verifikat finns som flik under Historik (företag). */
 export default function LedgerVault() {
-  return <Navigate to={historyTabHref('ledger', { includeLedger: true })} replace />;
+  return <LegacyRedirect page="LedgerVault" />;
 }
 
 export const pageSeo = pageSeoFor('TransactionHistory');

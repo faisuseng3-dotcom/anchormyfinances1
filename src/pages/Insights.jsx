@@ -1,10 +1,9 @@
-import { Navigate } from 'react-router-dom';
+import LegacyRedirect from '@/components/nav/LegacyRedirect';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { createPageUrl } from '@/utils';
 
-/** Legacy route — insikter finns nu som flik på transaktionssidan. */
+/** Legacy — insikter finns under Historik. */
 export default function Insights() {
-  return <Navigate to={`${createPageUrl('TransactionHistory')}?tab=insights`} replace />;
+  return <LegacyRedirect page="Insights" />;
 }
 
-export const pageSeo = pageSeoFor('Insights');
+export const pageSeo = pageSeoFor('TransactionHistory');
