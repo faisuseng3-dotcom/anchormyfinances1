@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { PiggyBank, Pencil, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GoalCard from '@/components/savings/GoalCard';
@@ -203,3 +204,5 @@ export default function SavingsGoals() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('SavingsGoals');

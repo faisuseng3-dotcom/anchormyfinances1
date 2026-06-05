@@ -1,19 +1,42 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { getEconomicHealth } from '@/lib/economicHealth';
+import { Share2 } from 'lucide-react';
+import { calculateWeeklyHealthScore, healthShareText } from '@/lib/weeklyHealthScore';
 
-export default function EconomicHealthCard({ mli, compact = false }) {
-  const health = getEconomicHealth(mli);
-  const circumference = 2 * Math.PI * 18;
+export default function EconomicHealthCard({ profile, transactions, compact = false }) {
+  const health = useMemo(
+    () => calculateWeeklyHealthScore(profile, transactions),
+    [profile, transactions],
+  );
+
+  const handleShare = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const text = healthShareText(health.score);
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'Min ekonomiska hälsa', text });
+        return;
+      } catch { /* fallback */ }
+    }
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    }
+  };
+
+  const ringR = compact ? 14 : 28;
+  const circumference = 2 * Math.PI * ringR;
   const offset = circumference - (health.score / 100) * circumference;
 
   if (compact) {
     return (
-      <motion.div
+      <motion.button
+        type="button"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/[0.05] ring-1 ring-white/[0.08]"
-        title={`${health.label} — ${health.hint}`}
+        onClick={handleShare}
+        className="flex items-center gap-2 px-2.5 py-1.5 rounded-full bg-white/[0.05] ring-1 ring-white/[0.08] hover:bg-white/[0.08] transition-colors"
+        title={`${health.label} — tryck för att dela`}
       >
         <div className="relative w-9 h-9 flex-shrink-0">
           <svg width="36" height="36" className="-rotate-90">
@@ -34,10 +57,11 @@ export default function EconomicHealthCard({ mli, compact = false }) {
             {health.score}
           </span>
         </div>
-        <span className="text-[12px] text-white/55 max-w-[72px] truncate hidden sm:block">
+        <span className="text-[12px] text-white/55 max-w-[88px] truncate hidden sm:block">
           {health.label}
         </span>
-      </motion.div>
+        <Share2 className="w-3 h-3 text-white/35 hidden sm:block" />
+      </motion.button>
     );
   }
 
@@ -63,10 +87,18 @@ export default function EconomicHealthCard({ mli, compact = false }) {
         </span>
       </div>
       <div className="min-w-0 flex-1">
-        <p className="text-[13px] text-white/40">Ekonomisk ro</p>
+        <p className="text-[13px] text-white/40">Ekonomisk hälsa</p>
         <p className="text-[17px] font-semibold text-white">{health.label}</p>
         <p className="text-[13px] text-white/50 mt-1">{health.hint}</p>
       </div>
+      <button
+        type="button"
+        onClick={handleShare}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-full text-[12px] font-medium text-white/70 bg-white/[0.06] ring-1 ring-white/[0.08] hover:text-white"
+      >
+        <Share2 className="w-3.5 h-3.5" />
+        Dela
+      </button>
     </motion.div>
   );
 }

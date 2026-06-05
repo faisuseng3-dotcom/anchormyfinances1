@@ -1,18 +1,26 @@
 /**
- * InsightEngine – Analyserar transaktioner och profil för att hitta mönster och generera råd.
+ * InsightEngine – coaching-insikter med konkreta belopp och vardagsjämförelser.
  */
+
+import { coachInvite, findMoneyComparison, fmtKr, monthLabel } from '@/lib/coachingCopy';
 
 const EXPENSE_TYPES = ['expense', 'savings_deposit', 'transfer_to_savings'];
 const MOVABLE_CATEGORIES = ['food', 'entertainment', 'shopping', 'travel', 'health'];
 
-/** Returnerar YYYY-MM för ett datum */
+const CAT_LABELS = {
+  food: 'mat',
+  entertainment: 'nöje',
+  shopping: 'shopping',
+  travel: 'resor',
+  health: 'hälsa',
+};
+
 function toMonth(dateStr) {
   if (!dateStr) return null;
   const d = new Date(dateStr);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-/** Summerar utgifter per kategori för en given lista transaktioner */
 function sumByCategory(txs) {
   return txs.reduce((acc, t) => {
     if (!EXPENSE_TYPES.includes(t.type)) return acc;
@@ -22,7 +30,6 @@ function sumByCategory(txs) {
   }, {});
 }
 
-/** Delar in transaktioner per månad → { 'YYYY-MM': [tx,...] } */
 function groupByMonth(txs) {
   return txs.reduce((acc, t) => {
     const m = toMonth(t.created_date);
@@ -33,10 +40,9 @@ function groupByMonth(txs) {
   }, {});
 }
 
-/** Identifierar återkommande betalningar (vendor/label som dyker upp 2+ gånger) */
 function detectRecurring(txs) {
   const counts = {};
-  txs.forEach(t => {
+  txs.forEach((t) => {
     const key = (t.vendor || t.label || '').toLowerCase().trim();
     if (key) counts[key] = (counts[key] || 0) + 1;
   });
@@ -44,142 +50,154 @@ function detectRecurring(txs) {
 }
 
 /**
- * Huvudfunktion: kör alla analysregler och returnerar en lista Insight-objekt.
- * Varje insight: { type, severity, title, description, consequence, action, actionLink, data }
+ * Varje insight: { type, severity, title, description, why, consequence, action, actionLink, data }
  */
 export function runInsightEngine(profile, transactions) {
   if (!profile || !transactions) return [];
   const insights = [];
 
   const byMonth = groupByMonth(transactions);
-  const sortedMonths = Object.keys(byMonth).sort().reverse(); // nyaste först
+  const sortedMonths = Object.keys(byMonth).sort().reverse();
   const currentMonth = sortedMonths[0];
-  const prevMonths = sortedMonths.slice(1, 4); // upp till 3 månader bakåt
+  const prevMonths = sortedMonths.slice(1, 4);
+  const monthName = monthLabel(currentMonth);
 
   const currentTxs = currentMonth ? byMonth[currentMonth] : [];
-  const prevTxs = prevMonths.flatMap(m => byMonth[m] || []);
+  const prevTxs = prevMonths.flatMap((m) => byMonth[m] || []);
 
   const currentSums = sumByCategory(currentTxs);
   const prevSumsTotal = sumByCategory(prevTxs);
   const numPrevMonths = prevMonths.length || 1;
 
-  // ── RULE 1: Lifestyle Creep ─────────────────────────────────────────────
+  // ── Lifestyle creep ───────────────────────────────────────────────────────
   if (prevMonths.length >= 1) {
     let totalCurrentMovable = 0;
     let totalPrevMovableAvg = 0;
-    MOVABLE_CATEGORIES.forEach(cat => {
+    MOVABLE_CATEGORIES.forEach((cat) => {
       totalCurrentMovable += currentSums[cat] || 0;
       totalPrevMovableAvg += (prevSumsTotal[cat] || 0) / numPrevMonths;
     });
     if (totalPrevMovableAvg > 500 && totalCurrentMovable > totalPrevMovableAvg * 1.15) {
       const diff = Math.round(totalCurrentMovable - totalPrevMovableAvg);
-      const pct = Math.round((totalCurrentMovable / totalPrevMovableAvg - 1) * 100);
+      const compare = findMoneyComparison(diff, profile);
       insights.push({
         id: 'lifestyle_creep',
         type: 'warning',
         severity: 2,
-        title: 'Dina rörliga utgifter ökar',
-        description: `Du spenderar ${diff.toLocaleString('sv-SE')} kr (${pct}%) mer denna månad än ditt 3-månaders snitt på rörliga kostnader.`,
-        consequence: 'Om trenden fortsätter urholkas din sparmarginal utan att du märker det.',
-        action: 'Visa kategorier',
+        title: `${fmtKr(diff)} kr mer på rörliga utgifter`,
+        description: `I ${monthName} gick ${fmtKr(diff)} kr mer än vanligt till mat, nöje och shopping. Det motsvarar ${compare || 'en del av din marginal'}.`,
+        why: `Jag jämför dina rörliga utgifter den här månaden med snittet av de senaste ${numPrevMonths} månaderna. När skillnaden passerar 15% och minst 500 kr flaggar vi det — inte för att moralisera, utan så du hinner se mönstret.`,
+        consequence: 'Om det här blir vana äter det sakta upp det du ville spara — utan att det känns som ett stort beslut.',
+        action: 'titta på kategorierna',
         actionLink: '/TransactionHistory',
-        data: { current: totalCurrentMovable, avg: Math.round(totalPrevMovableAvg), diff, pct }
+        data: { current: totalCurrentMovable, avg: Math.round(totalPrevMovableAvg), diff },
       });
     }
   }
 
-  // ── RULE 2: Prenumerationsvarning ────────────────────────────────────────
-  const profileSubNames = (profile.subscriptions || []).map(s => (s.name || '').toLowerCase().trim());
-  const recurringFromTxs = detectRecurring(transactions.filter(t => EXPENSE_TYPES.includes(t.type)));
-  const unknownRecurring = recurringFromTxs.filter(name =>
-    name.length > 2 && !profileSubNames.some(s => name.includes(s) || s.includes(name))
+  // ── Okända återkommande betalningar ─────────────────────────────────────
+  const profileSubNames = (profile.subscriptions || []).map((s) => (s.name || '').toLowerCase().trim());
+  const recurringFromTxs = detectRecurring(transactions.filter((t) => EXPENSE_TYPES.includes(t.type)));
+  const unknownRecurring = recurringFromTxs.filter(
+    (name) => name.length > 2 && !profileSubNames.some((s) => name.includes(s) || s.includes(name)),
   );
   if (unknownRecurring.length > 0) {
+    const names = unknownRecurring.slice(0, 2).join(' och ');
+    const extra = unknownRecurring.length > 2 ? ` — plus ${unknownRecurring.length - 2} till` : '';
     insights.push({
       id: 'unknown_subscriptions',
       type: 'info',
       severity: 1,
-      title: 'Okända återkommande betalningar',
-      description: `Vi hittade ${unknownRecurring.length} återkommande betalningar som inte är registrerade i din profil: ${unknownRecurring.slice(0, 3).join(', ')}.`,
-      consequence: 'Dessa kan vara prenumerationer du glömt och inte räknat in i din budget.',
-      action: 'Granska transaktioner',
+      title: 'Något dras varje månad som du inte budgeterat',
+      description: `Jag ser återkommande betalningar till ${names}${extra}. De finns inte med i din profil, så de kan ligga utanför det du tror att du har kvar.`,
+      why: 'När samma belopp dras till samma ställe minst två gånger räknar vi det som återkommande. Om det saknas i din abonnemangslista kan det vara en dold fast kostnad.',
+      consequence: 'Sådana här "små" fasta kostnader är ofta det som gör att marginalen känns tight i slutet av månaden.',
+      action: 'granska transaktionerna',
       actionLink: '/TransactionHistory',
-      data: { names: unknownRecurring }
+      data: { names: unknownRecurring },
     });
   }
 
-  // ── RULE 3: Låg buffert / likviditetsrisk ─────────────────────────────────
+  // ── Buffert ───────────────────────────────────────────────────────────────
   const totalFixed = (profile.housingCost || 0)
     + (profile.subscriptions || []).reduce((s, x) => s + (x.amount || 0), 0)
     + (profile.loans || []).reduce((s, x) => s + (x.monthlyPayment || 0), 0);
   const buffer = profile.buffer || 0;
   const monthsOfBuffer = totalFixed > 0 ? buffer / totalFixed : 99;
+
   if (monthsOfBuffer < 1) {
     insights.push({
       id: 'low_buffer',
       type: 'danger',
       severity: 3,
-      title: 'Kritiskt låg buffert',
-      description: `Din buffert på ${buffer.toLocaleString('sv-SE')} kr täcker mindre än en månads fasta kostnader (${totalFixed.toLocaleString('sv-SE')} kr).`,
-      consequence: 'En oväntad utgift, som en bilreparation, kan sätta dig i minus.',
-      action: 'Sätt upp sparplan',
+      title: 'Bufferten räcker knappt en månad',
+      description: `Du har ${fmtKr(buffer)} kr i buffert mot ${fmtKr(totalFixed)} kr i fasta kostnader. En oväntad räkning kan sätta dig i minus innan lönen kommer.`,
+      why: 'Buffert delat med dina fasta kostnader visar hur många månader du klarar utan inkomst. Under en månad är marginalen för tunn för de flesta oväntade utgifter.',
+      consequence: 'Det är inte panik — men det är dags att prioritera buffert före nya utgifter.',
+      action: 'sätta upp en sparplan',
       actionLink: '/SavingsGoals',
-      data: { buffer, totalFixed, monthsOfBuffer }
+      data: { buffer, totalFixed, monthsOfBuffer },
     });
   } else if (monthsOfBuffer < 3) {
     insights.push({
       id: 'medium_buffer',
       type: 'warning',
       severity: 2,
-      title: 'Bufferten kan stärkas',
-      description: `Din buffert täcker ${monthsOfBuffer.toFixed(1)} månader. Rekommenderat är 3+ månader.`,
-      consequence: 'Du klarar en kris men inte en längre period utan inkomst.',
-      action: 'Spara till buffert',
+      title: `Bufferten täcker ${monthsOfBuffer.toFixed(1)} månader`,
+      description: `Med ${fmtKr(buffer)} kr klarar du en kort kris, men inte en längre period utan inkomst. Målet för de flesta är minst tre månaders fasta kostnader.`,
+      why: 'Tre månaders fasta kostnader i buffert är en vanlig tumregel i Sverige — den ger tid att hitta ny inkomst utan att behöva ta nya lån direkt.',
+      consequence: 'Varje extra tusenlapp i buffert gör vardagen lugnare när något oväntat händer.',
+      action: 'bygga bufferten',
       actionLink: '/SavingsGoals',
-      data: { monthsOfBuffer }
+      data: { monthsOfBuffer },
     });
   }
 
-  // ── RULE 4: Sparkvot ──────────────────────────────────────────────────────
+  // ── Sparkvot ──────────────────────────────────────────────────────────────
   if (profile.income > 0 && prevMonths.length >= 1) {
     const avgMonthlyExpenses = Object.values(prevSumsTotal).reduce((s, v) => s + v, 0) / numPrevMonths;
     const savingsRate = Math.max(0, (profile.income - avgMonthlyExpenses) / profile.income);
     if (savingsRate < 0.05) {
+      const pct = Math.round(savingsRate * 100);
+      const spareKr = Math.round(profile.income * 0.1 - (profile.income - avgMonthlyExpenses));
       insights.push({
         id: 'low_savings_rate',
         type: 'warning',
         severity: 2,
-        title: 'Sparkvoten är låg',
-        description: `Du sparar uppskattningsvis ${Math.round(savingsRate * 100)}% av din inkomst baserat på de senaste månadernas data.`,
-        consequence: 'Med denna takt kommer sparmålet ta mycket längre tid att nå.',
-        action: 'Optimera budget',
+        title: 'Lite blir kvar till sparande',
+        description: `Utifrån senaste månaderna hamnar bara ${pct}% av lönen kvar efter utgifter. För att nå 10% skulle du behöva frigöra ungefär ${fmtKr(Math.max(0, spareKr))} kr/mån.`,
+        why: 'Sparkvot räknas som det som blir kvar av lönen efter snittutgifter. Under 5% brukar sparmål ta mycket längre tid — därför flaggar vi det tidigt.',
+        consequence: 'Det betyder att sparmål tar längre tid — inte att du gjort något fel.',
+        action: 'se var det finns utrymme',
         actionLink: '/Budget',
-        data: { savingsRate }
+        data: { savingsRate },
       });
     }
   }
 
-  // ── RULE 5: Hög konsumtion enstaka kategori ────────────────────────────────
-  MOVABLE_CATEGORIES.forEach(cat => {
+  // ── Kategori-spike (t.ex. mat) ────────────────────────────────────────────
+  MOVABLE_CATEGORIES.forEach((cat) => {
     const curr = currentSums[cat] || 0;
     const prevAvg = prevMonths.length > 0 ? (prevSumsTotal[cat] || 0) / numPrevMonths : 0;
-    if (prevAvg > 200 && curr > prevAvg * 1.5 && curr > 500) {
-      const catLabel = { food: 'Mat', entertainment: 'Nöje', shopping: 'Shopping', travel: 'Resor', health: 'Hälsa' }[cat] || cat;
+    if (prevAvg > 200 && curr > prevAvg * 1.35 && curr > 500) {
+      const diff = Math.round(curr - prevAvg);
+      const catLabel = CAT_LABELS[cat] || cat;
+      const compare = findMoneyComparison(diff, profile, cat === 'food' ? 'food' : undefined);
       insights.push({
         id: `spike_${cat}`,
         type: 'warning',
         severity: 1,
-        title: `${catLabel}: ovanligt hög konsumtion`,
-        description: `Du har spenderat ${curr.toLocaleString('sv-SE')} kr på ${catLabel.toLowerCase()} denna månad vs snitt ${Math.round(prevAvg).toLocaleString('sv-SE')} kr.`,
-        consequence: `Det kan påverka hur mycket du har kvar att spara i slutet av månaden.`,
-        action: 'Visa transaktioner',
-        actionLink: '/TransactionHistory',
-        data: { cat, curr, prevAvg }
+        title: `${fmtKr(diff)} kr mer på ${catLabel}`,
+        description: `Du la ${fmtKr(diff)} kr mer på ${catLabel} i ${monthName} än du brukar (${fmtKr(Math.round(prevAvg))} kr i snitt). Det är ${compare || 'en märkbar skillnad'} — ${coachInvite(`titta på ${catLabel}utgifterna`)}`,
+        why: `Jag jämför ${catLabel} den här månaden med ditt snitt. När utgifterna ökar mer än 35% och över 500 kr totalt syns det ofta först i marginalen — inte i en enskild swish.`,
+        consequence: 'Små ökningar i vardagskategorier är ofta det som äter marginalen först.',
+        action: `granska ${catLabel}`,
+        actionLink: `/TransactionHistory?category=${cat}`,
+        data: { cat, curr, prevAvg, diff },
       });
     }
   });
 
-  // Sortera efter allvarlighetsgrad
   return insights.sort((a, b) => b.severity - a.severity);
 }
 
@@ -188,10 +206,8 @@ export function calcLiquidityForecast(profile, transactions) {
   if (!profile) return null;
   const today = new Date();
   const dayOfMonth = today.getDate();
-  const income = profile.income || 0;
 
-  // Beräkna genomsnittlig daglig konsumtion
-  const last30 = transactions.filter(t => {
+  const last30 = transactions.filter((t) => {
     if (!EXPENSE_TYPES.includes(t.type)) return false;
     const d = new Date(t.created_date);
     const diffMs = today - d;
@@ -200,24 +216,21 @@ export function calcLiquidityForecast(profile, transactions) {
   const totalSpent30 = last30.reduce((s, t) => s + Math.abs(t.amount), 0);
   const avgDailySpend = totalSpent30 / 30;
 
-  // Beräkna kvarvarande fasta kostnader denna månad
-  const daysLeft = 30 - dayOfMonth;
-  const housingDay = profile.housingDueDay || 27;
   let remainingFixed = 0;
-  if (housingDay > dayOfMonth) remainingFixed += (profile.housingCost || 0);
+  const housingDay = profile.housingDueDay || 27;
+  if (housingDay > dayOfMonth) remainingFixed += profile.housingCost || 0;
   (profile.loans || []).forEach((l, i) => {
     const day = 5 + i;
-    if (day > dayOfMonth) remainingFixed += (l.monthlyPayment || 0);
+    if (day > dayOfMonth) remainingFixed += l.monthlyPayment || 0;
   });
   (profile.subscriptions || []).forEach((s, i) => {
-    const day = s.billingDay || (10 + i);
-    if (day > dayOfMonth) remainingFixed += (s.amount || 0);
+    const day = s.billingDay || 10 + i;
+    if (day > dayOfMonth) remainingFixed += s.amount || 0;
   });
 
-  const projectedVariableSpend = avgDailySpend * daysLeft;
+  const projectedVariableSpend = avgDailySpend * (30 - dayOfMonth);
   const currentBuffer = profile.buffer || 0;
   const projectedBalance = currentBuffer - remainingFixed - projectedVariableSpend;
-  const daysToZero = projectedBalance <= 0 ? 0 : Math.floor(projectedBalance / avgDailySpend);
 
   return {
     currentBuffer,
@@ -225,8 +238,8 @@ export function calcLiquidityForecast(profile, transactions) {
     projectedVariableSpend: Math.round(projectedVariableSpend),
     projectedBalance: Math.round(projectedBalance),
     avgDailySpend: Math.round(avgDailySpend),
-    daysLeft,
-    daysToZero,
-    isNegative: projectedBalance < 0
+    daysLeft: 30 - dayOfMonth,
+    daysToZero: projectedBalance <= 0 ? 0 : Math.floor(projectedBalance / avgDailySpend),
+    isNegative: projectedBalance < 0,
   };
 }

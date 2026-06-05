@@ -68,7 +68,7 @@ export default function SocialPrivacySummary({ privacyLevel, isPublished, userna
       {isPublished && (
         <span className={dashPill}>
           <Radio className="w-3 h-3 text-emerald-400" />
-          Synlig i Galaxy
+          Synlig i Jämför
         </span>
       )}
     </div>

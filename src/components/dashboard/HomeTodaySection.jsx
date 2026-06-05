@@ -16,14 +16,14 @@ export default function HomeTodaySection({ refreshKey = 0, toneMode = 'normal' }
     <section>
       <div className="flex items-center gap-2 mb-3">
         <Radio className="w-3.5 h-3.5 text-cyan-400/70" />
-        <p className={dashLabel}>Live-signal</p>
+        <p className={dashLabel}>Din vecka</p>
       </div>
 
       <div className={dashSignalLine}>
         {loading ? (
           <div className="flex items-center gap-2 py-2 text-white/45 text-sm font-light">
             <Loader2 className="w-4 h-4 animate-spin" />
-            Synkar…
+            Tittar på din ekonomi…
           </div>
         ) : (
           <>

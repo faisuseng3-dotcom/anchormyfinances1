@@ -4,6 +4,10 @@ import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
 import { Lock, BarChart2, Smartphone, ChevronRight, Shield, User, Briefcase, Building2, ArrowRight } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
+import { pageSeoFor } from '@/lib/pageSeo';
+import { getDashboardPath, getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';
+
+export const pageSeo = pageSeoFor('Landing');
 
 const valuePoints = [
   {
@@ -36,13 +40,13 @@ export default function Landing() {
     if (!agreed || !selectedMode) return;
     if (selectedMode === 'business') {
       setBusiness();
-      // Check if first time — BusinessOnboarding will handle redirect
-      const bizOnboarded = localStorage.getItem('anchor_biz_onboarded');
-      const redirectPath = bizOnboarded ? '/BusinessDashboard' : '/BusinessOnboarding';
+      const redirectPath = isBusinessOnboarded()
+        ? getDashboardPath('business')
+        : getOnboardingPath('business');
       base44.auth.redirectToLogin(`${window.location.origin}${redirectPath}`);
     } else {
       setPersonal();
-      base44.auth.redirectToLogin(`${window.location.origin}/Onboarding`);
+      base44.auth.redirectToLogin(`${window.location.origin}${getOnboardingPath('personal')}`);
     }
   };
 
@@ -307,8 +311,11 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="relative z-10 mt-auto pb-10 pt-4 flex justify-center gap-8 text-xs border-t"
+      <footer className="relative z-10 mt-auto pb-10 pt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs border-t"
         style={{ borderColor: 'rgba(255,255,255,0.06)', color: 'var(--color-text-muted)' }}>
+        <Link to="/Login" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>Logga in</Link>
+        <Link to="/CreateAccount" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>Skapa konto</Link>
+        <Link to="/Pricing" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>Priser</Link>
         <Link to="/TermsOfService" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>Användarvillkor</Link>
         <Link to="/PrivacyPolicy" className="hover:opacity-80 transition-opacity" style={{ color: 'var(--color-text-muted)' }}>Integritetspolicy</Link>
       </footer>

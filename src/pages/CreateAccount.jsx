@@ -7,6 +7,10 @@ import { loadGuestProfile, setGuestMode } from '@/components/guestStorage';
 import SignupValueScreen from '@/components/signup/SignupValueScreen';
 import SignupPersonaStep from '@/components/signup/SignupPersonaStep';
 import SignupConfirmation from '@/components/signup/SignupConfirmation';
+import { pageSeoFor } from '@/lib/pageSeo';
+import { getOnboardingPath } from '@/lib/onboardingRouter';
+
+export const pageSeo = pageSeoFor('CreateAccount');
 
 export default function CreateAccount() {
   const navigate = useNavigate();
@@ -38,7 +42,7 @@ export default function CreateAccount() {
   };
 
   const handleGuest = () => {
-    navigate(createPageUrl('Onboarding'));
+    navigate(getOnboardingPath());
   };
 
   const handleFinish = () => {

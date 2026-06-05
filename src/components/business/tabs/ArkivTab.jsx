@@ -29,7 +29,7 @@ export default function ArkivTab({ transactions, onBooked }) {
 
       <BusinessSection>
         <BusinessListRow
-          href="/LedgerVault"
+          href="/TransactionHistory?tab=ledger"
           leading={
             <div className="w-9 h-9 rounded-full bg-[#0D7377]/10 flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-[#0D7377]" />

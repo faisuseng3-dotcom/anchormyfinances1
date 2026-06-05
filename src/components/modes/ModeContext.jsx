@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { syncThemeColor } from '@/lib/themeMeta';
 
 const ModeContext = createContext(null);
 
@@ -40,6 +41,7 @@ export function ModeProvider({ children }) {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-mode', mode);
+    syncThemeColor(mode);
   }, [mode]);
 
   return (

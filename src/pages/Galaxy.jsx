@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import GalaxyExplorer from '@/components/social/GalaxyExplorer';
 import GalaxyCompareHero from '@/components/social/GalaxyCompareHero';
 import PublishEconomyPanel from '@/components/social/PublishEconomyPanel';
@@ -59,3 +60,5 @@ export default function Galaxy() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('Galaxy');

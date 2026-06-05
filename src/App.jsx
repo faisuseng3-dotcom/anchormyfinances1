@@ -2,8 +2,9 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
+import PageSeo from '@/components/PageSeo'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import Landing from './pages/Landing';
@@ -15,17 +16,19 @@ import BusinessTheme from '@/components/business/BusinessTheme';
 import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import LedgerVault from './pages/LedgerVault';
-import ImportPage from './pages/ImportPage';
+import Import from './pages/Import';
 import BudgetDashboard from './pages/BudgetDashboard';
 import SavingsGoals from './pages/SavingsGoals';
-import InsightsPage from './pages/InsightsPage';
+import Insights from './pages/Insights';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import Social from './pages/Social';
 import Squads from './pages/Squads';
 import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
 import AnchorAnalysis from './pages/AnchorAnalysis';
-import FuturePulsePage from './pages/FuturePulsePage';
+import FuturePulse from './pages/FuturePulse';
+import Login from './pages/Login';
+import Pricing from './pages/Pricing';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -35,8 +38,28 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
+const PUBLIC_PATHS = new Set([
+  '/',
+  '/Landing',
+  '/Login',
+  '/SignIn',
+  '/CreateAccount',
+  '/Onboarding',
+  '/BusinessOnboarding',
+  '/PrivacyPolicy',
+  '/TermsOfService',
+  '/Pricing',
+]);
+
+function isPublicPath(pathname) {
+  return PUBLIC_PATHS.has(pathname);
+}
+
+const NO_LAYOUT_PAGES = new Set(['Login', 'CreateAccount']);
+
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const location = useLocation();
+  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -51,8 +74,7 @@ const AuthenticatedApp = () => {
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Show landing page instead of redirecting
+    } else if (authError.type === 'auth_required' && !isPublicPath(location.pathname)) {
       return <Landing />;
     }
   }
@@ -60,24 +82,32 @@ const AuthenticatedApp = () => {
   // Render the main app
   return (
     <Routes>
+      <Route path="/Login" element={<Login />} />
+      <Route path="/SignIn" element={<Login />} />
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />
         </LayoutWrapper>
       } />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
+      {Object.entries(Pages).filter(([path]) => path !== 'Login').map(([path, Page]) => {
+        const element = NO_LAYOUT_PAGES.has(path)
+          ? <Page />
+          : (
             <LayoutWrapper currentPageName={path}>
               <Page />
             </LayoutWrapper>
-          }
-        />
-      ))}
+          );
+        return (
+          <Route
+            key={path}
+            path={`/${path}`}
+            element={element}
+          />
+        );
+      })}
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       <Route path="/TermsOfService" element={<TermsOfService />} />
+      <Route path="/Pricing" element={<Pricing />} />
       <Route path="/BusinessDashboard" element={
         <LayoutWrapper currentPageName="BusinessDashboard">
           <BusinessDashboard />
@@ -89,7 +119,7 @@ const AuthenticatedApp = () => {
           <LedgerVault />
         </LayoutWrapper>
       } />
-      <Route path="/Import" element={<ImportPage />} />
+      <Route path="/Import" element={<Import />} />
       <Route path="/Budget" element={
         <LayoutWrapper currentPageName="BudgetDashboard">
           <BudgetDashboard />
@@ -110,6 +140,11 @@ const AuthenticatedApp = () => {
           <Galaxy />
         </LayoutWrapper>
       } />
+      <Route path="/Jamfor" element={
+        <LayoutWrapper currentPageName="Galaxy">
+          <Galaxy />
+        </LayoutWrapper>
+      } />
       <Route path="/Squads" element={
         <LayoutWrapper currentPageName="Squads">
           <Squads />
@@ -118,13 +153,13 @@ const AuthenticatedApp = () => {
       <Route path="/YearEndClosing" element={<YearEndClosing />} />
       <Route path="/AnchorAnalysis" element={<AnchorAnalysis />} />
       <Route path="/Insights" element={
-        <LayoutWrapper currentPageName="InsightsPage">
-          <InsightsPage />
+        <LayoutWrapper currentPageName="Insights">
+          <Insights />
         </LayoutWrapper>
       } />
       <Route path="/FuturePulse" element={
         <LayoutWrapper currentPageName="FuturePulse">
-          <FuturePulsePage />
+          <FuturePulse />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
@@ -142,6 +177,7 @@ function App() {
         <QueryClientProvider client={queryClientInstance}>
           <Router>
             <BusinessTheme />
+            <PageSeo />
             <NavigationTracker />
             <AuthenticatedApp />
           </Router>

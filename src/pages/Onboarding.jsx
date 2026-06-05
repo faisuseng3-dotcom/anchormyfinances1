@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
@@ -11,6 +12,7 @@ import SwedishBasicsFoundationStep from '@/components/onboarding/SwedishBasicsFo
 import { applyConcernToProfile, getPostOnboardingAction } from '@/lib/onboardingFocus';
 import { rowsToTransactions } from '@/lib/bankImportHelpers';
 import { isFoundationTestMode } from '@/lib/foundationTestMode';
+import { ensureOnboardingMode, getDashboardPath, getOnboardingPath, isBusinessMode } from '@/lib/onboardingRouter';
 import { toast } from 'sonner';
 
 const FOUNDATIONS_STEP = 3;
@@ -23,9 +25,14 @@ export default function Onboarding() {
 
   useEffect(() => {
     if (testFoundations) return;
+    if (isBusinessMode()) {
+      navigate(getOnboardingPath('business'), { replace: true });
+      return;
+    }
+    ensureOnboardingMode('personal');
     base44.entities.FinancialProfile.list().then((profiles) => {
       if (profiles.length > 0 && profiles[0].onboardingCompleted) {
-        navigate(createPageUrl('Dashboard'), { replace: true });
+        navigate(getDashboardPath('personal'), { replace: true });
       }
     });
   }, [navigate, testFoundations]);
@@ -178,7 +185,7 @@ export default function Onboarding() {
         </div>
         <div className="flex justify-between px-5 sm:px-6 py-2.5 bg-[#040814]/80 backdrop-blur-md border-b border-white/[0.06]">
           <span className="text-[13px] text-white/50">
-            {testFoundations ? 'Test — grundkurs' : `Steg ${step + 1} av ${totalSteps}`}
+            {testFoundations ? 'Test — grundkurs' : `Privat · steg ${step + 1} av ${totalSteps}`}
           </span>
           <span className="text-[13px] text-white/50 tabular-nums">{progressPercent}%</span>
         </div>
@@ -200,3 +207,5 @@ export default function Onboarding() {
     </div>
   );
 }
+
+export const pageSeo = pageSeoFor('Onboarding');

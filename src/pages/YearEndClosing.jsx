@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
@@ -529,3 +530,5 @@ function ClosingStep({ isAB, companyName, locked, onLock }) {
     </motion.div>
   );
 }
+
+export const pageSeo = pageSeoFor('YearEndClosing');

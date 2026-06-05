@@ -14,7 +14,7 @@ export default function GalaxyCompareHero({
   const total = publishedCount + exampleCount;
 
   return (
-    <TechHero label="Galaxy" title="Jämför hur andra fördelar lönen" accent="violet">
+    <TechHero label="Jämför" title="Så fördelar andra sin lön" accent="violet">
       <div className="flex flex-wrap gap-2 mt-4">
         <span className={dashPill}>
           <Users className="w-3 h-3" />

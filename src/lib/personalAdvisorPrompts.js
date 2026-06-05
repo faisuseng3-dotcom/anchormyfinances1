@@ -91,6 +91,11 @@ export const ADVISOR_SCHEMAS = {
     properties: { message: { type: 'string' } },
     required: ['message'],
   },
+  analysis_coach: {
+    type: 'object',
+    properties: { message: { type: 'string' } },
+    required: ['message'],
+  },
   expense_feedback: {
     type: 'object',
     properties: { message: { type: 'string' } },
@@ -113,15 +118,15 @@ export function buildAdvisorScenarioPrompt(scenario, snapshot, extras = {}) {
       const soft = snapshot.tone_mode === 'soft';
       return `${base}
 Scenario: Daglig personlig briefing på Hem.
-${soft ? 'Användaren är stressad — max 1 kort action, mjuk ton.' : 'Skriv headline (max 8 ord), message (2–3 meningar), 2–3 actions med impact_kr.'}
-Nämn gärna pengometer.remaining_week_kr om relevant.
+${soft ? 'Användaren är stressad — max 1 kort action, mjuk ton.' : 'Skriv headline (max 8 ord, varm — t.ex. "Bra jobbat den här veckan" eller "Lite tight mot helgen"), message (2–3 meningar i löpande prosa, ingen lista), 2–3 actions med impact_kr.'}
+Nämn gärna pengometer.remaining_week_kr om relevant. Fira framsteg när det finns. Ingen ansvarsfriskrivning. ALDRIG rapportton som "Budget uppnådd: 100%".
 Returnera JSON enligt schema.`;
     }
 
     case 'weekly_summary':
       return `${base}
 Scenario: Veckosammanfattning.
-Fokusera på spent_last_7_days_kr och pengometer. summary (3 meningar), highlight (1 mening), next_step (1 handling).
+Fokusera på spent_last_7_days_kr och pengometer. summary (3 meningar, varm coach-ton), highlight (1 mening som erkänner det som gick bra), next_step (1 handling). Ingen ansvarsfriskrivning.
 Returnera JSON.`;
 
     case 'subscription_scan':
@@ -135,7 +140,7 @@ Returnera JSON.`;
       const lesson = extras.lesson || {};
       return `${base}
 Scenario: Anchor Academy — 60 sekunders lektion om "${lesson.topic || lesson.title}".
-body: max 120 ord, enkelt språk som förklarar grundbegrepp (Lund-studien: unga saknar ofta ränta/inflation-kunskap).
+body: max 120 ord, 2–3 meningar i löpande prosa (klok vän, inte rapport). ALDRIG punktlistor.
 takeaway: 1 mening. cta: 1 konkret handling i appen.
 Returnera JSON.`;
     }
@@ -143,8 +148,8 @@ Returnera JSON.`;
     case 'pengometer_line':
       return `${base}
 Scenario: Pengometer — digital sedelbunt.
-pengometer.remaining_week_kr är huvudsiffran. feeling_line: 1 mening som gör kvarvarande pengar kännbara (inte teknisk).
-tip: 1 kort råd utifrån fill_percent. Returnera JSON.`;
+pengometer.remaining_week_kr är huvudsiffran. feeling_line: 1 varm mening som gör kvarvarande pengar kännbara (t.ex. "Det räcker till en lugn helg" — inte "Status: 72% kvar").
+tip: 1 kort, vänligt råd utifrån fill_percent. Ingen ansvarsfriskrivning. Returnera JSON.`;
 
     case 'passivity_wake': {
       const { monthly_kr, fv_kr, wait_cost_kr, years } = extras.payload || {};
@@ -181,8 +186,15 @@ Returnera JSON.`;
     case 'question':
       return `${base}
 Användarens fråga: "${extras.question || ''}"
-Svara som personlig rådgivare med deras siffror. answer: 2–4 meningar.
+Svara som personlig coach med deras siffror. answer: 2–4 meningar i löpande prosa, inga listor.
 Returnera JSON.`;
+
+    case 'analysis_coach':
+      return `${base}
+Scenario: Min ekonomi — köpanalys (småköp vs större utgifter).
+Extra: ${JSON.stringify(extras.payload || {})}
+message: 3–4 meningar som en klok vän. Nämn brus_total_kr om det finns. Jämför gärna med ett vardagligt exempel (luncher, abonnemang). Avsluta med mjuk inbjudan att justera småköp. ALDRIG punktlistor.
+Returnera JSON med fält message.`;
 
     default:
       return `${base}\nScenario: ${scenario}\nReturnera JSON med message.`;

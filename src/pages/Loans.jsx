@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { Link } from 'react-router-dom';
@@ -12,6 +13,8 @@ import {
   DashboardStatStrip,
 } from '@/components/dashboard/DashboardChrome';
 import { anchorPrimaryButtonClass, anchorSecondaryButtonClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
+import { useTransactions } from '@/hooks/useTransactions';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -96,6 +99,8 @@ Kort svar svenska, max 3 meningar.`,
               { label: 'Per månad', value: `${fmt(totalMonthly)} kr` },
             ]}
           />
+
+          <ContextualLessonLink profile={profile} transactions={transactions} className="block mb-6" />
 
           <DashboardSection nested title="Räntekostnad">
             {totalInterestMonthly > 0 ? (
@@ -278,3 +283,5 @@ Kort svar svenska, max 3 meningar.`,
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('Loans');

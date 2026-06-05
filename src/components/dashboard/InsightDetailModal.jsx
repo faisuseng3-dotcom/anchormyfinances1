@@ -16,6 +16,8 @@ import {
   sectionSubtitleClass,
   sectionTitleClass,
 } from '@/lib/anchorTheme';
+import InsightWhyButton from '@/components/insights/InsightWhyButton';
+import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 
 const SEVERITY_STYLES = {
   danger: { iconColor: '#FCA5A5', label: 'Kritiskt', Icon: AlertCircle },
@@ -278,6 +280,7 @@ export default function InsightDetailModal({ insight, transactions, profile, onC
               </p>
               <h2 className={`${sectionTitleClass} mt-0.5`}>{insight.title}</h2>
               <p className={`${sectionSubtitleClass} mt-1`}>{insight.description}</p>
+              <InsightWhyButton why={insight.why} className="mt-2" />
             </div>
             <button type="button" onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
               <X className="w-4 h-4" />
@@ -312,6 +315,10 @@ export default function InsightDetailModal({ insight, transactions, profile, onC
             )}
 
             <EvidenceSection insight={insight} transactions={transactions} />
+
+            {(insight.id?.includes('buffer') || insight.id?.includes('savings') || insight.data?.cat) && (
+              <ContextualLessonLink profile={profile} transactions={transactions} className="block" />
+            )}
 
             <DashboardDivider />
 

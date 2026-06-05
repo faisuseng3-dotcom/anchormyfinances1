@@ -58,13 +58,13 @@ export default function PersonalAdvisorPanel({ refreshKey = 0 }) {
       <div className="relative z-10">
         <div className="flex items-center gap-2 mb-2">
           <Radio className="w-3.5 h-3.5 text-cyan-400/70" />
-          <p className={dashLabel}>Live-signal</p>
+          <p className={dashLabel}>Din vecka</p>
         </div>
 
         {loading && (
           <div className="flex items-center gap-2 py-3 text-white/45 text-sm font-light">
             <Loader2 className="w-4 h-4 animate-spin" />
-            Synkar…
+            Tittar på din ekonomi…
           </div>
         )}
 

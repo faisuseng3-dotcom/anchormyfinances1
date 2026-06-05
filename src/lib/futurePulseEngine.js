@@ -126,15 +126,25 @@ function spendingTrend(transactions) {
 /**
  * Core local forecast — returns UI-ready JSON matching futureEngine schema.
  */
-export function computeLocalFuturePulse(profile, transactions, horizonDays = 60, maxEvents = 2) {
+export function computeLocalFuturePulse(
+  profile,
+  transactions,
+  horizonDays = 60,
+  maxEvents = 2,
+  scenario = {},
+) {
   if (!profile) {
     return emptyForecast('Skapa din profil för att se framtiden.');
   }
 
+  const { spendMult = 1, saveBoostKr = 0 } = scenario;
   const startBalance = profile.buffer ?? 0;
   const events = buildEvents(profile, horizonDays);
   const withBalance = calculateRunningBalance(events, startBalance);
-  const dailySpend = avgDailyVariableSpend(transactions);
+  const dailySpend = Math.max(
+    0,
+    avgDailyVariableSpend(transactions) * spendMult - saveBoostKr / 30,
+  );
 
   // Daily timeline with variable spend bleed + event jumps
   const today = new Date();
@@ -268,14 +278,14 @@ function buildCoachMessage({ overallStatus, minBalance, minDay, day30Balance, li
   const greeting = name ? `${name}, ` : '';
 
   if (overallStatus === 'grön') {
-    return `${greeting}lugnt framåt — bufferten räcker.`;
+    return `${greeting}det ser lugnt ut framåt — du har buffert att falla tillbaka på.`;
   }
 
   if (overallStatus === 'gul') {
-    return `${greeting}lite tajt snart — håll koll på vardagsköp.`;
+    return `${greeting}det blir lite tajt snart, men inget du inte kan styra — håll koll på vardagsköpen.`;
   }
 
-  return `${greeting}tight period snart — se stegen nedan.`;
+  return `${greeting}en tight period väntar — jag visar stegen nedan så du slipper gissa.`;
 }
 
 const STATUS_SHORT = { grön: 'Stabil', gul: 'Tight', röd: 'Kritisk' };

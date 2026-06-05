@@ -21,8 +21,8 @@ export default function BasicDashboard({ profile }) {
   if (margin < 10) {
     warnings.push({
       type: 'warning',
-      message: 'Du är nära din budget',
-      detail: `Endast ${Math.round(margin)}% marginal kvar denna månad`
+      message: 'Lite tight den här månaden',
+      detail: `Bara ${Math.round(margin)}% av lönen blir kvar efter räkningar — värt att hålla koll.`
     });
   }
 

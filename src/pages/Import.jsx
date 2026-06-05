@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -12,7 +13,7 @@ import { BusinessPageHeader, BusinessSection, bizSubtitleClass } from '@/compone
 import { createPageUrl } from '@/utils';
 import { normalizeCSVRows, rowsToTransactions } from '@/lib/bankImportHelpers';
 
-export default function ImportPage() {
+export default function Import() {
   const [parsedRows, setParsedRows] = useState(null);
   const [step, setStep] = useState('upload');
   const [saving, setSaving] = useState(false);
@@ -204,3 +205,5 @@ export default function ImportPage() {
     </div>
   );
 }
+
+export const pageSeo = pageSeoFor('Import');

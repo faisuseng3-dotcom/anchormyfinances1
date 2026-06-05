@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { GraduationCap, Check } from 'lucide-react';
 import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
@@ -8,6 +9,7 @@ import { useTransactions } from '@/hooks/useTransactions';
 import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { dashLabel, techInset, techInsetBg, techCta } from '@/lib/appSurface';
 import { anchorIconButtonClass, elevatedSheet } from '@/lib/anchorTheme';
+import { formatCoachText } from '@/lib/coachingCopy';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2 } from 'lucide-react';
 
@@ -107,11 +109,13 @@ export default function AnchorAcademy() {
               ) : (
                 <>
                   <h3 className="text-[24px] font-light text-white">{content?.title || active.title}</h3>
-                  <p className="text-[15px] text-white/55 mt-4 leading-relaxed font-light whitespace-pre-wrap">
-                    {content?.body}
+                  <p className="text-[15px] text-white/55 mt-4 leading-relaxed font-light">
+                    {formatCoachText(content?.body)}
                   </p>
                   {content?.takeaway && (
-                    <p className="text-[14px] text-cyan-300/80 mt-4">{content.takeaway}</p>
+                    <p className="text-[14px] text-cyan-300/80 mt-4 leading-relaxed">
+                      {formatCoachText(content.takeaway)}
+                    </p>
                   )}
                   <button type="button" onClick={() => markDone(active.id)} className={`${techCta} w-full mt-8`}>
                     Klar
@@ -125,3 +129,5 @@ export default function AnchorAcademy() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('AnchorAcademy');

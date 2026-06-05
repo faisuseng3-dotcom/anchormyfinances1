@@ -16,6 +16,13 @@ export default function HeroSpendingCard({ totalSpent, budget }) {
                                         'text-emerald-400';
 
   const remaining = budget - totalSpent;
+  const coachLine = percentage <= 75 && remaining > 0
+    ? percentage <= 50
+      ? 'Bra jobbat — du håller dig under budget den här månaden.'
+      : 'Du ligger bra till — fortfarande utrymme kvar.'
+    : percentage >= 100
+      ? 'Du har passerat budgeten — inget panik, men värt att veta.'
+      : null;
 
   return (
     <motion.div
@@ -47,6 +54,10 @@ export default function HeroSpendingCard({ totalSpent, budget }) {
           />
         </div>
       </div>
+
+      {coachLine && (
+        <p className="mt-4 text-sm text-[#B7C2D9] leading-relaxed">{coachLine}</p>
+      )}
 
       {/* Comparison */}
       {remaining > 0 ? (

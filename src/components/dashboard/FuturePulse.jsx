@@ -95,10 +95,10 @@ export default function FuturePulse({ profile, transactions, enabled = true }) {
 
   return (
     <DashboardSection
-      title="Planera månaden"
-      subtitle={isLoading ? 'Synkar…' : forecast?.status_label || 'Ekonomikalender'}
+      title="Din Framtid"
+      subtitle={isLoading ? 'Räknar…' : forecast?.status_label || '60-dagarsprognos'}
       actionHref={DETAIL_PATH}
-      actionLabel="Öppna kalender"
+      actionLabel="Öppna"
     >
       <Link
         to={DETAIL_PATH}

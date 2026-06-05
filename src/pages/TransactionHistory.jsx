@@ -1,12 +1,22 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp } from 'lucide-react';
+import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp, LineChart, BookOpen } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
 import TransactionInsightsPanel from '@/components/transactions/TransactionInsightsPanel';
 import CategoryConfidenceBadge from '@/components/transactions/CategoryConfidenceBadge';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useModeContext } from '@/components/modes/ModeContext';
+import FinancialTrendsPanel from '@/components/history/FinancialTrendsPanel';
+import LedgerVaultPanel from '@/components/history/LedgerVaultPanel';
+import {
+  DEFAULT_HISTORY_TAB,
+  HISTORY_LEDGER_TAB,
+  HISTORY_TABS,
+  normalizeHistoryTab,
+} from '@/lib/historyTabs';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { createPageUrl } from '@/utils';
@@ -229,6 +239,8 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
 export default function TransactionHistory() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { isBusiness } = useModeContext();
   const { profile } = useFinancialProfile();
   const { transactions, isLoading } = useTransactions({ personalOnly: true, limit: 1000 });
   const [showForm, setShowForm] = useState(false);
@@ -237,21 +249,22 @@ export default function TransactionHistory() {
   const [filterType, setFilterType] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [activeTab, setActiveTab] = useState('list');
 
-  // Läs flik och kategorifilter från URL
+  const activeTab = normalizeHistoryTab(searchParams.get('tab'), { includeLedger: isBusiness });
+
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const cat = params.get('category');
-    const tab = params.get('tab');
+    const cat = searchParams.get('category');
     if (cat) {
       setFilterCategory(cat);
       setShowFilters(true);
-      setActiveTab('list');
-    } else if (tab === 'insights') {
-      setActiveTab('insights');
     }
-  }, []);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!isBusiness && searchParams.get('tab') === 'ledger') {
+      setSearchParams({}, { replace: true });
+    }
+  }, [isBusiness, searchParams, setSearchParams]);
 
   useEffect(() => {
     if (activeTab !== 'insights' || window.location.hash !== '#leakage-detector') return;
@@ -262,18 +275,28 @@ export default function TransactionHistory() {
   }, [activeTab]);
 
   const switchTab = (tab) => {
-    setActiveTab(tab);
-    const params = new URLSearchParams(window.location.search);
-    if (tab === 'insights') {
-      params.set('tab', 'insights');
+    const next = normalizeHistoryTab(tab, { includeLedger: isBusiness });
+    const params = new URLSearchParams(searchParams);
+    if (next === DEFAULT_HISTORY_TAB) {
+      params.delete('tab');
+    } else {
+      params.set('tab', next);
+    }
+    if (next !== 'list') {
       params.delete('category');
       setFilterCategory('');
-    } else {
-      params.delete('tab');
     }
-    const qs = params.toString();
-    navigate(`${createPageUrl('TransactionHistory')}${qs ? `?${qs}` : ''}`, { replace: true });
+    setSearchParams(params, { replace: true });
   };
+
+  const historyTabs = [
+    ...HISTORY_TABS.map((t) => ({
+      id: t.id,
+      label: t.label,
+      icon: t.id === 'list' ? List : t.id === 'insights' ? TrendingUp : LineChart,
+    })),
+    ...(isBusiness ? [{ id: HISTORY_LEDGER_TAB.id, label: HISTORY_LEDGER_TAB.label, icon: BookOpen }] : []),
+  ];
 
 
   const filtered = useMemo(() => {
@@ -313,8 +336,14 @@ export default function TransactionHistory() {
 
   return (
     <PageShell
-      title="Transaktioner"
-      subtitle={activeTab === 'insights' ? 'Insikter & kategorier' : filterCategory ? `Filtrerat: ${CATEGORY_LABELS[filterCategory] || filterCategory}` : 'Historik'}
+      title="Historik"
+      subtitle={
+        activeTab === 'insights' ? 'Insikter & kategorier'
+          : activeTab === 'trends' ? 'Utveckling över tid'
+            : activeTab === 'ledger' ? 'Företagsverifikat'
+              : filterCategory ? `Filtrerat: ${CATEGORY_LABELS[filterCategory] || filterCategory}`
+                : 'Transaktioner & filter'
+      }
       backHref={createPageUrl('Dashboard')}
     >
       {headerExtra}
@@ -323,10 +352,7 @@ export default function TransactionHistory() {
         value={activeTab}
         onChange={switchTab}
         className="mb-4"
-        tabs={[
-          { id: 'list', label: 'Lista', icon: List },
-          { id: 'insights', label: 'Insikter', icon: TrendingUp },
-        ]}
+        tabs={historyTabs}
       />
 
       {activeTab === 'insights' ? (
@@ -335,6 +361,10 @@ export default function TransactionHistory() {
           isLoading={isLoading}
           profile={profile}
         />
+      ) : activeTab === 'trends' ? (
+        <FinancialTrendsPanel />
+      ) : activeTab === 'ledger' ? (
+        <LedgerVaultPanel />
       ) : (
         <>
       <p className={`${sectionSubtitleClass} mb-3`}>{filtered.length} poster</p>
@@ -499,3 +529,5 @@ export default function TransactionHistory() {
   );
 
 }
+
+export const pageSeo = pageSeoFor('TransactionHistory');

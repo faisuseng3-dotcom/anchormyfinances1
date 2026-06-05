@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
@@ -94,3 +95,5 @@ export default function BudgetDashboard() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('Budget');

@@ -11,12 +11,15 @@ import DashboardActionDock from './DashboardActionDock';
 import DashboardInsightRail from './DashboardInsightRail';
 import AnchorBrainSection from '@/components/anchorBrain/AnchorBrainSection';
 import EconomicHealthCard from './EconomicHealthCard';
+import MicroWinsStrip from './MicroWinsStrip';
+import ProactiveWeekBanner from './ProactiveWeekBanner';
 import HomeFocusBanner from './HomeFocusBanner';
 import HomeTodaySection from './HomeTodaySection';
 import HomeWeekAhead from './HomeWeekAhead';
 import DashboardMorePanel from './DashboardMorePanel';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import { calculateMLI, resetActionDensity } from '@/lib/mliEngine';
+import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
 
 function weekdayLabel() {
   return new Date().toLocaleDateString('sv-SE', { weekday: 'long' });
@@ -40,6 +43,8 @@ export default function FutureDashboard({
     resetActionDensity();
     return calculateMLI(transactions || [], profile);
   }, [transactions, profile]);
+
+  useProactiveWeekPush(profile);
 
   const firstName = user?.full_name?.split(' ')[0] || 'du';
 
@@ -76,7 +81,7 @@ export default function FutureDashboard({
             </h1>
           </div>
           <div className="flex items-center gap-2 shrink-0 pt-1">
-            <EconomicHealthCard mli={mli} compact />
+            <EconomicHealthCard profile={profile} transactions={transactions} compact />
             <Link to={createPageUrl('Settings')} aria-label="Inställningar">
               <span className={`${anchorIconButtonClass} bg-white/[0.05] ring-1 ring-white/[0.08]`}>
                 <Settings className="w-4 h-4" />
@@ -100,6 +105,14 @@ export default function FutureDashboard({
           transactions={transactions}
           onLessonComplete={updateProfile}
         />
+
+        <div className={dashZone}>
+          <ProactiveWeekBanner profile={profile} />
+        </div>
+
+        <div className={dashZone}>
+          <MicroWinsStrip profile={profile} transactions={transactions} />
+        </div>
 
         <HomeFocusBanner profile={profile} onAction={onFocusAction} variant="chip" />
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
@@ -19,6 +20,7 @@ import MagicEntryBox from '@/components/import/MagicEntryBox';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexModeHUD from '@/components/demo/AlexModeHUD';
 import AlexConflictAlert from '@/components/demo/AlexConflictAlert';
+import { getDashboardPath, getOnboardingPath, isBusinessMode } from '@/lib/onboardingRouter';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -50,8 +52,12 @@ export default function Dashboard() {
   }, [profile?.id]);
 
   useEffect(() => {
+    if (isBusinessMode()) {
+      navigate(getDashboardPath('business'), { replace: true });
+      return;
+    }
     if (profile && !profile.onboardingCompleted) {
-      navigate(createPageUrl('Onboarding'), { replace: true });
+      navigate(getOnboardingPath('personal'), { replace: true });
     }
   }, [profile, navigate]);
 
@@ -118,7 +124,7 @@ export default function Dashboard() {
       <div className="min-h-screen flex items-center justify-center p-6 text-center">
         <div>
           <p className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Välkommen till Anchor</p>
-          <button onClick={() => navigate(createPageUrl('Onboarding'))}
+          <button onClick={() => navigate(getOnboardingPath('personal'))}
           className="mt-4 px-8 py-3 rounded-full text-white font-semibold" style={{ background: 'var(--color-accent)' }}>
             Kom igång
           </button>
@@ -182,3 +188,5 @@ export default function Dashboard() {
   );
 
 }
+
+export const pageSeo = pageSeoFor('Dashboard');

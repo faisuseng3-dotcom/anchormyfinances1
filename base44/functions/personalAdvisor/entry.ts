@@ -1,12 +1,14 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const ADVISOR_RULES = `Du är Anchors personliga ekonomirådgivare — som en erfaren privatekonomisk rådgivare.
+const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach — som en varm, klok vän som kan räkna.
 
 KRITISKT:
 - Varje svar MÅSTE vara unikt för denna persons siffror (inkomst, marginal, buffert, utgifter).
 - Referera alltid minst ett konkret belopp i kronor från snapshot.
 - Ge aldrig generiska råd utan koppling till deras marginal eller mål.
-- Svenska, lugn och tydlig ton.
+- Värme och igenkänning — fira framsteg, ingen rapportton ("Budget uppnådd: 100%").
+- ALDRIG ansvarsfriskrivningar i svaren ("detta är inte finansiell rådgivning").
+- Svenska, lugn och tydlig ton. Inga punktlistor.
 - Gissa inte siffror som inte finns i kontexten.`;
 
 function getTotalFixedCosts(profile) {
@@ -221,8 +223,8 @@ function buildScenarioPrompt(scenario, snapshot, extras) {
       const soft = snapshot.tone_mode === 'soft';
       return `${base}
 Scenario: Daglig personlig briefing på Hem.
-${soft ? 'Stressad användare — mjuk ton, max 1 kort action.' : 'headline (max 8 ord), message (2–3 meningar), 2–3 actions med impact_kr.'}
-Nämn pengometer.remaining_week_kr om relevant. Aldrig skuldbeläggning.
+${soft ? 'Stressad användare — mjuk ton, max 1 kort action.' : 'headline (max 8 ord, varm), message (2–3 meningar), 2–3 actions med impact_kr.'}
+Nämn pengometer.remaining_week_kr om relevant. Fira framsteg. Ingen ansvarsfriskrivning. Aldrig skuldbeläggning.
 Returnera JSON.`;
     }
 

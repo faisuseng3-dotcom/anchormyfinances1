@@ -314,9 +314,6 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               <p className={`text-[15px] font-semibold ${vs.text}`}>{vs.label}</p>
               <p className={`${sectionSubtitleClass} mt-2`}>{result.verdictReason}</p>
               <p className="text-[14px] text-white/75 leading-relaxed mt-2">{result.aiInsight}</p>
-              {result.model && (
-                <p className="text-[12px] text-white/35 mt-2">Modell: {result.model}</p>
-              )}
             </div>
 
             {showShield && (

@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import TransactionClusters, { classifyTransaction } from '@/components/analysis/TransactionClusters';
@@ -11,6 +12,8 @@ import ScenarioCards from '@/components/analysis/ScenarioCards';
 import PageShell from '@/components/layout/PageShell';
 import { DashboardSection } from '@/components/dashboard/DashboardChrome';
 import { createPageUrl } from '@/utils';
+import { askPersonalAdvisor } from '@/lib/personalAdvisor';
+import { coachInvite, findMoneyComparison, fmtKr } from '@/lib/coachingCopy';
 import {
   anchorPrimaryButtonClass,
   sectionMetaClass,
@@ -40,6 +43,61 @@ export default function AnchorAnalysis() {
   );
   const brusSavings = Math.round(brusTotal * 0.5);
 
+  const clusterTotals = useMemo(() => {
+    const sums = { brus: 0, invest: 0, social: 0 };
+    transactions
+      .filter((tx) => tx.amount < 0)
+      .forEach((tx) => {
+        const type = classifyTransaction(tx);
+        if (sums[type] !== undefined) sums[type] += Math.abs(tx.amount);
+      });
+    return sums;
+  }, [transactions]);
+
+  const fallbackCoachMessage = useMemo(() => {
+    if (brusTotal <= 0) return null;
+    const compare = findMoneyComparison(brusTotal, profile);
+    const goal = profile?.savingsGoalName || 'ditt sparmål';
+    const compareBit = compare ? ` Det motsvarar ${compare}.` : '';
+    return (
+      `Dina småköp landade på ${fmtKr(brusTotal)} kr den här perioden.${compareBit} ` +
+      `Om du lägger undan hälften (${fmtKr(brusSavings)} kr/mån) får ${goal} mer luft. ` +
+      coachInvite('justera småköps-budgeten')
+    );
+  }, [brusTotal, brusSavings, profile]);
+
+  useEffect(() => {
+    if (!profile || brusTotal <= 0) {
+      setCoachMessage(null);
+      return;
+    }
+    let cancelled = false;
+    setCoachLoading(true);
+    askPersonalAdvisor(
+      {
+        scenario: 'analysis_coach',
+        payload: {
+          brus_total_kr: brusTotal,
+          brus_savings_kr: brusSavings,
+          invest_total_kr: Math.round(clusterTotals.invest),
+          social_total_kr: Math.round(clusterTotals.social),
+          savings_goal_name: profile?.savingsGoalName || 'sparmålet',
+        },
+      },
+      { profile, transactions },
+    )
+      .then((res) => {
+        if (!cancelled) setCoachMessage(res?.message || fallbackCoachMessage);
+      })
+      .catch(() => {
+        if (!cancelled) setCoachMessage(fallbackCoachMessage);
+      })
+      .finally(() => {
+        if (!cancelled) setCoachLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, [profile, transactions, brusTotal, brusSavings, clusterTotals, fallbackCoachMessage]);
+
   const monthlyMargin = profile
     ? (profile.income || 0) - getTotalFixedCosts(profile)
     : 0;
@@ -61,20 +119,18 @@ export default function AnchorAnalysis() {
       <div className="-mt-2 mb-6">
         <h2 className="text-[22px] font-semibold text-white leading-tight">{headline}</h2>
         <p className={`${sectionSubtitleClass} mt-2`}>
-          Vi grupperar dina senaste köp och visar vad små utgifter kan betyda på sikt.
+          {coachLoading
+            ? 'Tittar igenom dina senaste köp…'
+            : coachMessage || 'Vi grupperar dina köp och visar vad de betyder i kronor — inte bara i känsla.'}
         </p>
       </div>
 
       <TransactionClusters transactions={transactions} />
 
-      {brusTotal > 0 && (
+      {brusTotal > 0 && coachMessage && !coachLoading && (
         <div className="mt-6 rounded-xl px-4 py-3 border border-amber-400/25 bg-amber-400/10">
-          <p className="text-[15px] font-medium text-amber-200/95">
-            Småköp den här perioden: {brusTotal.toLocaleString('sv-SE')} kr
-          </p>
-          <p className={`${sectionSubtitleClass} mt-1`}>
-            Om du lägger undan hälften ({brusSavings.toLocaleString('sv-SE')} kr/mån) till sparande
-            märker du skillnad över tid.
+          <p className="text-[15px] text-amber-100/95 leading-relaxed">
+            {coachMessage}
           </p>
         </div>
       )}
@@ -98,11 +154,9 @@ export default function AnchorAnalysis() {
 
       {brusTotal > 0 && (
         <div className="mt-6 rounded-xl px-4 py-3 border border-white/[0.08] bg-white/[0.03]">
-          <p className={sectionMetaClass}>Kort sammanfattning</p>
-          <p className="text-[14px] text-white/75 leading-relaxed mt-2">
-            Dina småköp är inte bara {brusTotal.toLocaleString('sv-SE')} kr — de påverkar också hur
-            snabbt du når {profile?.savingsGoalName || 'ditt sparmål'}. Mindre spontanköp ger mer
-            utrymme varje månad.
+          <p className="text-[14px] text-white/75 leading-relaxed">
+            {fmtKr(brusSavings)} kr extra varje månad till {profile?.savingsGoalName || 'sparmålet'}{' '}
+            räcker längre än du tror — det är skillnaden mellan att köpa på impuls och att välja medvetet.
           </p>
         </div>
       )}
@@ -154,3 +208,5 @@ export default function AnchorAnalysis() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('AnchorAnalysis');

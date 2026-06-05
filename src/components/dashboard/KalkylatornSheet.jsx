@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight, X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
-import { KALKYLATOR_TOOLS, sortTools } from '@/lib/toolCatalog';
+import { KALKYLATOR_TOOLS, sortTools, toolPageHref } from '@/lib/toolCatalog';
 import {
   anchorIconButtonClass,
   anchorInputClass,
@@ -125,7 +125,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
                   <React.Fragment key={item.id}>
                     {i > 0 && <DashboardDivider />}
                     <DashboardListRow
-                      href={createPageUrl(item.page)}
+                      href={toolPageHref(item)}
                       onClick={handleClose}
                       leading={
                         <div className="w-10 h-10 rounded-xl bg-[#6B9FFF]/12 border border-[#6B9FFF]/20 flex items-center justify-center">

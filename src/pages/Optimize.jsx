@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -189,3 +190,5 @@ export default function Optimize() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('Optimize');

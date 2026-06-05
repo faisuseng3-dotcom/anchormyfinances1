@@ -1,4 +1,5 @@
 import React from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { motion } from 'framer-motion';
 import { Shield, Lock, Trash2, Database, Eye, CheckCircle, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -117,3 +118,5 @@ export default function SecurityInfo() {
     </div>
   );
 }
+
+export const pageSeo = pageSeoFor('SecurityInfo');

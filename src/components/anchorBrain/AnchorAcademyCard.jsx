@@ -16,6 +16,7 @@ import {
   dashLabel,
 } from '@/lib/dashboardTheme';
 import { anchorIconButtonClass, elevatedSheet } from '@/lib/anchorTheme';
+import { formatCoachText } from '@/lib/coachingCopy';
 
 export default function AnchorAcademyCard({
   profile,
@@ -94,11 +95,13 @@ export default function AnchorAcademyCard({
                 <h3 className="text-[24px] font-light text-white tracking-tight">
                   {content?.title || lesson.title}
                 </h3>
-                <p className="text-[15px] text-white/55 mt-4 leading-relaxed whitespace-pre-wrap font-light">
-                  {content?.body}
+                <p className="text-[15px] text-white/55 mt-4 leading-relaxed font-light">
+                  {formatCoachText(content?.body)}
                 </p>
                 {content?.takeaway && (
-                  <p className="text-[14px] text-cyan-300/80 mt-5">{content.takeaway}</p>
+                  <p className="text-[14px] text-cyan-300/80 mt-5 leading-relaxed">
+                    {formatCoachText(content.takeaway)}
+                  </p>
                 )}
                 <button
                   type="button"

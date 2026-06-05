@@ -1,7 +1,8 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 
-const ADVISOR_RULES = `Du är Anchors personliga ekonomirådgivare. Svara på SVENSKA, kort och empatiskt.
-Referera alltid användarens egna siffror — generiska råd är förbjudna.`;
+const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach. Svara på SVENSKA, kort, varmt och empatiskt.
+Referera alltid användarens egna siffror — generiska råd är förbjudna.
+ALDRIG ansvarsfriskrivningar. Fira framsteg när det finns.`;
 
 async function invokeAdvisor(base44, prompt) {
   try {

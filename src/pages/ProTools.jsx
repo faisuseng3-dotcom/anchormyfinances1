@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import PageShell from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
 import { Scissors, Target, PiggyBank, Users } from 'lucide-react';
 import { DashboardDivider, DashboardListRow, DashboardSection } from '@/components/dashboard/DashboardChrome';
 import { dashLabel } from '@/lib/appSurface';
-import { PROTOOLS_SCENARIOS, PROTOOLS_EXPLORE, sortTools } from '@/lib/toolCatalog';
+import { PROTOOLS_SCENARIOS, PROTOOLS_EXPLORE, sortTools, toolPageHref } from '@/lib/toolCatalog';
 import ProToolsHero from '@/components/protools/ProToolsHero';
 import AIGuru from '@/components/protools/mastery/AIGuru';
 import FutureSimulator from '@/components/protools/mastery/FutureSimulator';
@@ -92,7 +93,7 @@ export default function ProTools() {
             <React.Fragment key={item.id}>
               {i > 0 && <DashboardDivider />}
               <DashboardListRow
-                href={createPageUrl(item.page)}
+                href={toolPageHref(item)}
                 leading={<ToolIcon icon={Icon} />}
                 title={item.question}
                 subtitle={item.hint}
@@ -109,7 +110,7 @@ export default function ProTools() {
             <React.Fragment key={item.id}>
               {i > 0 && <DashboardDivider />}
               <DashboardListRow
-                href={createPageUrl(item.page)}
+                href={toolPageHref(item)}
                 leading={<ToolIcon icon={Icon} />}
                 title={item.question}
                 subtitle={item.hint}
@@ -138,3 +139,5 @@ export default function ProTools() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('ProTools');

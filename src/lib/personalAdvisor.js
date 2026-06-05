@@ -6,6 +6,7 @@ import {
   getNeedsProfileResponse,
 } from '@/lib/personalAdvisorPrompts';
 import { hasAdvisorProfileData, isLocalAdvisorProfile } from '@/lib/advisorProfile';
+import { sanitizeAdvisorResponse } from '@/lib/coachingCopy';
 
 async function invokeLlmWithFallback(prompt, schema) {
   const opts = { prompt, model: 'claude_sonnet_4_6', response_json_schema: schema };
@@ -93,11 +94,11 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
   });
 
   const result = await invokeLlmWithFallback(prompt, schema);
-  return {
+  return sanitizeAdvisorResponse({
     ...result,
     snapshot_summary: { margin: snapshot.monthly_margin_kr },
     _source: 'client',
-  };
+  });
 }
 
 /**
@@ -130,8 +131,8 @@ export async function askPersonalAdvisor(params, options = {}) {
   } catch (err) {
     console.warn('personalAdvisor server unavailable, client fallback:', err?.message);
     if (hasAdvisorProfileData(profile)) {
-      return askPersonalAdvisorClient(params, profile, transactions);
+      return sanitizeAdvisorResponse(await askPersonalAdvisorClient(params, profile, transactions));
     }
-    return askPersonalAdvisorClient(params);
+    return sanitizeAdvisorResponse(await askPersonalAdvisorClient(params));
   }
 }

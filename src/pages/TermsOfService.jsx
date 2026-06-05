@@ -1,4 +1,5 @@
 import React from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
@@ -135,3 +136,5 @@ export default function TermsOfService() {
     </div>
   );
 }
+
+export const pageSeo = pageSeoFor('TermsOfService');

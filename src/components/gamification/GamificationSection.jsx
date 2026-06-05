@@ -112,7 +112,7 @@ function ChallengeRow({ challenge, transactions }) {
             </div>
             <p className="text-xs font-semibold flex-shrink-0" style={{ color: 'var(--color-text-muted)' }}>{progress.label}</p>
           </div>
-          {done && <p className="text-xs font-bold mt-1" style={{ color: '#0D7377' }}>Utmaning klar!</p>}
+          {done && <p className="text-xs font-bold mt-1" style={{ color: '#0D7377' }}>Bra jobbat — utmaningen klar!</p>}
         </div>
       </div>
     </div>
@@ -226,10 +226,10 @@ function SelfLeaderboard({ transactions, profile }) {
       </div>
       <p className="text-sm font-semibold" style={{ color: better ? '#0D7377' : 'var(--color-danger)' }}>
         {better
-          ? `Bra jobbat! Du spenderar ${diff.toLocaleString('sv-SE')} kr mindre än förra månaden.`
+          ? `Bra jobbat — ${diff.toLocaleString('sv-SE')} kr mindre än förra månaden. Det märks i plånboken.`
           : diff < 0
-            ? `Du spenderar ${Math.abs(diff).toLocaleString('sv-SE')} kr mer än förra månaden.`
-            : 'Lika mycket som förra månaden.'}
+            ? `${Math.abs(diff).toLocaleString('sv-SE')} kr mer än förra månaden — inget katastrof, men bra att veta.`
+            : 'Samma nivå som förra månaden — stabilt och förutsägbart.'}
       </p>
     </div>
   );

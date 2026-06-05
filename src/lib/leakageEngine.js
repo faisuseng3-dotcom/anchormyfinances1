@@ -4,6 +4,7 @@
  */
 
 import { normalizeMerchant } from '@/lib/merchantNormalize';
+import { coachInvite, fmtKr, findMoneyComparison } from '@/lib/coachingCopy';
 
 const EXPENSE_TYPES = ['expense', 'shopping', 'savings_deposit', 'transfer_to_savings'];
 
@@ -19,9 +20,7 @@ const COFFEE_KEYWORDS = [
 
 const GYM_KEYWORDS = ['gym', 'sats', 'friskis', 'nordic wellness', 'actic', 'fitness'];
 
-function fmt(n) {
-  return Math.round(n || 0).toLocaleString('sv-SE');
-}
+const fmt = fmtKr;
 
 function isExpense(tx) {
   return EXPENSE_TYPES.includes(tx.type) || (tx.amount < 0 && tx.type !== 'income');
@@ -85,11 +84,12 @@ function detectUnknownRecurring(transactions, profile) {
       id: `recurring_${vendor.slice(0, 20)}`,
       type: 'subscription',
       severity: 2,
-      title: `Glömt abonnemang: ${capitalize(vendor)}`,
-      description: `${amount.toLocaleString('sv-SE')} kr dras ungefär varje månad — inte registrerat i din budget.`,
+      title: `${capitalize(vendor)} dras varje månad`,
+      description: `${fmtKr(amount)} kr försvinner till ${capitalize(vendor)} utan att finnas i din budget — ${coachInvite('kolla om du fortfarande använder det')}`,
+      why: 'Samma belopp till samma mottagare med 20–40 dagars mellanrum räknas som månadsvis dragning. Om det inte finns i din profil syns det inte i marginalen du planerar efter.',
       monthlyAmount: amount,
       vendors: [vendor],
-      action: 'Granska transaktioner',
+      action: 'granska betalningen',
       actionLink: '/TransactionHistory',
     });
   });
@@ -98,7 +98,7 @@ function detectUnknownRecurring(transactions, profile) {
 }
 
 /** Flera streaming-/nöjestjänster som överlappar */
-function detectDuplicateStreaming(transactions) {
+function detectDuplicateStreaming(transactions, profile) {
   const now = new Date();
   const cutoff = new Date(now);
   cutoff.setDate(cutoff.getDate() - 90);
@@ -126,21 +126,23 @@ function detectDuplicateStreaming(transactions) {
   const monthlyEst = entries.reduce((s, e) => s + (e.lastAmount || e.total / Math.max(e.count, 1)), 0);
   const names = entries.map((e) => capitalize(e.keyword)).join(', ');
 
+  const compare = findMoneyComparison(monthlyEst, profile);
   return [{
     id: 'duplicate_streaming',
     type: 'duplicate',
     severity: 2,
-    title: 'Flera streamingtjänster',
-    description: `Du betalar för ${services.size} tjänster (${names}) som delvis gör samma sak.`,
+    title: `${fmtKr(Math.round(monthlyEst))} kr på streaming`,
+    description: `Du betalar för ${services.size} tjänster (${names}) som delvis överlappar — ungefär ${compare || 'dubbelt så mycket nöje som många behöver'}. ${coachInvite('städa bort det du inte tittar på')}`,
+    why: 'Vi letar efter kända streaming-tjänster i dina senaste 90 dagar. Flera aktiva samtidigt ger ofta samma innehåll — men varje tjänst dras fullt.',
     monthlyAmount: Math.round(monthlyEst),
     vendors: entries.map((e) => e.keyword),
-    action: 'Se underhållning',
+    action: 'se nöje',
     actionLink: '/TransactionHistory?category=entertainment',
   }];
 }
 
 /** Småköp mat/kaffe i farten — trend senaste 30 dagarna */
-function detectHabitLeak(transactions, keywords, config) {
+function detectHabitLeak(transactions, keywords, profile, config) {
   const now = new Date();
   const d30 = new Date(now);
   d30.setDate(d30.getDate() - 30);
@@ -181,7 +183,8 @@ function detectHabitLeak(transactions, keywords, config) {
     type: 'habit',
     severity: rising ? 2 : 1,
     title: config.title,
-    description: config.description(recent, count, rising, prior),
+    description: config.description(recent, count, rising, prior, profile),
+    why: config.why,
     monthlyAmount: Math.round(monthlyEst),
     action: config.action,
     actionLink: config.actionLink,
@@ -244,21 +247,24 @@ export function runLeakageDetector(profile, transactions) {
 
   const rawLeaks = [
     ...detectUnknownRecurring(personalTxs, profile),
-    ...detectDuplicateStreaming(personalTxs),
-    detectHabitLeak(personalTxs, COFFEE_KEYWORDS, {
+    ...detectDuplicateStreaming(personalTxs, profile),
+    detectHabitLeak(personalTxs, COFFEE_KEYWORDS, profile, {
       id: 'coffee_habit',
       category: 'food',
       maxAmount: 180,
       minTotal: 350,
       minCount: 5,
       title: 'Kaffe & småköp i farten',
-      description: (recent, count, rising) =>
-        `Du lagt ${fmt(recent)} kr på kaffe och snabbmat senaste månaden (${count} köp)` +
-        (rising ? ' — trenden ökar.' : '.'),
-      action: 'Visa matutgifter',
+      description: (recent, count, rising, prior, profile) => {
+        const compare = findMoneyComparison(recent, profile, 'food');
+        const trend = rising ? ' och det tickar uppåt' : '';
+        return `Du la ${fmt(recent)} kr på kaffe och snabbköp senaste månaden (${count} köp)${trend} — ${compare || 'pengar som lätt försvinner i farten'}. ${coachInvite('se vilka dagar det klumpas')}`;
+      },
+      why: 'Vi summerar småköp under 180 kr till café, pressbyrå och mat i farten. Minst fem köp och 350 kr på 30 dagar — då märks det i marginalen även om varje köp känns harmlöst.',
+      action: 'visa matutgifter',
       actionLink: '/TransactionHistory?category=food',
     }),
-    detectHabitLeak(personalTxs, GYM_KEYWORDS, {
+    detectHabitLeak(personalTxs, GYM_KEYWORDS, profile, {
       id: 'gym_overlap',
       category: 'health',
       maxAmount: 800,
@@ -266,8 +272,9 @@ export function runLeakageDetector(profile, transactions) {
       minCount: 2,
       title: 'Gym & hälsa — dubbelkoll',
       description: (recent) =>
-        `${fmt(recent)} kr på gym/hälsa senaste månaden. Har du flera medlemskap du glömde?`,
-      action: 'Visa hälsa',
+        `${fmt(recent)} kr gick till gym och hälsa senaste månaden. ${coachInvite('kolla om du betalar dubbelt för något du inte använder')}`,
+      why: 'Flera gym- eller hälsokostnader samma månad kan betyda dubbla medlemskap. Vi flaggar när summan passerar 500 kr utan att du aktivt använt det.',
+      action: 'visa hälsa',
       actionLink: '/TransactionHistory?category=health',
     }),
   ].filter(Boolean);

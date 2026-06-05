@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
@@ -66,3 +67,5 @@ export default function PurchaseSimulator() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('PurchaseSimulator');

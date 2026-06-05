@@ -34,8 +34,8 @@ export function getToneInstructions(profile) {
     tone === 'soft'
       ? 'TON: Användaren känner sig stressad. Mjuk, kort text. Ingen skuld. Max 2 meningar där möjligt. Undvik tunga tabeller.'
       : tone === 'coach'
-        ? 'TON: Användaren är motiverad. Konkreta mål och nästa steg. Energi men inte pushy.'
-        : 'TON: Lugn och tydlig vardagston.';
+        ? 'TON: Användaren är motiverad. Konkreta mål och nästa steg. Energi men inte pushy. Fira framsteg.'
+        : 'TON: Varm och igenkännande — som en klok vän, inte en statusrapport.';
 
   const styleBlock =
     style === 'reassuring'
@@ -48,7 +48,20 @@ export function getToneInstructions(profile) {
     ? `KONTEXT: Användaren bor i ${city}. Erkänn att boendekostnader kan vara höga — det är strukturellt, inte personligt misslyckande.`
     : 'KONTEXT: Sverige — kontantlöst samhälle gör pengar osynliga; förklara med konkreta kvar-belopp.';
 
-  return `${toneBlock}\n${styleBlock}\n${cityBlock}\nALDRIG: "du spenderar för mycket" eller skuldbeläggning.`;
+  return `${toneBlock}\n${styleBlock}\n${cityBlock}\nALDRIG: "du spenderar för mycket", skuldbeläggning, ansvarsfriskrivningar eller kall rapportton ("Budget uppnådd: 100%").`;
+}
+
+/** Varm etikett under pengometerns huvudsiffra — inte dashboard-jargong. */
+export function getPengometerLabel(pengometer) {
+  const fill = pengometer?.fill_percent ?? 100;
+  const remaining = pengometer?.remaining_week_kr ?? 0;
+  if (remaining <= 0 && pengometer?.weekly_budget_kr > 0) {
+    return 'veckan är full — men du vet var pengarna gick';
+  }
+  if (fill >= 75) return 'bra jobbat — du har kvar den här veckan';
+  if (fill >= 45) return 'lugnt i veckan';
+  if (fill >= 20) return 'lite kvar nu — håll koll';
+  return 'tight vecka — ta det lugnt med småköp';
 }
 
 /** Digital sedelbunt — vecko- och dagskvar. */
@@ -97,7 +110,11 @@ export function calculatePengometer(profile, transactions = []) {
     fill_percent: Math.round(fillPct * 100),
     status,
     headline_kr: Math.round(remainingWeek),
-    headline_label: 'kvar denna vecka',
+    headline_label: getPengometerLabel({
+      fill_percent: Math.round(fillPct * 100),
+      remaining_week_kr: Math.round(remainingWeek),
+      weekly_budget_kr: weeklyBudget,
+    }),
   };
 }
 

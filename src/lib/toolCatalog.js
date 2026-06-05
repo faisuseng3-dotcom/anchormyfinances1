@@ -1,14 +1,20 @@
 import {
   ShoppingBag,
-  GitBranch,
   PieChart,
   Landmark,
   History,
   CalendarDays,
   Plane,
-  GraduationCap,
   AlarmClock,
 } from 'lucide-react';
+import { createPageUrl } from '@/utils';
+import { planeraTabHref } from '@/lib/planeraTabs';
+
+export function toolPageHref(item) {
+  if (item.href) return item.href;
+  if (item.tab) return planeraTabHref(item.tab);
+  return createPageUrl(item.page);
+}
 
 /** Snabbkalkylator på Hem (4 kärnval). */
 export const KALKYLATOR_TOOLS = [
@@ -20,13 +26,6 @@ export const KALKYLATOR_TOOLS = [
     page: 'PurchaseSimulator',
   },
   {
-    id: 'whatif',
-    question: 'Vad händer om…?',
-    hint: 'Lön, pausa utgifter eller andra scenarier',
-    icon: GitBranch,
-    page: 'WhatIf',
-  },
-  {
     id: 'loans',
     question: 'Jämför ditt lån',
     hint: 'Ränta, månadskostnad och amortering',
@@ -35,8 +34,8 @@ export const KALKYLATOR_TOOLS = [
   },
   {
     id: 'plan',
-    question: 'Planera min månaden',
-    hint: 'Middagar, resor och kommande utgifter',
+    question: 'Din Framtid',
+    hint: 'Optimistisk, realistisk eller pessimistisk — justera och dela',
     icon: CalendarDays,
     page: 'FuturePulse',
   },
@@ -57,7 +56,8 @@ export const PROTOOLS_SCENARIOS = [
     question: 'Hur har det gått över tid?',
     hint: 'Buffert och skuld senaste halvåret',
     icon: History,
-    page: 'FinancialHistory',
+    page: 'TransactionHistory',
+    tab: 'trends',
   },
 ];
 
@@ -70,13 +70,6 @@ export const PROTOOLS_EXPLORE = [
     page: 'TravelPlanner',
   },
   {
-    id: 'academy',
-    question: 'Anchor Academy',
-    hint: '60-sekunders lektioner för din situation',
-    icon: GraduationCap,
-    page: 'AnchorAcademy',
-  },
-  {
     id: 'passivity',
     question: 'Vad kostar passivitet?',
     hint: 'Ränta på ränta och priset av att vänta',
@@ -87,10 +80,10 @@ export const PROTOOLS_EXPLORE = [
 ];
 
 const TOOL_PRIORITY = {
-  spending: ['purchase', 'budget', 'plan', 'whatif', 'loans', 'history'],
-  debt: ['loans', 'whatif', 'purchase', 'budget', 'plan', 'history'],
-  save: ['plan', 'budget', 'purchase', 'whatif', 'loans', 'history'],
-  plan: ['plan', 'whatif', 'purchase', 'budget', 'loans', 'history'],
+  spending: ['purchase', 'budget', 'plan', 'loans', 'history'],
+  debt: ['loans', 'plan', 'purchase', 'budget', 'history'],
+  save: ['plan', 'budget', 'purchase', 'loans', 'history'],
+  plan: ['plan', 'purchase', 'budget', 'loans', 'history'],
 };
 
 export function sortTools(items, topConcern) {

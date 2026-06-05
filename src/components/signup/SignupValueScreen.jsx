@@ -1,6 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Lock, Bot, Smartphone, ArrowRight, Eye } from 'lucide-react';
+import { createPageUrl } from '@/utils';
 
 const perks = [
   {
@@ -83,10 +85,23 @@ export default function SignupValueScreen({ onContinue, onGuest }) {
             <ArrowRight className="w-5 h-5" />
           </button>
 
+          <Link
+            to={createPageUrl('Login')}
+            className="block w-full mt-4 py-3 text-slate-400 text-sm text-center hover:text-white transition-colors no-underline"
+          >
+            Har du redan konto? Logga in
+          </Link>
+          <Link
+            to="/Pricing"
+            className="block w-full py-2 text-slate-500 text-xs text-center hover:text-slate-300 transition-colors no-underline"
+          >
+            Se priser
+          </Link>
+
           {onGuest && (
             <button
               onClick={onGuest}
-              className="w-full mt-4 py-3 text-slate-500 text-sm flex items-center justify-center gap-2 hover:text-slate-300 transition-colors"
+              className="w-full py-3 text-slate-500 text-sm flex items-center justify-center gap-2 hover:text-slate-300 transition-colors"
             >
               <Eye className="w-4 h-4" />
               Testa utan konto istället

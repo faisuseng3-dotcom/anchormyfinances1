@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { createPageUrl } from '@/utils';
@@ -63,3 +64,5 @@ export default function TravelPlanner() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('TravelPlanner');

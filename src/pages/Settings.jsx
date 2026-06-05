@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users, GitBranch } from 'lucide-react';
+import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users, GitBranch, Info } from 'lucide-react';
+import { ANCHOR_COACH_DISCLAIMER } from '@/lib/disclaimerCopy';
 import PageShell from '@/components/layout/PageShell';
 import {
   DashboardDivider,
@@ -22,6 +24,7 @@ import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import GamificationSection from '@/components/gamification/GamificationSection';
+import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import DayPicker from '@/components/onboarding/DayPicker';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -240,6 +243,9 @@ export default function Settings() {
         </DashboardSection>
 
         <DashboardSection nested title="Lån">
+          {(formData.loans || []).length > 0 && (
+            <ContextualLessonLink profile={formData} transactions={transactions} className="block mb-4" />
+          )}
           <div className="space-y-2">
             {(formData.loans || []).map((loan, i) => (
               <React.Fragment key={i}>
@@ -283,28 +289,21 @@ export default function Settings() {
             href={createPageUrl('Galaxy')}
             leading={<GitBranch className="w-5 h-5 text-[#9FB5FF]" />}
             title="Jämför"
-            subtitle="Publicera och jämför ekonomiska fördelningar"
+            subtitle="Se hur andra fördelar lönen — publicera anonymt om du vill"
           />
           <DashboardDivider />
           <DashboardListRow
             href={createPageUrl('Social')}
             leading={<Users className="w-5 h-5 text-white/60" />}
-            title="Social"
-            subtitle="Profil, vänner och @användarnamn"
-          />
-          <DashboardDivider />
-          <DashboardListRow
-            href={`${createPageUrl('Social')}?tab=privacy`}
-            leading={<Shield className="w-5 h-5 text-[#9FB5FF]" />}
-            title="Integritet & delning"
-            subtitle="Styr vad som syns i Jämför"
+            title="Vänner & profil"
+            subtitle="@användarnamn, vänner och integritet"
           />
           <DashboardDivider />
           <DashboardListRow
             href={`${createPageUrl('TransactionHistory')}?tab=insights`}
             leading={<TrendingUp className="w-5 h-5 text-[#9FB5FF]" />}
-            title="Ekonomiska insikter"
-            subtitle="Kategorier & trender"
+            title="Historik & insikter"
+            subtitle="Transaktioner, trender och kategorier"
           />
           <DashboardDivider />
           <DashboardListRow
@@ -321,6 +320,24 @@ export default function Settings() {
 
         {/* Invite */}
         <InviteUserSection />
+
+        <DashboardSection nested title="Om coachningen">
+          <div className="flex items-start gap-3">
+            <Info className="w-4 h-4 text-[#9FB5FF] flex-shrink-0 mt-0.5" />
+            <div>
+              <p className={`${sectionSubtitleClass} leading-relaxed`}>
+                {ANCHOR_COACH_DISCLAIMER}
+              </p>
+              <Link
+                to="/TermsOfService"
+                className="inline-flex items-center gap-1 text-[13px] text-white/55 hover:text-white/80 mt-3 no-underline"
+              >
+                Läs användarvillkor
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        </DashboardSection>
 
         {/* Legal */}
         <div className="flex justify-center gap-4 sm:gap-6 py-2 flex-wrap">
@@ -356,3 +373,5 @@ export default function Settings() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('Settings');

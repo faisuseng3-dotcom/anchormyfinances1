@@ -14,7 +14,7 @@ export default function SafeToSpendWidget({ profile }) {
   const isCritical = usedPercent >= 90;
 
   const statusColor = isCritical ? 'var(--color-danger)' : isLow ? 'var(--color-warning)' : 'var(--color-success)';
-  const statusLabel = isCritical ? 'Knappt om' : isLow ? 'Lite kvar' : 'Bra koll';
+  const statusLabel = isCritical ? 'Lite kvar nu' : isLow ? 'Håll koll' : 'Bra jobbat';
 
   return (
     <motion.div
@@ -94,7 +94,7 @@ export default function SafeToSpendWidget({ profile }) {
       )}
       {!isLow && monthlyExpenseSum < monthlyMargin * 0.3 && (
         <div className="mt-4 px-4 py-3 rounded-xl text-xs leading-relaxed" style={{ background: `${statusColor}12`, color: 'var(--color-text-secondary)', border: `1px solid ${statusColor}22` }}>
-          Bra kontroll. Du har använt under 30% av din marginal hittills denna månad.
+          Bra jobbat — du har koll och gott om luft kvar den här månaden.
         </div>
       )}
     </motion.div>

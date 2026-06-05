@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -199,7 +200,7 @@ export default function Social() {
 
   return (
     <PageShell
-      title="Social"
+      title="Vänner"
       subtitle="Profil, vänner och integritet"
       backHref={createPageUrl('Dashboard')}
       action={headerAction}
@@ -474,3 +475,5 @@ export default function Social() {
     </PageShell>
   );
 }
+
+export const pageSeo = pageSeoFor('Social');

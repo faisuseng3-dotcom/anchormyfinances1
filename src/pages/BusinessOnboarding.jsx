@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,6 +7,13 @@ import {
   CheckCircle2, Building2, TrendingUp, Clock,
   Receipt, Shield, BarChart3, ChevronRight, Loader2, Store
 } from 'lucide-react';
+import {
+  ensureOnboardingMode,
+  getDashboardPath,
+  getOnboardingPath,
+  isBusinessMode,
+  isBusinessOnboarded,
+} from '@/lib/onboardingRouter';
 
 // ─── Legal entity types ─────────────────────────────────────────────────────────
 const LEGAL_ENTITIES = [
@@ -623,6 +631,17 @@ function StepHoroscope({ persona, onComplete }) {
 export default function BusinessOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    if (!isBusinessMode()) {
+      navigate(getOnboardingPath('personal'), { replace: true });
+      return;
+    }
+    ensureOnboardingMode('business');
+    if (isBusinessOnboarded()) {
+      navigate(getDashboardPath('business'), { replace: true });
+    }
+  }, [navigate]);
   const [legalEntity, setLegalEntity] = useState(null);
   const [persona, setPersona] = useState(null);
   const [pains, setPains] = useState([]);
@@ -682,3 +701,5 @@ export default function BusinessOnboarding() {
     </div>
   );
 }
+
+export const pageSeo = pageSeoFor('BusinessOnboarding');

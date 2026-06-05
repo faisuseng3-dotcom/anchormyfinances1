@@ -6,14 +6,15 @@ export function buildLocalBriefingFallback(profile, transactions = []) {
   const remaining = s.remaining_this_month_kr;
   const margin = s.monthly_margin_kr;
 
-  let headline = 'Bra koll den här månaden';
-  if (remaining < margin * 0.2 && margin > 0) headline = 'Tight mot månadsslutet';
-  if (margin <= 0) headline = 'Fasta kostnader äter upp inkomsten';
+  let headline = 'Du har bra koll';
+  if (s.spent_percent_of_margin < 50 && margin > 0) headline = 'Bra jobbat — du ligger före';
+  if (remaining < margin * 0.2 && margin > 0) headline = 'Lite tight mot månadsslutet';
+  if (margin <= 0) headline = 'Fasta kostnader tar hela lönen';
 
   const message =
     margin > 0
-      ? `Du har ungefär ${remaining.toLocaleString('sv-SE')} kr kvar att fördela den här månaden efter fasta kostnader (${margin.toLocaleString('sv-SE')} kr marginal).`
-      : `Dina fasta kostnader är ${s.fixed_costs_kr.toLocaleString('sv-SE')} kr mot inkomst ${s.income_kr.toLocaleString('sv-SE')} kr — justera budget eller kostnader under Inställningar.`;
+      ? `Du har ungefär ${remaining.toLocaleString('sv-SE')} kr kvar att leva på den här månaden — det är ditt utrymme efter hyra och räkningar.`
+      : `Dina fasta kostnader (${s.fixed_costs_kr.toLocaleString('sv-SE')} kr) är högre än inkomsten just nu. Vi kan titta på det tillsammans under Inställningar.`;
 
   const actions = [];
   if (s.spent_percent_of_margin > 70 && margin > 0) {

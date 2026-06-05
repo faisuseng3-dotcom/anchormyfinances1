@@ -50,10 +50,17 @@ function ClusterInsight({ type, txs }) {
   const count = txs.length;
   const fmt = (n) => Math.round(n).toLocaleString('sv-SE');
 
+  const perPurchase = count > 0 ? Math.round(total / count) : 0;
   const insights = {
-    brus: `Du har ${count} småköp som tillsammans blir ${fmt(total)} kr. Det är lätt att missa när varje köp känns litet.`,
-    invest: `${count} större köp på ${fmt(total)} kr — ofta saker du behöver eller valt medvetet.`,
-    social: `${count} utgifter på ${fmt(total)} kr för att umgås och äta ute.`,
+    brus: count > 0
+      ? `${count} småköp blev ${fmt(total)} kr tillsammans — runt ${fmt(perPurchase)} kr i snitt. Varje köp känns harmlöst, men tillsammans är det ${total >= 1500 ? 'nästan en extra hyresrad' : 'mer än de flesta tror'}.`
+      : null,
+    invest: count > 0
+      ? `${count} större köp på ${fmt(total)} kr. Det här är ofta medvetna val — frågan är om de passar det du ville spara till den här månaden.`
+      : null,
+    social: count > 0
+      ? `${fmt(total)} kr på umgänge och uteätning (${count} gånger). Det är inte fel att leva — men det är värt att veta vad det kostar i kronor.`
+      : null,
   };
 
   return (
@@ -90,7 +97,9 @@ function ClusterInsight({ type, txs }) {
           >
             <DashboardDivider className="mx-4" />
             <div className="px-4 pb-4 pt-2">
-              <p className={`${sectionSubtitleClass}`}>{insights[type]}</p>
+              {insights[type] && (
+                <p className={`${sectionSubtitleClass}`}>{insights[type]}</p>
+              )}
               {txs.slice(0, 5).map((tx, i) => (
                 <div key={tx.id || i} className="flex justify-between items-center mt-3 pt-3 border-t border-white/[0.06]">
                   <span className="text-[13px] text-white/55 truncate mr-2">

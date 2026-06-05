@@ -19,7 +19,49 @@ function getTotalFixedCosts(profile) {
   if (profile.fixedCostItems?.length > 0) {
     return profile.fixedCostItems.reduce((s, i) => s + (i.amount || 0), 0);
   }
-  return profile.housingCost || 0;
+  const housing = profile.housingCost || 0;
+  const subs = (profile.subscriptions || []).reduce((s: number, x: { amount?: number }) => s + (x.amount || 0), 0);
+  const loans = (profile.loans || []).reduce((s: number, l: { monthlyPayment?: number }) => s + (l.monthlyPayment || 0), 0);
+  return housing + subs + loans;
+}
+
+/** Fasta utgifter kommande 7 dagar — proaktiv förutsägelse. */
+function getNextWeekFixedAlert(profile) {
+  const items: { name: string; amount: number; dayOffset: number }[] = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const push = (name: string, amount: number, dueDay: number) => {
+    if (!amount || amount <= 0) return;
+    for (let dayOffset = 0; dayOffset <= 7; dayOffset++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + dayOffset);
+      if (d.getDate() === dueDay) {
+        items.push({ name, amount, dayOffset });
+        break;
+      }
+    }
+  };
+
+  if (profile.housingCost > 0) push('Hyra', profile.housingCost, profile.housingDueDay || 27);
+  (profile.loans || []).forEach((l: { name?: string; monthlyPayment?: number }, i: number) => {
+    push(l.name || 'Lån', l.monthlyPayment || 0, 5 + i);
+  });
+  (profile.subscriptions || []).forEach((s: { name?: string; amount?: number; billingDay?: number }, i: number) => {
+    push(s.name || 'Abonnemang', s.amount || 0, s.billingDay || 10 + i);
+  });
+
+  if (items.length < 2) return null;
+
+  items.sort((a, b) => a.dayOffset - b.dayOffset);
+  const total = items.reduce((s, x) => s + x.amount, 0);
+  const fmt = (n: number) => Math.round(n).toLocaleString('sv-SE');
+
+  return {
+    title: `${items.length} fasta utgifter väntar`,
+    body: `Nästa vecka har du ${items.length} fasta utgifter på totalt ${fmt(total)} kr — se till att du har dem på kontot.`,
+    url: '/FuturePulse',
+  };
 }
 
 async function sendToUser(subscriptions, payload) {
@@ -85,13 +127,25 @@ Deno.serve(async (req) => {
 
       if (type === 'morning') {
         payload = {
-          title: 'God morgon! ☕',
-          body: `Du har ${Math.max(0, remaining).toLocaleString('sv-SE')} kr kvar att spendera idag för att hålla ditt sparmål.`,
+          title: 'God morgon ☕',
+          body: `Du har ${Math.max(0, remaining).toLocaleString('sv-SE')} kr att leva på idag — lugnt och förutsägbart.`,
           icon: '/icon-192.png',
           badge: '/icon-96.png',
           category: 'coaching',
           url: '/',
           timestamp: Date.now()
+        };
+      } else if (type === 'week_ahead') {
+        const alert = getNextWeekFixedAlert(profile);
+        if (!alert) continue;
+        payload = {
+          title: alert.title,
+          body: alert.body,
+          icon: '/icon-192.png',
+          badge: '/icon-96.png',
+          category: 'forecast',
+          url: alert.url,
+          timestamp: Date.now(),
         };
       } else if (type === 'budget_warning') {
         // Kolla om > 80% spenderat
@@ -101,8 +155,8 @@ Deno.serve(async (req) => {
         if (hour >= 18) continue;
 
         payload = {
-          title: '⚠️ Budget-koll',
-          body: 'Du närmar dig dagens gräns. Ta en köpfri kväll så ligger du kvar på sparmålet!',
+          title: 'Lite kvar idag',
+          body: 'Du närmar dig dagens utrymme — en lugn kväll hemma räcker långt.',
           icon: '/icon-192.png',
           badge: '/icon-96.png',
           category: 'coaching',

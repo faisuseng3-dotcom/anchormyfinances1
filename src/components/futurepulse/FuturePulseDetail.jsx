@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Info } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { useFuturePulse } from '@/hooks/useFuturePulse';
 import {
   DashboardDivider,
@@ -176,13 +176,6 @@ export default function FuturePulseDetail({ profile, transactions }) {
           ))}
         </DashboardSection>
       )}
-
-      <div className="flex items-start gap-3 py-2">
-        <Info className="w-4 h-4 text-white/35 flex-shrink-0 mt-0.5" />
-        <p className="text-[13px] text-white/40 leading-relaxed">
-          Prognosen simulerar fasta kostnader och snittutgifter — en vägledning, inte exakt bokföring.
-        </p>
-      </div>
 
       <Link
         to={`${createPageUrl('TransactionHistory')}?tab=insights`}

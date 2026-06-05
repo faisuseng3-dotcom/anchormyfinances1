@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Building2, Plus } from 'lucide-react';
 
@@ -13,6 +14,8 @@ import RapporterTab from '@/components/business/tabs/RapporterTab';
 import ArkivTab from '@/components/business/tabs/ArkivTab';
 import ProfilTab from '@/components/business/tabs/ProfilTab';
 import { SkeletonCard, SkeletonHero } from '@/components/business/SkeletonCard';
+import { useNavigate } from 'react-router-dom';
+import { getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';
 
 const TAB_TITLES = {
   home: null, // uses company name
@@ -38,9 +41,14 @@ export default function BusinessDashboard() {
   // Persist business mode on refresh
   useEffect(() => {
     localStorage.setItem('anchor_mode', 'business');
+    document.documentElement.setAttribute('data-mode', 'business');
+    if (!isBusinessOnboarded()) {
+      navigate(getOnboardingPath('business'), { replace: true });
+      return;
+    }
     const t = setTimeout(() => setLoading(false), 600);
     return () => clearTimeout(t);
-  }, []);
+  }, [navigate]);
 
   // Listen for reset events (both same-tab custom event and cross-tab storage event)
   useEffect(() => {
@@ -194,3 +202,5 @@ export default function BusinessDashboard() {
     </div>
   );
 }
+
+export const pageSeo = pageSeoFor('BusinessDashboard');

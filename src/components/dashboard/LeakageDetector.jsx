@@ -6,6 +6,7 @@ import { createPageUrl } from '@/utils';
 import { useLeakageExplanations } from '@/hooks/useLeakageExplanations';
 import { DashboardDivider, DashboardListRow, DashboardSection } from './DashboardChrome';
 import { dashLabel } from '@/lib/appSurface';
+import InsightWhyButton from '@/components/insights/InsightWhyButton';
 
 const TYPE_ICON = {
   subscription: Smartphone,
@@ -119,8 +120,13 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
               ) : (
                 <DashboardListRow {...rowProps} />
               )}
-              {variant === 'full' && note && (
-                <p className="text-[13px] text-white/45 pb-2 pl-14 font-light leading-relaxed">{note}</p>
+              {variant === 'full' && (
+                <div className="pb-2 pl-14">
+                  {note && (
+                    <p className="text-[13px] text-white/45 font-light leading-relaxed">{note}</p>
+                  )}
+                  <InsightWhyButton why={leak.why} className="mt-1" />
+                </div>
               )}
             </React.Fragment>
           );

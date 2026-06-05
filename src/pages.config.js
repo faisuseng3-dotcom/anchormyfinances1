@@ -48,6 +48,7 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import CreateAccount from './pages/CreateAccount';
+import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import Loans from './pages/Loans';
@@ -64,11 +65,14 @@ import Pulse from './pages/Pulse';
 import Landing from './pages/Landing';
 import FinancialHistory from './pages/FinancialHistory';
 import SecurityInfo from './pages/SecurityInfo';
-import FuturePulsePage from './pages/FuturePulsePage';
+import FuturePulse from './pages/FuturePulse';
 import __Layout from './Layout.jsx';
 
 
+export { PAGE_SEO, GLOBAL_PAGE_META, pageSeoFor, sanitizePageTitle } from './lib/pageSeo';
+
 export const PAGES = {
+    "Login": Login,
     "CreateAccount": CreateAccount,
     "Dashboard": Dashboard,
     "Expenses": Expenses,
@@ -86,7 +90,7 @@ export const PAGES = {
     "Landing": Landing,
     "FinancialHistory": FinancialHistory,
     "SecurityInfo": SecurityInfo,
-    "FuturePulse": FuturePulsePage,
+    "FuturePulse": FuturePulse,
 }
 
 export const pagesConfig = {
