@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { AlertCircle, Clock } from 'lucide-react';
 import InvoiceDetailSheet from '@/components/business/details/InvoiceDetailSheet';
 import { BusinessDivider } from '@/components/business/BusinessChrome';

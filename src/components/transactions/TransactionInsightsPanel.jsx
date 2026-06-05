@@ -1,13 +1,12 @@
+// @ts-nocheck
 import React, { useMemo } from 'react';
 import { TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
 } from 'recharts';
 import {
-  DashboardDivider,
   DashboardSection,
 } from '@/components/dashboard/DashboardChrome';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';

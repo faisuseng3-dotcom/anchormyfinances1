@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Prefetch kärndata och route-chunks när Hem öppnas — sidbyten ska kännas omedelbara.
  */

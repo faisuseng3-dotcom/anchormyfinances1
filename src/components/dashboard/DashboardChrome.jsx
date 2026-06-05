@@ -12,6 +12,17 @@ import {
 
 /**
  * Zone on the canvas — title + content, no glass box.
+ * @param {Object} props
+ * @param {string} [props.title]
+ * @param {string} [props.subtitle]
+ * @param {React.ReactNode} [props.action]
+ * @param {string} [props.actionLabel]
+ * @param {string} [props.actionHref]
+ * @param {() => void} [props.onAction]
+ * @param {React.ReactNode} props.children
+ * @param {string} [props.className]
+ * @param {string} [props.id]
+ * @param {boolean} [props.nested]
  */
 export function DashboardSection({
   title,
@@ -60,7 +71,19 @@ export function DashboardDivider({ className = '' }) {
   return <div className={`${anchorDividerClass} ${className}`} />;
 }
 
-/** Full-width list row — Revolut-style */
+/**
+ * Full-width list row — Revolut-style
+ * @param {Object} props
+ * @param {string|React.ElementType} [props.as]
+ * @param {string} [props.href]
+ * @param {() => void} [props.onClick]
+ * @param {React.ReactNode} [props.leading]
+ * @param {string} [props.title]
+ * @param {string} [props.subtitle]
+ * @param {React.ReactNode} [props.trailing]
+ * @param {string} [props.trailingClassName]
+ * @param {string} [props.className]
+ */
 export function DashboardListRow({
   as: Component = 'div',
   href,

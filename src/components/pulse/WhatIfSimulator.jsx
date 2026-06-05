@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GitBranch, X } from 'lucide-react';
-import { formatNumber, getGuiltFreeAmount } from './pulseEngine';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 

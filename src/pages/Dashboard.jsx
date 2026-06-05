@@ -9,7 +9,7 @@ import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useDashboardPrefetch } from '@/hooks/useDashboardPrefetch';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import FutureDashboard from '@/components/dashboard/FutureDashboard';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import TransactionHub from '@/components/transactions/TransactionHub';

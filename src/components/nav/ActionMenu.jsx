@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, PlusCircle, ArrowLeftRight, PiggyBank, CalendarDays } from 'lucide-react';
+import { PlusCircle, ArrowLeftRight, PiggyBank, CalendarDays } from 'lucide-react';
 
 const ACTIONS = [
   { id: 'register', label: 'Registrera', icon: PlusCircle, color: 'var(--color-accent)' },

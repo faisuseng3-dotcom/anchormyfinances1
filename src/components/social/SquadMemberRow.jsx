@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileAvatar from './ProfileAvatar';
-import { Zap, Bell, ChevronDown, ChevronUp, Eye, BarChart2, Ghost } from 'lucide-react';
+import { Eye, BarChart2, Ghost } from 'lucide-react';
 
 const PRIVACY = {
   full:   { label: 'Full', color: '#0FDEBD', Icon: Eye },

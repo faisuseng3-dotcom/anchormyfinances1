@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Anchor, Zap } from 'lucide-react';
+import { Anchor, Zap } from 'lucide-react';
 
 /**
  * Visar en aktiv konflikt-varning specifik för Alex Mode:

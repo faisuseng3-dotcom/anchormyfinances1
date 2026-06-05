@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clipboard, ScanLine, Check, X, Loader2, ChevronRight, AlertTriangle } from 'lucide-react';

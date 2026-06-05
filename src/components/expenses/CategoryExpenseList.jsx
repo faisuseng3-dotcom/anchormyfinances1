@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Coffee, Car, Film, Heart, Zap, Package, Home, Wifi, Shield, Star, Minus, DollarSign, ChevronDown, ChevronRight, TrendingDown } from 'lucide-react';
+import { ShoppingCart, Coffee, Car, Film, Heart, Zap, Package, Wifi, ChevronDown, ChevronRight, TrendingDown } from 'lucide-react';
 import OptimizationHub from './OptimizationHub';
 import { toast } from 'sonner';
 

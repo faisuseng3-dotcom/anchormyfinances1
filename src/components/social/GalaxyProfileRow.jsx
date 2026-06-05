@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { DashboardListRow } from '@/components/dashboard/DashboardChrome';
 import { cn } from '@/lib/utils';

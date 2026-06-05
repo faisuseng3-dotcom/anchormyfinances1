@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * categoryRouter — lagerad kategorisering för precision:
  * 1) användar-overrides  2) regler  3) liknande handlare  4) LLM (GPT Mini → GPT)

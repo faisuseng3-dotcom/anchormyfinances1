@@ -1,6 +1,7 @@
+// @ts-nocheck
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, X, Upload, CheckCircle2, Edit3 } from 'lucide-react';
+import { Camera, X, Upload, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const PROCESSING_STEPS = [

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';

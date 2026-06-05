@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, CheckCircle2, Pencil, FileText, Clock, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Send, CheckCircle2, Pencil, FileText, AlertCircle } from 'lucide-react';
 
 const STEPS = ['Skickad', 'Mottagen', 'Förfallen', 'Betald'];
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Users, Radio, TrendingUp } from 'lucide-react';
+import { Users, Radio } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import TechHero from '@/components/ui/TechHero';
 import { dashLabel, dashPill } from '@/lib/appSurface';

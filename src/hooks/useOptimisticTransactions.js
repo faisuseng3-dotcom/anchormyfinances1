@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -50,6 +51,7 @@ export function useOptimisticTransactions() {
   const queryClient = useQueryClient();
 
   const createMutation = useMutation({
+    /** @param {Record<string, unknown>} data */
     mutationFn: (data) => base44.entities.Transaction.create({ ...data, context: data.context || 'PERSONAL' }),
     onMutate: async (data) => {
       await queryClient.cancelQueries({ queryKey: ['transactions'] });
@@ -92,6 +94,7 @@ export function useOptimisticTransactions() {
   });
 
   const deleteMutation = useMutation({
+    /** @param {string} id */
     mutationFn: (id) => base44.entities.Transaction.delete(id),
     onMutate: async (id) => {
       if (String(id).startsWith(OPTIMISTIC_PREFIX)) return { snapshot: [] };

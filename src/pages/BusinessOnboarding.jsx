@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import {
-  Camera, Code, Scissors, Briefcase, Zap, ArrowRight,
-  CheckCircle2, Building2, TrendingUp, Clock,
-  Receipt, Shield, BarChart3, ChevronRight, Loader2, Store
+import { Zap, ArrowRight,
+  CheckCircle2, Building2, TrendingUp, Shield, ChevronRight, Loader2
 } from 'lucide-react';
 import {
   ensureOnboardingMode,

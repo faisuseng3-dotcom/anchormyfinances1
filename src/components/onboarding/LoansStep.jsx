@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Plus, X, Landmark, Percent, CreditCard } from 'lucide-react';
+import { Plus, X, Landmark } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
 
 export default function LoansStep({ data, onChange, onNext, onBack }) {

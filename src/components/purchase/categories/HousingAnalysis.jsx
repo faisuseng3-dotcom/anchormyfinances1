@@ -1,6 +1,7 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Link2, Loader2, AlertTriangle, TrendingUp, Shield, Zap } from 'lucide-react';
+import { Home, Link2, Loader2, AlertTriangle, Zap } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

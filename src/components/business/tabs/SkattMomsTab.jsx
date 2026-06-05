@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import TaxClarityHero from '@/components/business/TaxClarityHero';

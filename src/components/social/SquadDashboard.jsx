@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ProfileAvatar from './ProfileAvatar';
 import SquadMemberRow from './SquadMemberRow';
 import NudgeToast from './NudgeToast';
-import { Users, Target, Calendar, ChevronDown, Filter, Copy } from 'lucide-react';
+import { Users, Calendar, ChevronDown, Filter, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
 const CATEGORIES = [

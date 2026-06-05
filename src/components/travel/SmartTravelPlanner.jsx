@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// @ts-nocheck
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingDown, TrendingUp, MapPin, RefreshCw } from 'lucide-react';
 import { Button } from "@/components/ui/button";

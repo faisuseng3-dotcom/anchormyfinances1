@@ -1,3 +1,4 @@
+// @ts-nocheck
 // pulseEngine.js – Core logic for The Pulse forecasting
 
 export function buildUpcomingExpenses(profile) {

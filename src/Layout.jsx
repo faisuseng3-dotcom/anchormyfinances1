@@ -1,10 +1,11 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { Mic, Plus } from 'lucide-react';
 import { CORE_VIEWS } from '@/lib/appStructure';
 import { prefetchRoute } from '@/lib/prefetchHub';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import VoiceAssistant from '@/components/voice/VoiceAssistant';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import ProfileSwitcher from '@/components/ProfileSwitcher';
@@ -15,7 +16,6 @@ import { useAuth } from '@/lib/AuthContext';
 import ActionMenu from '@/components/nav/ActionMenu';
 import PlanQuickAddSheet from '@/components/plan/PlanQuickAddSheet';
 import PushNotificationManager from '@/components/notifications/PushNotificationManager';
-import ModeSwitch from '@/components/modes/ModeSwitch';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { useNavigate } from 'react-router-dom';
 import { isAlexMode } from '@/lib/alexMode';

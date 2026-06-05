@@ -3,8 +3,7 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  ArrowLeft, CheckCircle2, Circle, AlertTriangle, Lock, FileText,
-  Building2, Calculator, Scale, Loader2, ChevronRight, Download, Zap
+  ArrowLeft, CheckCircle2, AlertTriangle, Lock, FileText, Calculator, Scale, Loader2, ChevronRight, Zap
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 

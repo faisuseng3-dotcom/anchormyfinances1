@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Languages, X, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Languages, X, ArrowRight } from 'lucide-react';
 
 // Simulated intercepted Fortnox messages
 const FORTNOX_ERRORS = [

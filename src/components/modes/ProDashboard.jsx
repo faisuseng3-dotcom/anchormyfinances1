@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Zap, TrendingUp, Target, AlertTriangle, Radio, Calendar } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
-import { Button } from "@/components/ui/button";
 import QuickStats from '@/components/dashboard/QuickStats';
 
 const formatNumber = (value) => {

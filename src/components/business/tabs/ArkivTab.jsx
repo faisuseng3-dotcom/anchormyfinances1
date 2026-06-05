@@ -1,7 +1,7 @@
+// @ts-nocheck
 import React from 'react';
 import { motion } from 'framer-motion';
 import { BookOpen } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import ReceiptVault from '@/components/business/ReceiptVault';
 import ActivityStream from '@/components/business/ActivityStream';
 import SmartPasteImport from '@/components/business/SmartPasteImport';

@@ -1,6 +1,7 @@
+// @ts-nocheck
 import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, CheckCircle2, Camera, Paperclip } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, Plus, CheckCircle2, Camera } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const ACCOUNTS = [

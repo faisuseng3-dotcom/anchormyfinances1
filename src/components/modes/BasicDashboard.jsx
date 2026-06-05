@@ -1,8 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
+import { AlertCircle, CheckCircle } from 'lucide-react';
 import QuickStats from '@/components/dashboard/QuickStats';
-import HealthScore from '@/components/dashboard/HealthScore';
 
 const formatNumber = (value) => {
   return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';

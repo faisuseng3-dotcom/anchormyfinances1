@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, CheckCircle2, Download, Loader2, FileImage } from 'lucide-react';

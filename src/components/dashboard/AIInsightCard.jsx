@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, AlertCircle, CheckCircle, AlertTriangle } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 
 const typeConfig = {
   success: {

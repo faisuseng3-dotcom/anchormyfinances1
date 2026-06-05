@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { BarChart2, Scale, Receipt, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react';
+import { BarChart2, Scale, Receipt, ChevronDown, ChevronUp } from 'lucide-react';
 
 // BAS account class helpers
 const accountClass = (code) => {

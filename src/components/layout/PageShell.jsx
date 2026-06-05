@@ -4,6 +4,16 @@ import { ArrowLeft } from 'lucide-react';
 import { anchorIconButtonClass, anchorPageClass } from '@/lib/anchorTheme';
 import { techPageBackHeader, techPageTitle, dashLabel, techInset, techInsetBg } from '@/lib/appSurface';
 
+/**
+ * @param {Object} props
+ * @param {string} props.title
+ * @param {string} [props.subtitle]
+ * @param {string} [props.backHref]
+ * @param {() => void} [props.onBack]
+ * @param {React.ReactNode} [props.action]
+ * @param {React.ReactNode} props.children
+ * @param {string} [props.className]
+ */
 export default function PageShell({
   title,
   subtitle,

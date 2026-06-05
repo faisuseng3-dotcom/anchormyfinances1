@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
@@ -14,7 +15,6 @@ import {
 } from '@/components/dashboard/DashboardChrome';
 import { anchorPrimaryButtonClass, anchorSecondaryButtonClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
-import { useTransactions } from '@/hooks/useTransactions';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 

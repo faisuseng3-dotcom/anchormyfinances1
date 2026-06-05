@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { Star, Flame, Target, Shield, Trophy } from 'lucide-react';
+import { Star, Flame, Target, Shield } from 'lucide-react';
 
 const BADGE_CONFIGS = {
   first_thousand: {

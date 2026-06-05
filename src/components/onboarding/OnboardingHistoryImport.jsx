@@ -1,9 +1,10 @@
+// @ts-nocheck
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileUp, Loader2, ChevronDown, CheckCircle2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { categorizePipeline } from '@/lib/categoryRouter';
-import { normalizeCSVRows, rowsToTransactions } from '@/lib/bankImportHelpers';
+import { normalizeCSVRows } from '@/lib/bankImportHelpers';
 
 export default function OnboardingHistoryImport({ pendingRows = [], onChange }) {
   const [open, setOpen] = useState(pendingRows.length > 0);

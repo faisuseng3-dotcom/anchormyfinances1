@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, X, Lock, AlertTriangle } from 'lucide-react';
+import { User, X, Lock } from 'lucide-react';
 import { toggleAlexMode } from '@/lib/alexMode';
 
 /**

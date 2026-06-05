@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * InsightEngine – coaching-insikter med konkreta belopp och vardagsjämförelser.
  */

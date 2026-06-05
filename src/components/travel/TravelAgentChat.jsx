@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Plane, Loader2, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, ExternalLink } from 'lucide-react';

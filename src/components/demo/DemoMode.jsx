@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ALEX_PROFILE, ALEX_TRANSACTIONS } from '@/lib/alexDemoData';
 import { isAlexMode, toggleAlexMode, registerAlexModeShortcut } from '@/lib/alexMode';
 import { queryClientInstance } from '@/lib/query-client';

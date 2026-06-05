@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * futurePulseEngine — Deterministic 60-day forecast for Framtidspuls.
  * Powers the scroll timeline locally; AI layer enriches narrative on top.

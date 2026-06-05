@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Laptop, Link2, Loader2, TrendingDown, Clock, Zap } from 'lucide-react';

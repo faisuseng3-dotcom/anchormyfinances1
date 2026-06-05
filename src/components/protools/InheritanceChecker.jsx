@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FileText, CheckCircle, XCircle } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 
 const checklist = [
   { id: 'testament', label: 'Testament upprättat', critical: true },

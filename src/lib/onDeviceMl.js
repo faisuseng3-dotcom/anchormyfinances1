@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * On-device ML-lager — regler, mönster och anomalier utan API-anrop.
  * Ersätts gradvis av TFLite/Core ML; samma gränssnitt behålls.

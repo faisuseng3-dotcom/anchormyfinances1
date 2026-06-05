@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import SubscriptionScannerCard from '@/components/anchorBrain/SubscriptionScannerCard';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';

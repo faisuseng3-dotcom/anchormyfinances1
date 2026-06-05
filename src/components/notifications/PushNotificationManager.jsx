@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Bell, BellOff, Check } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;

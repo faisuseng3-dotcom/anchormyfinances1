@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, FileText, Zap, CheckCircle2, ScanLine } from 'lucide-react';
+import { X, Upload, Zap, CheckCircle2, ScanLine } from 'lucide-react';
 
 const STEPS = [
   { text: 'Läser av 142 transaktioner...', duration: 900 },

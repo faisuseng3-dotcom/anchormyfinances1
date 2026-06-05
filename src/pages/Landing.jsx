@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { Link } from 'react-router-dom';
-import { Lock, BarChart2, Smartphone, ChevronRight, Shield, User, Briefcase, Building2, ArrowRight } from 'lucide-react';
+import { Lock, BarChart2, Smartphone, Shield, User, Building2, ArrowRight } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { getDashboardPath, getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';

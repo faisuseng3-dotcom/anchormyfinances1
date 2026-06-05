@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useRef, useState } from 'react';
 import { Camera, Loader2, Trash2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

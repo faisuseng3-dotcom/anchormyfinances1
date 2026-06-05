@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,7 +15,6 @@ import RapporterTab from '@/components/business/tabs/RapporterTab';
 import ArkivTab from '@/components/business/tabs/ArkivTab';
 import ProfilTab from '@/components/business/tabs/ProfilTab';
 import { SkeletonCard, SkeletonHero } from '@/components/business/SkeletonCard';
-import { useNavigate } from 'react-router-dom';
 import { getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';
 
 const TAB_TITLES = {

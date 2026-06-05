@@ -1,7 +1,5 @@
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp, LineChart, BookOpen } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';

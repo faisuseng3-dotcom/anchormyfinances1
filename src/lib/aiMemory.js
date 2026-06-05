@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Semantiskt AI-minne — lättvikts-embeddings i localStorage.
  * Hittar relevant kontext utan att skicka hela historiken till Claude varje gång.

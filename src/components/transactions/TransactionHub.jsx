@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { X, Plus, ArrowLeftRight, History, Check, PiggyBank, TrendingUp, Zap } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Plus, ArrowLeftRight, History, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
-import { Button } from '@/components/ui/button';
 import TheSwipe from './TheSwipe';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');

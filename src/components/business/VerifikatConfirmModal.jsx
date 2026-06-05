@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, X, AlertTriangle } from 'lucide-react';

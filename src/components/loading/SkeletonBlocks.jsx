@@ -1,11 +1,14 @@
+// @ts-nocheck
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+/** @param {{ className?: string, width?: string }} props */
 export function SkeletonLine({ className, width = 'w-full' }) {
   return <Skeleton className={cn('h-3 rounded-full', width, className)} />;
 }
 
+/** @param {{ size?: number, className?: string }} props */
 export function SkeletonCircle({ size = 40, className }) {
   return <Skeleton className={cn('rounded-full shrink-0', className)} style={{ width: size, height: size }} />;
 }

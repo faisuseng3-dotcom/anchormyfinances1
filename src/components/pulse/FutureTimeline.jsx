@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, AlertCircle, TrendingDown } from 'lucide-react';
+import { Calendar, AlertCircle } from 'lucide-react';
 import { buildUpcomingExpenses, getUpcomingDates, calculateRunningBalance } from '@/components/pulse/pulseEngine';
 
 export default function FutureTimeline({ profile }) {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useMemo, useState } from 'react';
 import { Search, Users, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';

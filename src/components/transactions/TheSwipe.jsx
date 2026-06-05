@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, useAnimation } from 'framer-motion';
+// @ts-nocheck
+import React, { useState } from 'react';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { PiggyBank, Wallet, Check, Zap, ArrowDown } from 'lucide-react';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');

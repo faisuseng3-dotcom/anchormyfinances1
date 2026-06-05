@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { X, CheckCircle2, Copy, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 

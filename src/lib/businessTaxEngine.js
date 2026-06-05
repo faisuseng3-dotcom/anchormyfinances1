@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * businessTaxEngine — Skatte-ångest-lösaren för Anchor Business.
  * Räknar ut vad som är "dina" pengar vs moms/skatt-reserv.

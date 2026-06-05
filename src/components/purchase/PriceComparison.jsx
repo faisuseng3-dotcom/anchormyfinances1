@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, TrendingDown, TrendingUp, Store, Package, Truck, Bell, BellOff, Scale } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { X, ExternalLink, TrendingDown, Store, Truck, Bell, BellOff, Scale } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
