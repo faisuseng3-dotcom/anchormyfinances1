@@ -10,14 +10,6 @@
       "type": "string",
       "description": "Unikt Anchor-anv\u00e4ndarnamn (t.ex. @alice)"
     },
-    "display_name": {
-      "type": "string",
-      "description": "Visningsnamn i J\u00e4mf\u00f6r"
-    },
-    "city": {
-      "type": "string",
-      "description": "Stad f\u00f6r filtrering"
-    },
     "bio": {
       "type": "string",
       "description": "Kort bio/status"
@@ -36,6 +28,30 @@
         "type": "string"
       },
       "description": "Intressen"
+    },
+    "avatar_style": {
+      "type": "object",
+      "description": "Avatar-utseende",
+      "properties": {
+        "skin": {
+          "type": "string"
+        },
+        "hair": {
+          "type": "string"
+        },
+        "hairColor": {
+          "type": "string"
+        },
+        "top": {
+          "type": "string"
+        },
+        "topColor": {
+          "type": "string"
+        },
+        "bg": {
+          "type": "string"
+        }
+      }
     },
     "privacy_level": {
       "type": "string",
@@ -67,37 +83,6 @@
         "type": "string"
       },
       "description": "Squads anv\u00e4ndaren \u00e4r med i"
-    },
-    "economy_published": {
-      "type": "boolean",
-      "default": false,
-      "description": "Om ekonomin visas i J\u00e4mf\u00f6r"
-    },
-    "economy_snapshot": {
-      "type": "object",
-      "description": "Publicerad budget\u00f6gonblicksbild (procent, ev. kronor)",
-      "properties": {
-        "income": { "type": "number" },
-        "savings_rate": { "type": "number" },
-        "updated_at": { "type": "string" },
-        "budget_template": {
-          "type": "object",
-          "additionalProperties": { "type": "number" }
-        },
-        "items": {
-          "type": "array",
-          "items": { "type": "object" }
-        }
-      }
-    },
-    "galaxy_tags": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Taggar f\u00f6r filtrering i J\u00e4mf\u00f6r"
-    },
-    "profile_photo_url": {
-      "type": "string",
-      "description": "Uppladdad profilbild (URL)"
     }
   },
   "required": [

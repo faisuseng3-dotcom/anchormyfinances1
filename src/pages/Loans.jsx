@@ -100,7 +100,7 @@ Kort svar svenska, max 3 meningar.`,
             ]}
           />
 
-          <ContextualLessonLink profile={profile} transactions={transactions} className="block mb-6" />
+          <ContextualLessonLink profile={profile} transactions={[]} className="block mb-6" />
 
           <DashboardSection nested title="Räntekostnad">
             {totalInterestMonthly > 0 ? (

@@ -1,0 +1,31 @@
+{
+  "name": "UserPoints",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens e-post"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens namn"
+    },
+    "weekly_points": {
+      "type": "integer",
+      "default": 0,
+      "description": "Veckans po\u00e4ng (nollst\u00e4lls varje m\u00e5ndag)"
+    },
+    "total_points": {
+      "type": "integer",
+      "default": 0,
+      "description": "Totalpo\u00e4ng genom alla tider"
+    }
+  },
+  "required": [
+    "user_id"
+  ]
+}

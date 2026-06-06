@@ -33,16 +33,6 @@
       "type": "string",
       "description": "Anv\u00e4ndarens h\u00f6gsta prioritet bland valda m\u00e5l \u2013 AI:ns huvudfokus"
     },
-    "topConcern": {
-      "type": "string",
-      "enum": [
-        "spending",
-        "debt",
-        "save",
-        "plan"
-      ],
-      "description": "St\u00f6rsta ekonomiska stressorn fr\u00e5n onboarding-quiz"
-    },
     "income": {
       "type": "number",
       "description": "M\u00e5natlig nettoinkomst"
@@ -155,42 +145,6 @@
         }
       }
     },
-    "plannedEvents": {
-      "type": "array",
-      "description": "Planerade h\u00e4ndelser i ekonomikalendern (datum, titel, belopp)",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "title": {
-            "type": "string"
-          },
-          "amount": {
-            "type": "number"
-          },
-          "category": {
-            "type": "string",
-            "enum": [
-              "social",
-              "food",
-              "travel",
-              "gift",
-              "health",
-              "other"
-            ]
-          },
-          "note": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "plannedPurchases": {
       "type": "array",
       "description": "Planerade k\u00f6p i bevakningslistan",
@@ -262,44 +216,6 @@
     "onboardingCompleted": {
       "type": "boolean",
       "description": "Om onboarding \u00e4r slutf\u00f6rd"
-    },
-    "city": {
-      "type": "string",
-      "description": "Stad f\u00f6r empatisk kontext (t.ex. Stockholm)"
-    },
-    "sessionMood": {
-      "type": "string",
-      "enum": ["calm", "stressed", "motivated"],
-      "description": "Dagens ekonomiska hum\u00f6r"
-    },
-    "sessionMoodDate": {
-      "type": "string",
-      "format": "date",
-      "description": "Datum f\u00f6r senaste hum\u00f6r-incheckning"
-    },
-    "toneMode": {
-      "type": "string",
-      "enum": ["soft", "normal", "coach"],
-      "description": "AI- och UI-ton f\u00f6r sessionen"
-    },
-    "communicationStyle": {
-      "type": "string",
-      "enum": ["reassuring", "balanced", "direct"],
-      "description": "Kommunikationsstil fr\u00e5n onboarding (beteende, inte k\u00f6n)"
-    },
-    "academyCompleted": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Klara Anchor Academy-lektioner"
-    },
-    "foundationsCompleted": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Godkända Anchor Foundations-moduler (t.ex. school_gap)"
-    },
-    "lastAcademyLessonId": {
-      "type": "string",
-      "description": "Senast visade lektion"
     },
     "dailyLoginStreak": {
       "type": "integer",

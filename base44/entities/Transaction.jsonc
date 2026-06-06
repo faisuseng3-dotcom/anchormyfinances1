@@ -9,7 +9,7 @@
         "BUSINESS"
       ],
       "default": "PERSONAL",
-      "description": "Dataisolering: PERSONAL = privat ekonomi, BUSINESS = f\u00f6retagsbokf\u00f6ring. F\u00e5r aldrig blandas."
+      "description": "Datakontextisolering: PERSONAL eller BUSINESS. Transaktioner f\u00e5r aldrig blandas mellan kontexterna."
     },
     "type": {
       "type": "string",
@@ -78,6 +78,7 @@
   "required": [
     "type",
     "amount",
-    "label"
+    "label",
+    "context"
   ]
 }

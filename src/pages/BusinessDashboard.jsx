@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Building2, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
 import BusinessTabBar from '@/components/business/BusinessTabBar';
@@ -34,6 +35,7 @@ export default function BusinessDashboard() {
   const [showScanner, setShowScanner] = useState(false);
   const [showManual, setShowManual] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [isReset, setIsReset] = useState(() => localStorage.getItem('anchor_biz_reset') === 'true');
   const [unprocessedCount, setUnprocessedCount] = useState(0);
@@ -48,7 +50,7 @@ export default function BusinessDashboard() {
     }
     const t = setTimeout(() => setLoading(false), 600);
     return () => clearTimeout(t);
-  }, [navigate]);
+  }, []);
 
   // Listen for reset events (both same-tab custom event and cross-tab storage event)
   useEffect(() => {

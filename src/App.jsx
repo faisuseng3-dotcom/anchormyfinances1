@@ -25,6 +25,7 @@ import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
 import Pricing from './pages/Pricing';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 
@@ -75,7 +76,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/Login" element={<Login />} />
       <Route path="/SignIn" element={<Login />} />
-      <Route path="/" element={<HomeEntry />} />
+      <Route path="/" element={<LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper>} />
       {Object.entries(Pages).filter(([path]) => path !== 'Login').map(([path, Page]) => {
         const element = NO_LAYOUT_PAGES.has(path)
           ? <Page />

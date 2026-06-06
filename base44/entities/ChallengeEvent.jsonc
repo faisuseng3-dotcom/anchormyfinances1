@@ -1,0 +1,44 @@
+{
+  "name": "ChallengeEvent",
+  "type": "object",
+  "properties": {
+    "user_id": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Anv\u00e4ndarens e-post"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "onboarding_complete",
+        "pulse_open",
+        "expense_register",
+        "expense_categorize",
+        "hero_card_click",
+        "ai_coach_question",
+        "resell_scanner",
+        "whatif_simulation",
+        "savings_goal_setup"
+      ],
+      "description": "Typ av po\u00e4nggivande h\u00e4ndelse"
+    },
+    "points": {
+      "type": "integer",
+      "description": "Po\u00e4ng som tj\u00e4nades"
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Datum f\u00f6r h\u00e4ndelsen (YYYY-MM-DD)"
+    }
+  },
+  "required": [
+    "user_id",
+    "event_type",
+    "points",
+    "date"
+  ]
+}

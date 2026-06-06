@@ -1,0 +1,40 @@
+{
+  "name": "SavingsDeposit",
+  "type": "object",
+  "properties": {
+    "goalName": {
+      "type": "string",
+      "description": "Namn p\u00e5 sparm\u00e5let ins\u00e4ttningen tillh\u00f6r"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Insatt belopp i kr"
+    },
+    "source": {
+      "type": "string",
+      "description": "K\u00e4lla f\u00f6r ins\u00e4ttningen (t.ex. Manuell, Tr\u00e4ningstrigger)"
+    },
+    "note": {
+      "type": "string",
+      "description": "Valfri anteckning"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false,
+      "description": "Har anv\u00e4ndaren bekr\u00e4ftat att pengarna f\u00f6rts \u00f6ver i riktig bank?"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "savings",
+        "buffer"
+      ],
+      "default": "savings",
+      "description": "Tillh\u00f6r sparm\u00e5l eller buffert"
+    }
+  },
+  "required": [
+    "amount",
+    "type"
+  ]
+}

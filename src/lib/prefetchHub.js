@@ -21,6 +21,7 @@ export const PREFETCH_ROUTE_IMPORTS = {
 };
 
 let hubPrefetchForProfileId = null;
+let hubPrefetchStarted = false;
 
 function scheduleIdle(task, { timeout = 2800 } = {}) {
   if (typeof window === 'undefined') return;
