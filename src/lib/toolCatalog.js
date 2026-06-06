@@ -9,11 +9,16 @@ import {
 } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { planeraTabHref } from '@/lib/planeraTabs';
+import { historyTabHref } from '@/lib/historyTabs';
 
 export function toolPageHref(item) {
   if (item.href) return item.href;
+  if (item.page === 'TransactionHistory' && item.tab) {
+    return historyTabHref(item.tab);
+  }
   if (item.tab) return planeraTabHref(item.tab);
-  return createPageUrl(item.page);
+  const base = createPageUrl(item.page);
+  return item.anchorHash ? `${base}#${item.anchorHash}` : base;
 }
 
 /** Snabbkalkylator på Hem (4 kärnval). */

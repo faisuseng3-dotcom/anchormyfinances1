@@ -4,7 +4,9 @@ import { queryClientInstance } from '@/lib/query-client'
 import NavigationTracker from '@/lib/NavigationTracker'
 import PageSeo from '@/components/PageSeo'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
+import { isGuestMode } from '@/components/guestStorage';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import Landing from './pages/Landing';
@@ -73,11 +75,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/Login" element={<Login />} />
       <Route path="/SignIn" element={<Login />} />
-      <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
-      } />
+      <Route path="/" element={<HomeEntry />} />
       {Object.entries(Pages).filter(([path]) => path !== 'Login').map(([path, Page]) => {
         const element = NO_LAYOUT_PAGES.has(path)
           ? <Page />

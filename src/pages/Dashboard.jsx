@@ -16,7 +16,6 @@ import TransactionHub from '@/components/transactions/TransactionHub';
 import BadgeUnlock from '@/components/gamification/BadgeUnlock';
 import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
 import { useGamification, checkAndUnlockBadges } from '@/hooks/useGamification';
-import { getTotalFixedCosts } from '@/lib/financialUtils';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexModeHUD from '@/components/demo/AlexModeHUD';
@@ -36,8 +35,6 @@ export default function Dashboard() {
   const [showWelcome, setShowWelcome] = useState(false);
   const [unlockedBadge, setUnlockedBadge] = useState(null);
   const [showBadgeUnlock, setShowBadgeUnlock] = useState(false);
-  const [insights, setInsights] = useState([]);
-
   useGamification(profile ?? null);
 
   useEffect(() => {
@@ -93,22 +90,12 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    if (!profile) return;
-    const totalFixedCosts = getTotalFixedCosts(profile);
-    const margin = profile.income - totalFixedCosts;
-    const newInsights = [];
-    if (margin < profile.income * 0.1) {
-      newInsights.push({ type: 'warning', title: 'Liten marginal', description: 'Din marginal är under 10% av inkomsten.', impact: `${Math.round(margin / profile.income * 100)}% marginal`, action: 'Se kostnadsförslag' });
-    }
-    const monthsOfBuffer = profile.buffer / totalFixedCosts;
-    if (monthsOfBuffer < 3) {
-      newInsights.push({ type: monthsOfBuffer < 1 ? 'danger' : 'warning', title: 'Bufferten är låg', description: `Räcker ${monthsOfBuffer.toFixed(1)} månader.`, impact: 'Rekommenderat: 3+ månader', action: 'Skapa sparplan' });
-    }
-    if (newInsights.length === 0) {
-      newInsights.push({ type: 'success', title: 'Bra koll!', description: 'Din ekonomi ser stabil ut.', impact: 'Inga varningar' });
-    }
-    setInsights(newInsights);
-  }, [profile]);
+    if (location.hash !== '#passivity') return;
+    const t = window.setTimeout(() => {
+      document.getElementById('passivity')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [location.hash]);
 
   if (!isLoadingAuth && !isAuthenticated && !isGuestMode()) return <Landing />;
 
@@ -138,7 +125,6 @@ export default function Dashboard() {
         transactions={txs}
         updateProfile={updateProfile}
         user={isAlex ? { full_name: 'Alex Lindqvist' } : undefined}
-        onOpenExpense={() => window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'))}
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
         onFocusAction={(action) => {

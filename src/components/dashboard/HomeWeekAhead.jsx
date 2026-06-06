@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { getUpcomingPreview } from '@/lib/planCalendarEngine';
 import { mergePlannedEvents } from '@/lib/plannedEventsStorage';
+import { getNextWeekFixedExpenses } from '@/lib/proactiveAlerts';
 import { dashLabel, dashTimelineDot } from '@/lib/dashboardTheme';
 
 export default function HomeWeekAhead({ profile }) {
-  if (!profile?.income) return null;
+  const weekAlert = useMemo(() => getNextWeekFixedExpenses(profile, 7), [profile]);
 
-  const enriched = { ...profile, plannedEvents: mergePlannedEvents(profile) };
-  const upcoming = getUpcomingPreview(enriched, 5);
-  if (!upcoming.length) return null;
+  const upcoming = useMemo(() => {
+    if (!profile?.income) return [];
+    const enriched = { ...profile, plannedEvents: mergePlannedEvents(profile) };
+    return getUpcomingPreview(enriched, 5);
+  }, [profile]);
+
+  const showAlert = weekAlert && weekAlert.count >= 2;
+  if (!upcoming.length && !showAlert) return null;
 
   return (
     <section>
@@ -29,6 +35,24 @@ export default function HomeWeekAhead({ profile }) {
       <div className="relative pl-4">
         <div className="absolute left-[3px] top-2 bottom-2 w-px bg-gradient-to-b from-cyan-400/40 via-white/10 to-transparent" />
         <ul className="space-y-4">
+          {showAlert && (
+            <li className="flex items-start gap-3 relative">
+              <span
+                className={`${dashTimelineDot} absolute -left-4 top-2`}
+                style={{
+                  background: weekAlert.urgency === 'high' ? '#fbbf24' : '#5eead4',
+                }}
+              />
+              <span className="text-[12px] text-white/38 w-12 flex-shrink-0 tabular-nums">Vecka</span>
+              <p className="text-[14px] text-white/75 leading-relaxed font-light min-w-0 flex-1">
+                {weekAlert.inAppLine} Ha{' '}
+                <span className="text-white/90 tabular-nums font-medium">
+                  {weekAlert.totalKr.toLocaleString('sv-SE')} kr
+                </span>
+                {' '}på kontot.
+              </p>
+            </li>
+          )}
           {upcoming.map((ev, i) => (
             <li key={`${ev.id}-${i}`} className="flex items-center gap-3 relative">
               <span

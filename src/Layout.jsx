@@ -58,7 +58,7 @@ export default function Layout({ children, currentPageName }) {
     if (!hideNav && isBusiness && currentPageName === 'Dashboard') {
       navigate('/BusinessDashboard', { replace: true });
     } else if (!hideNav && !isBusiness && currentPageName === 'BusinessDashboard') {
-      navigate('/', { replace: true });
+      navigate(createPageUrl('Dashboard'), { replace: true });
     }
   }, [isBusiness]);
 

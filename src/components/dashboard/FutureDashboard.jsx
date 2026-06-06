@@ -11,8 +11,6 @@ import DashboardActionDock from './DashboardActionDock';
 import DashboardInsightRail from './DashboardInsightRail';
 import AnchorBrainSection from '@/components/anchorBrain/AnchorBrainSection';
 import EconomicHealthCard from './EconomicHealthCard';
-import MicroWinsStrip from './MicroWinsStrip';
-import ProactiveWeekBanner from './ProactiveWeekBanner';
 import HomeFocusBanner from './HomeFocusBanner';
 import HomeTodaySection from './HomeTodaySection';
 import HomeWeekAhead from './HomeWeekAhead';
@@ -31,7 +29,6 @@ export default function FutureDashboard({
   profile,
   transactions,
   updateProfile,
-  onOpenExpense,
   onOpenMagicEntry,
   onOpenTransactionHub,
   onFocusAction,
@@ -117,18 +114,14 @@ export default function FutureDashboard({
           onLessonComplete={updateProfile}
         />
 
-        <div className={dashZone}>
-          <ProactiveWeekBanner profile={profile} />
-        </div>
-
-        <div className={dashZone}>
-          <MicroWinsStrip profile={profile} transactions={transactions} />
-        </div>
-
         <HomeFocusBanner profile={profile} onAction={onFocusAction} variant="chip" />
 
         <div className={`${dashZone} space-y-7`}>
-          <HomeTodaySection toneMode={profile?.toneMode} />
+          <HomeTodaySection
+            toneMode={profile?.toneMode}
+            profile={profile}
+            transactions={transactions}
+          />
           <HomeWeekAhead profile={profile} />
         </div>
 
@@ -136,7 +129,6 @@ export default function FutureDashboard({
           <DashboardActionDock
             onMagicEntry={handleMagicEntry}
             onOpenCalculator={() => setKalkylatornOpen(true)}
-            onOpenExpense={openQuickExpense}
           />
         </div>
 
@@ -145,7 +137,6 @@ export default function FutureDashboard({
         <DashboardMorePanel
           profile={profile}
           transactions={transactions}
-          onOpenExpense={onOpenExpense}
         />
       </div>
 
@@ -203,9 +194,9 @@ export default function FutureDashboard({
                 <p className="text-[13px] text-white/40 mb-4">Snabbval</p>
                 <div className="space-y-1">
                   {[
-                    { label: 'Registrera utgift', icon: Zap, action: () => { setDrawerOpen(false); openQuickExpense(); } },
                     { label: 'Spara pengar', icon: PiggyBank, action: () => { setDrawerOpen(false); onOpenTransactionHub(); } },
                     { label: 'Historik', icon: TrendingUp, href: createPageUrl('TransactionHistory') },
+                    { label: 'Snabb inmatning', icon: Zap, action: () => { setDrawerOpen(false); handleMagicEntry(); } },
                   ].map((item) => {
                     const Ic = item.icon;
                     const inner = (

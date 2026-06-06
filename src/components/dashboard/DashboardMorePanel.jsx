@@ -14,8 +14,17 @@ import WeeklySummary from './WeeklySummary';
 import SignalStrip from './SignalStrip';
 import PassivityCalculator from '@/components/anchorBrain/PassivityCalculator';
 
-export default function DashboardMorePanel({ profile, transactions, onOpenExpense }) {
+export default function DashboardMorePanel({ profile, transactions }) {
   const [open, setOpen] = useState(false);
+
+  React.useEffect(() => {
+    if (window.location.hash !== '#passivity') return;
+    setOpen(true);
+    const t = window.setTimeout(() => {
+      document.getElementById('passivity')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+    return () => window.clearTimeout(t);
+  }, []);
 
   return (
     <div className={dashZone}>
@@ -37,25 +46,16 @@ export default function DashboardMorePanel({ profile, transactions, onOpenExpens
 
       {open && (
         <div className="space-y-10 pb-6 pt-2">
-          <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={onOpenExpense}
-              className="flex-1 h-11 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08]"
-            >
-              + Utgift
-            </button>
-            <Link
-              to={createPageUrl('Import')}
-              className="flex-1 h-11 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08] flex items-center justify-center no-underline"
-            >
-              Importera
-            </Link>
-          </div>
+          <Link
+            to={createPageUrl('Import')}
+            className="w-full h-11 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08] flex items-center justify-center no-underline"
+          >
+            Importera transaktioner
+          </Link>
 
           <SignalStrip profile={profile} transactions={transactions} />
 
-          <div>
+          <div id="passivity">
             <p className={`${dashLabel} mb-3`}>Framtidskostnad</p>
             <PassivityCalculator profile={profile} variant="inset" />
           </div>
