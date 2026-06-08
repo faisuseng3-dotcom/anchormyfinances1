@@ -14,17 +14,6 @@ import Loans from './pages/Loans';
 import PurchaseSimulator from './pages/PurchaseSimulator';
 import TravelPlanner from './pages/TravelPlanner';
 import SecurityInfo from './pages/SecurityInfo';
-import Pulse from './pages/Pulse';
-import WhatIf from './pages/WhatIf';
-import Insights from './pages/Insights';
-import FinancialHistory from './pages/FinancialHistory';
-import ResellScanner from './pages/ResellScanner';
-import Optimize from './pages/Optimize';
-import Expenses from './pages/Expenses';
-import AnchorAcademy from './pages/AnchorAcademy';
-import AnchorAnalysis from './pages/AnchorAnalysis';
-import Squads from './pages/Squads';
-import SavingsGoals from './pages/SavingsGoals';
 import __Layout from './Layout.jsx';
 
 export { PAGE_SEO, GLOBAL_PAGE_META, pageSeoFor, sanitizePageTitle } from './lib/pageSeo';
@@ -43,17 +32,6 @@ export const PAGES = {
   PurchaseSimulator,
   TravelPlanner,
   SecurityInfo,
-  Pulse,
-  WhatIf,
-  Insights,
-  FinancialHistory,
-  ResellScanner,
-  Optimize,
-  Expenses,
-  AnchorAcademy,
-  AnchorAnalysis,
-  Squads,
-  SavingsGoals,
 };
 
 export const pagesConfig = {

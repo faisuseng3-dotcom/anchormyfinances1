@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ChevronRight, X } from 'lucide-react';
+import { Wrench, X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
-import { KALKYLATOR_TOOLS, sortTools, toolPageHref } from '@/lib/toolCatalog';
 import {
   anchorIconButtonClass,
   anchorInputClass,
@@ -11,7 +9,7 @@ import {
 } from '@/lib/anchorTheme';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
-import { DashboardDivider, DashboardListRow } from './DashboardChrome';
+import { DashboardListRow } from './DashboardChrome';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -27,10 +25,6 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
   const [quickAmount, setQuickAmount] = useState('');
 
   const safeToSpend = useMemo(() => getSafeToSpend(profile), [profile]);
-  const calcItems = useMemo(
-    () => sortTools(KALKYLATOR_TOOLS, profile?.topConcern),
-    [profile?.topConcern],
-  );
 
   const quickInsight = useMemo(() => {
     const amount = parseFloat(String(quickAmount).replace(/\s/g, '').replace(',', '.'));
@@ -54,9 +48,9 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
     <AnchorSheet
       isOpen={isOpen}
       onClose={handleClose}
-      title="Kalkylator"
-      subtitle="Vad vill du räkna på?"
-      maxHeight="min(78dvh, 640px)"
+      title="Snabbräkning"
+      subtitle="Kolla om ett belopp ryms i marginalen"
+      maxHeight="min(56dvh, 420px)"
       headerRight={
         <AnchorPressable onClick={handleClose} className={anchorIconButtonClass} aria-label="Stäng">
           <X className="w-4 h-4" />
@@ -74,12 +68,12 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
 
       {profile && (
         <>
-          <p className={sectionMetaClass}>Snabbräkning</p>
+          <p className={sectionMetaClass}>Vad kostar det?</p>
           <div className="flex gap-2 mt-2">
             <input
               type="text"
               inputMode="decimal"
-              placeholder="Vad kostar det?"
+              placeholder="Belopp i kronor"
               value={quickAmount}
               onChange={(e) => setQuickAmount(e.target.value)}
               className={`${anchorInputClass} flex-1`}
@@ -89,39 +83,22 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
           {quickInsight && (
             <p className="anchor-type-body-sm mt-3">{quickInsight}</p>
           )}
-          <DashboardDivider className="my-5" />
         </>
       )}
 
-      {calcItems.map((item, i) => {
-        const Icon = item.icon;
-        return (
-          <React.Fragment key={item.id}>
-            {i > 0 && <DashboardDivider />}
-            <DashboardListRow
-              href={toolPageHref(item)}
-              onClick={handleClose}
-              leading={
-                <div className="w-11 h-11 rounded-[var(--anchor-radius-md)] bg-[var(--color-accent)]/12 ring-1 ring-[var(--color-accent)]/20 flex items-center justify-center">
-                  <Icon className="w-5 h-5 text-[var(--color-accent)]" />
-                </div>
-              }
-              title={item.question}
-              subtitle={item.hint}
-            />
-          </React.Fragment>
-        );
-      })}
-
-      <DashboardDivider className="my-4" />
-      <Link
-        to={createPageUrl('ProTools')}
-        onClick={handleClose}
-        className="flex items-center justify-center gap-1 py-3 text-[14px] font-medium text-white/45 hover:text-white/70 no-underline anchor-pressable"
-      >
-        Fler verktyg
-        <ChevronRight className="w-4 h-4" />
-      </Link>
+      <div className="mt-6">
+        <DashboardListRow
+          href={createPageUrl('ProTools')}
+          onClick={handleClose}
+          leading={
+            <div className="w-11 h-11 rounded-[var(--anchor-radius-md)] bg-[var(--color-accent)]/12 ring-1 ring-[var(--color-accent)]/20 flex items-center justify-center">
+              <Wrench className="w-5 h-5 text-[var(--color-accent)]" />
+            </div>
+          }
+          title="Alla verktyg"
+          subtitle="Köp, lån, budget, resa och simuleringar"
+        />
+      </div>
     </AnchorSheet>
   );
 }

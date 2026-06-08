@@ -1,7 +1,7 @@
 /**
  * App-IA: 6 kärnvyer + dolda djupvyer. Legacy-routes redirectas hit.
  */
-import { Home, CalendarDays, ClipboardList, Wrench, Settings, Users, GitBranch, Landmark, ShoppingBag, PieChart, Plane, Shield, FileUp, PiggyBank } from 'lucide-react';
+import { Home, CalendarDays, ClipboardList, Wrench, Settings, Users, GitBranch, Landmark, ShoppingBag, PieChart, Plane, Shield, FileUp } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { historyTabHref } from '@/lib/historyTabs';
 import { planeraTabHref } from '@/lib/planeraTabs';
@@ -25,7 +25,6 @@ export const DEEP_VIEWS = [
   { page: 'Social', label: 'Vänner & profil', hub: 'Inställningar', icon: Users },
   { page: 'Import', label: 'Importera data', hub: 'Hem', icon: FileUp },
   { page: 'SecurityInfo', label: 'Säkerhet & data', hub: 'Inställningar', icon: Shield },
-  { page: 'SavingsGoals', label: 'Sparmål', hub: 'Hem', icon: PiggyBank, legacy: true },
 ];
 
 /** Gamla bokmärken → rätt kärn- eller djupvy. */

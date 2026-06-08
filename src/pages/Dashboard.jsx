@@ -91,11 +91,8 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (location.hash !== '#passivity') return;
-    const t = window.setTimeout(() => {
-      document.getElementById('passivity')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 400);
-    return () => window.clearTimeout(t);
-  }, [location.hash]);
+    navigate(`${createPageUrl('ProTools')}?deep=ai_guru`, { replace: true });
+  }, [location.hash, navigate]);
 
   if (!isLoadingAuth && !isAuthenticated && !isGuestMode()) return <Landing />;
 

@@ -211,14 +211,22 @@ export const PAGE_SEO = {
 const PATH_ALIASES = {
   budgetdashboard: 'Budget',
   importpage: 'Import',
-  insightspage: 'Insights',
   futurepulsepage: 'FuturePulse',
   pulse: 'FuturePulse',
   whatif: 'FuturePulse',
   jamfor: 'Galaxy',
   compare: 'Galaxy',
+  insights: 'TransactionHistory',
+  insightspage: 'TransactionHistory',
+  anchoranalysis: 'TransactionHistory',
   financialhistory: 'TransactionHistory',
   ledgervault: 'TransactionHistory',
+  expenses: 'TransactionHistory',
+  optimize: 'ProTools',
+  resellscanner: 'Dashboard',
+  anchoracademy: 'Dashboard',
+  savingsgoals: 'Dashboard',
+  squads: 'Social',
 };
 
 /** Ta bort tekniska "Page"-suffix från titlar (t.ex. Base44-autoformat). */

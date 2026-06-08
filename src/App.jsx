@@ -17,7 +17,6 @@ import { ModeProvider } from '@/components/modes/ModeContext';
 import BusinessTheme from '@/components/business/BusinessTheme';
 import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessOnboarding from './pages/BusinessOnboarding';
-import LedgerVault from './pages/LedgerVault';
 import Import from './pages/Import';
 import BudgetDashboard from './pages/BudgetDashboard';
 import Social from './pages/Social';
@@ -25,9 +24,10 @@ import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
 import Pricing from './pages/Pricing';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
+import { LEGACY_REDIRECTS } from '@/lib/appStructure';
+
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
@@ -73,9 +73,9 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/Dashboard" replace />} />
       <Route path="/Login" element={<Login />} />
-      <Route path="/SignIn" element={<Login />} />
-      <Route path="/" element={<LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper>} />
+      <Route path="/SignIn" element={<Navigate to="/Login" replace />} />
       {Object.entries(Pages).filter(([path]) => path !== 'Login').map(([path, Page]) => {
         const element = NO_LAYOUT_PAGES.has(path)
           ? <Page />
@@ -92,6 +92,14 @@ const AuthenticatedApp = () => {
           />
         );
       })}
+      {/* Gamla bokmärken → kanonisk vy */}
+      {Object.entries(LEGACY_REDIRECTS).map(([page, to]) => (
+        <Route
+          key={`legacy-${page}`}
+          path={`/${page}`}
+          element={<Navigate to={to} replace />}
+        />
+      ))}
       {/* Djupvyer — inte i bottennav */}
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       <Route path="/TermsOfService" element={<TermsOfService />} />
@@ -102,11 +110,6 @@ const AuthenticatedApp = () => {
         </LayoutWrapper>
       } />
       <Route path="/BusinessOnboarding" element={<BusinessOnboarding />} />
-      <Route path="/LedgerVault" element={
-        <LayoutWrapper currentPageName="LedgerVault">
-          <LedgerVault />
-        </LayoutWrapper>
-      } />
       <Route path="/Import" element={<Import />} />
       <Route path="/Budget" element={
         <LayoutWrapper currentPageName="BudgetDashboard">
@@ -119,11 +122,6 @@ const AuthenticatedApp = () => {
         </LayoutWrapper>
       } />
       <Route path="/Galaxy" element={
-        <LayoutWrapper currentPageName="Galaxy">
-          <Galaxy />
-        </LayoutWrapper>
-      } />
-      <Route path="/Jamfor" element={
         <LayoutWrapper currentPageName="Galaxy">
           <Galaxy />
         </LayoutWrapper>

@@ -79,8 +79,8 @@ export const PROTOOLS_EXPLORE = [
     question: 'Vad kostar passivitet?',
     hint: 'Ränta på ränta och priset av att vänta',
     icon: AlarmClock,
-    page: 'Dashboard',
-    anchorHash: 'passivity',
+    page: 'ProTools',
+    href: `${createPageUrl('ProTools')}?deep=ai_guru`,
   },
 ];
 
