@@ -2,10 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { anchorIconButtonClass, anchorPageClass } from '@/lib/anchorTheme';
 import { dashZone, dashLabel } from '@/lib/dashboardTheme';
-import { pageEnter } from '@/lib/motionPresets';
 import { surface } from '@/lib/designTokens';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
@@ -54,9 +52,9 @@ export default function PageShell({
         </div>
         {action && <div className="shrink-0 pt-1">{action}</div>}
       </header>
-      <motion.div className={`${dashZone} space-y-8 pb-10`} {...pageEnter}>
+      <div className={`${dashZone} space-y-8 pb-10`}>
         {children}
-      </motion.div>
+      </div>
     </div>
   );
 }

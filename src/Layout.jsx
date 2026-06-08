@@ -23,6 +23,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { isEmbeddedApp } from '@/lib/embedLayout';
 import { cn } from '@/lib/utils';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import PageTransition from '@/components/ui-premium/PageTransition';
 
 /** 5 kärnflikar + FAB — Jämför och socialt ligger under Inställningar. */
 const navItems = [
@@ -103,7 +104,7 @@ export default function Layout({ children, currentPageName }) {
             : {}
         }
       >
-        {children}
+        <PageTransition>{children}</PageTransition>
       </main>
 
 
