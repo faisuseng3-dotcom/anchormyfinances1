@@ -1,12 +1,14 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { X, Check } from 'lucide-react';
+import { Check, X } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { categorizeTransaction } from '@/lib/categoryRouter';
 import CategoryOverridePrompt from './CategoryOverridePrompt';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { Skeleton } from '@/components/ui/skeleton';
+import AnchorSheet from '@/components/ui-premium/AnchorSheet';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { anchorInputClass, anchorIconButtonClass } from '@/lib/anchorTheme';
 
 const CATEGORIES = [
   { value: 'food', label: 'Mat' },
@@ -23,9 +25,11 @@ const CATEGORIES = [
 
 const PAYMENT_METHODS = ['Konto', 'Kredit', 'Klarna', 'Swish', 'Kontant'];
 
-export default function TransactionForm({ existingTx, onSuccess, onClose }) {
+export default function TransactionForm({ isOpen = true, existingTx, onSuccess, onClose }) {
   const { createTransaction, updateTransaction } = useOptimisticTransactions();
-  const [isExpense, setIsExpense] = useState(existingTx ? !['income', 'savings_withdrawal', 'transfer_to_spending'].includes(existingTx.type) : true);
+  const [isExpense, setIsExpense] = useState(
+    existingTx ? !['income', 'savings_withdrawal', 'transfer_to_spending'].includes(existingTx.type) : true,
+  );
   const [amount, setAmount] = useState(existingTx ? String(Math.abs(existingTx.amount)) : '');
   const [label, setLabel] = useState(existingTx?.label || '');
   const [vendor, setVendor] = useState(existingTx?.vendor || '');
@@ -44,9 +48,7 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
       amount: Number.isFinite(amountNum) ? (isExpense ? -Math.abs(amountNum) : Math.abs(amountNum)) : undefined,
       useLLM: true,
     });
-    if (result.category !== category) {
-      setCategory(result.category);
-    }
+    if (result.category !== category) setCategory(result.category);
     setAiConfidence(result.confidenceLabel || result.confidence);
     setCategorizing(false);
   };
@@ -72,10 +74,8 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
       paymentMethod,
       note: note || undefined,
     };
-
     onClose?.();
     onSuccess?.();
-
     if (existingTx && !String(existingTx.id).startsWith('opt-tx-')) {
       updateTransaction(existingTx.id, data);
     } else if (!existingTx) {
@@ -84,143 +84,133 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-end justify-center"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
-      onClick={onClose}
+    <AnchorSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={existingTx ? 'Redigera' : 'Ny transaktion'}
+      maxHeight="min(88dvh, 720px)"
+      headerRight={
+        <AnchorPressable onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
+          <X className="w-4 h-4" />
+        </AnchorPressable>
+      }
     >
-      <motion.div
-        initial={{ y: '100%' }}
-        animate={{ y: 0 }}
-        exit={{ y: '100%' }}
-        transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-        className="w-full max-w-md rounded-t-3xl bg-[#111827] border border-white/10 p-6 pb-10"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-bold text-white">{existingTx ? 'Redigera' : 'Ny transaktion'}</h2>
-          <button type="button" onClick={onClose} className="w-8 h-8 rounded-full bg-white/8 flex items-center justify-center">
-            <X className="w-4 h-4 text-slate-400" />
-          </button>
-        </div>
-
-        <div className="flex rounded-2xl bg-white/5 p-1 mb-5">
-          <button
+      <div className="space-y-4 -mx-1">
+        <div className="flex rounded-[var(--anchor-radius-lg)] bg-white/[0.05] p-1 ring-1 ring-white/[0.08]">
+          <AnchorPressable
             type="button"
+            minTouch={false}
             onClick={() => setIsExpense(true)}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${isExpense ? 'bg-red-500 text-white' : 'text-slate-400'}`}
+            className={`flex-1 py-2.5 min-h-11 rounded-[var(--anchor-radius-md)] text-sm font-semibold ${
+              isExpense ? 'bg-rose-400/90 text-white' : 'text-white/45'
+            }`}
           >
             − Utgift
-          </button>
-          <button
+          </AnchorPressable>
+          <AnchorPressable
             type="button"
+            minTouch={false}
             onClick={() => setIsExpense(false)}
-            className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${!isExpense ? 'bg-emerald-500 text-white' : 'text-slate-400'}`}
+            className={`flex-1 py-2.5 min-h-11 rounded-[var(--anchor-radius-md)] text-sm font-semibold ${
+              !isExpense ? 'bg-emerald-400/90 text-[#050d28]' : 'text-white/45'
+            }`}
           >
             + Inkomst
-          </button>
+          </AnchorPressable>
         </div>
 
-        <div className="space-y-3">
-          <div className="relative">
-            <input
-              type="number"
-              inputMode="decimal"
-              placeholder="0"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-2xl px-4 py-3.5 text-2xl font-bold text-center focus:outline-none"
-              style={{ background: 'rgba(255,255,255,0.06)', color: isExpense ? '#f87171' : '#34d399', border: '1px solid rgba(255,255,255,0.1)' }}
-            />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-sm">kr</span>
-          </div>
-
+        <div className="relative">
           <input
-            type="text"
-            placeholder="Butik / Plats (t.ex. Hemköp, Steam)"
-            value={vendor}
-            onChange={(e) => setVendor(e.target.value)}
-            onBlur={handleVendorBlur}
-            className="w-full rounded-2xl px-4 py-3 text-sm"
-            style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
+            type="number"
+            inputMode="decimal"
+            placeholder="0"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className={`w-full h-14 rounded-[var(--anchor-radius-lg)] text-center text-2xl font-semibold tabular-nums outline-none anchor-elev-1 ${
+              isExpense ? 'text-rose-300' : 'text-emerald-300'
+            } bg-white/[0.06] ring-1 ring-white/[0.1]`}
           />
-
-          <input
-            type="text"
-            placeholder="Beskrivning *"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            className="w-full rounded-2xl px-4 py-3 text-sm"
-            style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
-          />
-
-          <div>
-            <div className="flex items-center gap-2 mb-2 px-1">
-              <p className="text-xs text-slate-500">Kategori</p>
-              {categorizing && <Skeleton className="h-3 w-12 rounded-full" />}
-              {aiConfidence === 'high' && (
-                <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ background: 'rgba(13,115,119,0.2)', color: '#0D7377' }}>
-                  <Check className="w-2.5 h-2.5" /> Säker
-                </span>
-              )}
-              {aiConfidence === 'low' && (
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                  style={{ background: 'rgba(214,158,46,0.2)', color: '#D69E2E' }}>
-                  ? Osäker
-                </span>
-              )}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c.value}
-                  type="button"
-                  onClick={() => handleCategoryChange(c.value)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border ${
-                    category === c.value
-                      ? 'bg-indigo-500 border-indigo-400 text-white'
-                      : 'bg-white/5 border-white/10 text-slate-400'
-                  }`}
-                >
-                  {c.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <p className="text-xs text-slate-500 mb-2 px-1">Betalmetod</p>
-            <div className="flex gap-2 flex-wrap">
-              {PAYMENT_METHODS.map((m) => (
-                <button
-                  key={m}
-                  type="button"
-                  onClick={() => setPaymentMethod(m)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all ${
-                    paymentMethod === m
-                      ? 'bg-slate-600 border-slate-500 text-white'
-                      : 'bg-white/5 border-white/10 text-slate-400'
-                  }`}
-                >
-                  {m}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <input
-            type="text"
-            placeholder="Anteckning (valfri)"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            className="w-full rounded-2xl px-4 py-3 text-sm"
-            style={{ background: 'rgba(255,255,255,0.06)', color: '#f3f4f6', border: '1px solid rgba(255,255,255,0.1)' }}
-          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-white/40">kr</span>
         </div>
+
+        <input
+          type="text"
+          placeholder="Butik / plats"
+          value={vendor}
+          onChange={(e) => setVendor(e.target.value)}
+          onBlur={handleVendorBlur}
+          className={anchorInputClass}
+        />
+        <input
+          type="text"
+          placeholder="Beskrivning *"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          className={anchorInputClass}
+        />
+
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <p className="anchor-type-body-sm text-white/45">Kategori</p>
+            {categorizing && <Skeleton className="h-3 w-12 rounded-full" />}
+            {aiConfidence === 'high' && (
+              <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300">
+                <Check className="w-2.5 h-2.5" /> Säker
+              </span>
+            )}
+            {aiConfidence === 'low' && (
+              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-200">
+                ? Osäker
+              </span>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {CATEGORIES.map((c) => (
+              <AnchorPressable
+                key={c.value}
+                type="button"
+                minTouch={false}
+                onClick={() => handleCategoryChange(c.value)}
+                className={`px-3 py-2 min-h-10 rounded-full text-xs font-semibold ${
+                  category === c.value
+                    ? 'bg-[var(--color-text-primary)] text-[#050d28]'
+                    : 'bg-white/[0.06] text-white/60 ring-1 ring-white/[0.08]'
+                }`}
+              >
+                {c.label}
+              </AnchorPressable>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="anchor-type-body-sm text-white/45 mb-2">Betalmetod</p>
+          <div className="flex gap-2 flex-wrap">
+            {PAYMENT_METHODS.map((m) => (
+              <AnchorPressable
+                key={m}
+                type="button"
+                minTouch={false}
+                onClick={() => setPaymentMethod(m)}
+                className={`px-3 py-2 min-h-10 rounded-full text-xs font-semibold ${
+                  paymentMethod === m
+                    ? 'bg-white/[0.14] text-white ring-1 ring-white/20'
+                    : 'bg-white/[0.06] text-white/55 ring-1 ring-white/[0.08]'
+                }`}
+              >
+                {m}
+              </AnchorPressable>
+            ))}
+          </div>
+        </div>
+
+        <input
+          type="text"
+          placeholder="Anteckning (valfri)"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          className={anchorInputClass}
+        />
 
         {overridePrompt && (
           <CategoryOverridePrompt
@@ -231,16 +221,16 @@ export default function TransactionForm({ existingTx, onSuccess, onClose }) {
           />
         )}
 
-        <motion.button
+        <AnchorPressable
           type="button"
-          whileTap={{ scale: 0.97 }}
           onClick={handleSave}
           disabled={!amount || !label}
-          className="w-full mt-5 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-sm disabled:opacity-40 flex items-center justify-center gap-2"
+          className="w-full h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2 flex items-center justify-center gap-2"
         >
-          <Check className="w-4 h-4" /> {existingTx ? 'Spara ändringar' : 'Spara transaktion'}
-        </motion.button>
-      </motion.div>
-    </motion.div>
+          <Check className="w-4 h-4" />
+          {existingTx ? 'Spara ändringar' : 'Spara transaktion'}
+        </AnchorPressable>
+      </div>
+    </AnchorSheet>
   );
 }

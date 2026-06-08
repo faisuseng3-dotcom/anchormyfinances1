@@ -72,7 +72,7 @@ export const anchorGhostButtonClass =
   'inline-flex items-center justify-center gap-1.5 text-[15px] font-medium text-white/70 hover:text-white transition-colors';
 
 export const anchorIconButtonClass =
-  'w-10 h-10 rounded-full flex items-center justify-center bg-white/[0.08] text-white/80 hover:bg-white/[0.12] transition-colors';
+  'w-12 h-12 rounded-full flex items-center justify-center bg-white/[0.08] text-white/80 hover:bg-white/[0.12] transition-colors anchor-pressable';
 
 export const anchorInputClass =
   'flex w-full h-12 rounded-xl border-0 px-4 text-[15px] text-white bg-white/[0.08] placeholder:text-white/35 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-50';

@@ -47,8 +47,8 @@ const DEEP_MODULES = [
 
 function ToolIcon({ icon: Icon }) {
   return (
-    <div className="w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08]">
-      <Icon className="w-5 h-5 text-cyan-300/80" />
+    <div className="w-11 h-11 rounded-[var(--anchor-radius-lg)] bg-[var(--color-accent)]/10 flex items-center justify-center ring-1 ring-[var(--color-accent)]/20 anchor-elev-1">
+      <Icon className="w-5 h-5 text-[var(--color-accent)]" />
     </div>
   );
 }

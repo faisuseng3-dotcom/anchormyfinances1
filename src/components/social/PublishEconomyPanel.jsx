@@ -2,17 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Radio, Eye, EyeOff, Loader2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Radio, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react';
 import { useSocialProfile } from '@/hooks/useSocialProfile';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { isGuestMode } from '@/components/guestStorage';
 import {
-  anchorPrimaryButtonClass,
-  anchorSecondaryButtonClass,
   sectionMetaClass,
   sectionSubtitleClass,
   sectionTitleClass,
 } from '@/lib/anchorTheme';
+import { surface } from '@/lib/designTokens';
 import {
   buildEconomySnapshot,
   canPublishEconomy,
@@ -20,6 +19,8 @@ import {
   highlightFromSnapshot,
   inferGalaxyTags,
 } from '@/lib/galaxyEconomy';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { cn } from '@/lib/utils';
 
 export default function PublishEconomyPanel({ defaultCollapsed = false }) {
   const queryClient = useQueryClient();
@@ -97,22 +98,23 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
 
   if (socialLoading) {
     return (
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-6 flex justify-center">
-        <Loader2 className="w-5 h-5 animate-spin text-white/40" />
+      <div className={`${surface.card} px-4 py-6 mb-6`}>
+        <div className="h-4 w-1/3 rounded-full skeleton mb-3" />
+        <div className="h-10 rounded-[var(--anchor-radius-md)] skeleton" />
       </div>
     );
   }
 
   if (isGuest || !isPersisted) {
     return (
-      <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-4">
+      <div className={`${surface.card} px-4 py-4 mb-6`}>
         <p className={sectionTitleClass}>Dela din ekonomi</p>
         <p className={`${sectionSubtitleClass} mt-1`}>
           Skapa ett konto och fyll i inkomst och budget för att publicera din fördelning här.
         </p>
         <Link
           to={createPageUrl('CreateAccount')}
-          className={`${anchorPrimaryButtonClass} inline-flex mt-4 px-6 no-underline`}
+          className="inline-flex mt-4 h-12 px-6 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold items-center anchor-elev-2 no-underline"
         >
           Skapa konto
         </Link>
@@ -122,122 +124,147 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
 
   const snap = socialProfile?.economy_snapshot;
   const privacy = socialProfile?.privacy_level || 'hybrid';
-
   const toggleExpanded = () => setExpanded((v) => !v);
-  const HeaderTag = published ? 'button' : 'div';
 
   return (
     <div
-      className={`rounded-xl border px-4 py-4 space-y-4 mb-6 ${
-        published
-          ? 'border-emerald-500/20 bg-emerald-500/[0.06]'
-          : 'border-white/[0.08] bg-white/[0.03]'
-      }`}
+      className={cn(
+        `${surface.card} px-4 py-4 space-y-4 mb-6`,
+        published && 'ring-emerald-500/20 bg-emerald-500/[0.04]',
+      )}
     >
-      <HeaderTag
-        {...(published ? { type: 'button', onClick: toggleExpanded } : {})}
-        className={`w-full flex items-start gap-3 text-left ${published ? 'cursor-pointer' : ''}`}
-      >
-        <div
-          className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
-            published ? 'bg-emerald-500/15' : 'bg-white/[0.08]'
-          }`}
+      {published ? (
+        <AnchorPressable
+          type="button"
+          onClick={toggleExpanded}
+          minTouch={false}
+          className="w-full flex items-start gap-3 text-left"
         >
-          {published ? (
-            <Radio className="w-5 h-5 text-emerald-300" />
-          ) : (
-            <EyeOff className="w-5 h-5 text-white/45" />
-          )}
+          <HeaderContent
+            published={published}
+            socialProfile={socialProfile}
+            snap={snap}
+            expanded={expanded}
+          />
+        </AnchorPressable>
+      ) : (
+        <div className="w-full flex items-start gap-3 text-left">
+          <HeaderContent
+            published={published}
+            socialProfile={socialProfile}
+            snap={snap}
+            expanded={expanded}
+          />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className={sectionTitleClass}>Dela din ekonomi</p>
-          <p className={`${sectionSubtitleClass} mt-0.5`}>
-            {published
-              ? `Synlig som @${socialProfile.username} — ${highlightFromSnapshot(snap)}`
-              : 'Publicera hur du fördelar lönen så andra kan jämföra och prova samma mall.'}
-          </p>
-        </div>
-        {published && (
-          <span className="text-white/40 mt-1 flex-shrink-0">
-            {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </span>
-        )}
-      </HeaderTag>
+      )}
 
       {(!published || expanded) && (
         <>
-      <div className="rounded-lg px-3 py-2.5 bg-white/[0.04] border border-white/[0.06]">
-        <p className={sectionMetaClass}>
-          {privacy === 'full' && (
-            <span className="inline-flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5" /> Andra ser kronor och procent
-            </span>
+          <div className="rounded-[var(--anchor-radius-md)] px-3 py-2.5 bg-white/[0.04] ring-1 ring-white/[0.06]">
+            <p className={sectionMetaClass}>
+              {privacy === 'full' && (
+                <span className="inline-flex items-center gap-1.5">
+                  <Eye className="w-3.5 h-3.5" /> Andra ser kronor och procent
+                </span>
+              )}
+              {privacy === 'hybrid' && 'Andra ser bara procent — inga kronbelopp'}
+              {privacy === 'ghost' && 'Ghost-läge: inget kan publiceras'}
+            </p>
+            <Link
+              to={`${createPageUrl('Social')}?tab=privacy`}
+              className="text-[13px] font-medium text-[var(--color-accent)] mt-1 inline-block no-underline anchor-pressable"
+            >
+              Ändra under Social → Integritet
+            </Link>
+          </div>
+
+          {!check.ok && !published && (
+            <p className="text-[14px] text-amber-200/90 leading-relaxed">{check.reason}</p>
           )}
-          {privacy === 'hybrid' && 'Andra ser bara procent — inga kronbelopp'}
-          {privacy === 'ghost' && 'Ghost-läge: inget kan publiceras'}
-        </p>
-        <Link
-          to={`${createPageUrl('Social')}?tab=privacy`}
-          className="text-[13px] font-medium text-white/55 hover:text-white/80 mt-1 inline-block"
-        >
-          Ändra under Social → Integritet
-        </Link>
-      </div>
 
-      {!check.ok && !published && (
-        <p className="text-[14px] text-amber-200/90 leading-relaxed">{check.reason}</p>
-      )}
+          {published && snap?.income && (
+            <p className={sectionMetaClass}>
+              Referensinkomst i publiceringen: {fmtKr(snap.income)}/mån
+            </p>
+          )}
 
-      {published && snap?.income && (
-        <p className={sectionMetaClass}>Referensinkomst i publiceringen: {fmtKr(snap.income)}/mån</p>
-      )}
+          {message && (
+            <p className="text-[14px] text-emerald-200/90 leading-relaxed">{message}</p>
+          )}
 
-      {message && (
-        <p className="text-[14px] text-emerald-200/90 leading-relaxed">{message}</p>
-      )}
+          <div className="flex flex-col gap-2 sm:flex-row">
+            {!published ? (
+              <AnchorPressable
+                type="button"
+                disabled={busy || !check.ok}
+                onClick={handlePublish}
+                className="flex-1 h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2"
+              >
+                {busy ? <span className="w-5 h-5 rounded-full skeleton mx-auto block" /> : 'Publicera min ekonomi'}
+              </AnchorPressable>
+            ) : (
+              <>
+                <AnchorPressable
+                  type="button"
+                  disabled={busy || !check.ok}
+                  onClick={handleRefresh}
+                  className="flex-1 h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2"
+                >
+                  {busy ? <span className="w-5 h-5 rounded-full skeleton mx-auto block" /> : 'Uppdatera publicering'}
+                </AnchorPressable>
+                <AnchorPressable
+                  type="button"
+                  disabled={busy}
+                  onClick={handleUnpublish}
+                  className="flex-1 h-12 rounded-full bg-white/[0.08] text-white/90 font-semibold ring-1 ring-white/[0.1]"
+                >
+                  Ta bort
+                </AnchorPressable>
+              </>
+            )}
+          </div>
 
-      <div className="flex flex-col gap-2 sm:flex-row">
-        {!published ? (
-          <button
-            type="button"
-            disabled={busy || !check.ok}
-            onClick={handlePublish}
-            className={`${anchorPrimaryButtonClass} flex-1 disabled:opacity-50`}
-          >
-            {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Publicera min ekonomi'}
-          </button>
-        ) : (
-          <>
-            <button
-              type="button"
-              disabled={busy || !check.ok}
-              onClick={handleRefresh}
-              className={`${anchorPrimaryButtonClass} flex-1 disabled:opacity-50`}
+          {!socialProfile?.username && (
+            <Link
+              to={createPageUrl('Social')}
+              className="w-full h-12 rounded-full bg-white/[0.08] text-white/90 font-semibold flex items-center justify-center no-underline ring-1 ring-white/[0.1]"
             >
-              {busy ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Uppdatera publicering'}
-            </button>
-            <button
-              type="button"
-              disabled={busy}
-              onClick={handleUnpublish}
-              className={`${anchorSecondaryButtonClass} flex-1`}
-            >
-              Ta bort
-            </button>
-          </>
-        )}
-      </div>
-
-      {!socialProfile?.username && (
-        <Link
-          to={createPageUrl('Social')}
-          className={`${anchorSecondaryButtonClass} w-full no-underline`}
-        >
-          Skapa @användarnamn först
-        </Link>
-      )}
+              Skapa @användarnamn först
+            </Link>
+          )}
         </>
       )}
     </div>
+  );
+}
+
+function HeaderContent({ published, socialProfile, snap, expanded }) {
+  return (
+    <>
+      <div
+        className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
+          published ? 'bg-emerald-500/15' : 'bg-white/[0.08]'
+        }`}
+      >
+        {published ? (
+          <Radio className="w-5 h-5 text-emerald-300" />
+        ) : (
+          <EyeOff className="w-5 h-5 text-white/45" />
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className={sectionTitleClass}>Dela din ekonomi</p>
+        <p className={`${sectionSubtitleClass} mt-0.5`}>
+          {published
+            ? `Synlig som @${socialProfile.username} — ${highlightFromSnapshot(snap)}`
+            : 'Publicera hur du fördelar lönen så andra kan jämföra och prova samma mall.'}
+        </p>
+      </div>
+      {published && (
+        <span className="text-white/40 mt-1 flex-shrink-0">
+          {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+        </span>
+      )}
+    </>
   );
 }

@@ -28,6 +28,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
+import PageTransition from '@/components/ui-premium/PageTransition';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -73,6 +74,7 @@ const AuthenticatedApp = () => {
   }
 
   return (
+    <PageTransition>
     <Routes>
       <Route path="/Login" element={<Login />} />
       <Route path="/SignIn" element={<Login />} />
@@ -132,6 +134,7 @@ const AuthenticatedApp = () => {
       <Route path="/YearEndClosing" element={<YearEndClosing />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </PageTransition>
   );
 };
 

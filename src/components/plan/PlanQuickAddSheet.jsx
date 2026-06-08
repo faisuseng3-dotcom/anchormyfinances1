@@ -1,10 +1,11 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { usePlannedEvents } from '@/hooks/usePlannedEvents';
 import { createPlannedEvent, formatDateKey } from '@/lib/planCalendarEngine';
-import { anchorInputClass, anchorPrimaryButtonClass, elevatedSheet } from '@/lib/anchorTheme';
+import { anchorInputClass, anchorIconButtonClass } from '@/lib/anchorTheme';
+import AnchorSheet from '@/components/ui-premium/AnchorSheet';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 const CATEGORIES = [
   { id: 'social', label: 'Middag & umgänge' },
@@ -43,75 +44,65 @@ export default function PlanQuickAddSheet({ isOpen, onClose, defaultDate }) {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-black/60"
-            onClick={onClose}
+    <AnchorSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Planera händelse"
+      maxHeight="min(78dvh, 560px)"
+      headerRight={
+        <AnchorPressable onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
+          <X className="w-4 h-4" />
+        </AnchorPressable>
+      }
+    >
+      <form onSubmit={handleSubmit} className="space-y-4 -mx-1">
+        <input
+          className={anchorInputClass}
+          placeholder="T.ex. Middag med vänner"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          autoFocus
+        />
+        <div className="flex gap-2">
+          <input
+            type="date"
+            className={`${anchorInputClass} flex-1 [color-scheme:dark]`}
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
-          <motion.form
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 32, stiffness: 380 }}
-            onSubmit={handleSubmit}
-            className="fixed inset-x-0 bottom-0 z-[61] rounded-t-[22px] px-5 pt-5 pb-10 max-h-[85vh] overflow-y-auto"
-            style={elevatedSheet()}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-[17px] font-semibold text-white">Planera händelse</h2>
-              <button type="button" onClick={onClose} className="w-9 h-9 rounded-full bg-white/[0.08] flex items-center justify-center">
-                <X className="w-4 h-4 text-white/70" />
-              </button>
-            </div>
-
-            <input
-              className={`${anchorInputClass} mb-3`}
-              placeholder="T.ex. Middag med vänner"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              autoFocus
-            />
-            <div className="flex gap-2 mb-3">
-              <input
-                type="date"
-                className={`${anchorInputClass} flex-1`}
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-              <input
-                className={`${anchorInputClass} w-28`}
-                placeholder="kr"
-                inputMode="numeric"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value.replace(/[^\d\s]/g, ''))}
-              />
-            </div>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {CATEGORIES.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => setCategory(c.id)}
-                  className={`px-3 py-1.5 rounded-full text-[12px] font-medium ${
-                    category === c.id ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/65'
-                  }`}
-                >
-                  {c.label}
-                </button>
-              ))}
-            </div>
-            <button type="submit" disabled={!title.trim() || saving} className={`${anchorPrimaryButtonClass} w-full h-12`}>
-              {saving ? 'Sparar…' : 'Lägg till i kalendern'}
-            </button>
-          </motion.form>
-        </>
-      )}
-    </AnimatePresence>
+          <input
+            className={`${anchorInputClass} w-28`}
+            placeholder="kr"
+            inputMode="numeric"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value.replace(/[^\d\s]/g, ''))}
+          />
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((c) => (
+            <AnchorPressable
+              key={c.id}
+              type="button"
+              minTouch={false}
+              onClick={() => setCategory(c.id)}
+              className={`px-4 py-2.5 min-h-11 rounded-full text-[12px] font-medium ${
+                category === c.id
+                  ? 'bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1'
+                  : 'bg-white/[0.06] text-white/65 ring-1 ring-white/[0.08]'
+              }`}
+            >
+              {c.label}
+            </AnchorPressable>
+          ))}
+        </div>
+        <AnchorPressable
+          type="submit"
+          disabled={!title.trim() || saving}
+          className="w-full h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold text-[15px] disabled:opacity-40 anchor-elev-2"
+        >
+          {saving ? 'Sparar…' : 'Lägg till i kalendern'}
+        </AnchorPressable>
+      </form>
+    </AnchorSheet>
   );
 }

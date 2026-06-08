@@ -1,10 +1,13 @@
-/** Dashboard-only surface — organic radii, glow, no Base44 card grid */
+/** Dashboard surfaces — delegates to premium design tokens. */
 
-export const dashZone = 'px-4 sm:px-7 w-full max-w-lg mx-auto box-border';
+import { layout, type, radius } from './designTokens';
 
-export const dashLabel = 'text-[12px] font-medium text-white/38 tracking-wide';
+export const dashZone = layout.zoneWide;
 
-export const dashTitle = 'text-[20px] font-semibold tracking-tight text-white';
+export const dashLabel = type.label;
+
+export const dashTitle =
+  'text-[20px] font-semibold tracking-tight leading-snug text-[var(--color-text-primary)]';
 
 export const dashHeroNumber =
   'font-light tracking-[-0.04em] tabular-nums text-white leading-[0.92]';
@@ -15,20 +18,18 @@ export const dashHeroGlow =
 export const dashRail =
   'flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 sm:-mx-7 sm:px-7 snap-x snap-mandatory scrollbar-none overscroll-x-contain';
 
-export const dashRailCard =
-  'snap-center flex-shrink-0 w-[min(82vw,280px)] max-w-[calc(100vw-2rem)] rounded-[26px] p-4 relative overflow-hidden';
+export const dashRailCard = `snap-center flex-shrink-0 w-[min(82vw,280px)] max-w-[calc(100vw-2rem)] rounded-[${radius.lg}] p-4 relative overflow-hidden anchor-elev-2`;
 
 export const dashRailCardInner =
   'absolute inset-0 bg-gradient-to-br from-white/[0.09] to-white/[0.02] backdrop-blur-xl';
 
-export const dashRailCardBorder =
-  'absolute inset-0 rounded-[26px] ring-1 ring-inset ring-white/[0.12]';
+export const dashRailCardBorder = `absolute inset-0 rounded-[${radius.lg}] ring-1 ring-inset ring-white/[0.12]`;
 
 export const dashPill =
   'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] font-medium bg-white/[0.07] text-white/75 ring-1 ring-white/[0.08]';
 
 export const dashDockBtn =
-  'flex-1 min-w-0 h-[48px] sm:h-[52px] rounded-full flex items-center justify-center gap-1.5 sm:gap-2 text-[13px] sm:text-[14px] font-semibold transition-all active:scale-[0.98]';
+  'flex-1 min-w-0 min-h-12 rounded-full flex items-center justify-center gap-1.5 sm:gap-2 text-[13px] sm:text-[14px] font-semibold anchor-pressable';
 
 export const dashSignalLine =
   'border-l-2 border-cyan-400/50 pl-4 py-1';

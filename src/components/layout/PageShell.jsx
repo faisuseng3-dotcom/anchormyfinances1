@@ -1,8 +1,13 @@
+// @ts-nocheck
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { anchorIconButtonClass, anchorPageClass } from '@/lib/anchorTheme';
-import { techPageBackHeader, techPageTitle, dashLabel, techInset, techInsetBg } from '@/lib/appSurface';
+import { dashZone, dashLabel } from '@/lib/dashboardTheme';
+import { pageEnter } from '@/lib/motionPresets';
+import { surface } from '@/lib/designTokens';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 /**
  * @param {Object} props
@@ -23,48 +28,49 @@ export default function PageShell({
   children,
   className = '',
 }) {
-  const backButton = backHref ? (
-    <Link to={backHref}>
-      <span className={anchorIconButtonClass} aria-label="Tillbaka">
+  const backControl = backHref ? (
+    <Link to={backHref} className="no-underline">
+      <span className={`${anchorIconButtonClass} anchor-elev-1`} aria-label="Tillbaka">
         <ArrowLeft className="w-4 h-4" />
       </span>
     </Link>
   ) : onBack ? (
-    <button type="button" onClick={onBack} className={anchorIconButtonClass} aria-label="Tillbaka">
+    <AnchorPressable onClick={onBack} className={`${anchorIconButtonClass} anchor-elev-1`} aria-label="Tillbaka">
       <ArrowLeft className="w-4 h-4" />
-    </button>
+    </AnchorPressable>
   ) : null;
 
   return (
     <div className={`${anchorPageClass} anchor-mobile-frame ${className}`}>
-      <header className={`${techPageBackHeader} flex items-center justify-between gap-3`}>
-        <div className="flex items-center gap-3 min-w-0">
-          {backButton}
-          <div className="min-w-0">
+      <header
+        className={`${dashZone} pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:pt-11 pb-5 anchor-hero-asymmetric`}
+      >
+        <div className="flex items-start gap-3 min-w-0">
+          {backControl}
+          <div className="min-w-0 pt-1">
             {subtitle && <p className={dashLabel}>{subtitle}</p>}
-            <h1 className={`${techPageTitle} truncate`}>{title}</h1>
+            <h1 className="anchor-type-display text-[24px] sm:text-[28px] truncate">{title}</h1>
           </div>
         </div>
-        {action && <div className="shrink-0">{action}</div>}
+        {action && <div className="shrink-0 pt-1">{action}</div>}
       </header>
-      <div className="px-4 sm:px-7 space-y-7 pb-10 w-full max-w-lg mx-auto box-border">{children}</div>
+      <motion.div className={`${dashZone} space-y-8 pb-10`} {...pageEnter}>
+        {children}
+      </motion.div>
     </div>
   );
 }
 
 export function GlassSection({ title, subtitle, children, className = '' }) {
   return (
-    <section className={`${techInset} p-5 ${className}`}>
-      <div className={techInsetBg} />
-      <div className="relative z-10">
-        {title && (
-          <div className="mb-4">
-            <h2 className="text-[17px] font-medium text-white">{title}</h2>
-            {subtitle && <p className="text-[13px] text-white/45 mt-1 font-light">{subtitle}</p>}
-          </div>
-        )}
-        {children}
-      </div>
+    <section className={`${surface.card} p-5 ${className}`}>
+      {title && (
+        <div className="mb-4">
+          <h2 className="anchor-type-headline">{title}</h2>
+          {subtitle && <p className="anchor-type-body-sm mt-1">{subtitle}</p>}
+        </div>
+      )}
+      {children}
     </section>
   );
 }

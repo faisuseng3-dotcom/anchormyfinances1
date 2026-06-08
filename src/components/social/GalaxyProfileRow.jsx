@@ -4,6 +4,7 @@ import { DashboardListRow } from '@/components/dashboard/DashboardChrome';
 import { cn } from '@/lib/utils';
 import { formatMatchLabel } from '@/lib/galaxyProfiles';
 import ProfileAvatar from './ProfileAvatar';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 function BudgetMiniBar({ items = [] }) {
   const segments = items.filter((i) => (i.pct || 0) > 0).slice(0, 5);
@@ -11,7 +12,7 @@ function BudgetMiniBar({ items = [] }) {
 
   return (
     <div
-      className="flex h-2 w-[72px] rounded-full overflow-hidden flex-shrink-0 border border-white/[0.06]"
+      className="flex h-2 w-[72px] rounded-full overflow-hidden flex-shrink-0 ring-1 ring-white/[0.06]"
       aria-hidden
     >
       {segments.map((item) => (
@@ -19,7 +20,7 @@ function BudgetMiniBar({ items = [] }) {
           key={item.key || item.label}
           style={{
             width: `${Math.max(item.pct, 4)}%`,
-            background: item.color || '#7FA0FF',
+            background: item.color || 'var(--color-accent)',
           }}
         />
       ))}
@@ -41,7 +42,12 @@ export default function GalaxyProfileRow({
   const subtitleLine = [badge, subtitle].filter(Boolean).join(' · ');
 
   return (
-    <button type="button" onClick={() => onOpen(profile)} className="w-full text-left">
+    <AnchorPressable
+      type="button"
+      onClick={() => onOpen(profile)}
+      className="w-full text-left rounded-[var(--anchor-radius-md)]"
+      minTouch={false}
+    >
       <DashboardListRow
         leading={<ProfileAvatar profile={profile} size={44} />}
         title={profile.display_name}
@@ -49,7 +55,9 @@ export default function GalaxyProfileRow({
         trailing={
           <div className="flex flex-col items-end gap-1.5 max-w-[46%]">
             {matchLabel && (
-              <span className="text-[11px] font-semibold text-[#9FB5FF] tabular-nums">{matchLabel}</span>
+              <span className="text-[11px] font-semibold text-[var(--color-accent)] tabular-nums">
+                {matchLabel}
+              </span>
             )}
             <div className="flex items-center gap-2">
               <BudgetMiniBar items={items} />
@@ -66,6 +74,6 @@ export default function GalaxyProfileRow({
         }
         trailingClassName=""
       />
-    </button>
+    </AnchorPressable>
   );
 }

@@ -24,6 +24,16 @@ import PageShell from '@/components/layout/PageShell';
 import SegmentTabs from '@/components/ui/SegmentTabs';
 import { DashboardDivider, DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
 import { anchorInputClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { cn } from '@/lib/utils';
+
+const filterChipClass = (active) =>
+  cn(
+    'px-3 py-1.5 rounded-[var(--anchor-radius-md)] text-[13px] font-medium transition-colors min-h-10 touch-manipulation',
+    active
+      ? 'bg-[var(--color-text-primary)] text-[var(--color-background-primary)] anchor-elev-1'
+      : 'bg-white/[0.08] text-[var(--color-text-secondary)] hover:bg-white/[0.12]',
+  );
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -133,12 +143,12 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         onClick={() => {if (!showActions) onEdit(tx);}}
         className={`flex items-center gap-3 py-3.5 cursor-pointer active:opacity-60 ${tx._optimistic ? 'opacity-70' : ''}`}
         whileTap={{ scale: 0.99 }}>
-        
+
         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-medium text-white truncate">{tx.vendor || tx.label}</p>
+          <p className="text-[15px] font-medium text-[var(--color-text-primary)] truncate">{tx.vendor || tx.label}</p>
           <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-            <p className="text-[13px] text-white/45 truncate">
+            <p className="text-[13px] text-[var(--color-text-tertiary)] truncate">
               {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {getTxDate(tx).toLocaleDateString('sv-SE')}
             </p>
             <CategoryConfidenceBadge vendor={tx.vendor} label={tx.label} amount={tx.amount} />
@@ -153,25 +163,41 @@ function TransactionRow({ tx, onDelete, onEdit }) {
         {showActions &&
         <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
         className="flex gap-2 px-5 pb-3 overflow-hidden">
-            <button onClick={() => {onEdit(tx);setShowActions(false);}}
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-[#6B9FFF]/15 text-[#B8C9FF] border border-[#6B9FFF]/30">
+            <AnchorPressable
+              type="button"
+              onClick={() => { onEdit(tx); setShowActions(false); }}
+              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--anchor-radius-md)] text-xs font-semibold min-h-10"
+              style={{
+                background: 'color-mix(in srgb, var(--color-accent) 15%, transparent)',
+                color: 'var(--color-accent)',
+                border: '1px solid color-mix(in srgb, var(--color-accent) 30%, transparent)',
+              }}
+            >
               <Edit2 className="w-3.5 h-3.5" /> Redigera
-            </button>
-            <button onClick={() => {onDelete(tx.id);setShowActions(false);}}
-          className="flex-1 flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-semibold bg-rose-500/15 text-rose-200 border border-rose-400/30">
+            </AnchorPressable>
+            <AnchorPressable
+              type="button"
+              onClick={() => { onDelete(tx.id); setShowActions(false); }}
+              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--anchor-radius-md)] text-xs font-semibold bg-rose-500/15 text-rose-200 border border-rose-400/30 min-h-10"
+            >
               <Trash2 className="w-3.5 h-3.5" /> Ta bort
-            </button>
-            <button onClick={() => setShowActions(false)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.08] text-white/50">
+            </AnchorPressable>
+            <AnchorPressable
+              type="button"
+              onClick={() => setShowActions(false)}
+              className="w-10 h-10 flex items-center justify-center rounded-[var(--anchor-radius-md)] bg-white/[0.08] text-[var(--color-text-tertiary)]"
+              aria-label="Stäng"
+            >
               <X className="w-4 h-4" />
-            </button>
+            </AnchorPressable>
           </motion.div>
         }
       </AnimatePresence>
 
       {tx.aiNote &&
       <div className="pb-3 pl-5">
-          <p className="text-[13px] text-white/55 flex gap-2">
-            <Bot className="w-4 h-4 flex-shrink-0 text-[#9FB5FF]" />
+          <p className="text-[13px] text-[var(--color-text-secondary)] flex gap-2">
+            <Bot className="w-4 h-4 flex-shrink-0 text-[var(--color-accent)]" />
             {tx.aiNote}
           </p>
         </div>
@@ -189,30 +215,32 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
   return (
     <div className="mb-3">
       {/* Month header — tappable to expand/collapse */}
-      <button
+      <AnchorPressable
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between py-3 active:opacity-70">
+        className="w-full flex items-center justify-between py-3 min-h-12"
+        minTouch={false}
+      >
         <div className="flex items-center gap-3">
           <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-            <ChevronDown className="w-4 h-4 text-white/45" />
+            <ChevronDown className="w-4 h-4 text-[var(--color-text-tertiary)]" />
           </motion.div>
           <div className="text-left">
-            <p className="text-[17px] font-semibold text-white capitalize">{group.label}</p>
-            <p className="text-[13px] text-white/45">{group.txs.length} transaktioner</p>
+            <p className="text-[17px] font-semibold text-[var(--color-text-primary)] capitalize">{group.label}</p>
+            <p className="text-[13px] text-[var(--color-text-tertiary)]">{group.txs.length} transaktioner</p>
           </div>
         </div>
         <div className="text-right">
           <p className={`text-[15px] font-semibold tabular-nums ${net >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
             {net >= 0 ? '+' : ''}{net.toLocaleString('sv-SE')} kr
           </p>
-          <p className="text-[12px] text-white/40 tabular-nums">
+          <p className="text-[12px] text-[var(--color-text-tertiary)] tabular-nums">
             <span className="text-emerald-300/80">+{totalIn.toLocaleString('sv-SE')}</span>
             {' · '}
             <span className="text-rose-300/80">-{totalOut.toLocaleString('sv-SE')}</span>
           </p>
         </div>
-      </button>
+      </AnchorPressable>
 
       <AnimatePresence initial={false}>
         {open &&
@@ -323,14 +351,15 @@ export default function TransactionHistory() {
   const activeFilterCount = [filterType, filterCategory].filter(Boolean).length;
 
   const headerExtra = filterCategory ? (
-    <button
+    <AnchorPressable
       type="button"
       onClick={() => { setFilterCategory(''); navigate(createPageUrl('TransactionHistory')); }}
-      className="flex items-center gap-1.5 mb-2 text-xs font-semibold text-[#9FB5FF]"
+      className="flex items-center gap-1.5 mb-2 text-xs font-semibold text-[var(--color-accent)] min-h-0 h-auto px-0 py-1"
+      minTouch={false}
     >
       <ArrowLeft className="w-3.5 h-3.5" />
       Tillbaka till översikt
-    </button>
+    </AnchorPressable>
   ) : null;
 
   return (
@@ -369,26 +398,35 @@ export default function TransactionHistory() {
       <p className={`${sectionSubtitleClass} mb-3`}>{filtered.length} poster</p>
 
       <div className="flex gap-2 mb-2">
-        <div className={`flex-1 flex items-center gap-2 px-4 ${anchorInputClass}`}>
-          <Search className="w-4 h-4 flex-shrink-0 text-white/40" />
+        <div className={`flex-1 flex items-center gap-2 px-4 min-h-12 anchor-elev-1 ${anchorInputClass}`}>
+          <Search className="w-4 h-4 flex-shrink-0 text-[var(--color-text-tertiary)]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Sök ICA, Hyra..."
-            className="flex-1 text-[15px] outline-none bg-transparent min-w-0 text-white placeholder:text-white/35" />
+            className="flex-1 text-[15px] outline-none bg-transparent min-w-0 text-[var(--color-text-primary)] placeholder:text-[var(--color-text-tertiary)]" />
           {search && (
-            <button type="button" onClick={() => setSearch('')} aria-label="Rensa sökning">
-              <X className="w-3.5 h-3.5 text-white/40" />
-            </button>
+            <AnchorPressable
+              type="button"
+              onClick={() => setSearch('')}
+              aria-label="Rensa sökning"
+              className="min-h-0 min-w-0 h-8 w-8 rounded-full"
+            >
+              <X className="w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />
+            </AnchorPressable>
           )}
         </div>
-        <button
+        <AnchorPressable
           type="button"
           onClick={() => setShowFilters((v) => !v)}
-          className={`relative w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${
-            showFilters ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/70'
-          }`}
+          aria-label="Filter"
+          className={cn(
+            'relative w-12 h-12 rounded-[var(--anchor-radius-md)] flex items-center justify-center shrink-0',
+            showFilters
+              ? 'bg-[var(--color-text-primary)] text-[var(--color-background-primary)] anchor-elev-2'
+              : 'bg-white/[0.08] text-[var(--color-text-secondary)] anchor-elev-1',
+          )}
         >
           <Filter className="w-4 h-4" />
           {activeFilterCount > 0 && (
@@ -396,7 +434,7 @@ export default function TransactionHistory() {
               {activeFilterCount}
             </span>
           )}
-        </button>
+        </AnchorPressable>
       </div>
 
       {/* Filters panel */}
@@ -406,38 +444,36 @@ export default function TransactionHistory() {
           initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
           className="mt-2 overflow-hidden">
           
-            <div className="space-y-4 py-2">
+            <div className="space-y-4 py-2 rounded-[var(--anchor-radius-lg)] p-4 anchor-elev-2 border border-white/[0.08] bg-[var(--color-surface-raised)]">
               <div>
-                <p className="text-[13px] text-white/45 mb-2">Typ</p>
+                <p className="text-[13px] text-[var(--color-text-tertiary)] mb-2">Typ</p>
                 <div className="flex gap-2 flex-wrap">
                   {TYPE_OPTIONS.map((o) => (
-                    <button
+                    <AnchorPressable
                       key={o.value}
                       type="button"
                       onClick={() => setFilterType(o.value)}
-                      className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-colors ${
-                        filterType === o.value ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/70'
-                      }`}
+                      className={filterChipClass(filterType === o.value)}
+                      minTouch={false}
                     >
                       {o.label}
-                    </button>
+                    </AnchorPressable>
                   ))}
                 </div>
               </div>
               <div>
-                <p className="text-[13px] text-white/45 mb-2">Kategori</p>
+                <p className="text-[13px] text-[var(--color-text-tertiary)] mb-2">Kategori</p>
                 <div className="flex gap-2 flex-wrap">
                   {CATEGORY_OPTIONS.map((o) => (
-                    <button
+                    <AnchorPressable
                       key={o.value}
                       type="button"
                       onClick={() => setFilterCategory(o.value)}
-                      className={`px-3 py-1.5 rounded-lg text-[13px] font-medium transition-colors ${
-                        filterCategory === o.value ? 'bg-white text-[#0a1628]' : 'bg-white/[0.08] text-white/70'
-                      }`}
+                      className={filterChipClass(filterCategory === o.value)}
+                      minTouch={false}
                     >
                       {o.label}
-                    </button>
+                    </AnchorPressable>
                   ))}
                 </div>
               </div>
@@ -469,16 +505,20 @@ export default function TransactionHistory() {
       {/* Empty state */}
       {!isLoading && transactions.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <FileUp className="w-10 h-10 mb-4 text-white/35" />
-          <p className="text-[17px] font-semibold text-white mb-1">Inga transaktioner än</p>
+          <FileUp className="w-10 h-10 mb-4 text-[var(--color-text-tertiary)]" />
+          <p className="text-[17px] font-semibold text-[var(--color-text-primary)] mb-1">Inga transaktioner än</p>
           <p className={sectionSubtitleClass}>Importera från bank eller lägg till manuellt.</p>
           <div className="flex flex-col gap-3 w-full max-w-xs mt-6">
             <Link to="/Import" className="anchor-btn-primary w-full">
               <FileUp className="w-4 h-4" /> Importera
             </Link>
-            <button type="button" onClick={() => setShowForm(true)} className="anchor-btn-secondary w-full">
+            <AnchorPressable
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="anchor-btn-secondary w-full min-h-[52px]"
+            >
               Lägg till manuellt
-            </button>
+            </AnchorPressable>
           </div>
         </div>
       )}
@@ -486,8 +526,8 @@ export default function TransactionHistory() {
       {/* No search results */}
       {!isLoading && transactions.length > 0 && filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <Search className="w-10 h-10 mb-3 text-white/35" />
-          <p className="text-[17px] font-semibold text-white">Inga resultat</p>
+          <Search className="w-10 h-10 mb-3 text-[var(--color-text-tertiary)]" />
+          <p className="text-[17px] font-semibold text-[var(--color-text-primary)]">Inga resultat</p>
           <p className={sectionSubtitleClass}>Prova ett annat sökord eller filter.</p>
         </div>
       )}
@@ -506,24 +546,22 @@ export default function TransactionHistory() {
       </div>
 
       {/* FAB */}
-      <motion.button whileTap={{ scale: 0.9 }} whileHover={{ scale: 1.05 }}
-      onClick={() => {setEditingTx(null);setShowForm(true);}}
-      className="fixed bottom-24 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center z-40 bg-white text-slate-900 shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
-        <Plus className="w-6 h-6 sm:w-7 sm:h-7" />
-      </motion.button>
+      <AnchorPressable
+        onClick={() => { setEditingTx(null); setShowForm(true); }}
+        aria-label="Lägg till transaktion"
+        className="fixed bottom-24 right-4 sm:right-6 w-14 h-14 rounded-full z-40 bg-[var(--color-text-primary)] text-[var(--color-background-primary)] anchor-elev-3"
+      >
+        <Plus className="w-7 h-7" />
+      </AnchorPressable>
         </>
       )}
 
-      {/* Form modal */}
-      <AnimatePresence>
-        {showForm &&
-        <TransactionForm
-          existingTx={editingTx}
-          onSuccess={handleFormSuccess}
-          onClose={() => {setShowForm(false);setEditingTx(null);}} />
-
-        }
-      </AnimatePresence>
+      <TransactionForm
+        isOpen={showForm}
+        existingTx={editingTx}
+        onSuccess={handleFormSuccess}
+        onClose={() => { setShowForm(false); setEditingTx(null); }}
+      />
     </PageShell>
   );
 

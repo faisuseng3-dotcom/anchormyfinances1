@@ -10,6 +10,8 @@ import { GALAXY_DEMO_PROFILES, GALAXY_FILTER_TAGS, matchScore } from '@/lib/gala
 import { socialProfileToGalaxy } from '@/lib/galaxyEconomy';
 import ExpandedProfile from './ExpandedProfile';
 import GalaxyProfileRow from './GalaxyProfileRow';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { GlassSection } from '@/components/layout/PageShell';
 
 export default function GalaxyExplorer({
   userFinancialProfile,
@@ -66,14 +68,10 @@ export default function GalaxyExplorer({
 
   const ownPublished = filtered.filter((p) => p.isOwn);
   const suggested = filtered.filter((p) => !p.isOwn && p._match > 0).slice(0, 3);
-  const rest = filtered.filter(
-    (p) => !p.isOwn && !suggested.find((s) => s.id === p.id),
-  );
+  const rest = filtered.filter((p) => !p.isOwn && !suggested.find((s) => s.id === p.id));
 
   const rowSubtitle = (p) =>
-    [p.occupation, p.age ? `${p.age} år` : null, p.city]
-      .filter(Boolean)
-      .join(' · ');
+    [p.occupation, p.age ? `${p.age} år` : null, p.city].filter(Boolean).join(' · ');
 
   const userCount = publishedSocial.length;
   const exampleCount = GALAXY_DEMO_PROFILES.length;
@@ -104,59 +102,64 @@ export default function GalaxyExplorer({
 
   return (
     <div className="space-y-6">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35 pointer-events-none" />
-        <input
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Sök yrke, stad eller @namn"
-          className={`${anchorInputClass} pl-10`}
-        />
-        {searchText && (
-          <button
-            type="button"
-            onClick={() => setSearchText('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
-            aria-label="Rensa sökning"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
-      </div>
-
-      <div className="flex gap-2 flex-wrap items-center">
-        {GALAXY_FILTER_TAGS.map((tag) => {
-          const active = activeTags.includes(tag);
-          return (
-            <button
-              key={tag}
+      <GlassSection>
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35 pointer-events-none" />
+          <input
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder="Sök yrke, stad eller @namn"
+            className={`${anchorInputClass} pl-10`}
+          />
+          {searchText && (
+            <AnchorPressable
               type="button"
-              onClick={() =>
-                setActiveTags((prev) =>
-                  prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-                )
-              }
-              className={cn(
-                'px-3 py-1.5 rounded-full text-[13px] font-medium transition-colors',
-                active
-                  ? 'bg-white text-[#0a1628]'
-                  : 'bg-white/[0.06] text-white/55 border border-white/10 hover:border-white/20',
-              )}
+              minTouch={false}
+              onClick={() => setSearchText('')}
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white/40"
+              aria-label="Rensa sökning"
             >
-              {tag}
-            </button>
-          );
-        })}
-        {(activeTags.length > 0 || searchText) && (
-          <button
-            type="button"
-            onClick={clearFilters}
-            className="text-[13px] font-medium text-white/45 hover:text-white/75 px-1"
-          >
-            Rensa
-          </button>
-        )}
-      </div>
+              <X className="w-4 h-4" />
+            </AnchorPressable>
+          )}
+        </div>
+
+        <div className="flex gap-2 flex-wrap items-center mt-4">
+          {GALAXY_FILTER_TAGS.map((tag) => {
+            const active = activeTags.includes(tag);
+            return (
+              <AnchorPressable
+                key={tag}
+                type="button"
+                minTouch={false}
+                onClick={() =>
+                  setActiveTags((prev) =>
+                    prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+                  )
+                }
+                className={cn(
+                  'px-3 py-2 min-h-10 rounded-full text-[13px] font-medium',
+                  active
+                    ? 'bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1'
+                    : 'bg-white/[0.06] text-white/55 ring-1 ring-white/10',
+                )}
+              >
+                {tag}
+              </AnchorPressable>
+            );
+          })}
+          {(activeTags.length > 0 || searchText) && (
+            <AnchorPressable
+              type="button"
+              minTouch={false}
+              onClick={clearFilters}
+              className="text-[13px] font-medium text-white/45 px-2 min-h-10"
+            >
+              Rensa
+            </AnchorPressable>
+          )}
+        </div>
+      </GlassSection>
 
       {ownPublished.length > 0 && (
         <DashboardSection nested title="Din publicering">
@@ -181,14 +184,10 @@ export default function GalaxyExplorer({
 
       <DashboardSection
         nested
-        title={
-          suggested.length || ownPublished.length
-            ? 'Fler profiler'
-            : `${filtered.length} profiler`
-        }
+        title={suggested.length || ownPublished.length ? 'Fler profiler' : `${filtered.length} profiler`}
       >
         {(rest.length ? rest : filtered.filter((p) => !p.isOwn)).length === 0 ? (
-          <div className="py-10 text-center">
+          <div className="py-10 text-center rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]">
             <Users className="w-8 h-8 mx-auto text-white/25 mb-3" />
             <p className="text-[15px] font-medium text-white">Inga träffar</p>
             <p className={sectionSubtitleClass}>
@@ -197,13 +196,14 @@ export default function GalaxyExplorer({
                 : 'Prova ett annat filter eller sökord.'}
             </p>
             {(activeTags.length > 0 || searchText) && (
-              <button
+              <AnchorPressable
                 type="button"
+                minTouch={false}
                 onClick={clearFilters}
-                className="mt-3 text-[14px] font-semibold text-[#9FB5FF] hover:text-white"
+                className="mt-3 text-[14px] font-semibold text-[var(--color-accent)] min-h-11 px-3"
               >
                 Rensa filter
-              </button>
+              </AnchorPressable>
             )}
           </div>
         ) : (

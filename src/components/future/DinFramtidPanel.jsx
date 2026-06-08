@@ -14,6 +14,8 @@ import { DashboardSection, DashboardStatStrip } from '@/components/dashboard/Das
 import { createPageUrl } from '@/utils';
 import { anchorGhostButtonClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 import { cn } from '@/lib/utils';
+import { staggerItem } from '@/lib/motionPresets';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 const STATUS_ACCENT = { grön: '#34D9BE', gul: '#F6AD55', röd: '#FF7A92' };
 
@@ -95,7 +97,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
   return (
     <div className="space-y-8">
       {/* Läget nu — kompakt */}
-      <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="rounded-2xl px-4 py-4 border border-white/[0.08] bg-white/[0.04]">
+      <motion.div {...staggerItem(0)} className="rounded-[var(--anchor-radius-lg)] px-4 py-4 anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]">
         <p className="text-[12px] font-medium text-white/40 mb-2">Läget nu</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-white/75">
           <span><strong className="text-white tabular-nums">{fmt(pulseNow?.remainingWeek)}</strong> kvar den här veckan</span>
@@ -112,20 +114,21 @@ export default function DinFramtidPanel({ profile, transactions }) {
         <p className={`${sectionSubtitleClass} mb-4`}>{activeMode.blurb}</p>
         <div className="grid grid-cols-3 gap-2">
           {SCENARIO_MODES.map((m) => (
-            <button
+            <AnchorPressable
               key={m.id}
               type="button"
+              minTouch={false}
               onClick={() => setMode(m.id)}
               className={cn(
-                'rounded-xl px-2 py-3 text-center transition-colors ring-1',
+                'rounded-[var(--anchor-radius-lg)] px-2 py-3 min-h-[4.5rem] text-center ring-1',
                 mode === m.id
-                  ? 'bg-white text-[#050d28] ring-white'
-                  : 'bg-white/[0.05] text-white/60 ring-white/[0.08] hover:text-white/85',
+                  ? 'bg-[var(--color-text-primary)] text-[#050d28] ring-white anchor-elev-1'
+                  : 'bg-white/[0.05] text-white/60 ring-white/[0.08]',
               )}
             >
               <span className="text-lg block mb-1">{m.emoji}</span>
               <span className="text-[11px] font-semibold leading-tight">{m.label}</span>
-            </button>
+            </AnchorPressable>
           ))}
         </div>
       </div>
@@ -184,7 +187,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
       {/* Prognos */}
       {forecast && (
         <motion.div key={mode + incomePct + spendPct + saveKr} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div className="rounded-2xl p-4 mb-4" style={{ border: `1px solid ${accent}40`, background: `${accent}12` }}>
+          <div className="rounded-[var(--anchor-radius-lg)] p-4 mb-4 anchor-elev-2" style={{ border: `1px solid ${accent}40`, background: `${accent}12` }}>
             <p className="text-[17px] font-semibold text-white">{forecast.status_label}</p>
             <p className="text-[22px] font-light text-white mt-2 tabular-nums">{forecast.prognos_30_dagar}</p>
             {forecast.coach_detaljer && (

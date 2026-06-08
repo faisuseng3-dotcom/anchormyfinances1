@@ -160,14 +160,12 @@ export default function Onboarding() {
 
   if (loading) {
     return (
-      <div className="anchor-page min-h-screen flex items-center justify-center">
-        <div className="text-center px-6">
-          <div className="relative w-14 h-14 mx-auto mb-5">
-            <div className="absolute inset-0 rounded-full border-2 border-white/15" />
-            <div className="absolute inset-0 rounded-full border-2 border-[#9FB5FF] border-t-transparent animate-spin" />
-          </div>
-          <p className="text-[17px] font-medium text-white">Skapar din profil…</p>
-          <p className="text-[14px] text-white/45 mt-2">Ett ögonblick</p>
+      <div className="anchor-page min-h-screen flex items-center justify-center px-6">
+        <div className="w-full max-w-xs space-y-4">
+          <div className="h-3 rounded-full skeleton" />
+          <div className="h-24 rounded-[var(--anchor-radius-lg)] skeleton" />
+          <div className="h-4 w-2/3 rounded-full skeleton mx-auto" />
+          <p className="text-center anchor-type-body-sm mt-6">Skapar din profil…</p>
         </div>
       </div>
     );
@@ -175,26 +173,26 @@ export default function Onboarding() {
 
   return (
     <div className="anchor-page min-h-screen flex flex-col overflow-x-hidden">
-      <div className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)]">
-        <div className="h-1 bg-white/10">
+      <div className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] anchor-onboarding-progress">
+        <div className="anchor-onboarding-bar">
           <motion.div
-            className="h-full bg-white/90"
+            className="anchor-onboarding-bar-fill"
             initial={{ width: 0 }}
             animate={{ width: `${progressPercent}%` }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
           />
         </div>
-        <div className="flex justify-between px-5 sm:px-6 py-2.5 bg-[#040814]/80 backdrop-blur-md border-b border-white/[0.06]">
-          <span className="text-[13px] text-white/50">
+        <div className="flex justify-between px-5 sm:px-6 py-3">
+          <span className="anchor-type-body-sm text-white/45">
             {testFoundations ? 'Test — grundkurs' : `Privat · steg ${step + 1} av ${totalSteps}`}
           </span>
-          <span className="text-[13px] text-white/50 tabular-nums">{progressPercent}%</span>
+          <span className="anchor-type-body-sm text-white/45 tabular-nums">{progressPercent}%</span>
         </div>
       </div>
 
       {testFoundations && (
         <div className="mt-[calc(env(safe-area-inset-top)+3.25rem)] px-5 sm:px-6 pt-3">
-          <div className="max-w-md mx-auto rounded-xl px-4 py-3 bg-amber-500/15 ring-1 ring-amber-400/30 text-[13px] text-amber-100/90 leading-relaxed">
+          <div className="max-w-md mx-auto rounded-[var(--anchor-radius-lg)] px-4 py-3 bg-amber-500/15 ring-1 ring-amber-400/30 text-[13px] text-amber-100/90 leading-relaxed anchor-elev-1">
             <strong className="font-semibold text-amber-50">Testläge.</strong> Du hoppar direkt till
             quizet. Efter godkänt sparas bara grundkursen — övrig onboarding ändras inte.{' '}
             <Link to={createPageUrl('Dashboard')} className="underline text-amber-50/90">

@@ -2,27 +2,27 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Radio, Eye, BarChart2, Ghost, ChevronRight } from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import { anchorSecondaryButtonClass } from '@/lib/anchorTheme';
-import { dashLabel, dashPill, techInset, techInsetBg } from '@/lib/appSurface';
+import { dashLabel, dashPill } from '@/lib/appSurface';
+import { surface } from '@/lib/designTokens';
 
 const LEVEL_COPY = {
   full: {
     Icon: Eye,
     title: 'Full delning',
     compare: 'I Jämför kan andra se kronor och procent om du publicerar.',
-    color: '#34D399',
+    iconWrap: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/25',
   },
   hybrid: {
     Icon: BarChart2,
     title: 'Hybrid',
     compare: 'I Jämför visas bara procent — inga kronbelopp — om du publicerar.',
-    color: '#9FB5FF',
+    iconWrap: 'bg-[var(--color-accent)]/15 text-[var(--color-accent)] ring-[var(--color-accent)]/25',
   },
   ghost: {
     Icon: Ghost,
     title: 'Ghost-läge',
     compare: 'Du kan inte publicera ekonomi i Jämför i Ghost-läge.',
-    color: '#94A3B8',
+    iconWrap: 'bg-white/10 text-white/55 ring-white/15',
   },
 };
 
@@ -33,18 +33,14 @@ export default function SocialPrivacySummary({ privacyLevel, isPublished, userna
 
   return (
     <div className="space-y-4">
-      <div className={`${techInset} px-4 py-4`}>
-        <div className={techInsetBg} />
-        <div className="relative z-10 flex items-start gap-3">
-          <div
-            className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 ring-1 ring-inset"
-            style={{ background: `${level.color}15`, borderColor: `${level.color}30` }}
-          >
-            <Icon className="w-5 h-5" style={{ color: level.color }} />
+      <div className={`${surface.card} px-4 py-4`}>
+        <div className="flex items-start gap-3">
+          <div className={`w-11 h-11 rounded-[var(--anchor-radius-lg)] flex items-center justify-center flex-shrink-0 ring-1 ${level.iconWrap}`}>
+            <Icon className="w-5 h-5" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[16px] font-medium text-white">{level.title}</p>
-            <p className="text-[13px] text-white/45 mt-1 font-light leading-relaxed">{level.compare}</p>
+            <p className="anchor-type-headline">{level.title}</p>
+            <p className="anchor-type-body-sm mt-1 leading-relaxed">{level.compare}</p>
             {username && (
               <p className={`${dashLabel} mt-2`}>
                 @{username}
@@ -58,7 +54,7 @@ export default function SocialPrivacySummary({ privacyLevel, isPublished, userna
       {canPublish && !isPublished && (
         <Link
           to={`${createPageUrl('Galaxy')}?tab=compare`}
-          className={`${anchorSecondaryButtonClass} w-full rounded-full h-11 no-underline flex items-center justify-center gap-1`}
+          className="w-full rounded-full h-11 bg-white/[0.08] text-white/90 ring-1 ring-white/[0.1] font-semibold text-[15px] flex items-center justify-center gap-1 no-underline anchor-pressable min-h-12"
         >
           Publicera i Jämför
           <ChevronRight className="w-4 h-4" />

@@ -2,8 +2,10 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { UserPlus, Send, CheckCircle } from 'lucide-react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Input } from '@/components/ui/input';
+import { surface } from '@/lib/designTokens';
+import { anchorInputClass } from '@/lib/anchorTheme';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 export default function InviteUserSection() {
   const [email, setEmail] = useState('');
@@ -26,13 +28,13 @@ export default function InviteUserSection() {
   };
 
   return (
-    <div className="dark-card p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <UserPlus className="w-5 h-5 text-indigo-400" />
-        <h3 className="font-semibold text-white">Bjud in användare</h3>
+    <div className={`${surface.card} p-5`}>
+      <div className="flex items-center gap-2 mb-3">
+        <UserPlus className="w-5 h-5 text-[var(--color-accent)]" />
+        <h3 className="anchor-type-headline">Bjud in användare</h3>
       </div>
 
-      <p className="text-slate-400 text-sm mb-4">
+      <p className="anchor-type-body-sm mb-4">
         Skicka en inbjudan till någon så att de kan logga in och använda appen.
       </p>
 
@@ -42,26 +44,26 @@ export default function InviteUserSection() {
           placeholder="email@exempel.se"
           value={email}
           onChange={(e) => { setEmail(e.target.value); setError(''); }}
-          className="h-12 rounded-xl flex-1"
+          className={`${anchorInputClass} flex-1`}
           onKeyDown={(e) => e.key === 'Enter' && handleInvite()}
         />
-        <Button
+        <AnchorPressable
           onClick={handleInvite}
           disabled={loading || success}
-          className="h-12 px-5 rounded-xl bg-indigo-500 hover:bg-indigo-600"
+          className="w-12 h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-2 shrink-0"
         >
           {success ? (
-            <CheckCircle className="w-5 h-5 text-white" />
+            <CheckCircle className="w-5 h-5" />
           ) : loading ? (
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="w-5 h-5 rounded-full skeleton" />
           ) : (
             <Send className="w-5 h-5" />
           )}
-        </Button>
+        </AnchorPressable>
       </div>
 
-      {error && <p className="text-rose-400 text-xs mt-2">{error}</p>}
-      {success && <p className="text-emerald-400 text-xs mt-2">✓ Inbjudan skickad!</p>}
+      {error && <p className="text-rose-300 text-xs mt-2">{error}</p>}
+      {success && <p className="text-emerald-300 text-xs mt-2">Inbjudan skickad</p>}
     </div>
   );
 }

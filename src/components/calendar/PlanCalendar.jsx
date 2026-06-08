@@ -14,7 +14,9 @@ import {
   createPlannedEvent,
   EVENT_COLORS,
 } from '@/lib/planCalendarEngine';
-import { anchorInputClass, anchorPrimaryButtonClass, elevatedSheet } from '@/lib/anchorTheme';
+import { anchorInputClass, anchorIconButtonClass } from '@/lib/anchorTheme';
+import AnchorSheet from '@/components/ui-premium/AnchorSheet';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 const PLAN_CATEGORIES = [
   { id: 'social', label: 'Middag & umgänge' },
@@ -41,7 +43,7 @@ function EventDots({ events }) {
   );
 }
 
-function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
+function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving }) {
   const [adding, setAdding] = useState(false);
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
@@ -65,39 +67,24 @@ function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
     setAdding(false);
   };
 
-  return (
-    <>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/55"
-        onClick={onClose}
-      />
-      <motion.div
-        initial={{ y: '100%' }}
-        animate={{ y: 0 }}
-        exit={{ y: '100%' }}
-        transition={{ type: 'spring', damping: 32, stiffness: 380 }}
-        className="fixed inset-x-0 bottom-0 z-50 rounded-t-[22px] max-h-[82vh] overflow-hidden flex flex-col"
-        style={elevatedSheet()}
-      >
-        <div className="flex items-center justify-between px-5 pt-5 pb-3">
-          <div>
-            <p className="text-[13px] text-white/45 capitalize">{formatDayHeading(date)}</p>
-            {totalOut > 0 && (
-              <p className="text-[15px] text-white/70 mt-0.5 tabular-nums">
-                {totalIn > 0 && <span className="text-emerald-300/90">+{formatKr(totalIn)} · </span>}
-                −{formatKr(totalOut)} planerat
-              </p>
-            )}
-          </div>
-          <button type="button" onClick={onClose} className="w-9 h-9 rounded-full bg-white/[0.08] flex items-center justify-center">
-            <X className="w-4 h-4 text-white/70" />
-          </button>
-        </div>
+  const subtitle = totalOut > 0
+    ? `${totalIn > 0 ? `+${formatKr(totalIn)} · ` : ''}−${formatKr(totalOut)} planerat`
+    : undefined;
 
-        <div className="flex-1 overflow-y-auto px-5 pb-4">
+  return (
+    <AnchorSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={formatDayHeading(date)}
+      subtitle={subtitle}
+      maxHeight="min(82dvh, 640px)"
+      headerRight={
+        <AnchorPressable onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
+          <X className="w-4 h-4" />
+        </AnchorPressable>
+      }
+    >
+        <div className="-mx-1">
           {events.length === 0 && !adding && (
             <p className="text-[14px] text-white/45 py-6 text-center">
               Inga händelser denna dag. Lägg till något du planerar.
@@ -167,18 +154,19 @@ function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
                 />
                 <div className="flex flex-wrap gap-2">
                   {PLAN_CATEGORIES.map((c) => (
-                    <button
+                    <AnchorPressable
                       key={c.id}
                       type="button"
+                      minTouch={false}
                       onClick={() => setCategory(c.id)}
-                      className={`px-3 py-1.5 rounded-full text-[12px] font-medium transition-colors ${
+                      className={`px-3 py-2 min-h-10 rounded-full text-[12px] font-medium ${
                         category === c.id
-                          ? 'bg-white text-[#0a1628]'
-                          : 'bg-white/[0.08] text-white/65 hover:bg-white/[0.12]'
+                          ? 'bg-[var(--color-text-primary)] text-[#050d28]'
+                          : 'bg-white/[0.08] text-white/65 ring-1 ring-white/[0.08]'
                       }`}
                     >
                       {c.label}
-                    </button>
+                    </AnchorPressable>
                   ))}
                 </div>
                 <div className="flex gap-2 pt-1">
@@ -189,13 +177,14 @@ function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
                   >
                     Avbryt
                   </button>
-                  <button
+                  <AnchorPressable
                     type="submit"
                     disabled={!title.trim() || saving}
-                    className={`${anchorPrimaryButtonClass} flex-1 h-11 text-[14px]`}
+                    minTouch={false}
+                    className="flex-1 h-11 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold text-[14px] anchor-elev-1"
                   >
                     Spara
-                  </button>
+                  </AnchorPressable>
                 </div>
               </motion.form>
             ) : (
@@ -214,8 +203,8 @@ function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
           </AnimatePresence>
         </div>
 
-        <div className="px-5 pb-8 pt-2" style={{ paddingBottom: 'max(2rem, env(safe-area-inset-bottom))' }}>
-          <div className="flex items-center gap-4 text-[11px] text-white/35">
+        <div className="pt-4 mt-2 border-t border-white/[0.06]">
+          <div className="flex flex-wrap items-center gap-4 text-[11px] text-white/35">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: EVENT_COLORS.bill }} />
               Fasta & abonnemang
@@ -230,8 +219,7 @@ function DayDetailPanel({ date, events, onClose, onAdd, onRemove, saving }) {
             </span>
           </div>
         </div>
-      </motion.div>
-    </>
+    </AnchorSheet>
   );
 }
 
@@ -424,18 +412,15 @@ export default function PlanCalendar({ profile, onSavePlannedEvents }) {
         </motion.button>
       )}
 
-      <AnimatePresence>
-        {panelOpen && (
-          <DayDetailPanel
-            date={selectedDate}
-            events={selectedEvents}
-            onClose={() => setPanelOpen(false)}
-            onAdd={handleAdd}
-            onRemove={handleRemove}
-            saving={saving}
-          />
-        )}
-      </AnimatePresence>
+      <DayDetailPanel
+        isOpen={panelOpen}
+        date={selectedDate}
+        events={selectedEvents}
+        onClose={() => setPanelOpen(false)}
+        onAdd={handleAdd}
+        onRemove={handleRemove}
+        saving={saving}
+      />
     </div>
   );
 }

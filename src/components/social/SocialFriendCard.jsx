@@ -3,12 +3,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import ProfileAvatar from './ProfileAvatar';
 import { Eye, BarChart2, Ghost, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 const PRIVACY_ICONS = {
-  full: { Icon: Eye, color: '#34D399', label: 'Full' },
-  hybrid: { Icon: BarChart2, color: '#9FB5FF', label: 'Hybrid' },
-  ghost: { Icon: Ghost, color: '#94A3B8', label: 'Ghost' },
+  full: { Icon: Eye, className: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/25', label: 'Full' },
+  hybrid: { Icon: BarChart2, className: 'bg-[var(--color-accent)]/15 text-[var(--color-accent)] ring-[var(--color-accent)]/25', label: 'Hybrid' },
+  ghost: { Icon: Ghost, className: 'bg-white/10 text-white/55 ring-white/15', label: 'Ghost' },
 };
 
 export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
@@ -20,7 +20,7 @@ export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
       initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="flex items-center gap-3 p-3 rounded-2xl border border-white/[0.08] bg-white/[0.03]"
+      className="flex items-center gap-3 p-3 min-h-[4.5rem] rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]"
     >
       <ProfileAvatar profile={friend} size={48} />
 
@@ -29,32 +29,25 @@ export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
           @{friend.username || 'anonym'}
         </p>
         {friend.bio && (
-          <p className="text-[13px] text-white/45 truncate mt-0.5">{friend.bio}</p>
+          <p className="anchor-type-body-sm truncate mt-0.5">{friend.bio}</p>
         )}
       </div>
 
-      <div
-        className="flex items-center gap-1 px-2 py-1 rounded-full flex-shrink-0"
-        style={{ background: `${privacy.color}15`, border: `1px solid ${privacy.color}30` }}
-      >
-        <Ic className="w-3 h-3" style={{ color: privacy.color }} />
-        <span className="text-[10px] font-bold" style={{ color: privacy.color }}>
-          {privacy.label}
-        </span>
+      <div className={`flex items-center gap-1 px-2 py-1 rounded-full flex-shrink-0 ring-1 ${privacy.className}`}>
+        <Ic className="w-3 h-3" />
+        <span className="text-[10px] font-bold">{privacy.label}</span>
       </div>
 
       {onRemove && (
-        <button
+        <AnchorPressable
           type="button"
+          minTouch={false}
           onClick={() => onRemove(friend)}
-          className={cn(
-            'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
-            'bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition-colors',
-          )}
+          className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 bg-rose-500/10 text-rose-300"
           aria-label="Ta bort vän"
         >
           <X className="w-4 h-4" />
-        </button>
+        </AnchorPressable>
       )}
     </motion.div>
   );

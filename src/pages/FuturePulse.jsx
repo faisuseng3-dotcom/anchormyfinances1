@@ -39,7 +39,7 @@ export default function FuturePulse() {
         backHref={createPageUrl('FuturePulse')}
       >
         {runwayMonths != null && runwayMonths > 0 && (
-          <p className={`${sectionSubtitleClass} mb-4 rounded-xl px-4 py-3 border border-white/[0.08] bg-white/[0.04]`}>
+          <p className={`${sectionSubtitleClass} mb-4 rounded-[var(--anchor-radius-lg)] px-4 py-3 anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]`}>
             Bufferten räcker ungefär{' '}
             <span className="text-white font-medium tabular-nums">{runwayMonths}</span>
             {' '}månad{runwayMonths === 1 ? '' : 'er'} utan ny inkomst.

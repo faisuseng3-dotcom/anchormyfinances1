@@ -40,7 +40,7 @@ export function DashboardSection({
   const actionEl =
     action ||
     (actionHref ? (
-      <Link to={actionHref} className="flex items-center gap-0.5 text-[14px] font-medium text-white/55 hover:text-white/90 transition-colors">
+      <Link to={actionHref} className="flex items-center gap-0.5 min-h-12 px-1 text-[14px] font-medium text-white/55 hover:text-white/90 anchor-pressable">
         {actionLabel}
         <ChevronRight className="w-4 h-4" />
       </Link>
@@ -112,7 +112,7 @@ export function DashboardListRow({
 
   if (href) {
     return (
-      <Link to={href} className={`${anchorListRowClass} no-underline ${className}`} {...rest}>
+      <Link to={href} className={`${anchorListRowClass} min-h-12 anchor-pressable no-underline ${className}`} {...rest}>
         {inner}
       </Link>
     );
@@ -120,7 +120,7 @@ export function DashboardListRow({
 
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} className={`${anchorListRowClass} ${className}`} {...rest}>
+      <button type="button" onClick={onClick} className={`${anchorListRowClass} min-h-12 anchor-pressable ${className}`} {...rest}>
         {inner}
       </button>
     );

@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronRight, X } from 'lucide-react';
 import { createPageUrl } from '@/utils';
@@ -8,11 +7,10 @@ import { KALKYLATOR_TOOLS, sortTools, toolPageHref } from '@/lib/toolCatalog';
 import {
   anchorIconButtonClass,
   anchorInputClass,
-  anchorZoneClass,
-  elevatedSheet,
   sectionMetaClass,
-  sectionSubtitleClass,
 } from '@/lib/anchorTheme';
+import AnchorSheet from '@/components/ui-premium/AnchorSheet';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import { DashboardDivider, DashboardListRow } from './DashboardChrome';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
@@ -53,105 +51,77 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <AnchorSheet
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Kalkylator"
+      subtitle="Vad vill du räkna på?"
+      maxHeight="min(78dvh, 640px)"
+      headerRight={
+        <AnchorPressable onClick={handleClose} className={anchorIconButtonClass} aria-label="Stäng">
+          <X className="w-4 h-4" />
+        </AnchorPressable>
+      }
+    >
+      {profile?.income > 0 && (
+        <div className="anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white/[0.04] ring-1 ring-white/[0.08] px-4 py-4 mb-5">
+          <p className={sectionMetaClass}>Kvar den här månaden</p>
+          <p className="text-[26px] font-light text-white tabular-nums mt-1 tracking-tight">
+            {fmt(safeToSpend)} kr
+          </p>
+        </div>
+      )}
+
+      {profile && (
         <>
-          <motion.div
-            key="kalk-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-            onClick={handleClose}
-          />
-
-          <motion.div
-            key="kalk-sheet"
-            initial={{ y: '100%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 32, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-[32px] overflow-hidden max-h-[78vh] flex flex-col"
-            style={elevatedSheet()}
-          >
-            <div className="flex justify-center pt-3 pb-1 shrink-0">
-              <div className="w-9 h-1 rounded-full bg-white/20" />
-            </div>
-
-            <div className={`${anchorZoneClass} shrink-0 flex items-center justify-between pb-3`}>
-              <div>
-                <h2 className="text-[17px] font-semibold text-white tracking-tight">Kalkylator</h2>
-                <p className={`${sectionSubtitleClass} mt-0.5`}>Vad vill du räkna på?</p>
-              </div>
-              <button type="button" onClick={handleClose} aria-label="Stäng" className={anchorIconButtonClass}>
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className={`${anchorZoneClass} overflow-y-auto pb-10`}>
-              {profile?.income > 0 && (
-                <div className="rounded-xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 mb-4">
-                  <p className={sectionMetaClass}>Kvar den här månaden</p>
-                  <p className="text-[22px] font-semibold text-white tabular-nums mt-0.5">
-                    {fmt(safeToSpend)} kr
-                  </p>
-                </div>
-              )}
-
-              {profile && (
-                <>
-                  <p className={sectionMetaClass}>Snabbräkning</p>
-                  <div className="flex gap-2 mt-1.5">
-                    <input
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="Vad kostar det?"
-                      value={quickAmount}
-                      onChange={(e) => setQuickAmount(e.target.value)}
-                      className={`${anchorInputClass} flex-1`}
-                    />
-                    <span className="flex items-center text-[15px] text-white/40 pr-1">kr</span>
-                  </div>
-                  {quickInsight && (
-                    <p className="text-[14px] text-white/65 leading-relaxed mt-2.5">{quickInsight}</p>
-                  )}
-                  <DashboardDivider className="my-5" />
-                </>
-              )}
-
-              {calcItems.map((item, i) => {
-                const Icon = item.icon;
-                return (
-                  <React.Fragment key={item.id}>
-                    {i > 0 && <DashboardDivider />}
-                    <DashboardListRow
-                      href={toolPageHref(item)}
-                      onClick={handleClose}
-                      leading={
-                        <div className="w-10 h-10 rounded-xl bg-[#6B9FFF]/12 border border-[#6B9FFF]/20 flex items-center justify-center">
-                          <Icon className="w-5 h-5 text-[#9FB5FF]" />
-                        </div>
-                      }
-                      title={item.question}
-                      subtitle={item.hint}
-                    />
-                  </React.Fragment>
-                );
-              })}
-
-              <DashboardDivider className="my-4" />
-              <Link
-                to={createPageUrl('ProTools')}
-                onClick={handleClose}
-                className="flex items-center justify-center gap-1 py-2 text-[14px] font-medium text-white/45 hover:text-white/70 no-underline"
-              >
-                Fler verktyg
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </motion.div>
+          <p className={sectionMetaClass}>Snabbräkning</p>
+          <div className="flex gap-2 mt-2">
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="Vad kostar det?"
+              value={quickAmount}
+              onChange={(e) => setQuickAmount(e.target.value)}
+              className={`${anchorInputClass} flex-1`}
+            />
+            <span className="flex items-center text-[15px] text-white/40 pr-1">kr</span>
+          </div>
+          {quickInsight && (
+            <p className="anchor-type-body-sm mt-3">{quickInsight}</p>
+          )}
+          <DashboardDivider className="my-5" />
         </>
       )}
-    </AnimatePresence>
+
+      {calcItems.map((item, i) => {
+        const Icon = item.icon;
+        return (
+          <React.Fragment key={item.id}>
+            {i > 0 && <DashboardDivider />}
+            <DashboardListRow
+              href={toolPageHref(item)}
+              onClick={handleClose}
+              leading={
+                <div className="w-11 h-11 rounded-[var(--anchor-radius-md)] bg-[var(--color-accent)]/12 ring-1 ring-[var(--color-accent)]/20 flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-[var(--color-accent)]" />
+                </div>
+              }
+              title={item.question}
+              subtitle={item.hint}
+            />
+          </React.Fragment>
+        );
+      })}
+
+      <DashboardDivider className="my-4" />
+      <Link
+        to={createPageUrl('ProTools')}
+        onClick={handleClose}
+        className="flex items-center justify-center gap-1 py-3 text-[14px] font-medium text-white/45 hover:text-white/70 no-underline anchor-pressable"
+      >
+        Fler verktyg
+        <ChevronRight className="w-4 h-4" />
+      </Link>
+    </AnchorSheet>
   );
 }

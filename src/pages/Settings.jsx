@@ -7,9 +7,13 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight, RefreshCw, TrendingUp, Users, GitBranch, Info } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight,
+  RefreshCw, TrendingUp, Users, GitBranch, Info,
+} from 'lucide-react';
 import { ANCHOR_COACH_DISCLAIMER } from '@/lib/disclaimerCopy';
-import PageShell from '@/components/layout/PageShell';
+import PageShell, { GlassSection } from '@/components/layout/PageShell';
 import {
   DashboardDivider,
   DashboardListRow,
@@ -17,10 +21,10 @@ import {
 } from '@/components/dashboard/DashboardChrome';
 import {
   anchorInputClass,
-  anchorPrimaryButtonClass,
   anchorSecondaryButtonClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
+import { staggerItem } from '@/lib/motionPresets';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
@@ -28,11 +32,13 @@ import GamificationSection from '@/components/gamification/GamificationSection';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AppStructurePanel from '@/components/settings/AppStructurePanel';
 import AnchorAIStackPanel from '@/components/settings/AnchorAIStackPanel';
+import { SettingsRowIcon } from '@/components/settings/SettingsPanel';
 import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
 import DayPicker from '@/components/onboarding/DayPicker';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const categories = [
   { id: 'entertainment', label: 'Nöje' },
@@ -48,12 +54,40 @@ function FieldRow({ label, icon: Icon, children }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
-        {Icon && <Icon className="w-3.5 h-3.5 text-[#9FB5FF]" />}
-        <Label className="text-[13px] font-medium text-white/50">{label}</Label>
+        {Icon && <Icon className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
+        <Label className="anchor-type-body-sm text-white/50">{label}</Label>
       </div>
       {children}
     </div>
   );
+}
+
+function SettingsHero({ formData, formatNumber }) {
+  const subCount = formData.subscriptions?.length || 0;
+  const loanCount = formData.loans?.length || 0;
+
+  return (
+    <div className="anchor-premium-hero">
+      <div className="relative z-10 anchor-hero-asymmetric">
+        <div className="min-w-0">
+          <p className="anchor-type-body-sm text-white/45">Din profil</p>
+          <p className="anchor-type-headline text-[20px] mt-1 tabular-nums">
+            {formatNumber(formData.income) || '0'} kr/mån
+          </p>
+          <p className="anchor-type-body-sm mt-2">
+            Buffert {formatNumber(formData.buffer) || '0'} kr · {subCount} abonnemang · {loanCount} lån
+          </p>
+        </div>
+        <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-[var(--color-accent)]/10 ring-1 ring-[var(--color-accent)]/20 flex items-center justify-center anchor-elev-1 shrink-0">
+          <Wallet className="w-5 h-5 text-[var(--color-accent)]" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StaggerBlock({ index, children }) {
+  return <motion.div {...staggerItem(index)}>{children}</motion.div>;
 }
 
 export default function Settings() {
@@ -76,36 +110,42 @@ export default function Settings() {
       if (!isPersisted || !profile?.id) return;
       await base44.entities.FinancialProfile.update(profile.id, data);
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['financialProfile'] }); setSaving(false); }
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['financialProfile'] }); setSaving(false); },
   });
 
-  const parseNumber = (v) => parseInt(v.replace(/\s/g, '')) || 0;
-  const formatNumber = (v) => v ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
+  const parseNumber = (v) => parseInt(v.replace(/\s/g, ''), 10) || 0;
+  const formatNumber = (v) => (v ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '');
 
   const handleSave = async () => { setSaving(true); await updateProfile.mutateAsync(formData); };
 
   const addSubscription = () => {
     if (!newSub.name || !newSub.amount) return;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       subscriptions: [...(prev.subscriptions || []), {
-        name: newSub.name, amount: parseInt(newSub.amount),
-        category: newSub.category, billingDay: parseInt(newSub.billingDay) || null, frequency: newSub.frequency,
-      }]
+        name: newSub.name,
+        amount: parseInt(newSub.amount, 10),
+        category: newSub.category,
+        billingDay: parseInt(newSub.billingDay, 10) || null,
+        frequency: newSub.frequency,
+      }],
     }));
     setNewSub({ name: '', amount: '', category: 'other', billingDay: '', frequency: 'monthly' });
     setShowAddSub(false);
   };
 
-  const removeSubscription = (i) => setFormData(prev => ({ ...prev, subscriptions: prev.subscriptions.filter((_, idx) => idx !== i) }));
+  const removeSubscription = (i) =>
+    setFormData((prev) => ({ ...prev, subscriptions: prev.subscriptions.filter((_, idx) => idx !== i) }));
 
   const addLoan = async () => {
     if (!newLoan.name || !newLoan.totalAmount) return;
     const updatedLoans = [...(formData.loans || []), {
-      name: newLoan.name, totalAmount: parseNumber(newLoan.totalAmount),
-      interestRate: parseFloat(newLoan.interestRate) || 0, monthlyPayment: parseNumber(newLoan.monthlyPayment)
+      name: newLoan.name,
+      totalAmount: parseNumber(newLoan.totalAmount),
+      interestRate: parseFloat(newLoan.interestRate) || 0,
+      monthlyPayment: parseNumber(newLoan.monthlyPayment),
     }];
-    setFormData(prev => ({ ...prev, loans: updatedLoans }));
+    setFormData((prev) => ({ ...prev, loans: updatedLoans }));
     setNewLoan({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '' });
     setShowAddLoan(false);
     if (isPersisted && profile?.id) {
@@ -116,7 +156,7 @@ export default function Settings() {
 
   const removeLoan = async (i) => {
     const updatedLoans = formData.loans.filter((_, idx) => idx !== i);
-    setFormData(prev => ({ ...prev, loans: updatedLoans }));
+    setFormData((prev) => ({ ...prev, loans: updatedLoans }));
     if (!isPersisted || !profile?.id) return;
     await base44.entities.FinancialProfile.update(profile.id, { loans: updatedLoans });
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
@@ -126,7 +166,7 @@ export default function Settings() {
     return <PageShellSkeleton sections={4} />;
   }
 
-  const inputStyle = anchorInputClass;
+  const krSuffix = <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/40">kr</span>;
 
   return (
     <PageShell
@@ -134,93 +174,121 @@ export default function Settings() {
       subtitle="Konto"
       backHref={createPageUrl('Dashboard')}
       action={
-        <button
+        <AnchorPressable
           type="button"
+          minTouch={false}
           onClick={handleSave}
           disabled={saving}
-          className={`${anchorPrimaryButtonClass} !h-10 !px-5 !text-sm whitespace-nowrap`}
+          className="h-10 px-5 rounded-full bg-[var(--color-text-primary)] text-[#050d28] text-sm font-semibold disabled:opacity-40 anchor-elev-2 whitespace-nowrap"
         >
-          {saving ? 'Sparar...' : 'Spara'}
-        </button>
+          {saving ? 'Sparar…' : 'Spara'}
+        </AnchorPressable>
       }
     >
-        <DashboardSection nested title="Budget">
+      <StaggerBlock index={0}>
+        <SettingsHero formData={formData} formatNumber={formatNumber} />
+      </StaggerBlock>
+
+      <StaggerBlock index={1}>
+        <GlassSection title="Budget">
           <div className="space-y-4">
             <FieldRow label="Månatlig nettoinkomst" icon={Wallet}>
               <div className="relative">
-                <Input type="text" value={formatNumber(formData.income)}
+                <Input
+                  type="text"
+                  value={formatNumber(formData.income)}
                   onChange={(e) => setFormData({ ...formData, income: parseNumber(e.target.value) })}
-                  className={inputStyle + " pr-10"} />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'var(--color-text-muted)' }}>kr</span>
+                  className={`${anchorInputClass} pr-10`}
+                />
+                {krSuffix}
               </div>
             </FieldRow>
             <FieldRow label="Boendekostnad" icon={Home}>
               <div className="relative">
-                <Input type="text" value={formatNumber(formData.housingCost)}
+                <Input
+                  type="text"
+                  value={formatNumber(formData.housingCost)}
                   onChange={(e) => setFormData({ ...formData, housingCost: parseNumber(e.target.value) })}
-                  className={inputStyle + " pr-10"} />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'var(--color-text-muted)' }}>kr</span>
+                  className={`${anchorInputClass} pr-10`}
+                />
+                {krSuffix}
               </div>
             </FieldRow>
             <FieldRow label="Buffert" icon={PiggyBank}>
               <div className="relative">
-                <Input type="text" value={formatNumber(formData.buffer)}
+                <Input
+                  type="text"
+                  value={formatNumber(formData.buffer)}
                   onChange={(e) => setFormData({ ...formData, buffer: parseNumber(e.target.value) })}
-                  className={inputStyle + " pr-10"} />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'var(--color-text-muted)' }}>kr</span>
+                  className={`${anchorInputClass} pr-10`}
+                />
+                {krSuffix}
               </div>
             </FieldRow>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FieldRow label="Sparmål (namn)" icon={Target}>
-                <Input placeholder="ex. Resa" value={formData.savingsGoalName || ''}
+                <Input
+                  placeholder="ex. Resa"
+                  value={formData.savingsGoalName || ''}
                   onChange={(e) => setFormData({ ...formData, savingsGoalName: e.target.value })}
-                  className={inputStyle} />
+                  className={anchorInputClass}
+                />
               </FieldRow>
               <FieldRow label="Belopp">
                 <div className="relative">
-                  <Input type="text" value={formatNumber(formData.savingsGoal)}
+                  <Input
+                    type="text"
+                    value={formatNumber(formData.savingsGoal)}
                     onChange={(e) => setFormData({ ...formData, savingsGoal: parseNumber(e.target.value) })}
-                    className={inputStyle + " pr-10"} />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs" style={{ color: 'var(--color-text-muted)' }}>kr</span>
+                    className={`${anchorInputClass} pr-10`}
+                  />
+                  {krSuffix}
                 </div>
               </FieldRow>
             </div>
           </div>
-        </DashboardSection>
+        </GlassSection>
+      </StaggerBlock>
 
-        <DashboardSection nested title="Abonnemang">
+      <StaggerBlock index={2}>
+        <GlassSection title="Abonnemang">
           <div className="space-y-2">
             {(formData.subscriptions || []).map((sub, i) => (
               <React.Fragment key={i}>
                 {i > 0 && <DashboardDivider />}
-                <div className="flex items-center gap-3 py-3">
+                <div className="flex items-center gap-3 py-3 min-h-12">
                   <div className="flex-1 min-w-0">
                     <p className="text-[15px] font-medium text-white">{sub.name}</p>
-                    <p className="text-[13px] text-white/45 mt-0.5">
-                      {categories.find(c => c.id === sub.category)?.label || 'Övrigt'}
+                    <p className="anchor-type-body-sm mt-0.5">
+                      {categories.find((c) => c.id === sub.category)?.label || 'Övrigt'}
                       {sub.billingDay ? ` · dag ${sub.billingDay}` : ''}
                     </p>
                   </div>
                   <span className="text-[15px] font-semibold text-white tabular-nums">{sub.amount} kr</span>
-                  <button type="button" onClick={() => removeSubscription(i)} className="w-8 h-8 rounded-full flex items-center justify-center bg-rose-500/15 text-rose-300">
+                  <AnchorPressable
+                    type="button"
+                    minTouch={false}
+                    onClick={() => removeSubscription(i)}
+                    className="w-10 h-10 rounded-full bg-rose-500/15 text-rose-300 flex items-center justify-center"
+                  >
                     <X className="w-3.5 h-3.5" />
-                  </button>
+                  </AnchorPressable>
                 </div>
               </React.Fragment>
             ))}
 
             {showAddSub ? (
               <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
-                <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className="h-11 rounded-xl text-sm" />
-                <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className="h-11 rounded-xl text-sm" />
-                <DayPicker value={parseInt(newSub.billingDay) || 15} onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })} label="Dragningsdag" hint="Standard: 15" />
+                <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className={anchorInputClass} />
+                <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className={anchorInputClass} />
+                <DayPicker value={parseInt(newSub.billingDay, 10) || 15} onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })} label="Dragningsdag" hint="Standard: 15" />
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Select value={newSub.category} onValueChange={(v) => setNewSub({ ...newSub, category: v })}>
-                    <SelectTrigger className="h-11 rounded-xl flex-1 text-sm"><SelectValue /></SelectTrigger>
-                    <SelectContent>{categories.map(c => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}</SelectContent>
+                    <SelectTrigger className={`${anchorInputClass} flex-1`}><SelectValue /></SelectTrigger>
+                    <SelectContent>{categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}</SelectContent>
                   </Select>
                   <Select value={newSub.frequency} onValueChange={(v) => setNewSub({ ...newSub, frequency: v })}>
-                    <SelectTrigger className="h-11 rounded-xl flex-1 text-sm"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className={`${anchorInputClass} flex-1`}><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="monthly">Månad</SelectItem>
                       <SelectItem value="quarterly">Kvartal</SelectItem>
@@ -228,20 +296,30 @@ export default function Settings() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <button onClick={() => setShowAddSub(false)} className="flex-1 h-11 rounded-full text-sm font-semibold" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--color-text-secondary)' }}>Avbryt</button>
-                  <button onClick={addSubscription} className="flex-1 h-11 rounded-full text-sm font-semibold text-white" style={{ background: 'var(--color-accent)' }}>Lägg till</button>
+                <div className="flex gap-2">
+                  <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddSub(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]">
+                    Avbryt
+                  </AnchorPressable>
+                  <AnchorPressable type="button" minTouch={false} onClick={addSubscription} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1">
+                    Lägg till
+                  </AnchorPressable>
                 </div>
               </div>
             ) : (
-              <button type="button" onClick={() => setShowAddSub(true)} className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-medium text-white/55 hover:text-white/80">
+              <AnchorPressable
+                type="button"
+                onClick={() => setShowAddSub(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 min-h-12 text-[14px] font-medium text-white/55"
+              >
                 <Plus className="w-4 h-4" /> Lägg till abonnemang
-              </button>
+              </AnchorPressable>
             )}
           </div>
-        </DashboardSection>
+        </GlassSection>
+      </StaggerBlock>
 
-        <DashboardSection nested title="Lån">
+      <StaggerBlock index={3}>
+        <GlassSection title="Lån">
           {(formData.loans || []).length > 0 && (
             <ContextualLessonLink profile={formData} transactions={transactions} className="block mb-4" />
           )}
@@ -249,130 +327,155 @@ export default function Settings() {
             {(formData.loans || []).map((loan, i) => (
               <React.Fragment key={i}>
                 {i > 0 && <DashboardDivider />}
-                <div className="flex items-center gap-3 py-3">
+                <div className="flex items-center gap-3 py-3 min-h-12">
                   <div className="flex-1 min-w-0">
                     <p className="text-[15px] font-medium text-white">{loan.name}</p>
-                    <p className="text-[13px] text-white/45">{loan.interestRate}% ränta · {formatNumber(loan.monthlyPayment)} kr/mån</p>
+                    <p className="anchor-type-body-sm">
+                      {loan.interestRate}% ränta · {formatNumber(loan.monthlyPayment)} kr/mån
+                    </p>
                   </div>
                   <span className="text-[15px] font-semibold text-white tabular-nums">{formatNumber(loan.totalAmount)} kr</span>
-                  <button type="button" onClick={() => removeLoan(i)} className="w-8 h-8 rounded-full flex items-center justify-center bg-rose-500/15 text-rose-300">
+                  <AnchorPressable
+                    type="button"
+                    minTouch={false}
+                    onClick={() => removeLoan(i)}
+                    className="w-10 h-10 rounded-full bg-rose-500/15 text-rose-300 flex items-center justify-center"
+                  >
                     <X className="w-3.5 h-3.5" />
-                  </button>
+                  </AnchorPressable>
                 </div>
               </React.Fragment>
             ))}
 
             {showAddLoan ? (
               <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
-                <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className="h-11 rounded-xl text-sm" />
+                <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className={anchorInputClass} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className="h-11 rounded-xl text-sm" />
-                  <Input type="number" step="0.1" placeholder="Ränta %" value={newLoan.interestRate} onChange={(e) => setNewLoan({ ...newLoan, interestRate: e.target.value })} className="h-11 rounded-xl text-sm" />
+                  <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className={anchorInputClass} />
+                  <Input type="number" step="0.1" placeholder="Ränta %" value={newLoan.interestRate} onChange={(e) => setNewLoan({ ...newLoan, interestRate: e.target.value })} className={anchorInputClass} />
                 </div>
-                <Input placeholder="Månadskostnad (kr)" value={newLoan.monthlyPayment} onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })} className="h-11 rounded-xl text-sm" />
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <button onClick={() => setShowAddLoan(false)} className="flex-1 h-11 rounded-full text-sm font-semibold" style={{ background: 'var(--color-surface)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--color-text-secondary)' }}>Avbryt</button>
-                  <button onClick={addLoan} className="flex-1 h-11 rounded-full text-sm font-semibold text-white" style={{ background: 'var(--color-warning)' }}>Lägg till</button>
+                <Input placeholder="Månadskostnad (kr)" value={newLoan.monthlyPayment} onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })} className={anchorInputClass} />
+                <div className="flex gap-2">
+                  <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddLoan(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]">
+                    Avbryt
+                  </AnchorPressable>
+                  <AnchorPressable type="button" minTouch={false} onClick={addLoan} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-warning)] text-[#050d28]">
+                    Lägg till
+                  </AnchorPressable>
                 </div>
               </div>
             ) : (
-              <button type="button" onClick={() => setShowAddLoan(true)} className="w-full flex items-center justify-center gap-2 py-3 text-[14px] font-medium text-white/55 hover:text-white/80">
+              <AnchorPressable
+                type="button"
+                onClick={() => setShowAddLoan(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 min-h-12 text-[14px] font-medium text-white/55"
+              >
                 <Plus className="w-4 h-4" /> Lägg till lån
-              </button>
+              </AnchorPressable>
             )}
           </div>
-        </DashboardSection>
+        </GlassSection>
+      </StaggerBlock>
 
+      <StaggerBlock index={4}>
         <AppStructurePanel />
+      </StaggerBlock>
 
+      <StaggerBlock index={5}>
         <AnchorAIStackPanel />
+      </StaggerBlock>
 
+      <StaggerBlock index={6}>
         <DashboardSection nested title="Mer">
           <DashboardListRow
             href={createPageUrl('Galaxy')}
-            leading={<GitBranch className="w-5 h-5 text-[#9FB5FF]" />}
+            leading={<SettingsRowIcon icon={GitBranch} />}
             title="Jämför"
             subtitle="Se hur andra fördelar lönen — publicera anonymt om du vill"
           />
           <DashboardDivider />
           <DashboardListRow
             href={createPageUrl('Social')}
-            leading={<Users className="w-5 h-5 text-white/60" />}
+            leading={<SettingsRowIcon icon={Users} muted />}
             title="Vänner & profil"
             subtitle="@användarnamn, vänner och integritet"
           />
           <DashboardDivider />
           <DashboardListRow
             href={`${createPageUrl('TransactionHistory')}?tab=insights`}
-            leading={<TrendingUp className="w-5 h-5 text-[#9FB5FF]" />}
+            leading={<SettingsRowIcon icon={TrendingUp} />}
             title="Historik & insikter"
             subtitle="Transaktioner, trender och kategorier"
           />
           <DashboardDivider />
           <DashboardListRow
             href={createPageUrl('SecurityInfo')}
-            leading={<Shield className="w-5 h-5 text-[#9FB5FF]" />}
+            leading={<SettingsRowIcon icon={Shield} />}
             title="Säkerhet & data"
             subtitle="Hur vi skyddar din information"
           />
         </DashboardSection>
+      </StaggerBlock>
 
+      <StaggerBlock index={7}>
         <DashboardSection nested title="Utmaningar & poäng">
           <GamificationSection profile={profile} transactions={transactions} />
         </DashboardSection>
+      </StaggerBlock>
 
-        {/* Invite */}
+      <StaggerBlock index={8}>
         <InviteUserSection />
+      </StaggerBlock>
 
-        <DashboardSection nested title="Om coachningen">
+      <StaggerBlock index={9}>
+        <GlassSection title="Om coachningen">
           <div className="flex items-start gap-3">
-            <Info className="w-4 h-4 text-[#9FB5FF] flex-shrink-0 mt-0.5" />
+            <Info className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
             <div>
-              <p className={`${sectionSubtitleClass} leading-relaxed`}>
-                {ANCHOR_COACH_DISCLAIMER}
-              </p>
+              <p className={`${sectionSubtitleClass} leading-relaxed`}>{ANCHOR_COACH_DISCLAIMER}</p>
               <Link
                 to="/TermsOfService"
-                className="inline-flex items-center gap-1 text-[13px] text-white/55 hover:text-white/80 mt-3 no-underline"
+                className="inline-flex items-center gap-1 min-h-11 text-[13px] text-white/55 hover:text-white/80 mt-2 no-underline anchor-pressable"
               >
                 Läs användarvillkor
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </div>
-        </DashboardSection>
+        </GlassSection>
+      </StaggerBlock>
 
-        {/* Legal */}
-        <div className="flex justify-center gap-4 sm:gap-6 py-2 flex-wrap">
-          <Link to="/TermsOfService" className="text-xs text-white/45 hover:text-white/70 transition-colors">Användarvillkor</Link>
-          <Link to="/PrivacyPolicy" className="text-xs text-white/45 hover:text-white/70 transition-colors">Integritetspolicy</Link>
-        </div>
+      <div className="flex justify-center gap-4 sm:gap-6 py-2 flex-wrap">
+        <Link to="/TermsOfService" className="text-xs text-white/45 hover:text-white/70 anchor-pressable px-2 py-1">Användarvillkor</Link>
+        <Link to="/PrivacyPolicy" className="text-xs text-white/45 hover:text-white/70 anchor-pressable px-2 py-1">Integritetspolicy</Link>
+      </div>
 
-        <button
-          type="button"
-          onClick={() => {
-            if (isBusiness) setPersonal(); else setBusiness();
-            base44.auth.logout(window.location.origin);
-          }}
-          className={`w-full ${anchorSecondaryButtonClass}`}
-        >
-          <span className="flex items-center justify-center gap-2">
-            <RefreshCw className="w-4 h-4" />
-            Byt till {isBusiness ? 'Personal' : 'Business'} &amp; logga ut
-          </span>
-        </button>
+      <AnchorPressable
+        type="button"
+        onClick={() => {
+          if (isBusiness) setPersonal();
+          else setBusiness();
+          base44.auth.logout(window.location.origin);
+        }}
+        className={`w-full ${anchorSecondaryButtonClass} rounded-[var(--anchor-radius-lg)]`}
+      >
+        <span className="flex items-center justify-center gap-2">
+          <RefreshCw className="w-4 h-4" />
+          Byt till {isBusiness ? 'Personal' : 'Business'} &amp; logga ut
+        </span>
+      </AnchorPressable>
 
-        <button
-          type="button"
-          onClick={() => base44.auth.logout(window.location.origin)}
-          className="w-full h-14 rounded-2xl text-sm font-semibold text-red-200 bg-red-500/15 border border-red-400/25 hover:bg-red-500/25 transition-colors"
-        >
-          <span className="flex items-center justify-center gap-2">
-            <LogOut className="w-4 h-4" /> Logga ut
-          </span>
-        </button>
+      <AnchorPressable
+        type="button"
+        onClick={() => base44.auth.logout(window.location.origin)}
+        className="w-full min-h-12 rounded-[var(--anchor-radius-lg)] text-sm font-semibold text-rose-200 bg-rose-500/15 ring-1 ring-rose-400/25"
+      >
+        <span className="flex items-center justify-center gap-2">
+          <LogOut className="w-4 h-4" /> Logga ut
+        </span>
+      </AnchorPressable>
 
-        <DeleteAccountSection profile={profile} />
+      <DeleteAccountSection profile={profile} />
     </PageShell>
   );
 }

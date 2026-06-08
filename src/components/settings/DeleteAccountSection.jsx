@@ -2,30 +2,26 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Trash2, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 export default function DeleteAccountSection({ profile }) {
-  const [step, setStep] = useState('idle'); // idle | confirm | deleting | done
+  const [step, setStep] = useState('idle');
 
   const handleDelete = async () => {
     setStep('deleting');
     try {
-      // Delete all user data entities
       if (profile?.id) {
         await base44.entities.FinancialProfile.delete(profile.id);
       }
-      // Delete transactions
       const txs = await base44.entities.Transaction.list('-created_date', 500);
       for (const tx of txs) {
         await base44.entities.Transaction.delete(tx.id);
       }
-      // Delete savings deposits
       const deposits = await base44.entities.SavingsDeposit.list('-created_date', 200);
       for (const d of deposits) {
         await base44.entities.SavingsDeposit.delete(d.id);
       }
       setStep('done');
-      // Logout after short delay
       setTimeout(() => base44.auth.logout(), 2000);
     } catch {
       setStep('confirm');
@@ -34,49 +30,53 @@ export default function DeleteAccountSection({ profile }) {
 
   if (step === 'done') {
     return (
-      <div className="p-4 rounded-xl text-center text-sm text-emerald-400 border border-emerald-500/30 bg-emerald-500/10">
-        Ditt konto och all data har raderats. Du loggas ut...
+      <div className="p-4 rounded-[var(--anchor-radius-lg)] text-center text-sm text-emerald-300 ring-1 ring-emerald-400/30 bg-emerald-500/10 anchor-elev-1">
+        Ditt konto och all data har raderats. Du loggas ut…
       </div>
     );
   }
 
   if (step === 'confirm') {
     return (
-      <div className="p-4 rounded-xl border border-rose-500/40 bg-rose-500/10 space-y-3">
-        <div className="flex items-center gap-2 text-rose-400">
+      <div className="p-4 rounded-[var(--anchor-radius-lg)] ring-1 ring-rose-400/30 bg-rose-500/10 space-y-3 anchor-elev-1">
+        <div className="flex items-center gap-2 text-rose-300">
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <p className="text-sm font-semibold">Är du säker?</p>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-white/45 leading-relaxed">
           All din data raderas permanent och kan inte återställas. Din rätt att bli glömd (GDPR art. 17) uppfylls omedelbart.
         </p>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
+          <AnchorPressable
+            type="button"
+            minTouch={false}
             onClick={() => setStep('idle')}
-            className="flex-1 h-10 rounded-xl text-slate-300 border-white/10"
+            className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]"
           >
             Avbryt
-          </Button>
-          <Button
+          </AnchorPressable>
+          <AnchorPressable
+            type="button"
+            minTouch={false}
             onClick={handleDelete}
             disabled={step === 'deleting'}
-            className="flex-1 h-10 rounded-xl bg-rose-600 hover:bg-rose-700 text-white border-0"
+            className="flex-1 h-11 rounded-full text-sm font-semibold bg-rose-500/80 text-white"
           >
-            {step === 'deleting' ? 'Raderar...' : 'Ja, radera allt'}
-          </Button>
+            {step === 'deleting' ? 'Raderar…' : 'Ja, radera allt'}
+          </AnchorPressable>
         </div>
       </div>
     );
   }
 
   return (
-    <button
+    <AnchorPressable
+      type="button"
       onClick={() => setStep('confirm')}
-      className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm text-rose-500/70 hover:text-rose-400 border border-rose-500/20 hover:border-rose-500/40 transition-all"
+      className="w-full flex items-center justify-center gap-2 min-h-12 py-3 rounded-[var(--anchor-radius-lg)] text-sm text-rose-300/80 ring-1 ring-rose-400/25 bg-rose-500/10"
     >
       <Trash2 className="w-4 h-4" />
       Radera mitt konto och all min data
-    </button>
+    </AnchorPressable>
   );
 }
