@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AlertTriangle, Lightbulb, Wallet, TrendingUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 import AINotificationOverlay from './ai-suite/AINotificationOverlay';
@@ -10,7 +11,7 @@ import WealthOptimizerModal from './ai-suite/WealthOptimizerModal';
 function getImpulseNotif(personaName) {
   const configs = {
     Student: {
-      icon: '⚠️',
+      icon: AlertTriangle,
       badge: 'VÄKTAREN',
       badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
       accentColor: '#EF4444',
@@ -20,7 +21,7 @@ function getImpulseNotif(personaName) {
       type: 'impulse'
     },
     Mamma: {
-      icon: '⚠️',
+      icon: AlertTriangle,
       badge: 'VÄKTAREN',
       badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
       accentColor: '#F59E0B',
@@ -30,7 +31,7 @@ function getImpulseNotif(personaName) {
       type: 'impulse'
     },
     Knegare: {
-      icon: '💡',
+      icon: Lightbulb,
       badge: 'PRO INSIKT',
       badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
       accentColor: '#6366F1',
@@ -44,7 +45,7 @@ function getImpulseNotif(personaName) {
 }
 
 const NEGOTIATOR_NOTIF = {
-  icon: '💰',
+  icon: Wallet,
   badge: 'FÖRHANDLAREN',
   badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
   accentColor: '#10B981',
@@ -55,7 +56,7 @@ const NEGOTIATOR_NOTIF = {
 };
 
 const OPPORTUNITY_NOTIF = {
-  icon: '📈',
+  icon: TrendingUp,
   badge: 'STRATEGEN',
   badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
   accentColor: '#A855F7',

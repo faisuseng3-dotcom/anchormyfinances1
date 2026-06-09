@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { X, Plus, CheckCircle2, Camera } from 'lucide-react';
+import { X, Plus, CheckCircle2, Camera, ArrowUpRight, ArrowDownLeft, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const ACCOUNTS = [
@@ -88,15 +88,15 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
 
           {/* Type toggle */}
           <div className="flex gap-2">
-            {[{ id: 'expense', label: '📤 Utgift' }, { id: 'income', label: '📥 Inkomst' }].map(t => (
+            {[{ id: 'expense', label: 'Utgift', Icon: ArrowUpRight }, { id: 'income', label: 'Inkomst', Icon: ArrowDownLeft }].map(t => (
               <button key={t.id} onClick={() => { setType(t.id); setAccount(t.id === 'income' ? '3000' : '5420'); }}
-                className="flex-1 h-10 rounded-xl font-bold text-xs"
+                className="flex-1 h-10 rounded-xl font-bold text-xs inline-flex items-center justify-center gap-1.5"
                 style={{
                   background: type === t.id ? (t.id === 'expense' ? 'rgba(217,95,95,0.08)' : 'rgba(13,115,119,0.08)') : '#F4F6F8',
                   color: type === t.id ? (t.id === 'expense' ? '#E53E3E' : '#0D7377') : '#9AA5B4',
                   border: type === t.id ? `1.5px solid ${t.id === 'expense' ? 'rgba(229,62,62,0.3)' : 'rgba(13,115,119,0.3)'}` : '1.5px solid #F0F2F5',
                 }}>
-                {t.label}
+                <t.Icon className="w-3.5 h-3.5" aria-hidden /> {t.label}
               </button>
             ))}
           </div>
@@ -187,7 +187,7 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-2xl"
                 style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.2)' }}>
                 <CheckCircle2 className="w-4 h-4" style={{ color: '#0D7377' }} />
-                <p className="text-xs font-bold" style={{ color: '#0D7377' }}>Kvitto bifogat ✓</p>
+                <p className="text-xs font-bold inline-flex items-center gap-1" style={{ color: '#0D7377' }}><Check className="w-3.5 h-3.5" aria-hidden /> Kvitto bifogat</p>
                 <button onClick={() => setReceiptUrl(null)} className="ml-auto text-[10px]" style={{ color: '#9AA5B4' }}>Ta bort</button>
               </div>
             ) : (

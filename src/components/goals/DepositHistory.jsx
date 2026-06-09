@@ -73,7 +73,7 @@ export default function DepositHistory({ goalName, type = 'savings', compact = f
               <p className="text-xs text-slate-500 truncate">
                 {dep.source || 'Manuell insättning'}
                 {dep.note ? ` · ${dep.note}` : ''}
-                {dep.verified && <span className="ml-1 text-emerald-500">· Verifierad ✓</span>}
+                {dep.verified && <span className="ml-1 text-emerald-500 inline-flex items-center gap-0.5">· Verifierad <CheckCircle2 className="w-3 h-3 inline" aria-hidden /></span>}
               </p>
             </div>
           </motion.div>

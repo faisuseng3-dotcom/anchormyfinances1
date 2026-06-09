@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { BUDGET_CATEGORY_META, getBudgetBarColor } from '@/lib/budgetCategories';
 import { getCategoryTint } from '@/lib/copilotTheme';
 import CopilotProgressRing from '@/components/ui-premium/copilot/CopilotProgressRing';
+import { CategoryIcon } from '@/lib/anchorIcons';
 
 export default function BudgetCategoryCard({ category, spent, limit, onEdit, index = 0 }) {
   const meta = BUDGET_CATEGORY_META[category] || BUDGET_CATEGORY_META.other;
@@ -25,7 +26,7 @@ export default function BudgetCategoryCard({ category, spent, limit, onEdit, ind
       style={{ background: `linear-gradient(145deg, ${tint.bg}, var(--copilot-bg-card))` }}
     >
       <div className="flex items-center justify-between mb-3">
-        <span className="text-xl">{tint.emoji}</span>
+        <CategoryIcon category={category} size={18} color={tint.accent} />
         {limit > 0 && (
           <CopilotProgressRing
             value={ringPct}

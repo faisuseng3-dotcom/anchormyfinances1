@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Clock } from 'lucide-react';
+import { Shield, Clock, MessageCircle, Check, Moon, PartyPopper, Store } from 'lucide-react';
 
 export default function EmotionalShield({ profile }) {
   const now = new Date();
@@ -35,7 +35,7 @@ export default function EmotionalShield({ profile }) {
           </p>
           <div className="p-4 rounded-xl bg-black/20 border border-amber-500/30">
             <p className="text-sm text-white font-medium mb-2">
-              💭 Fråga dig själv:
+              <MessageCircle className="w-4 h-4 inline mr-1" aria-hidden /> Fråga dig själv:
             </p>
             <p className="text-sm text-slate-300">
               "Kommer detta köp göra mig lycklig om 30 dagar?"
@@ -44,7 +44,7 @@ export default function EmotionalShield({ profile }) {
         </>
       ) : (
         <>
-          <p className="text-emerald-400 font-medium mb-2">✓ Säker köptid</p>
+          <p className="text-emerald-400 font-medium mb-2 inline-flex items-center gap-1"><Check className="w-4 h-4" aria-hidden /> Säker köptid</p>
           <p className="text-sm text-slate-300">
             Du är inte i en risktid för impulsköp just nu.
           </p>
@@ -54,9 +54,9 @@ export default function EmotionalShield({ profile }) {
       <div className="mt-6 p-4 rounded-xl bg-white/5">
         <p className="text-xs text-slate-400 mb-2">Dina risktider:</p>
         <div className="space-y-1 text-sm text-slate-300">
-          <p>🌙 Kvällar efter 20:00</p>
-          <p>🎉 Helger (lördag & söndag)</p>
-          <p>🏬 Köpcentrum (platsbaserat - kommer snart)</p>
+          <p className="inline-flex items-center gap-1.5"><Moon className="w-3.5 h-3.5" aria-hidden /> Kvällar efter 20:00</p>
+          <p className="inline-flex items-center gap-1.5"><PartyPopper className="w-3.5 h-3.5" aria-hidden /> Helger (lördag & söndag)</p>
+          <p className="inline-flex items-center gap-1.5"><Store className="w-3.5 h-3.5" aria-hidden /> Köpcentrum (platsbaserat - kommer snart)</p>
         </div>
       </div>
     </motion.div>

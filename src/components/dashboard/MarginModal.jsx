@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, TrendingUp, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
+import { X, TrendingUp, CheckCircle2, ChevronRight, Loader2, Zap, Film, Building2, Smartphone, Lightbulb, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 const fmt = (v) => v ? Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
 
 const OPTIMIZATIONS = [
-  { id: 1, emoji: '⚡', title: 'Byt elavtal', desc: 'Prismatch med billigaste leverantören just nu', saving: 320, action: 'Byt nu' },
-  { id: 2, emoji: '📺', title: 'Säg upp oanvänd streaming', desc: 'Du betalar för tjänster du knappt använder', saving: 219, action: 'Granska' },
-  { id: 3, emoji: '🏦', title: 'Samla dina lån', desc: 'En kredit med lägre ränta – potentiellt stor besparing', saving: 680, action: 'Simulera' },
-  { id: 4, emoji: '📱', title: 'Billigare mobilabonnemang', desc: 'Prisvärdare alternativ finns på marknaden', saving: 150, action: 'Jämför' },
+  { id: 1, Icon: Zap, title: 'Byt elavtal', desc: 'Prismatch med billigaste leverantören just nu', saving: 320, action: 'Byt nu' },
+  { id: 2, Icon: Film, title: 'Säg upp oanvänd streaming', desc: 'Du betalar för tjänster du knappt använder', saving: 219, action: 'Granska' },
+  { id: 3, Icon: Building2, title: 'Samla dina lån', desc: 'En kredit med lägre ränta – potentiellt stor besparing', saving: 680, action: 'Simulera' },
+  { id: 4, Icon: Smartphone, title: 'Billigare mobilabonnemang', desc: 'Prisvärdare alternativ finns på marknaden', saving: 150, action: 'Jämför' },
 ];
 
 export default function MarginModal({ isOpen, onClose, profile }) {
@@ -40,7 +40,7 @@ export default function MarginModal({ isOpen, onClose, profile }) {
     await new Promise(r => setTimeout(r, 1800));
     setLoading(l => ({ ...l, [opt.id]: false }));
     setOptimized(o => ({ ...o, [opt.id]: opt.saving }));
-    toast.success(`✅ ${opt.title} aktiverat – +${fmt(opt.saving)} kr/mån i marginal!`);
+    toast.success(`${opt.title} aktiverat – +${fmt(opt.saving)} kr/mån i marginal!`);
   };
 
   return (
@@ -84,7 +84,9 @@ export default function MarginModal({ isOpen, onClose, profile }) {
               </motion.p>
               {bonusMargin > 0 && (
                 <motion.p initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-emerald-300 mt-1">+{fmt(bonusMargin)} kr frigörd 🎉</motion.p>
+                  className="text-sm text-emerald-300 mt-1 flex items-center justify-center gap-1">
+                  +{fmt(bonusMargin)} kr frigörd <PartyPopper className="w-4 h-4" />
+                </motion.p>
               )}
             </div>
 
@@ -105,7 +107,9 @@ export default function MarginModal({ isOpen, onClose, profile }) {
             </div>
 
             {/* Optimization list */}
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">💡 Föreslagna optimeringar</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Lightbulb className="w-3.5 h-3.5" /> Föreslagna optimeringar
+            </p>
             <div className="space-y-3">
               {OPTIMIZATIONS.map(opt => {
                 const isDone = !!optimized[opt.id];
@@ -117,7 +121,9 @@ export default function MarginModal({ isOpen, onClose, profile }) {
                       background: isDone ? 'rgba(34,197,94,0.08)' : 'rgba(255,255,255,0.04)',
                       border: `1px solid ${isDone ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.07)'}`,
                     }}>
-                    <span className="text-2xl">{opt.emoji}</span>
+                    <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center flex-shrink-0">
+                      <opt.Icon className="w-5 h-5 text-emerald-400" />
+                    </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-white">{opt.title}</p>
                       <p className="text-xs text-slate-500 truncate">{opt.desc}</p>

@@ -96,7 +96,7 @@ export default function SubscriptionNegotiator({ profile }) {
               </div>
 
               <button className="w-full px-4 py-2 rounded-lg bg-purple-500 hover:bg-purple-600 text-white text-sm font-medium">
-                💬 Pruta åt mig
+                <MessageSquare className="w-4 h-4 mr-1.5 inline" aria-hidden /> Pruta åt mig
               </button>
             </div>
           ))}

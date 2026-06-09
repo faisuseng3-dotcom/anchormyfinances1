@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Link2, Loader2, AlertTriangle, Zap } from 'lucide-react';
+import { Home, Link2, Loader2, AlertTriangle, Zap, Check, X, FlaskConical } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -266,7 +266,7 @@ Svara ENDAST med JSON.`,
 
       <Button onClick={handleAnalyze} disabled={!housing.price || !housing.fee || loading}
         className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 font-bold text-white">
-        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : '🏠 Generera CFO Bostadsrapport'}
+        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : <><Home className="w-4 h-4 mr-2" aria-hidden /> Generera CFO Bostadsrapport</>}
       </Button>
 
       <AnimatePresence>
@@ -303,11 +303,11 @@ Svara ENDAST med JSON.`,
 
             {/* Stress tests */}
             <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">🧪 Ränte-stresstest</p>
+              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><FlaskConical className="w-3.5 h-3.5" aria-hidden /> Ränte-stresstest</p>
               {[
                 { label: 'Nuläge (~4.5%)', value: analysis.monthlyLoan },
                 { label: 'Vid 3% ränta', value: analysis.stress3, delta: analysis.stress3 - analysis.monthlyLoan },
-                { label: 'Vid 5% ränta ⚠️', value: analysis.stress5, delta: analysis.stress5 - analysis.monthlyLoan },
+                { label: 'Vid 5% ränta', value: analysis.stress5, delta: analysis.stress5 - analysis.monthlyLoan },
               ].map((s, i) => s.value && (
                 <div key={i} className="flex justify-between items-center text-sm">
                   <span className="text-slate-400">{s.label}</span>
@@ -317,8 +317,10 @@ Svara ENDAST med JSON.`,
                   </div>
                 </div>
               ))}
-              <div className={`rounded-lg p-2 text-xs font-medium ${analysis.stress_ok ? 'bg-emerald-500/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}>
-                {analysis.stress_ok ? '✓ Du klarar 5%-ränta med positiv marginal' : '⚠️ Vid 5% ränta får du negativt kassaflöde'}
+              <div className={`rounded-lg p-2 text-xs font-medium flex items-center gap-1.5 ${analysis.stress_ok ? 'bg-emerald-500/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}>
+                {analysis.stress_ok
+                  ? <><Check className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Du klarar 5%-ränta med positiv marginal</>
+                  : <><AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Vid 5% ränta får du negativt kassaflöde</>}
               </div>
             </div>
 
@@ -326,8 +328,10 @@ Svara ENDAST med JSON.`,
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
                 <p className="text-[10px] text-slate-500 mb-1 uppercase tracking-wider">KALP-kalkyl</p>
-                <p className={`text-xl font-black ${analysis.kalp_ok ? 'text-emerald-400' : 'text-rose-400'}`}>
-                  {analysis.kalp_ok ? '✓ Godkänd' : '✗ Ej godkänd'}
+                <p className={`text-xl font-black flex items-center gap-1.5 ${analysis.kalp_ok ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {analysis.kalp_ok
+                    ? <><Check className="w-5 h-5" aria-hidden /> Godkänd</>
+                    : <><X className="w-5 h-5" aria-hidden /> Ej godkänd</>}
                 </p>
                 <p className="text-[10px] text-slate-500 mt-1">Kvar efter 70%-regel: {fmt(analysis.kalp)} kr</p>
               </div>
@@ -348,7 +352,7 @@ Svara ENDAST med JSON.`,
             {/* Risk factors */}
             {analysis.risk_factors?.length > 0 && (
               <div className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' }}>
-                <p className="text-xs font-bold text-rose-400 mb-2 uppercase tracking-wider">⚠️ Riskfaktorer</p>
+                <p className="text-xs font-bold text-rose-400 mb-2 uppercase tracking-wider flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5" aria-hidden /> Riskfaktorer</p>
                 <div className="space-y-1">
                   {analysis.risk_factors.map((r, i) => (
                     <div key={i} className="flex gap-2 text-xs text-slate-300">

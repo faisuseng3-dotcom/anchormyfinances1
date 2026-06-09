@@ -11,6 +11,7 @@ import {
 } from '@/components/dashboard/DashboardChrome';
 import { createPageUrl } from '@/utils';
 import { anchorGhostButtonClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { StatusDot } from '@/lib/anchorIcons';
 
 const STATUS_ACCENT = {
   grön: '#34D9BE',
@@ -93,7 +94,7 @@ export default function FuturePulseDetail({ profile, transactions }) {
     <div className="space-y-10 -mt-2">
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
         <div className="flex items-center gap-3 mb-3">
-          <span className="text-2xl">{forecast.status_emoji}</span>
+          <StatusDot status={statusKey} size={12} className="mt-1" />
           <div>
             <p className="text-[17px] font-semibold text-white">{forecast.status_label}</p>
             <p className="text-[13px] text-white/45">60-dagars prognos</p>

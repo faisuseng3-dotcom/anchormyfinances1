@@ -9,6 +9,8 @@ import {
   sectionMetaClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
+import VisualSavingsGoalRing from './VisualSavingsGoalRing';
+import { getReachedMilestones } from '@/lib/savingsGoalValidation';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -38,7 +40,9 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
   const current = profile?.savingsCurrentBalance || 0;
   const pct = goal > 0 ? Math.min((current / goal) * 100, 100) : 0;
   const remaining = Math.max(goal - current, 0);
-  const emoji = profile?.savingsGoalEmoji || '🎯';
+  const goalIcon = profile?.savingsGoalIcon || 'default';
+  const goalImageUrl = profile?.savingsGoalImageUrl || null;
+  const visualType = profile?.savingsGoalVisualType || (goalImageUrl ? 'image' : 'icon');
   const goalName = profile?.savingsGoalName || 'Mitt sparmål';
   const dailyTarget = profile?.savingsGoalDailyTarget || null;
   const microGoal = profile?.savingsDailyMicroAmount || null;
@@ -61,6 +65,7 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
   if (!goal) return null;
 
   const pctRounded = Math.round(pct);
+  const milestones = getReachedMilestones(pctRounded);
   const almostThere = pctRounded >= 75 && pctRounded < 100;
   const isDone = pctRounded >= 100;
 
@@ -78,16 +83,16 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
         {/* Hero */}
         <div className="px-5 pt-6 pb-4">
           <div className="flex items-start gap-4">
-            <div
-              className="flex-shrink-0 w-[72px] h-[72px] rounded-2xl flex flex-col items-center justify-center"
-              style={{
-                background: 'linear-gradient(145deg, rgba(232,184,107,0.25) 0%, rgba(232,184,107,0.06) 100%)',
-                border: '1px solid rgba(232,184,107,0.35)',
-              }}
-            >
-              <span className="text-[26px] leading-none">{emoji}</span>
-              <span className="text-[20px] font-bold text-white tabular-nums mt-1">{pctRounded}%</span>
-            </div>
+            <VisualSavingsGoalRing
+              pct={pct}
+              size={96}
+              stroke={6}
+              color="#E8B86B"
+              imageUrl={visualType === 'image' ? goalImageUrl : null}
+              iconId={goalIcon}
+              showMilestones
+              className="flex-shrink-0"
+            />
             <div className="flex-1 min-w-0 pt-0.5">
               <p className="text-[13px] font-medium text-[#E8B86B]">{headline}</p>
               <h2 className="text-[20px] font-semibold text-white leading-tight mt-0.5 truncate">
@@ -102,14 +107,22 @@ export default function GoalCard({ profile, onUpdated, onDeposit }) {
             </div>
           </div>
 
-          <div className="mt-5 h-2 rounded-full overflow-hidden bg-white/[0.08]">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-              className="h-full rounded-full bg-gradient-to-r from-[#E8B86B] to-[#F0D090]"
-            />
-          </div>
+          {milestones.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[25, 50, 75, 100].map((m) => (
+                <span
+                  key={m}
+                  className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                    milestones.includes(m)
+                      ? 'bg-[#E8B86B]/20 text-[#E8B86B]'
+                      : 'bg-white/[0.06] text-white/35'
+                  }`}
+                >
+                  {m}%
+                </span>
+              ))}
+            </div>
+          )}
 
           {!isDone && remaining > 0 && (
             <div className="mt-4 rounded-xl px-4 py-3 bg-white/[0.05] border border-white/[0.08]">

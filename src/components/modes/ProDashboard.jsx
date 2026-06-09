@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, TrendingUp, Target, AlertTriangle, Radio, Calendar } from 'lucide-react';
+import { Zap, TrendingUp, Target, AlertTriangle, Radio, Calendar, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import QuickStats from '@/components/dashboard/QuickStats';
 
@@ -186,7 +186,7 @@ Svara professionellt som en senior finansiell strateg.`;
                 <ul className="space-y-2">
                   {strategicBriefing.improvements.map((item, i) => (
                     <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                      <span className="text-emerald-400 mt-1">✓</span>
+                      <Check className="w-3.5 h-3.5 text-emerald-400 mt-1 flex-shrink-0" aria-hidden />
                       <span>{item}</span>
                     </li>
                   ))}
@@ -209,7 +209,7 @@ Svara professionellt som en senior finansiell strateg.`;
                 <ul className="space-y-2">
                   {strategicBriefing.risks.map((item, i) => (
                     <li key={i} className="text-sm text-slate-300 flex items-start gap-2">
-                      <span className="text-amber-400 mt-1">⚠</span>
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-400 mt-1 flex-shrink-0" aria-hidden />
                       <span>{item}</span>
                     </li>
                   ))}

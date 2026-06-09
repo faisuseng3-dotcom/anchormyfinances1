@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, AlertTriangle, Target, Calendar, Zap } from 'lucide-react';
+import { TrendingUp, AlertTriangle, Target, Calendar, Zap, Ban, Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -261,17 +261,17 @@ Beräkna:
             <p className="text-4xl font-bold text-white mb-3">{stabilityScore}/100</p>
             {isCritical && (
               <p className="text-rose-400 text-sm font-medium">
-                🚫 KRITISK: Denna resa tömmer bufferten under säker nivå. Strategiskt godkännande blockerat.
+                <span className="inline-flex items-center gap-1"><Ban className="w-4 h-4" /> KRITISK: Denna resa tömmer bufferten under säker nivå. Strategiskt godkännande blockerat.</span>
               </p>
             )}
             {isRisky && !isCritical && (
               <p className="text-amber-400 text-sm font-medium">
-                ⚠️ RISK: Bufferten blir låg. Överväg att minska kostnaden eller skjuta upp resan.
+                <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> RISK: Bufferten blir låg. Överväg att minska kostnaden eller skjuta upp resan.</span>
               </p>
             )}
             {!isRisky && (
               <p className="text-emerald-400 text-sm font-medium">
-                ✓ SÄKER: Denna utgift är strategiskt godkänd för din långsiktiga plan.
+                <span className="inline-flex items-center gap-1"><Check className="w-4 h-4" /> SÄKER: Denna utgift är strategiskt godkänd för din långsiktiga plan.</span>
               </p>
             )}
           </div>
@@ -331,7 +331,7 @@ Beräkna:
               : 'border-rose-500/30 bg-rose-500/10'
           }`}>
             <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
-              {simulation.is_safe ? '✓' : '⚠️'} CFO-rekommendation
+              {simulation.is_safe ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />} CFO-rekommendation
             </h4>
             <p className="text-sm text-slate-300 mb-3">{simulation.strategic_recommendation}</p>
             {simulation.alternative_scenario && (
@@ -359,7 +359,7 @@ Beräkna:
             </div>
           ) : (
             <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700">
-              ✓ Godkänn strategisk reseinvestering
+              <Check className="w-4 h-4 mr-1" /> Godkänn strategisk reseinvestering
             </Button>
           )}
         </motion.div>

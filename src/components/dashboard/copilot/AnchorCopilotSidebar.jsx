@@ -3,21 +3,22 @@ import { Link, useLocation } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { planeraTabHref } from '@/lib/planeraTabs';
 import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
+import { AnchorLogoMark, NavIcon } from '@/lib/anchorIcons';
 
 const OVERVIEW_NAV = [
-  { page: 'Dashboard', icon: '⌂', label: 'Hem' },
-  { page: 'Budget', icon: '📊', label: 'Budget', badge: 'OK', badgeGreen: true },
-  { href: planeraTabHref('nu'), icon: '🔮', label: 'Din Framtid', match: 'FuturePulse' },
-  { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: '🤖', label: 'AI-Coach', badge: '3' },
+  { page: 'Dashboard', icon: 'home', label: 'Hem' },
+  { page: 'Budget', icon: 'budget', label: 'Budget', badge: 'OK', badgeGreen: true },
+  { href: planeraTabHref('nu'), icon: 'future', label: 'Din Framtid', match: 'FuturePulse' },
+  { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach', badge: '3' },
 ];
 
 const TOOLS_NAV = [
-  { page: 'ProTools', icon: '🔧', label: 'Verktyg' },
-  { page: 'Dashboard', icon: '🎯', label: 'Sparmål', hash: '#goals' },
-  { page: 'ProTools', icon: '🔁', label: 'Prenumerationer', query: '?deep=subscriptions' },
-  { href: createPageUrl('BusinessDashboard'), icon: '🏢', label: 'Business' },
-  { page: 'Social', icon: '👥', label: 'Squads' },
-  { page: 'Dashboard', icon: '🎓', label: 'Anchor Academy', hash: '#academy' },
+  { page: 'ProTools', icon: 'tools', label: 'Verktyg' },
+  { page: 'Dashboard', icon: 'goals', label: 'Sparmål', hash: '#goals' },
+  { page: 'ProTools', icon: 'subscriptions', label: 'Prenumerationer', query: '?deep=subscriptions' },
+  { href: createPageUrl('BusinessDashboard'), icon: 'business', label: 'Business' },
+  { page: 'Social', icon: 'squads', label: 'Squads' },
+  { page: 'Dashboard', icon: 'academy', label: 'Anchor Academy', hash: '#academy' },
 ];
 
 function navHref(item) {
@@ -62,7 +63,9 @@ export default function AnchorCopilotSidebar({
         className={`copilot-sidebar ${mobileOpen ? 'copilot-sidebar--mobile-open' : ''} ${className}`}
       >
         <div className="copilot-sidebar-logo">
-          <div className="copilot-logo-icon">⚓</div>
+          <div className="copilot-logo-icon">
+            <AnchorLogoMark size={16} className="text-white" />
+          </div>
           <span className="copilot-logo-text">Anchor</span>
         </div>
 
@@ -76,7 +79,9 @@ export default function AnchorCopilotSidebar({
               className={`copilot-nav-item ${active ? 'active' : ''}`}
               onClick={onClose}
             >
-              <span className="copilot-nav-icon">{item.icon}</span>
+              <span className="copilot-nav-icon">
+                <NavIcon name={item.icon} size={16} />
+              </span>
               {item.label}
               {item.badge && (
                 <span className={`copilot-nav-badge ${item.badgeGreen ? 'green' : ''}`}>
@@ -120,7 +125,9 @@ export default function AnchorCopilotSidebar({
             className="copilot-nav-item"
             onClick={onClose}
           >
-            <span className="copilot-nav-icon">{item.icon}</span>
+            <span className="copilot-nav-icon">
+              <NavIcon name={item.icon} size={16} />
+            </span>
             {item.label}
           </Link>
         ))}
@@ -132,8 +139,8 @@ export default function AnchorCopilotSidebar({
               <div className="copilot-user-name">{firstName}</div>
               <div className="copilot-user-plan">Pro-plan</div>
             </div>
-            <span style={{ marginLeft: 'auto', color: 'var(--copilot-text-muted)', fontSize: 14 }}>
-              ⚙
+            <span style={{ marginLeft: 'auto', color: 'var(--copilot-text-muted)' }}>
+              <NavIcon name="settings" size={16} />
             </span>
           </Link>
         </div>

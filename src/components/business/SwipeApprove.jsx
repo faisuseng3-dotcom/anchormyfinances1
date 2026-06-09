@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { Check, X, ChevronRight } from 'lucide-react';
+import { Check, X, ChevronRight, CreditCard, PartyPopper } from 'lucide-react';
 import { BusinessDivider } from '@/components/business/BusinessChrome';
 
 const PENDING = [
@@ -69,13 +69,13 @@ function SwipeCard({ tx, onApprove, onReject }) {
         className="absolute top-4 left-4 px-3 py-1 rounded-full border-2 border-green-500 -rotate-[20deg]"
         style={{ opacity: approveOpacity }}
       >
-        <span className="text-green-500 font-bold text-sm">GODKÄND ✓</span>
+        <span className="text-green-500 font-bold text-sm inline-flex items-center gap-1">GODKÄND <Check className="w-3.5 h-3.5" aria-hidden /></span>
       </motion.div>
       <motion.div
         className="absolute top-4 right-4 px-3 py-1 rounded-full border-2 border-red-500 rotate-[20deg]"
         style={{ opacity: rejectOpacity }}
       >
-        <span className="text-red-500 font-bold text-sm">ÄNDRA ✗</span>
+        <span className="text-red-500 font-bold text-sm inline-flex items-center gap-1">ÄNDRA <X className="w-3.5 h-3.5" aria-hidden /></span>
       </motion.div>
 
       <div className="mt-2">
@@ -137,8 +137,8 @@ export default function SwipeApprove() {
         onClick={() => setOpen((v) => !v)}
         className="w-full flex items-center gap-3 py-3.5 text-left active:opacity-60"
       >
-        <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#0D7377]/10 text-base">
-          🃏
+        <div className="w-9 h-9 rounded-full flex items-center justify-center bg-[#0D7377]/10">
+          <CreditCard className="w-4 h-4 text-[#0D7377]" aria-hidden />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-medium text-[#1A2332]">Godkänn transaktioner</p>
@@ -164,7 +164,7 @@ export default function SwipeApprove() {
             <div className="pt-4 pb-2">
               {remaining === 0 ? (
                 <div className="py-8 text-center">
-                  <p className="text-2xl mb-2">🎉</p>
+                  <PartyPopper className="w-8 h-8 mx-auto mb-2 text-[#3DAA7A]" aria-hidden />
                   <p className="text-[15px] font-medium text-[#3DAA7A]">Alla transaktioner är behandlade</p>
                   <p className="text-[13px] mt-1 text-[#9AA5B4]">{approved} bokförda</p>
                 </div>

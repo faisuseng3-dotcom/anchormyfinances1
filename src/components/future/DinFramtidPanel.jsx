@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Share2, CalendarDays } from 'lucide-react';
+import { ScenarioIcon } from '@/lib/anchorIcons';
 import {
   SCENARIO_MODES,
   computeScenarioForecast,
@@ -126,7 +127,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
                   : 'bg-white/[0.05] text-white/60 ring-white/[0.08]',
               )}
             >
-              <span className="text-lg block mb-1">{m.emoji}</span>
+              <ScenarioIcon mode={m.id} size={20} className="block mx-auto mb-1" />
               <span className="text-[11px] font-semibold leading-tight">{m.label}</span>
             </AnchorPressable>
           ))}

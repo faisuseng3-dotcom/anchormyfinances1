@@ -3,7 +3,8 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Zap, ArrowRight,
-  CheckCircle2, Building2, TrendingUp, Shield, ChevronRight, Loader2
+  CheckCircle2, Building2, TrendingUp, Shield, ChevronRight, Loader2,
+  User, Palette, Laptop, Scissors, ShoppingCart, GraduationCap, Home, HandMetal, Ban,
 } from 'lucide-react';
 import {
   ensureOnboardingMode,
@@ -19,7 +20,7 @@ const LEGAL_ENTITIES = [
     id: 'enskild',
     label: 'Enskild firma',
     desc: 'Aktiverar egenavgifter (28.97%) och F-skatteberegning',
-    emoji: '🧑‍💼',
+    Icon: User,
     color: '#4B7CF3',
     bg: 'rgba(75,124,243,0.1)',
     border: 'rgba(75,124,243,0.4)',
@@ -28,7 +29,7 @@ const LEGAL_ENTITIES = [
     id: 'ab',
     label: 'Aktiebolag (AB)',
     desc: 'Aktiverar bolagsskatt (20.6%), lön & utdelningsutrymme',
-    emoji: '🏢',
+    Icon: Building2,
     color: '#D4AF37',
     bg: 'rgba(212,175,55,0.1)',
     border: 'rgba(212,175,55,0.4)',
@@ -39,7 +40,7 @@ const LEGAL_ENTITIES = [
 const PERSONAS = [
   {
     id: 'artist',
-    emoji: '🎨',
+    Icon: Palette,
     title: 'Kreatören',
     subtitle: 'Frilansaren',
     who: 'Fotograf, copywriter, designer',
@@ -52,7 +53,7 @@ const PERSONAS = [
   },
   {
     id: 'consultant',
-    emoji: '💻',
+    Icon: Laptop,
     title: 'Gig-konsulten',
     subtitle: 'The Professional',
     who: 'IT-konsult, projektledare, interim-chef',
@@ -65,7 +66,7 @@ const PERSONAS = [
   },
   {
     id: 'local',
-    emoji: '✂️',
+    Icon: Scissors,
     title: 'Tjänsteutövaren',
     subtitle: 'The Local Hero',
     who: 'Frisör, PT, massör, hantverkare',
@@ -78,7 +79,7 @@ const PERSONAS = [
   },
   {
     id: 'hustler',
-    emoji: '⚡',
+    Icon: Zap,
     title: 'Sido-projektet',
     subtitle: 'The Hustler',
     who: 'Anställd som kör eget på kvällar & helger',
@@ -91,7 +92,7 @@ const PERSONAS = [
   },
   {
     id: 'merchant',
-    emoji: '🛒',
+    Icon: ShoppingCart,
     title: 'E-handlaren',
     subtitle: 'The Digital Merchant',
     who: 'Shopify, Amazon, Dropshipping',
@@ -104,7 +105,7 @@ const PERSONAS = [
   },
   {
     id: 'educator',
-    emoji: '🎓',
+    Icon: GraduationCap,
     title: 'Utbildaren',
     subtitle: 'The Knowledge Guru',
     who: 'Onlinekurser, nyhetsbrev, coachning',
@@ -117,7 +118,7 @@ const PERSONAS = [
   },
   {
     id: 'landlord',
-    emoji: '🏠',
+    Icon: Home,
     title: 'Uthyraren',
     subtitle: 'The Space Manager',
     who: 'Studio, kontorsplatser, Airbnb',
@@ -163,12 +164,12 @@ const PAIN_POINTS = [
 
 // ─── Integrations ─────────────────────────────────────────────────────────────
 const INTEGRATIONS = [
-  { id: 'fortnox', name: 'Fortnox', emoji: '🟢', popular: true },
-  { id: 'bokio', name: 'Bokio', emoji: '🔵', popular: true },
-  { id: 'stripe', name: 'Stripe', emoji: '🟣', popular: true },
-  { id: 'swish', name: 'Swish Företag', emoji: '🩷', popular: false },
-  { id: 'klarna', name: 'Klarna', emoji: '🟡', popular: false },
-  { id: 'none', name: 'Inget ännu', emoji: '🚫', popular: false },
+  { id: 'fortnox', name: 'Fortnox', color: '#22c55e', popular: true },
+  { id: 'bokio', name: 'Bokio', color: '#3b82f6', popular: true },
+  { id: 'stripe', name: 'Stripe', color: '#a855f7', popular: true },
+  { id: 'swish', name: 'Swish Företag', color: '#ec4899', popular: false },
+  { id: 'klarna', name: 'Klarna', color: '#eab308', popular: false },
+  { id: 'none', name: 'Inget ännu', color: '#94a3b8', popular: false },
 ];
 
 // ─── Simulated horoscope data per persona ─────────────────────────────────────
@@ -234,7 +235,7 @@ function StepLegalEntity({ onNext }) {
             >
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
                 style={{ background: sel ? e.bg : 'rgba(255,255,255,0.06)', border: `1px solid ${e.border}` }}>
-                {e.emoji}
+                <e.Icon className="w-7 h-7" style={{ color: e.color }} />
               </div>
               <div className="flex-1">
                 <p className="font-black text-base" style={{ color: sel ? e.color : '#F0EAD6' }}>{e.label}</p>
@@ -351,7 +352,7 @@ function StepPersona({ onNext }) {
             >
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
                 style={{ background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)', border: `1px solid ${p.borderAccent}` }}>
-                {p.emoji}
+                <p.Icon className="w-5 h-5" style={{ color: p.color }} />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm leading-tight" style={{ color: sel ? p.color : '#F0EAD6' }}>{p.title}</p>
@@ -512,7 +513,9 @@ function StepIntegrations({ persona, onNext }) {
                 <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full"
                   style={{ background: 'rgba(212,175,55,0.2)', color: '#D4AF37' }}>Rek</span>
               )}
-              <span className="text-2xl">{intg.emoji}</span>
+              {intg.id === 'none'
+                ? <Ban className="w-6 h-6 text-slate-400" />
+                : <span className="w-6 h-6 rounded-full inline-block" style={{ background: intg.color }} />}
               <span className="text-xs font-bold" style={{ color: sel ? '#D4AF37' : '#F0EAD6' }}>{intg.name}</span>
             </motion.button>
           );
@@ -570,7 +573,9 @@ function StepHoroscope({ persona, onComplete }) {
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-5">
       <div>
         <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Din Financial Horoscope</p>
-        <h2 className="text-2xl font-black" style={{ color: '#F0EAD6' }}>Välkommen, {p?.title} 👋</h2>
+        <h2 className="text-2xl font-black flex items-center gap-2" style={{ color: '#F0EAD6' }}>
+          Välkommen, {p?.title} <HandMetal className="w-6 h-6" style={{ color: '#D4AF37' }} />
+        </h2>
       </div>
 
       {/* Main insight */}

@@ -46,7 +46,7 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
               onClick={onAccept}
               className="flex-1 py-2 rounded-xl bg-amber-500/30 hover:bg-amber-500/50 text-amber-200 text-xs font-semibold transition-all"
             >
-              Ja, flytta dem ✓
+              <span className="inline-flex items-center gap-1">Ja, flytta dem <Check className="w-3.5 h-3.5" /></span>
             </button>
             <button
               onClick={onDismiss}

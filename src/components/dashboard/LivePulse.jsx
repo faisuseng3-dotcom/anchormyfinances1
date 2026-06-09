@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { AlertTriangle, Zap } from 'lucide-react';
+import { StatusDot } from '@/lib/anchorIcons';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 
@@ -84,8 +86,13 @@ export default function LivePulse() {
             />
             <div className="w-2.5 h-2.5 rounded-full relative" style={{ background: pulse.dot }} />
           </div>
-          <span className="text-xs font-semibold" style={{ color: pulse.dot }}>
-            {pulse.color === 'red' ? '⚠️' : pulse.color === 'yellow' ? '⚡' : '●'} {pulse.label}
+          <span className="text-xs font-semibold inline-flex items-center gap-1" style={{ color: pulse.dot }}>
+            {pulse.color === 'red'
+              ? <AlertTriangle className="w-3 h-3" aria-hidden />
+              : pulse.color === 'yellow'
+              ? <Zap className="w-3 h-3" aria-hidden />
+              : <StatusDot status="ok" size={8} />}
+            {pulse.label}
           </span>
         </div>
       </motion.div>

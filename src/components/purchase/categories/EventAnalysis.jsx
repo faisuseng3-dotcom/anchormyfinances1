@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PartyPopper, Link2, Loader2, Train } from 'lucide-react';
+import { PartyPopper, Link2, Loader2, Train, Check, Receipt, Target, Lightbulb } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -174,7 +174,7 @@ Svara ENDAST med JSON.`,
         <button onClick={() => setEvent(ev => ({ ...ev, travelNeeded: !ev.travelNeeded }))}
           className={`w-full py-3 px-4 rounded-xl flex items-center gap-3 border transition-all text-sm ${event.travelNeeded ? 'border-amber-500 bg-amber-500/10 text-amber-300' : 'border-white/10 text-slate-400 hover:border-white/20'}`}>
           <Train className="w-4 h-4" />
-          <span>{event.travelNeeded ? '✓ Resa ingår (tåg + hotell beräknas)' : 'Klicka om du behöver resa dit'}</span>
+          <span className="flex items-center gap-1.5">{event.travelNeeded ? <><Check className="w-3.5 h-3.5" aria-hidden /> Resa ingår (tåg + hotell beräknas)</> : 'Klicka om du behöver resa dit'}</span>
         </button>
 
         {/* Live total */}
@@ -205,7 +205,7 @@ Svara ENDAST med JSON.`,
 
       <Button onClick={handleAnalyze} disabled={!event.name || !event.ticketCost || loading}
         className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 font-bold text-white">
-        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyserar upplevelse…</> : '🎉 Generera Value Pulse Rapport'}
+        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyserar upplevelse…</> : <><PartyPopper className="w-4 h-4 mr-2" aria-hidden /> Generera Value Pulse Rapport</>}
       </Button>
 
       <AnimatePresence>
@@ -230,15 +230,15 @@ Svara ENDAST med JSON.`,
                       </div>
                     </div>
                     {analysis.mood_match && (
-                      <div className="mt-3 rounded-lg p-2 text-xs bg-emerald-500/10 text-emerald-300">
-                        ✓ Matchar din livsstilsprofil – detta är bra för ditt mående!
+                      <div className="mt-3 rounded-lg p-2 text-xs bg-emerald-500/10 text-emerald-300 flex items-center gap-1.5">
+                        <Check className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Matchar din livsstilsprofil – detta är bra för ditt mående!
                       </div>
                     )}
                   </div>
 
                   {/* Total cost breakdown */}
                   <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">🧾 Totalbilden</p>
+                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5"><Receipt className="w-3.5 h-3.5" aria-hidden /> Totalbilden</p>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-slate-400">Total uppskattad kostnad</span>
                       <span className="text-xl font-black text-white">{fmt(analysis.total_real_cost || analysis.totalCost)} kr</span>
@@ -252,7 +252,7 @@ Svara ENDAST med JSON.`,
                   {analysis.goal_impact && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
                       style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
-                      <span className="text-indigo-400">🎯</span>
+                      <Target className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.goal_impact}</p>
                     </div>
                   )}
@@ -261,7 +261,7 @@ Svara ENDAST med JSON.`,
                   {analysis.smart_tip && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
                       style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                      <span className="text-emerald-400">💡</span>
+                      <Lightbulb className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.smart_tip}</p>
                     </div>
                   )}

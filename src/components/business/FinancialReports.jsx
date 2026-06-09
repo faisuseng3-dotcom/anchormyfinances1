@@ -37,7 +37,7 @@ export default function FinancialReports({ transactions, isReset }) {
   if (isReset || !transactions?.length) {
     return (
       <div className="py-8 text-center">
-        <p className="text-2xl mb-2">📊</p>
+        <BarChart2 className="w-8 h-8 mx-auto mb-2 text-[#4A5568]" aria-hidden />
         <p className="text-sm font-bold" style={{ color: '#4A5568' }}>Inga bokförda transaktioner</p>
         <p className="text-xs mt-1" style={{ color: '#9AA5B4' }}>Bokför via Arkiv-fliken för att generera rapporter.</p>
       </div>

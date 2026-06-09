@@ -46,37 +46,37 @@ export function addXP(currentXP, points) {
 export const BADGES = {
   first_thousand: {
     id: 'first_thousand',
-    label: 'Första tusenlappen 💰',
+    label: 'Första tusenlappen',
     description: 'Sparade första 1000 kr',
-    icon: '💰',
+    icon: 'wallet',
     condition: (profile) => profile.savingsCurrentBalance >= 1000
   },
   debt_destroyer: {
     id: 'debt_destroyer',
-    label: 'Skuld-Slayer 🔥',
+    label: 'Skuld-Slayer',
     description: 'Betalade av ett helt lån',
-    icon: '🔥',
+    icon: 'fire',
     condition: (profile) => (profile.loans || []).length === 0 && profile.unlockedBadges?.includes('debt_destroyer')
   },
   streak_master: {
     id: 'streak_master',
-    label: 'Streak Master 🔥',
+    label: 'Streak Master',
     description: '7 dagars inloggningsstreak',
-    icon: '🔥',
+    icon: 'fire',
     condition: (profile) => profile.dailyLoginStreak >= 7
   },
   expense_tracker: {
     id: 'expense_tracker',
-    label: 'Spenderbjörn 🎯',
+    label: 'Spenderbjörn',
     description: 'Registrerade 20 utgifter',
-    icon: '🎯',
+    icon: 'target',
     condition: (profile) => (profile.monthlyExpenses || []).length >= 20
   },
   buffer_builder: {
     id: 'buffer_builder',
-    label: 'Buffer Builders 🏰',
+    label: 'Buffer Builders',
     description: 'Buffert är 3+ månaders lön',
-    icon: '🏰',
+    icon: 'shield',
     condition: (profile) => profile.buffer >= profile.income * 3
   }
 };

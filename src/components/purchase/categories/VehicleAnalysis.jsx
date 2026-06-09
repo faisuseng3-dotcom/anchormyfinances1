@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Car, Link2, Loader2, AlertTriangle } from 'lucide-react';
+import { Car, Link2, Loader2, AlertTriangle, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -257,7 +257,7 @@ Svara ENDAST med JSON.`;
             <span>10% (min)</span><span>50%</span>
           </div>
           {downPaymentPct < 20 && (
-            <p className="text-[10px] text-amber-400 mt-1">⚠️ Lagens minimikrav för billån är 20%</p>
+            <p className="text-[10px] text-amber-400 mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3 flex-shrink-0" aria-hidden /> Lagens minimikrav för billån är 20%</p>
           )}
         </div>
 
@@ -351,7 +351,7 @@ Svara ENDAST med JSON.`;
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
             style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.25)' }}>
-            <span className="text-indigo-400 text-base flex-shrink-0">🛡️</span>
+            <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
             <p className="text-indigo-200">
               Kontantinsatsen på <strong>{fmt(liveCalc.downPaymentAmount)} kr</strong> sänker din buffert
               från <strong>{bufferMonths.toFixed(1)} mån</strong> till{' '}
@@ -370,8 +370,8 @@ Svara ENDAST med JSON.`;
           <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Bygger CFO-rapport…</>
         ) : (
           btnRisk === 'high'
-            ? '⚠️ Analysera (Hög risk – >30% av marginalen)'
-            : '🚗 Generera CFO Impact Report'
+            ? <><AlertTriangle className="w-4 h-4 mr-2" aria-hidden /> Analysera (Hög risk – &gt;30% av marginalen)</>
+            : <><Car className="w-4 h-4 mr-2" aria-hidden /> Generera CFO Impact Report</>
         )}
       </Button>
 

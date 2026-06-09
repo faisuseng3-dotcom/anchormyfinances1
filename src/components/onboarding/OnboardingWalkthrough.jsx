@@ -1,33 +1,33 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, Check } from 'lucide-react';
+import { X, ChevronRight, Check, Heart, TrendingUp, Camera, Brain } from 'lucide-react';
 
 const STEPS = [
   {
     id: 'safe-to-spend',
     targetId: 'walkthrough-safe-to-spend',
-    emoji: '💚',
+    Icon: Heart,
     title: 'Ditt ekonomiska lugn',
     text: 'Sluta gissa. Här ser du exakt hur mycket du kan spendera idag utan att sabba din budget eller dina sparmål. Anchor har redan räknat bort räkningar och buffert.',
   },
   {
     id: 'forecast',
     targetId: 'walkthrough-forecast',
-    emoji: '📈',
+    Icon: TrendingUp,
     title: 'Din tidsmaskin',
     text: 'Här ser du hur dina val idag bygger din förmögenhet över tid. Testa att ändra din marginal så ser du hur grafen skjuter i höjden!',
   },
   {
     id: 'resell',
     targetId: 'walkthrough-resell',
-    emoji: '📸',
+    Icon: Camera,
     title: 'Tjäna pengar direkt',
     text: 'Har du prylar som ligger och skräpar? Fota dem! Anchor hittar bästa priset på marknaden och visar hur försäljningen påverkar din 5-årsprognos.',
   },
   {
     id: 'simulator',
     targetId: 'walkthrough-simulator',
-    emoji: '🧠',
+    Icon: Brain,
     title: 'Testa framtiden',
     text: 'Ska du köpa en ny bil eller börja plugga? Simulatorn låter dig testa "Tänk om"-scenarier innan du tar beslutet. Anchor räknar ut konsekvenserna åt dig.',
   },
@@ -191,7 +191,9 @@ export default function OnboardingWalkthrough({ onFinish }) {
             </p>
 
             <div className="flex items-start gap-3 mb-3">
-              <span className="text-2xl leading-none mt-0.5">{currentStep.emoji}</span>
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <currentStep.Icon className="w-5 h-5 text-indigo-300" />
+              </div>
               <div>
                 <h3 className="text-base font-bold text-white mb-1">{currentStep.title}</h3>
                 <p className="text-sm text-slate-300 leading-relaxed">{currentStep.text}</p>

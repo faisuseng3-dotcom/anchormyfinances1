@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X, TrendingDown } from 'lucide-react';
+import { AlertTriangle, X, TrendingDown, Lightbulb } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
 
@@ -136,8 +136,10 @@ export default function RiskSimulator({ profile }) {
                       <div className="p-5 bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl text-white">
                         <p className="text-white/80 text-sm mb-2">Din buffert räcker i</p>
                         <p className="text-4xl font-bold mb-3">
-                          {result.monthsOfBuffer < 2 ? '⚠️ ' : ''} 
-                          {result.monthsOfBuffer} {result.monthsOfBuffer === 1 ? 'månad' : 'månader'}
+                          <span className="inline-flex items-center gap-1.5">
+                            {result.monthsOfBuffer < 2 && <AlertTriangle className="w-5 h-5" aria-hidden />}
+                            {result.monthsOfBuffer} {result.monthsOfBuffer === 1 ? 'månad' : 'månader'}
+                          </span>
                         </p>
                         <p className="text-white/80 text-sm">
                           Efter 2 månader: {formatNumber(result.bufferRemaining)} kr kvar
@@ -146,7 +148,7 @@ export default function RiskSimulator({ profile }) {
 
                       {result.monthsOfBuffer < 3 && (
                         <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                          <p className="font-semibold text-amber-900 mb-2">💡 Rekommendation</p>
+                          <p className="font-semibold text-amber-900 mb-2 inline-flex items-center gap-1.5"><Lightbulb className="w-4 h-4" aria-hidden /> Rekommendation</p>
                           <p className="text-sm text-amber-800">
                             Din buffert är under 3 månaders kostnader. Överväg att:
                           </p>

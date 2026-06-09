@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { ChevronRight, AlertTriangle, CheckCircle2, FileText, Building2, Cake } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 // Swedish municipalities 2026 tax rates (kommunalskatt + landsting/region)
@@ -60,8 +60,8 @@ export default function PrecisionWizard({ onComplete }) {
   const validateTax = (gross, withheld) => {
     if (!gross || !withheld) return '';
     const rate = withheld / gross;
-    if (rate < 0.05) return '⚠️ Det där ser ovanligt ut. Dubbelkolla gärna siffran för inbetald skatt – det verkar väldigt lågt.';
-    if (rate > 0.55) return '⚠️ Skatten verkar för hög jämfört med bruttolönen. Dubbelkolla att du inte blandat ihop siffror.';
+    if (rate < 0.05) return 'Det där ser ovanligt ut. Dubbelkolla gärna siffran för inbetald skatt – det verkar väldigt lågt.';
+    if (rate > 0.55) return 'Skatten verkar för hög jämfört med bruttolönen. Dubbelkolla att du inte blandat ihop siffror.';
     return '';
   };
 
@@ -104,8 +104,8 @@ export default function PrecisionWizard({ onComplete }) {
 
           {step === 1 && (
             <div>
-              <p className="text-slate-300 text-sm leading-relaxed mb-1">
-                📄 Titta på din senaste lönespecifikation.
+              <p className="text-slate-300 text-sm leading-relaxed mb-1 inline-flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Titta på din senaste lönespecifikation.
               </p>
               <p className="text-white font-semibold mb-3">Vad är din <span className="text-indigo-400">Bruttolön</span> (lön före skatt)?</p>
               <input type="number" placeholder="t.ex. 42000" value={data.gross}
@@ -117,7 +117,7 @@ export default function PrecisionWizard({ onComplete }) {
 
           {step === 2 && (
             <div>
-              <p className="text-slate-300 text-sm mb-1">📄 Titta på <em>samma</em> lönespecifikation.</p>
+              <p className="text-slate-300 text-sm mb-1 inline-flex items-center gap-1.5"><FileText className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Titta på <em>samma</em> lönespecifikation.</p>
               <p className="text-white font-semibold mb-3">Hur mycket <span className="text-rose-400">Skatt drogs</span> i kronor den månaden?</p>
               <input type="number" placeholder="t.ex. 11500" value={data.withheld}
                 onChange={e => { setData(d => ({ ...d, withheld: e.target.value })); setWarning(''); }}
@@ -140,7 +140,7 @@ export default function PrecisionWizard({ onComplete }) {
 
           {step === 3 && (
             <div>
-              <p className="text-white font-semibold mb-3">🏙️ Vilken <span className="text-cyan-400">kommun</span> bor du i?</p>
+              <p className="text-white font-semibold mb-3 inline-flex items-center gap-1.5"><Building2 className="w-4 h-4 text-cyan-400" aria-hidden /> Vilken <span className="text-cyan-400">kommun</span> bor du i?</p>
               <select value={data.municipality}
                 onChange={e => setData(d => ({ ...d, municipality: e.target.value }))}
                 className={`${inputClass} cursor-pointer`} style={inputStyle}>
@@ -159,7 +159,7 @@ export default function PrecisionWizard({ onComplete }) {
 
           {step === 4 && (
             <div>
-              <p className="text-white font-semibold mb-3">🎂 Vilket år är du född? <span className="text-slate-400 font-normal text-sm">(påverkar jobbskatteavdraget)</span></p>
+              <p className="text-white font-semibold mb-3 inline-flex items-center gap-1.5"><Cake className="w-4 h-4 text-amber-400" aria-hidden /> Vilket år är du född? <span className="text-slate-400 font-normal text-sm">(påverkar jobbskatteavdraget)</span></p>
               <input type="number" placeholder="t.ex. 1990" value={data.birthYear}
                 onChange={e => setData(d => ({ ...d, birthYear: e.target.value }))}
                 className={inputClass} style={inputStyle} min="1930" max="2006" />

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { X, Loader2, ChevronRight, ChevronLeft, LineChart, BookOpen } from 'lucide-react';
+import { X, Loader2, ChevronRight, ChevronLeft, LineChart, BookOpen, CreditCard, Zap, Moon, Wrench, Rocket, AlertTriangle, Check } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TriggerLibrary from './TriggerLibrary';
 import AccountTypeAdvisor from './AccountTypeAdvisor';
+import GoalVisualPicker from '@/components/savings/GoalVisualPicker';
+import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
+import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 
-const EMOJIS = ['✈️', '🏠', '🚗', '🎓', '💍', '🌴', '🎸', '🏋️', '💻', '🚀', '🌍', '🎯'];
 const STRATEGIES = [
-  { id: 'fixed', icon: '💳', title: 'Fast överföring', desc: 'Dra ett fast belopp varje månad.' },
-  { id: 'dopamine', icon: '⚡', title: 'Dopamin-spararen', desc: 'Spara varje gång du hoppar över ett impulsinköp.' },
-  { id: 'leftover', icon: '🌙', title: 'Rest-spararen', desc: 'Flytta det som är kvar dagen innan lön hit.' },
-  { id: 'custom', icon: '🛠️', title: 'Eget schema', desc: 'Bygg din egen sparregel med automatiska triggers.' },
+  { id: 'fixed', Icon: CreditCard, title: 'Fast överföring', desc: 'Dra ett fast belopp varje månad.' },
+  { id: 'dopamine', Icon: Zap, title: 'Dopamin-spararen', desc: 'Spara varje gång du hoppar över ett impulsinköp.' },
+  { id: 'leftover', Icon: Moon, title: 'Rest-spararen', desc: 'Flytta det som är kvar dagen innan lön hit.' },
+  { id: 'custom', Icon: Wrench, title: 'Eget schema', desc: 'Bygg din egen sparregel med automatiska triggers.' },
 ];
 
 const FREQUENCIES = [
@@ -25,40 +27,17 @@ const FREQUENCIES = [
 
 
 
-function PlantVisual({ progress }) {
-  // 0-100 progress → plant growth
-  const height = 20 + (progress / 100) * 60;
-  const leafOpacity = Math.min(1, progress / 30);
-  const flowerOpacity = Math.min(1, (progress - 60) / 40);
-  return (
-    <div className="flex flex-col items-center justify-end" style={{ height: 90 }}>
-      {/* Flower */}
-      {progress > 60 && (
-        <motion.div initial={{ scale: 0 }} animate={{ scale: flowerOpacity }} className="text-2xl mb-1">🌸</motion.div>
-      )}
-      {/* Leaves */}
-      {progress > 20 && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: leafOpacity }} className="flex gap-1 mb-0.5">
-          <span className="text-green-400 text-sm">🌿</span>
-          <span className="text-green-400 text-sm">🌿</span>
-        </motion.div>
-      )}
-      {/* Stem */}
-      <motion.div
-        animate={{ height }}
-        transition={{ duration: 1, ease: 'easeOut' }}
-        className="w-1.5 bg-gradient-to-t from-green-700 to-green-500 rounded-full"
-        style={{ height: 20 }}
-      />
-      {/* Ground */}
-      <div className="w-10 h-2 bg-amber-800/60 rounded-full mt-0.5" />
-    </div>
-  );
-}
-
 export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState({ name: '', emoji: '🎯', amount: '', targetDate: '' });
+  const [form, setForm] = useState({
+    name: '',
+    goalIcon: 'default',
+    amount: '',
+    targetDate: '',
+    imageUrl: null,
+    visualType: null,
+  });
+  const [validationError, setValidationError] = useState(null);
   const [strategy, setStrategy] = useState('fixed');
   const [aiInsight, setAiInsight] = useState(null);
   const [loadingAi, setLoadingAi] = useState(false);
@@ -75,7 +54,8 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
   useEffect(() => {
     if (!isOpen) {
       setStep(1);
-      setForm({ name: '', emoji: '🎯', amount: '', targetDate: '' });
+      setForm({ name: '', goalIcon: 'default', amount: '', targetDate: '', imageUrl: null, visualType: null });
+      setValidationError(null);
       setAiInsight(null);
       setCustomAiMsg(null);
       setCustomAmount('');
@@ -143,7 +123,7 @@ Svara på svenska med 2-3 meningar. Bekräfta om schemat är hållbart, och ge e
     setLoadingAi(true);
     const needed = monthlyNeeded();
     const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du är CFO-Analytikern. Användaren vill spara till "${form.name}" (${form.emoji}).
+      prompt: `Du är CFO-Analytikern. Användaren vill spara till "${form.name}".
 Målsumma: ${form.amount} kr
 Månader kvar: ${monthsUntil()}
 Behövs per månad: ${needed} kr
@@ -162,7 +142,22 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
   };
 
   const handleNext = async () => {
-    if (step === 1) setStep(2);
+    if (step === 1) {
+      const v = validateSavingsGoal({
+        name: form.name,
+        amount: parseInt(form.amount) || 0,
+        imageUrl: form.visualType === 'image' ? form.imageUrl : null,
+        iconId: form.goalIcon,
+        visualType: form.visualType,
+      });
+      if (!v.ok) {
+        setValidationError(v.errors[0]);
+        return;
+      }
+      setValidationError(null);
+      setStep(2);
+      return;
+    }
     else if (step === 2) { await fetchAiInsight(); setStep(3); }
     else if (step === 3) setStep(4);
     else handleFinish();
@@ -177,8 +172,12 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
       customMonthlyEquiv: customMonthlyEquivalent(),
     } : null;
     onSave({
-      savingsGoalName: `${form.emoji} ${form.name}`,
+      savingsGoalName: form.name.trim(),
+      savingsGoalIcon: form.goalIcon,
+      savingsGoalImageUrl: form.visualType === 'image' ? form.imageUrl : null,
+      savingsGoalVisualType: form.visualType,
       savingsGoal: parseInt(form.amount) || 0,
+      savingsGoalDeadline: form.targetDate,
       savingsTargetDate: form.targetDate,
       savingsStrategy: strategy,
       ...(customConfig && { savingsCustomConfig: customConfig }),
@@ -186,7 +185,14 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
     onClose();
   };
 
-  const canNext1 = form.name && form.amount && parseInt(form.amount) > 0;
+  const step1Validation = validateSavingsGoal({
+    name: form.name,
+    amount: parseInt(form.amount) || 0,
+    imageUrl: form.visualType === 'image' ? form.imageUrl : null,
+    iconId: form.goalIcon,
+    visualType: form.visualType,
+  });
+  const canNext1 = step1Validation.ok;
   const canNext2 = form.targetDate;
 
   if (!isOpen) return null;
@@ -229,21 +235,24 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
             <motion.div key="s1" initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} className="space-y-5">
               <div>
                 <label className="text-xs text-slate-400 mb-2 block">Vad drömmer du om?</label>
-                <Input placeholder="T.ex. Resa till Madrid" value={form.name}
-                  onChange={e => setForm({ ...form, name: e.target.value })}
+                <Input placeholder="T.ex. Thailand-resa, Min första bil" value={form.name}
+                  onChange={e => { setForm({ ...form, name: e.target.value }); setValidationError(null); }}
                   className="h-12 rounded-xl text-lg font-medium" />
+                <p className="text-[11px] text-slate-500 mt-1.5">Inte bara &quot;Sparande 10 000 kr&quot; — beskriv din dröm.</p>
               </div>
 
               <div>
-                <label className="text-xs text-slate-400 mb-2 block">Välj en ikon</label>
-                <div className="grid grid-cols-6 gap-2">
-                  {EMOJIS.map(em => (
-                    <button key={em} onClick={() => setForm({ ...form, emoji: em })}
-                      className={`h-11 rounded-xl text-2xl transition-all ${form.emoji === em ? 'bg-purple-500/30 ring-2 ring-purple-500 scale-110' : 'bg-white/5 hover:bg-white/10'}`}>
-                      {em}
-                    </button>
-                  ))}
-                </div>
+                <label className="text-xs text-slate-400 mb-2 block">Ditt framtida jag — bild eller symbol</label>
+                <GoalVisualPicker
+                  imageUrl={form.imageUrl}
+                  iconId={form.goalIcon}
+                  visualType={form.visualType}
+                  previewPct={8}
+                  onChange={({ imageUrl, iconId, visualType }) => {
+                    setForm({ ...form, imageUrl, goalIcon: iconId, visualType });
+                    setValidationError(null);
+                  }}
+                />
               </div>
 
               <div>
@@ -262,8 +271,15 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
           {step === 2 && (
             <motion.div key="s2" initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} className="space-y-5">
               <div className="text-center py-2">
-                <span className="text-5xl">{form.emoji}</span>
-                <p className="text-white font-bold mt-2">{form.name}</p>
+                <VisualSavingsGoalRing
+                  pct={5}
+                  size={88}
+                  stroke={5}
+                  imageUrl={form.visualType === 'image' ? form.imageUrl : null}
+                  iconId={form.goalIcon}
+                  className="mx-auto"
+                />
+                <p className="text-white font-bold mt-3">{form.name}</p>
                 <p className="text-slate-400 text-sm">{parseInt(form.amount || 0).toLocaleString('sv-SE')} kr</p>
               </div>
 
@@ -325,7 +341,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                     <button key={s.id} onClick={() => { setStrategy(s.id); setCustomAiMsg(null); }}
                       className={`w-full p-4 rounded-xl text-left transition-all flex items-center gap-3 ${strategy === s.id ? 'ring-2 ring-purple-500' : ''}`}
                       style={{ background: strategy === s.id ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.04)' }}>
-                      <span className="text-2xl">{s.icon}</span>
+                      <s.Icon className="w-6 h-6 text-purple-300 flex-shrink-0" />
                       <div>
                         <p className="text-sm font-semibold text-white">{s.title}</p>
                         <p className="text-xs text-slate-400">{s.desc}</p>
@@ -339,7 +355,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
               {strategy === 'custom' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   className="mt-2 p-4 rounded-2xl space-y-4" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}>
-                  <p className="text-xs font-semibold text-indigo-300 uppercase tracking-widest">🛠️ Bygg ditt schema</p>
+                  <p className="text-xs font-semibold text-indigo-300 uppercase tracking-widest flex items-center gap-1.5"><Wrench className="w-3.5 h-3.5" /> Bygg ditt schema</p>
 
                   {/* Frequency */}
                   <div>
@@ -384,9 +400,11 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                         ≈ {customMonthlyEquivalent().toLocaleString('sv-SE')} kr / månad
                       </p>
                       <p className={`text-xs mt-1 ${customMonthlyEquivalent() > margin ? 'text-rose-400' : 'text-emerald-300'}`}>
-                        {customMonthlyEquivalent() > margin
-                          ? `⚠ Överstiger din marginal (${margin.toLocaleString('sv-SE')} kr)`
-                          : `✓ Ryms inom din marginal (${margin.toLocaleString('sv-SE')} kr)`}
+                        <span className="inline-flex items-center gap-1">
+                          {customMonthlyEquivalent() > margin
+                            ? <><AlertTriangle className="w-3.5 h-3.5" /> Överstiger din marginal ({margin.toLocaleString('sv-SE')} kr)</>
+                            : <><Check className="w-3.5 h-3.5" /> Ryms inom din marginal ({margin.toLocaleString('sv-SE')} kr)</>}
+                        </span>
                       </p>
                     </motion.div>
                   )}
@@ -445,12 +463,18 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
           {step === 4 && (
             <motion.div key="s4" initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} className="space-y-5 text-center">
               <div className="flex justify-center">
-                <PlantVisual progress={5} />
+                <VisualSavingsGoalRing
+                  pct={5}
+                  size={120}
+                  stroke={6}
+                  imageUrl={form.visualType === 'image' ? form.imageUrl : null}
+                  iconId={form.goalIcon}
+                  showMilestones
+                />
               </div>
               <div>
-                <p className="text-5xl mb-3">{form.emoji}</p>
                 <h3 className="text-2xl font-bold text-white">{form.name}</h3>
-                <p className="text-slate-400 text-sm mt-1">Din resa börjar nu 🌱</p>
+                <p className="text-slate-400 text-sm mt-1">Din resa börjar nu</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
@@ -475,11 +499,15 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
               </div>
 
               <p className="text-xs text-slate-500 px-4">
-                Varje gång du sparar växer din planta. Håll den vid liv! 🌿
+                Varje krona gör bilden skarpare — du ser ditt framtida jag ta form.
               </p>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {validationError && (
+          <p className="text-xs text-rose-400 mt-4 font-medium">{validationError}</p>
+        )}
 
         {/* Navigation */}
         <div className="flex gap-3 mt-7">
@@ -493,7 +521,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
             disabled={(step === 1 && !canNext1) || (step === 2 && !canNext2) || loadingAi}
             className="flex-1 h-12 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 font-bold text-white text-base"
           >
-            {step === 4 ? '🚀 Starta min dröm!' : <>Nästa <ChevronRight className="w-4 h-4 ml-1" /></>}
+            {step === 4 ? <><Rocket className="w-4 h-4 mr-1" /> Starta min dröm!</> : <>Nästa <ChevronRight className="w-4 h-4 ml-1" /></>}
           </Button>
         </div>
       </motion.div>

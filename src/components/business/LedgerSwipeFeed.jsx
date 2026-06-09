@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { CheckCircle2, X, Camera, AlertTriangle, ChevronRight, Rocket } from 'lucide-react';
+import { CheckCircle2, X, Camera, AlertTriangle, ChevronRight, Rocket, Loader2, Check, Monitor, Palette, Train, UtensilsCrossed, Package, Apple } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const ACCOUNTS = [
@@ -13,13 +13,22 @@ const ACCOUNTS = [
   { code: '4000', label: 'Varuinköp' },
 ];
 
+const TX_ICON_MAP = {
+  equipment: Monitor,
+  software: Palette,
+  travel: Train,
+  dining: UtensilsCrossed,
+  supplies: Package,
+  apple: Apple,
+};
+
 const MOCK_TRANSACTIONS = [
-  { id: 0, vendor: 'Apple Store', amount: 14990, vat: 2998, vatRate: 25, account: '5410', accountLabel: 'Förbrukningsinventarier', icon: '🍎', hasReceipt: false, date: 'Importerad från kontoutdrag', aiText: 'Jag hittade detta i ditt kontoutdrag. Det ser ut som en arbetsdator – vill du bokföra den som inventarie? (Konto 5410 Inventarier rekommenderas)', fromImport: true },
-  { id: 1, vendor: 'Adobe Inc', amount: 699, vat: 139.80, vatRate: 25, account: '5420', accountLabel: 'Programvaror & IT', icon: '🎨', hasReceipt: true, date: 'Idag 14:22', aiText: 'Adobe Creative Cloud — 25% moms automatiskt dragen. Fullt avdragsgill.' },
-  { id: 2, vendor: 'SJ AB', amount: 580, vat: 52.73, vatRate: 10, account: '5800', accountLabel: 'Resekostnader', icon: '🚆', hasReceipt: true, date: 'Idag 09:15', aiText: 'Tågresa Stockholm–Göteborg — 10% moms. Affärsresa antagen baserat på din profil.' },
-  { id: 3, vendor: 'Webhallen', amount: 4990, vat: 998, vatRate: 25, account: '5410', accountLabel: 'IT-utrustning', icon: '💻', hasReceipt: false, date: 'Igår 18:40', aiText: 'Elektronik — kvitto saknas. Bokföringen är pausad tills underlag finns.' },
-  { id: 4, vendor: 'Restaurang PM & Vänner', amount: 1840, vat: 220.80, vatRate: 12, account: '5900', accountLabel: 'Representation', icon: '🍽️', hasReceipt: false, date: 'Igår 20:10', aiText: 'Representation — kvitto + kundnamn krävs för Skatteverket. Bokföringen pausad.' },
-  { id: 5, vendor: 'Kontorsmaterial AB', amount: 340, vat: 68, vatRate: 25, account: '5410', accountLabel: 'Förbrukningsinventarier', icon: '📦', hasReceipt: true, date: '2 dagar sedan', aiText: 'Kontorsmaterial — 25% moms, direkt avdragsgill.' },
+  { id: 0, vendor: 'Apple Store', amount: 14990, vat: 2998, vatRate: 25, account: '5410', accountLabel: 'Förbrukningsinventarier', iconKey: 'apple', hasReceipt: false, date: 'Importerad från kontoutdrag', aiText: 'Jag hittade detta i ditt kontoutdrag. Det ser ut som en arbetsdator – vill du bokföra den som inventarie? (Konto 5410 Inventarier rekommenderas)', fromImport: true },
+  { id: 1, vendor: 'Adobe Inc', amount: 699, vat: 139.80, vatRate: 25, account: '5420', accountLabel: 'Programvaror & IT', iconKey: 'software', hasReceipt: true, date: 'Idag 14:22', aiText: 'Adobe Creative Cloud — 25% moms automatiskt dragen. Fullt avdragsgill.' },
+  { id: 2, vendor: 'SJ AB', amount: 580, vat: 52.73, vatRate: 10, account: '5800', accountLabel: 'Resekostnader', iconKey: 'travel', hasReceipt: true, date: 'Idag 09:15', aiText: 'Tågresa Stockholm–Göteborg — 10% moms. Affärsresa antagen baserat på din profil.' },
+  { id: 3, vendor: 'Webhallen', amount: 4990, vat: 998, vatRate: 25, account: '5410', accountLabel: 'IT-utrustning', iconKey: 'equipment', hasReceipt: false, date: 'Igår 18:40', aiText: 'Elektronik — kvitto saknas. Bokföringen är pausad tills underlag finns.' },
+  { id: 4, vendor: 'Restaurang PM & Vänner', amount: 1840, vat: 220.80, vatRate: 12, account: '5900', accountLabel: 'Representation', iconKey: 'dining', hasReceipt: false, date: 'Igår 20:10', aiText: 'Representation — kvitto + kundnamn krävs för Skatteverket. Bokföringen pausad.' },
+  { id: 5, vendor: 'Kontorsmaterial AB', amount: 340, vat: 68, vatRate: 25, account: '5410', accountLabel: 'Förbrukningsinventarier', iconKey: 'supplies', hasReceipt: true, date: '2 dagar sedan', aiText: 'Kontorsmaterial — 25% moms, direkt avdragsgill.' },
 ];
 
 function SwipeCard({ tx, onApprove, onReject, isTop }) {
@@ -90,20 +99,20 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
           <motion.div style={{ opacity: approveOpacity }}
             className="absolute top-4 right-4 px-3 py-1.5 rounded-full border-2 font-black text-sm rotate-12"
             style={{ borderColor: '#3DAA7A', color: '#3DAA7A', opacity: approveOpacity }}>
-            BOKFÖRT ✓
+            BOKFÖRT <Check className="w-3.5 h-3.5 inline" aria-hidden />
           </motion.div>
           <motion.div style={{ opacity: rejectOpacity }}
             className="absolute top-4 left-4 px-3 py-1.5 rounded-full border-2 font-black text-sm -rotate-12"
             style={{ borderColor: '#D95F5F', color: '#D95F5F', opacity: rejectOpacity }}>
-            ÄNDRA ✗
+            ÄNDRA <X className="w-3.5 h-3.5 inline" aria-hidden />
           </motion.div>
         </>
       )}
 
       <div className="flex items-start gap-3">
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
           style={{ background: 'rgba(255,255,255,0.06)' }}>
-          {tx.icon}
+          {(() => { const Icon = TX_ICON_MAP[tx.iconKey] || Package; return <Icon className="w-5 h-5" style={{ color: 'rgba(155,173,184,0.8)' }} aria-hidden />; })()}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
@@ -162,11 +171,11 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
         <button onClick={() => fileInputRef.current?.click()}
           className="mt-3 w-full h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
           style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.4)' }}>
-          {uploading ? '⏳ Laddar upp...' : <><Camera className="w-3.5 h-3.5" /> Fota kvitto nu</>}
+          {uploading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Laddar upp...</> : <><Camera className="w-3.5 h-3.5" /> Fota kvitto nu</>}
         </button>
       )}
       {receiptUrl && !ocrData && (
-        <p className="text-xs mt-2 text-center" style={{ color: '#3DAA7A' }}>✓ Kvitto bifogat — redo att bokföras</p>
+        <p className="text-xs mt-2 text-center inline-flex items-center justify-center gap-1 w-full" style={{ color: '#3DAA7A' }}><Check className="w-3 h-3" aria-hidden /> Kvitto bifogat — redo att bokföras</p>
       )}
       {ocrData && (
         <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.25)' }}>
@@ -213,7 +222,7 @@ export default function LedgerSwipeFeed() {
   if (queue.length === 0) {
     return (
       <div className="py-10 text-center">
-        <p className="text-3xl mb-2">🚀</p>
+        <Rocket className="w-8 h-8 mx-auto mb-2" style={{ color: '#3DAA7A' }} aria-hidden />
         <p className="font-bold" style={{ color: '#3DAA7A' }}>Allt bokfört!</p>
         <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.5)' }}>Anchor håller löpande koll. Nästa transaktion hanteras automatiskt.</p>
       </div>
@@ -245,7 +254,7 @@ export default function LedgerSwipeFeed() {
             style={{ background: 'rgba(61,170,122,0.15)', border: '1px solid rgba(61,170,122,0.3)' }}>
             <Rocket className="w-4 h-4" style={{ color: '#3DAA7A' }} />
             <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>
-              Bokfört & Klart! {lastApproved.vendor} → Konto {lastApproved.account} 🚀
+              Bokfört & Klart! {lastApproved.vendor} → Konto {lastApproved.account}
             </p>
           </motion.div>
         )}

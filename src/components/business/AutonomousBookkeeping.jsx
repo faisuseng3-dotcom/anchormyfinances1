@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Receipt, Zap, Clock, Shield, Download, Mail } from 'lucide-react';
+import { Receipt, Zap, Clock, Shield, Download, Mail, Check } from 'lucide-react';
 import LedgerSwipeFeed from './LedgerSwipeFeed';
 import VATMeter from './VATMeter';
 
@@ -83,7 +83,7 @@ function SIEExport() {
               border: sent ? '1px solid rgba(61,170,122,0.3)' : '1px solid rgba(255,255,255,0.08)',
             }}>
             <Mail className="w-3.5 h-3.5" />
-            {sent ? '✓ Skickat!' : 'Dela med revisor'}
+            {sent ? <><Check className="w-3.5 h-3.5" aria-hidden /> Skickat!</> : 'Dela med revisor'}
           </button>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import { copilotChipClass, copilotPrimaryBtnClass } from '@/lib/copilotTheme';
 import { getCategoryTint } from '@/lib/copilotTheme';
+import { CategoryIcon } from '@/lib/anchorIcons';
 
 const CATEGORIES = [
   { id: 'food', label: 'Mat' },
@@ -133,7 +134,7 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
                   }`}
                   style={active ? undefined : { background: `linear-gradient(135deg, ${tint.bg}, var(--copilot-bg-card))` }}
                 >
-                  <span className="text-xl">{tint.emoji}</span>
+                  <CategoryIcon category={cat.id} size={18} color={tint.accent} />
                   <span className="text-[14px] font-medium text-white">{cat.label}</span>
                 </motion.button>
               );

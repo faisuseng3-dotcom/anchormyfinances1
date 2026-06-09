@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingDown, TrendingUp, MapPin, RefreshCw } from 'lucide-react';
+import { TrendingDown, TrendingUp, MapPin, RefreshCw, Plane, Hotel, Film, Trophy, Star } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -148,13 +148,13 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
         <h3 className="font-semibold text-white mb-4">Din budget (valfritt)</h3>
         <div className="space-y-4">
           {[
-            { key: 'flight', label: 'Flyg', icon: '✈️' },
-            { key: 'accommodation', label: 'Boende per natt', icon: '🏨' },
-            { key: 'activities', label: 'Aktiviteter per dag', icon: '🎭' }
+            { key: 'flight', label: 'Flyg', Icon: Plane },
+            { key: 'accommodation', label: 'Boende per natt', Icon: Hotel },
+            { key: 'activities', label: 'Aktiviteter per dag', Icon: Film }
           ].map((item) => (
             <div key={item.key}>
               <Label className="flex items-center gap-2">
-                <span>{item.icon}</span>
+                <item.Icon className="w-4 h-4 text-slate-400" />
                 {item.label}
               </Label>
               <div className="relative mt-1">
@@ -228,7 +228,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
                 {formatNumber(potentialSavings)} kr
               </p>
               <div className="mt-3 px-4 py-2 rounded-full bg-emerald-500/20 inline-block">
-                <span className="text-sm text-emerald-400 font-medium">🏆 Smart Traveler</span>
+                <span className="text-sm text-emerald-400 font-medium inline-flex items-center gap-1"><Trophy className="w-4 h-4" /> Smart Traveler</span>
               </div>
             </motion.div>
           )}
@@ -261,7 +261,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
                     <span className="text-emerald-400 font-medium">Förslag:</span> {opt.suggestion}
                   </p>
                   {opt.rating_improvement && (
-                    <p className="text-blue-400 text-xs">⭐ {opt.rating_improvement}</p>
+                    <p className="text-blue-400 text-xs inline-flex items-center gap-1"><Star className="w-3 h-3" aria-hidden /> {opt.rating_improvement}</p>
                   )}
                 </div>
                 <Button

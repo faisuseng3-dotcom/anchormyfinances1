@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { Zap } from 'lucide-react';
 
 const fmt = (n) => Math.round(Math.abs(n || 0)).toLocaleString('sv-SE');
 
@@ -92,9 +93,9 @@ export default function HorizonPath({ eventsWithBalance, whatIfAmount = 0 }) {
           DIN HORISONT — 30 DAGAR
         </p>
         {nextPit && (
-          <span className="text-[9px] font-black px-2 py-0.5 rounded-full"
+          <span className="text-[9px] font-black px-2 py-0.5 rounded-full inline-flex items-center gap-1"
             style={{ background: 'rgba(255,68,102,0.12)', color: '#FF4466', border: '1px solid rgba(255,68,102,0.3)' }}>
-            ⚡ Hinder om {daysUntil(nextPit.event)}d
+            <Zap className="w-3 h-3" aria-hidden /> Hinder om {daysUntil(nextPit.event)}d
           </span>
         )}
       </div>

@@ -5,19 +5,6 @@ import { computeLocalFuturePulse } from '@/lib/futurePulseEngine';
 
 const EXPENSE_TYPES = new Set(['expense', 'shopping']);
 
-const CATEGORY_EMOJI = {
-  food: '🍎',
-  transport: '🚗',
-  entertainment: '🎯',
-  travel: '✈️',
-  health: '💊',
-  home: '🏠',
-  shopping: '🛍️',
-  other: '📦',
-  income: '💰',
-  subscription: '🎵',
-};
-
 export function fmtKr(n, { signed = false, prefix = '' } = {}) {
   const val = Math.round(Math.abs(n || 0)).toLocaleString('sv-SE');
   if (signed && n < 0) return `−${val} kr`;
@@ -70,7 +57,7 @@ export function buildBudgetRows(profile, transactions) {
       const pct = limit > 0 ? Math.min(1, spent / limit) : 0;
       return {
         key: cat,
-        emoji: CATEGORY_EMOJI[cat] || '📦',
+        category: cat,
         name: BUDGET_CATEGORY_META[cat]?.label || cat,
         spent,
         limit,
@@ -84,7 +71,7 @@ export function buildBudgetRows(profile, transactions) {
   if (housing > 0) {
     rows.push({
       key: 'housing',
-      emoji: '🏠',
+      category: 'home',
       name: 'Boende',
       spent: housing,
       limit: housing,
@@ -95,7 +82,7 @@ export function buildBudgetRows(profile, transactions) {
   }
 
   return rows.length ? rows : [
-    { key: 'food', emoji: '🍎', name: 'Mat', spent: 0, limit: 0, pct: 0, over: false, overAmt: 0 },
+    { key: 'food', category: 'food', name: 'Mat', spent: 0, limit: 0, pct: 0, over: false, overAmt: 0 },
   ];
 }
 
@@ -165,10 +152,10 @@ export function getRecentTransactions(transactions, limit = 5) {
 
       return {
         id: tx.id,
-        icon: CATEGORY_EMOJI[cat] || (isCredit ? '💰' : '🛒'),
+        categoryKey: isCredit ? 'income' : cat,
+        categoryLabel: BUDGET_CATEGORY_META[cat]?.label || cat,
         name: tx.vendor || tx.label || tx.description || 'Transaktion',
         dateLabel,
-        category: BUDGET_CATEGORY_META[cat]?.label || cat,
         amount: tx.amount,
         isCredit,
       };
@@ -182,12 +169,15 @@ export function buildSavingsGoals(profile) {
     const current = profile.savingsCurrentBalance || 0;
     const target = profile.savingsGoal;
     goals.push({
-      icon: '✈️',
+      goalType: profile.savingsGoalIcon || 'default',
       name: profile.savingsGoalName || 'Sparmål',
       current,
       target,
       pct: target > 0 ? Math.min(100, (current / target) * 100) : 0,
       deadline: profile.savingsGoalDeadline || null,
+      imageUrl: profile.savingsGoalImageUrl || null,
+      visualType: profile.savingsGoalVisualType || (profile.savingsGoalImageUrl ? 'image' : 'icon'),
+      isPrimary: true,
     });
   }
   const fixed = getTotalFixedCosts(profile);
@@ -195,7 +185,7 @@ export function buildSavingsGoals(profile) {
   if (bufferTarget > 0) {
     const buffer = profile.buffer || 0;
     goals.push({
-      icon: '🚨',
+      goalType: 'buffer',
       name: 'Buffert (3 mån)',
       current: buffer,
       target: bufferTarget,

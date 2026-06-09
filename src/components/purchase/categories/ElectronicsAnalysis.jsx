@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Laptop, Link2, Loader2, TrendingDown, Clock, Zap } from 'lucide-react';
+import { Laptop, Link2, Loader2, TrendingDown, TrendingUp, Clock, Zap, Brain } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -200,7 +200,7 @@ Svara ENDAST med JSON.`,
 
       <Button onClick={handleAnalyze} disabled={!device.name || !device.price || loading}
         className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:opacity-90 font-bold text-white">
-        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : '💻 Generera Elektronik CFO-rapport'}
+        {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : <><Laptop className="w-4 h-4 mr-2" aria-hidden /> Generera Elektronik CFO-rapport</>}
       </Button>
 
       <AnimatePresence>
@@ -260,7 +260,7 @@ Svara ENDAST med JSON.`,
                   {/* Need analysis */}
                   {analysis.need_analysis && (
                     <div className="rounded-xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🧠 Behovs-analys</p>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5"><Brain className="w-3.5 h-3.5" aria-hidden /> Behovs-analys</p>
                       <p className="text-sm text-slate-300 leading-relaxed">{analysis.need_analysis}</p>
                     </div>
                   )}
@@ -268,7 +268,7 @@ Svara ENDAST med JSON.`,
                   {/* Goal tradeoff */}
                   {analysis.goal_trade_off && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
-                      <span className="text-emerald-400">📈</span>
+                      <TrendingUp className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.goal_trade_off}</p>
                     </div>
                   )}

@@ -11,7 +11,6 @@ export function buildUpcomingExpenses(profile) {
       amount: profile.housingCost,
       dueDay: profile.housingDueDay || 27,
       priority: 'critical',
-      icon: '🏠',
       category: 'home',
       recurring: true,
     });
@@ -24,32 +23,21 @@ export function buildUpcomingExpenses(profile) {
       amount: loan.monthlyPayment,
       dueDay: 5 + i,
       priority: 'critical',
-      icon: '🏦',
-      category: 'loans',
+      category: 'other',
       recurring: true,
     });
   });
 
-  const CATEGORY_ICONS = {
-    streaming: '🎬',
-    entertainment: '🎮',
-    transport: '🚌',
-    health: '💪',
-    food: '🛒',
-    insurance: '🛡️',
-    other: '📱',
-  };
-
   const DUE_DAYS = [8, 12, 15, 18, 22, 27];
   (profile?.subscriptions || []).forEach((sub, i) => {
+    const category = sub.category === 'streaming' ? 'subscription' : (sub.category || 'other');
     items.push({
       id: `sub-${i}`,
       name: sub.name,
       amount: sub.amount,
       dueDay: sub.billingDay || DUE_DAYS[i % DUE_DAYS.length],
       priority: 'lifestyle',
-      icon: CATEGORY_ICONS[sub.category] || '📱',
-      category: sub.category,
+      category,
       recurring: true,
     });
   });
@@ -92,7 +80,7 @@ export function getUpcomingDates(expenses, currentBalance, incomeDay = 25, incom
         date: new Date(d),
         dayOffset,
         priority: 'income',
-        icon: '💰',
+        category: 'income',
         recurring: true,
       });
     }

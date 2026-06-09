@@ -6,6 +6,7 @@ import { copilotPageClass } from '@/lib/copilotTheme';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
 import { useCopilotNav } from '@/components/layout/CopilotNavContext';
+import { NavIcon } from '@/lib/anchorIcons';
 
 /**
  * @param {Object} props
@@ -60,7 +61,7 @@ export default function PageShell({
               aria-label="Öppna meny"
               onClick={openSidebar}
             >
-              ☰
+              <NavIcon name="menu" size={18} />
             </button>
             {backControl}
             <div className="min-w-0 pt-0.5">

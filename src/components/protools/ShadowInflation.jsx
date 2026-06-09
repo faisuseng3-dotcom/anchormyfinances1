@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, Loader2 } from 'lucide-react';
+import { Eye, Loader2, ScanSearch, X, Lightbulb } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
@@ -30,8 +30,8 @@ function XrayCost({ item, onClose }) {
       className="rounded-xl p-4 mt-3 space-y-3"
       style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
       <div className="flex justify-between items-start">
-        <p className="text-xs font-bold text-rose-400 uppercase tracking-wider">🔬 Röntgen: {item.name}</p>
-        <button onClick={onClose} className="text-slate-500 text-xs hover:text-white">✕</button>
+        <p className="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5"><ScanSearch className="w-3.5 h-3.5" aria-hidden /> Röntgen: {item.name}</p>
+        <button onClick={onClose} className="text-slate-500 text-xs hover:text-white" aria-label="Stäng"><X className="w-3.5 h-3.5" /></button>
       </div>
       <div className="grid grid-cols-2 gap-2 text-xs">
         <div className="flex justify-between"><span className="text-slate-500">Inköpspris</span><span className="text-white font-medium">{fmt(item.price)} kr</span></div>
@@ -173,7 +173,7 @@ Svara ENDAST med JSON.`,
                   <span className="text-rose-400 font-black text-sm">+{item.pct_increase}%</span>
                 </div>
                 <p className="text-xs text-slate-400 mb-2">Extra kostnad: <span className="text-rose-300 font-bold">{fmt(item.kr_yearly)} kr/år</span></p>
-                <p className="text-xs text-emerald-300">💡 {item.smart_swap}</p>
+                <p className="text-xs text-emerald-300 flex items-start gap-1.5"><Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden /> {item.smart_swap}</p>
               </div>
             ))}
           </motion.div>
@@ -182,7 +182,7 @@ Svara ENDAST med JSON.`,
 
       {/* X-ray tool */}
       <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">🔬 Röntgen-knappen – Köp-Scanner</p>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><ScanSearch className="w-3.5 h-3.5" aria-hidden /> Röntgen-knappen – Köp-Scanner</p>
         <p className="text-xs text-slate-500">Klistra in ett köp för att se den <em>verkliga</em> totalkostnaden över 24 månader.</p>
         <div className="grid grid-cols-2 gap-2">
           <Input value={xrayItem.name} onChange={e => setXrayItem(x => ({ ...x, name: e.target.value }))}

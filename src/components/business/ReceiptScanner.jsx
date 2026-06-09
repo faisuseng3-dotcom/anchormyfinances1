@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, X, Upload, CheckCircle2 } from 'lucide-react';
+import { Camera, X, Upload, CheckCircle2, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 const PROCESSING_STEPS = [
@@ -141,7 +141,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
               {phase === 'upload' ? 'Fota kvitto / faktura' :
                phase === 'processing' ? 'Tolkar kvitto…' :
                phase === 'review' ? 'Granska & bekräfta' :
-               '✓ Sparad!'}
+               <span className="inline-flex items-center gap-1.5"><Check className="w-3.5 h-3.5" aria-hidden /> Sparad!</span>}
             </p>
           </div>
           <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { TrendingUp, Brain, Calendar, Radio, ChevronRight } from 'lucide-react';
+import { TrendingUp, Brain, Calendar, Radio, ChevronRight, Wallet, Clock } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import QuickStats from '@/components/dashboard/QuickStats';
 
@@ -197,8 +197,8 @@ Ge konkreta råd med beräknade effekter i kronor och över tid. Var specifik oc
                     <h4 className="font-semibold text-white mb-1">{insight.title}</h4>
                     <p className="text-sm text-slate-400 mb-2">{insight.suggestion}</p>
                     <div className="flex items-center gap-4 text-xs">
-                      <span className="text-emerald-400 font-medium">💰 {insight.impact}</span>
-                      <span className="text-slate-500">⏱️ {insight.timeframe}</span>
+                      <span className="text-emerald-400 font-medium inline-flex items-center gap-1"><Wallet className="w-3 h-3" aria-hidden /> {insight.impact}</span>
+                      <span className="text-slate-500 inline-flex items-center gap-1"><Clock className="w-3 h-3" aria-hidden /> {insight.timeframe}</span>
                     </div>
                   </div>
                   <ChevronRight className="w-5 h-5 text-slate-600" />

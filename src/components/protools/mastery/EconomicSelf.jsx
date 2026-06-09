@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Zap, CloudRain, ClipboardList, Waves, Brain } from 'lucide-react';
 
 const QUESTIONS = [
   { id: 'q1', text: 'Du ser en rea på något du velat ha länge. Vad gör du?', options: ['Köper direkt, priset är rätt!', 'Väntar en dag och tänker om', 'Kollar om det faktiskt behövs', 'Skippar det, sparar istället'] },
@@ -10,28 +11,32 @@ const QUESTIONS = [
 
 const PROFILES = {
   impulse: {
-    title: '⚡ Impuls-shopparen',
+    Icon: Zap,
+    title: 'Impuls-shopparen',
     desc: 'Du lever i nuet och köper när det känns rätt. Din styrka är spontanitet, men det kostar dig mer än du tror.',
     tips: ['Prova 24-timmarsregeln: Vänta alltid en dag innan köp över 500 kr', 'Sätt upp auto-sparande så pengarna är borta innan frestelsen slår till', 'Spåra dina spontanköp i 1 månad — summan kommer förvåna dig'],
     color: '#f97316',
     glow: 'rgba(249,115,22,0.3)',
   },
   worrier: {
-    title: '😰 Oros-spararen',
+    Icon: CloudRain,
+    title: 'Oros-spararen',
     desc: 'Du är försiktig och tänker framåt, men rädslan för att förlora kontroll kan blockera dig från att ta välgrundade risker.',
     tips: ['Bygg en "Peace-of-Mind"-buffert på 3 månader, sen kan du andas', 'Automatisera betalningar så du slipper manuell kontroll', 'Tillåt dig en "fribudget" varje månad utan skuldkänslor'],
     color: '#6366f1',
     glow: 'rgba(99,102,241,0.3)',
   },
   planner: {
-    title: '📋 Strategi-planeraren',
+    Icon: ClipboardList,
+    title: 'Strategi-planeraren',
     desc: 'Du tänker long-term och sätter upp mål. Du är i minoritet — de flesta lyckas inte med det här.',
     tips: ['Nästa steg: Investera överskottet, inte bara spara det', 'Optimera skatt och avkastning — du är redo för det steget', 'Dela din strategi med en partner för att hålla motivationen uppe'],
     color: '#10b981',
     glow: 'rgba(16,185,129,0.3)',
   },
   drifter: {
-    title: '🌊 Driftaren',
+    Icon: Waves,
+    title: 'Driftaren',
     desc: 'Ekonomin är inte din prioritet — och det är okej. Men det kostar dig frihet du inte ens vet du missar.',
     tips: ['Börja med ett enda mål: spara 1 000 kr. Det skapar momentum', 'Hitta en konkret "varför" — vad skulle du göra med 50k extra?', 'Sätt upp automatiska regler så ekonomin sköter sig själv'],
     color: '#8b5cf6',
@@ -89,7 +94,7 @@ export default function EconomicSelf() {
         {step === 0 && (
           <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-4">
             <div className="rounded-2xl p-5 border border-amber-500/20 text-center" style={{ background: 'rgba(245,158,11,0.07)' }}>
-              <p className="text-2xl mb-2">🧠</p>
+              <Brain className="w-8 h-8 mx-auto mb-2 text-amber-400" aria-hidden />
               <p className="text-white font-semibold">4 frågor. Din ekonomiska personlighet.</p>
               <p className="text-xs text-slate-400 mt-2">Baserat på beteendeekonomisk forskning från MIT och Duke University.</p>
             </div>
@@ -132,7 +137,10 @@ export default function EconomicSelf() {
         {step === 5 && profile && (
           <motion.div key="result" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-4">
             <div className="rounded-2xl p-5 border" style={{ background: `${profile.color}10`, borderColor: `${profile.color}30`, boxShadow: `0 0 30px ${profile.glow}` }}>
-              <p className="text-xl font-bold text-white mb-2">{profile.title}</p>
+              <p className="text-xl font-bold text-white mb-2 inline-flex items-center gap-2">
+                <profile.Icon className="w-5 h-5" style={{ color: profile.color }} aria-hidden />
+                {profile.title}
+              </p>
               <p className="text-sm text-slate-300 leading-relaxed">{profile.desc}</p>
             </div>
 

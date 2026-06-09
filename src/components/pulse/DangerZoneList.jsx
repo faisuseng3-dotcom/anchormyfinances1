@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, Shield } from 'lucide-react';
 import { formatNumber } from './pulseEngine';
+import { EventCategoryIcon } from '@/lib/anchorIcons';
 
 export default function DangerZoneList({ events }) {
   const criticalEvts = events.filter(e => e.priority === 'critical');
@@ -32,7 +33,7 @@ export default function DangerZoneList({ events }) {
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="text-lg">{ev.icon}</span>
+                  <EventCategoryIcon event={ev} size={18} className="text-white/70" />
                   <div>
                     <p className={`text-sm font-semibold ${danger ? 'text-rose-200' : 'text-white'}`}>{ev.name}</p>
                     <p className="text-[10px] text-slate-500">
@@ -47,7 +48,11 @@ export default function DangerZoneList({ events }) {
                   <p className={`text-[10px] ${ev.balanceAfter >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
                     → {formatNumber(ev.balanceAfter)} kr
                   </p>
-                  {danger && <span className="text-[9px] text-rose-400 font-bold">⚠ DANGER ZONE</span>}
+                  {danger && (
+                    <span className="text-[9px] text-rose-400 font-bold inline-flex items-center gap-0.5">
+                      <AlertTriangle className="w-3 h-3" /> DANGER ZONE
+                    </span>
+                  )}
                 </div>
               </motion.div>
             );

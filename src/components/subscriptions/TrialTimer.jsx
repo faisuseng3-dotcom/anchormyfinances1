@@ -95,7 +95,7 @@ export default function TrialTimer({ profile, onUpdate }) {
                 </div>
                 <p className={`text-xs mt-0.5 ${isExpired ? 'text-rose-400' : isUrgent ? 'text-amber-400' : 'text-slate-400'}`}>
                   {isExpired
-                    ? '⚠️ Provperioden är slut – kolla om du blivit debiterad!'
+                    ? 'Provperioden är slut – kolla om du blivit debiterad!'
                     : `${daysLeft} dag${daysLeft === 1 ? '' : 'ar'} kvar att säga upp`}
                 </p>
               </div>

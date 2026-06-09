@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Clock } from 'lucide-react';
+import { Clock, CheckCircle2, AlertTriangle } from 'lucide-react';
 import { formatNumber } from './pulseEngine';
+import { EventCategoryIcon } from '@/lib/anchorIcons';
 
 export default function CountdownCard({ nextEvent, currentBalance }) {
   if (!nextEvent) return null;
@@ -39,7 +40,10 @@ export default function CountdownCard({ nextEvent, currentBalance }) {
 
         <div className="flex items-end justify-between mb-3">
           <div>
-            <p className="text-white font-bold text-lg leading-none">{nextEvent.icon} {nextEvent.name}</p>
+            <p className="text-white font-bold text-lg leading-none flex items-center gap-2">
+              <EventCategoryIcon event={nextEvent} size={18} className="text-white/80" />
+              {nextEvent.name}
+            </p>
             <p className="text-slate-400 text-sm mt-1">{formatNumber(nextEvent.amount)} kr</p>
           </div>
           <div className="text-right">
@@ -60,9 +64,9 @@ export default function CountdownCard({ nextEvent, currentBalance }) {
               {formatNumber(Math.abs(balanceAfter))} kr {balanceAfter < 0 ? '(underskott)' : ''}
             </p>
           </div>
-          <span className="text-2xl">
-            {isSafe ? '✅' : '🚨'}
-          </span>
+          {isSafe
+            ? <CheckCircle2 className="w-6 h-6 text-emerald-400" />
+            : <AlertTriangle className="w-6 h-6 text-rose-400" />}
         </div>
 
         {/* Verdict text */}

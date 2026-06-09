@@ -3,7 +3,7 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-  ArrowLeft, CheckCircle2, AlertTriangle, Lock, FileText, Calculator, Scale, Loader2, ChevronRight, Zap
+  ArrowLeft, CheckCircle2, AlertTriangle, Lock, FileText, Calculator, Scale, Loader2, ChevronRight, Zap, Check, Lightbulb, Calendar
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -69,7 +69,7 @@ export default function YearEndClosing() {
             style={{ background: 'linear-gradient(135deg, #0D7377, #0a5f63)', boxShadow: '0 4px 20px rgba(13,115,119,0.3)' }}>
             <Lock className="w-6 h-6 text-white flex-shrink-0" />
             <div>
-              <p className="font-black text-white">Räkenskapsåret är låst ✓</p>
+              <p className="font-black text-white inline-flex items-center gap-2"><Check className="w-5 h-5" aria-hidden /> Räkenskapsåret är låst</p>
               <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
                 Alla verifikat är skrivskyddade. Gott bokslut!
               </p>
@@ -150,7 +150,7 @@ function ReconcileStep({ onComplete }) {
       bookBalance,
       diff,
     });
-    setResult({ diff, aiMessage: res?.data?.message || (diff === 0 ? '✅ Bokföringen stämmer exakt med banken.' : `⚠️ Differens: ${diff > 0 ? '+' : ''}${diff.toLocaleString('sv-SE')} kr`) });
+    setResult({ diff, aiMessage: res?.data?.message || (diff === 0 ? 'Bokföringen stämmer exakt med banken.' : `Differens: ${diff > 0 ? '+' : ''}${diff.toLocaleString('sv-SE')} kr`) });
     setLoading(false);
   };
 
@@ -184,8 +184,10 @@ function ReconcileStep({ onComplete }) {
       {result && (
         <div className="rounded-2xl p-4"
           style={{ background: result.diff === 0 ? 'rgba(13,115,119,0.08)' : 'rgba(229,62,62,0.08)', border: `1px solid ${result.diff === 0 ? 'rgba(13,115,119,0.2)' : 'rgba(229,62,62,0.2)'}` }}>
-          <p className="text-sm font-semibold" style={{ color: result.diff === 0 ? '#0D7377' : '#E53E3E' }}>
-            {result.diff === 0 ? '✅ Stämmer!' : `⚠️ Differens: ${result.diff > 0 ? '+' : ''}${result.diff.toLocaleString('sv-SE')} kr`}
+          <p className="text-sm font-semibold inline-flex items-center gap-1.5" style={{ color: result.diff === 0 ? '#0D7377' : '#E53E3E' }}>
+            {result.diff === 0
+              ? <><CheckCircle2 className="w-4 h-4" aria-hidden /> Stämmer!</>
+              : <><AlertTriangle className="w-4 h-4" aria-hidden /> Differens: {result.diff > 0 ? '+' : ''}{result.diff.toLocaleString('sv-SE')} kr</>}
           </p>
           <p className="text-xs mt-1" style={{ color: '#4A5568' }}>{result.aiMessage}</p>
         </div>
@@ -255,8 +257,9 @@ function CleanupStep({ onComplete }) {
             <p className="text-xs text-center" style={{ color: '#9AA5B4' }}>+{pending.length - 5} till</p>
           )}
           <div className="rounded-2xl p-3" style={{ background: '#FFF7E6', border: '1px solid rgba(214,158,46,0.3)' }}>
-            <p className="text-xs font-semibold" style={{ color: '#D69E2E' }}>
-              ⚠️ Gå till Arkiv → SmartPaste och bokför dessa transaktioner innan du fortsätter.
+            <p className="text-xs font-semibold flex items-start gap-1.5" style={{ color: '#D69E2E' }}>
+              <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
+              Gå till Arkiv → SmartPaste och bokför dessa transaktioner innan du fortsätter.
             </p>
           </div>
         </div>
@@ -265,7 +268,7 @@ function CleanupStep({ onComplete }) {
       <button onClick={onComplete}
         className="w-full rounded-2xl py-3 font-bold text-sm"
         style={{ background: pending.length === 0 ? '#0D7377' : '#F4F6F8', color: pending.length === 0 ? '#fff' : '#4A5568' }}>
-        {pending.length === 0 ? '✅ Allt klart — fortsätt →' : 'Fortsätt ändå →'}
+        {pending.length === 0 ? <span className="inline-flex items-center justify-center gap-1.5"><CheckCircle2 className="w-4 h-4" aria-hidden /> Allt klart — fortsätt →</span> : 'Fortsätt ändå →'}
       </button>
     </motion.div>
   );
@@ -342,8 +345,9 @@ function TaxMapStep({ isAB, companyName, onComplete }) {
       )}
 
       <div className="rounded-2xl p-3" style={{ background: '#F0FFF4', border: '1px solid rgba(13,115,119,0.2)' }}>
-        <p className="text-xs" style={{ color: '#0D7377' }}>
-          💡 Logga in på <strong>skatteverket.se</strong> och välj {formName}. Kopiera värdena ovan till motsvarande rutor. Anchor sparar ett kalkylblad åt dig.
+        <p className="text-xs flex items-start gap-1.5" style={{ color: '#0D7377' }}>
+          <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
+          Logga in på <strong>skatteverket.se</strong> och välj {formName}. Kopiera värdena ovan till motsvarande rutor. Anchor sparar ett kalkylblad åt dig.
         </p>
       </div>
 
@@ -477,12 +481,12 @@ function ClosingStep({ isAB, companyName, locked, onLock }) {
             <p className="text-xs px-1" style={{ color: '#4A5568' }}>{aiVoucher.summary}</p>
             {!confirmed && !locked && (
               <button onClick={() => setConfirmed(true)}
-                className="w-full rounded-2xl py-3 font-bold text-sm"
+                className="w-full rounded-2xl py-3 font-bold text-sm inline-flex items-center justify-center gap-2"
                 style={{ background: 'rgba(13,115,119,0.1)', color: '#0D7377' }}>
-                ✅ Bekräfta och bokför
+                <CheckCircle2 className="w-4 h-4" aria-hidden /> Bekräfta och bokför
               </button>
             )}
-            {confirmed && <p className="text-xs text-center font-semibold" style={{ color: '#0D7377' }}>✓ Verifikat bokfört</p>}
+            {confirmed && <p className="text-xs text-center font-semibold inline-flex items-center justify-center gap-1 w-full" style={{ color: '#0D7377' }}><Check className="w-3.5 h-3.5" aria-hidden /> Verifikat bokfört</p>}
           </div>
         )}
       </div>
@@ -490,7 +494,7 @@ function ClosingStep({ isAB, companyName, locked, onLock }) {
       {/* AB: Meeting date + Bolagsverket deadline */}
       {isAB && (
         <div className="rounded-3xl p-5 space-y-3" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-          <p className="font-bold text-sm" style={{ color: '#1A2332' }}>📅 Årstämma & Bolagsverket</p>
+          <p className="font-bold text-sm inline-flex items-center gap-2" style={{ color: '#1A2332' }}><Calendar className="w-4 h-4" aria-hidden /> Årstämma & Bolagsverket</p>
           <div>
             <label className="text-xs font-semibold block mb-1" style={{ color: '#4A5568' }}>Datum för årstämma</label>
             <input type="date" value={meetingDate} onChange={e => setMeetingDate(e.target.value)}

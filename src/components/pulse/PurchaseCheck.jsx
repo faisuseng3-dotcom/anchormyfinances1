@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Wallet, ThumbsUp, ThumbsDown } from 'lucide-react';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -38,8 +39,8 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
     <div className="rounded-3xl p-5"
       style={{ background: 'rgba(6,8,18,0.95)', border: '1px solid rgba(255,255,255,0.07)' }}>
 
-      <p className="text-[9px] font-black tracking-widest mb-3" style={{ color: 'rgba(255,255,255,0.22)' }}>
-        💸  KOLLA ETT KÖP
+      <p className="text-[9px] font-black tracking-widest mb-3 flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.22)' }}>
+        <Wallet className="w-3.5 h-3.5" /> KOLLA ETT KÖP
       </p>
 
       <p className="text-base font-black mb-4" style={{ color: 'rgba(255,255,255,0.75)' }}>
@@ -102,7 +103,9 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
 
             {/* Verdict */}
             <div className="flex items-center gap-3 mb-3">
-              <span style={{ fontSize: 36 }}>{answer.ok ? '👍' : '👎'}</span>
+              {answer.ok
+                ? <ThumbsUp className="w-9 h-9 text-[#0FDEBD] flex-shrink-0" aria-hidden />
+                : <ThumbsDown className="w-9 h-9 text-[#FF4466] flex-shrink-0" aria-hidden />}
               <p className="text-2xl font-black" style={{ color: answer.ok ? '#0FDEBD' : '#FF4466' }}>
                 {answer.ok ? 'Ja, det klarar du!' : 'Nej, vänta.'}
               </p>

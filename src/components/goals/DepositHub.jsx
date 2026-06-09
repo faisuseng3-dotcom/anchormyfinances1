@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
-import { X, CheckCircle2, Loader2, PiggyBank, Wallet, ArrowDownCircle, CheckSquare, Square } from 'lucide-react';
+import { X, CheckCircle2, Loader2, PiggyBank, Wallet, ArrowDownCircle, CheckSquare, Square, Check, Coins, Lightbulb, PartyPopper, Trophy } from 'lucide-react';
+import { StreakIcon } from '@/lib/anchorIcons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import AccountTypeAdvisor from './AccountTypeAdvisor';
@@ -19,9 +20,9 @@ function CoinRain({ active }) {
           initial={{ y: -60, x: `${10 + (i * 7.5)}vw`, opacity: 1, scale: 1 }}
           animate={{ y: '110vh', opacity: 0, scale: 0.6 }}
           transition={{ duration: 1.4 + Math.random() * 0.8, delay: i * 0.06, ease: 'easeIn' }}
-          className="absolute text-2xl"
+          className="absolute text-amber-400"
         >
-          🪙
+          <Coins className="w-6 h-6" aria-hidden />
         </motion.div>
       ))}
     </div>
@@ -209,8 +210,9 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                 </div>
 
                 <div className="p-4 rounded-2xl" style={{ background: 'rgba(251,191,36,0.07)', border: '1px solid rgba(251,191,36,0.2)' }}>
-                  <p className="text-xs text-amber-300 leading-relaxed">
-                    💡 <strong>Glöm inte</strong> att föra över pengarna på riktigt i din bank – jag har registrerat dem här nu! Du kan bekräfta överföringen direkt efter.
+                  <p className="text-xs text-amber-300 leading-relaxed flex items-start gap-1.5">
+                    <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
+                    <span><strong>Glöm inte</strong> att föra över pengarna på riktigt i din bank – jag har registrerat dem här nu! Du kan bekräfta överföringen direkt efter.</span>
                   </p>
                 </div>
 
@@ -220,7 +222,7 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                   </Button>
                   <Button onClick={handleConfirm} disabled={loading}
                     className="flex-1 h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 font-bold text-white">
-                    {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Sparar…</> : '✅ Bekräfta insättning'}
+                    {loading ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Sparar…</> : <><CheckCircle2 className="w-4 h-4 mr-2" aria-hidden /> Bekräfta insättning</>}
                   </Button>
                 </div>
               </motion.div>
@@ -238,7 +240,7 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                 </motion.div>
 
                 <div>
-                  <h3 className="text-2xl font-bold text-white">Inregistrerat! 🎉</h3>
+                  <h3 className="text-2xl font-bold text-white inline-flex items-center justify-center gap-2"><PartyPopper className="w-6 h-6 text-emerald-400" aria-hidden /> Inregistrerat!</h3>
                   <p className="text-emerald-400 font-bold text-xl mt-1">+{parseFloat(amount).toLocaleString('sv-SE')} kr</p>
                   <p className="text-slate-400 text-sm mt-1">
                     {type === 'buffer' ? 'tillagd i bufferten' : `tillagd i ${goalName}`}
@@ -258,7 +260,7 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                             className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"
                           />
                         </div>
-                        {pct >= 100 && <p className="text-emerald-400 font-bold text-sm mt-2">🏆 Mål uppnått!</p>}
+                        {pct >= 100 && <p className="text-emerald-400 font-bold text-sm mt-2 inline-flex items-center justify-center gap-1.5"><Trophy className="w-4 h-4" aria-hidden /> Mål uppnått!</p>}
                       </div>
                     );
                   })()}
@@ -271,7 +273,7 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                       className="mt-3 p-2.5 rounded-xl text-center"
                       style={{ background: 'rgba(251,191,36,0.15)', border: '1px solid rgba(251,191,36,0.3)' }}
                     >
-                      <p className="text-amber-300 font-bold text-sm">🔥 {streak()} dagars streak! High-five!</p>
+                      <p className="text-amber-300 font-bold text-sm inline-flex items-center justify-center gap-1.5"><StreakIcon variant="fire" size={16} className="text-amber-300" /> {streak()} dagars streak! High-five!</p>
                     </motion.div>
                   )}
                 </div>
@@ -303,7 +305,7 @@ export default function DepositHub({ isOpen, onClose, profile, type = 'savings' 
                     }
                     <div className="text-left">
                       <p className={`text-sm font-semibold ${verified ? 'text-emerald-300' : 'text-slate-300'}`}>
-                        {verified ? '✓ Verifierad – pengarna är förda!' : 'Jag har fört över pengarna i min riktiga bank'}
+                        {verified ? <span className="inline-flex items-center gap-1"><Check className="w-3.5 h-3.5" aria-hidden /> Verifierad – pengarna är förda!</span> : 'Jag har fört över pengarna i min riktiga bank'}
                       </p>
                       <p className="text-xs text-slate-500">
                         {verified ? 'Insättningen lyser grönt i din historik.' : 'Tryck för att låsa upp verifierings-badge'}

@@ -20,6 +20,15 @@ import QuickExpenseSheet from './QuickExpenseSheet';
 import AcademyLessonSheet from '@/components/anchorBrain/AcademyLessonSheet';
 import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import {
+  CategoryIcon,
+  MoodIcon,
+  NavIcon,
+} from '@/lib/anchorIcons';
+import DreamBuilder from '@/components/goals/DreamBuilder';
+import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
+import { getReachedMilestones } from '@/lib/savingsGoalValidation';
+import { TrendingUp, Flame, Sparkles, ArrowUpRight, ArrowUp, Check } from 'lucide-react';
+import {
   fmtKr,
   getMonthRange,
   getMonthlySpentByCategory,
@@ -32,8 +41,6 @@ import {
   getSubscriptionTotal,
   getUpcomingSubscriptions,
 } from './copilot/copilotDashboardUtils';
-const MOOD_EMOJI = { calm: '😌', stressed: '😰', motivated: '💪' };
-
 const BAR_GRADIENTS = {
   ok: 'linear-gradient(90deg, #4a7aff, #22d97a)',
   mid: 'linear-gradient(90deg, #4a7aff, #4fc3f7)',
@@ -60,6 +67,7 @@ export default function FutureDashboard({
   const [coachInput, setCoachInput] = useState('');
   const [coachLine, setCoachLine] = useState(null);
   const [lessonOpen, setLessonOpen] = useState(false);
+  const [dreamBuilderOpen, setDreamBuilderOpen] = useState(false);
 
   const { briefing, updatedAtLabel } = useDashboardBriefing();
   useProactiveWeekPush(profile);
@@ -164,10 +172,10 @@ export default function FutureDashboard({
               aria-label="Öppna meny"
               onClick={openSidebar}
             >
-              ☰
+              <NavIcon name="menu" size={18} />
             </button>
             <span className="copilot-topbar-date">{formatTopbarDate()}</span>
-            <span className="copilot-topbar-greeting">Hej {firstName} 👋</span>
+            <span className="copilot-topbar-greeting">Hej {firstName}</span>
           </div>
           <div className="copilot-topbar-right">
             <button type="button" className="copilot-health-badge" title={health.hint}>
@@ -198,12 +206,10 @@ export default function FutureDashboard({
                 </div>
               </div>
               <span className="copilot-health-label">{health.label}</span>
-              <span style={{ color: 'var(--copilot-text-muted)', fontSize: 13, marginLeft: 2 }}>
-                ↗
-              </span>
+              <ArrowUpRight size={14} className="text-[var(--copilot-text-muted)] ml-0.5" />
             </button>
             <button type="button" className="copilot-icon-btn" title="Notiser" aria-label="Notiser">
-              🔔
+              <NavIcon name="bell" size={16} />
             </button>
             <button
               type="button"
@@ -212,7 +218,7 @@ export default function FutureDashboard({
               aria-label="Sök"
               onClick={() => window.dispatchEvent(new CustomEvent('anchor:open-voice'))}
             >
-              ⌕
+              <NavIcon name="search" size={16} />
             </button>
           </div>
         </header>
@@ -232,7 +238,8 @@ export default function FutureDashboard({
                   className={`copilot-mood-btn ${activeMood === m.id ? 'active' : ''}`}
                   onClick={() => handleMood(m.id)}
                 >
-                  {MOOD_EMOJI[m.id]} {m.label}
+                  <MoodIcon mood={m.id} size={14} className="inline mr-1.5 -mt-0.5" />
+                  {m.label}
                 </button>
               ))}
               <span className="copilot-mood-sub hidden xl:inline">
@@ -302,7 +309,7 @@ export default function FutureDashboard({
                   </span>
                   {underBudget && totalBudgeted > 0 && (
                     <span className="copilot-tag" style={{ marginLeft: 'auto' }}>
-                      ✓ {fmtKr(totalBudgeted - totalSpent)} under budget
+                      <Check className="w-3 h-3 inline" /> {fmtKr(totalBudgeted - totalSpent)} under budget
                     </span>
                   )}
                 </div>
@@ -324,7 +331,9 @@ export default function FutureDashboard({
                       className="copilot-budget-row"
                       style={i === budgetRows.length - 1 ? { marginBottom: 0 } : undefined}
                     >
-                      <span className="copilot-budget-emoji">{row.emoji}</span>
+                      <span className="copilot-budget-emoji">
+                        <CategoryIcon category={row.category || row.key} size={16} color="var(--copilot-text-secondary)" />
+                      </span>
                       <div className="copilot-budget-info">
                         <div className="copilot-budget-name">
                           {row.name}
@@ -363,11 +372,13 @@ export default function FutureDashboard({
                 ) : (
                   recentTxs.map((tx) => (
                     <Link key={tx.id} to={historyTabHref('list')} className="copilot-txn-row">
-                      <div className="copilot-txn-icon">{tx.icon}</div>
+                      <div className="copilot-txn-icon">
+                        <CategoryIcon category={tx.categoryKey} size={16} color="var(--copilot-text-secondary)" />
+                      </div>
                       <div className="copilot-txn-info">
                         <div className="copilot-txn-name">{tx.name}</div>
                         <div className="copilot-txn-date">
-                          {tx.dateLabel} · {tx.category}
+                          {tx.dateLabel} · {tx.categoryLabel}
                         </div>
                       </div>
                       <div className={`copilot-txn-amount ${tx.isCredit ? 'credit' : 'debit'}`}>
@@ -385,11 +396,14 @@ export default function FutureDashboard({
                   <span className="copilot-card-title">AI-Coach</span>
                   <span className="copilot-online-badge">ONLINE</span>
                 </div>
-                <div className="copilot-coach-bubble">
-                  {coachLine ||
-                    briefing?.message ||
-                    scenarios.forecast?.coach_meddelande ||
-                    'Fråga mig om budget, sparande eller din ekonomiska framtid.'}
+                <div className="copilot-coach-bubble flex gap-2">
+                  <Sparkles size={14} className="text-[var(--copilot-accent-blue)] shrink-0 mt-0.5" />
+                  <span>
+                    {coachLine ||
+                      briefing?.message ||
+                      scenarios.forecast?.coach_meddelande ||
+                      'Fråga mig om budget, sparande eller din ekonomiska framtid.'}
+                  </span>
                 </div>
                 <div className="copilot-coach-input">
                   <input
@@ -400,7 +414,7 @@ export default function FutureDashboard({
                     onKeyDown={(e) => e.key === 'Enter' && handleCoachSend()}
                   />
                   <button type="button" className="copilot-coach-send" onClick={handleCoachSend} aria-label="Skicka">
-                    ↑
+                    <ArrowUp size={16} />
                   </button>
                 </div>
               </div>
@@ -475,39 +489,60 @@ export default function FutureDashboard({
                   <button
                     type="button"
                     className="copilot-card-action"
-                    onClick={onOpenTransactionHub}
+                    onClick={() => setDreamBuilderOpen(true)}
                   >
                     + Nytt mål
                   </button>
                 </div>
                 {goals.length === 0 ? (
-                  <p style={{ fontSize: 13, color: 'var(--copilot-text-muted)' }}>
-                    Sätt ett sparmål i inställningar.
-                  </p>
-                ) : (
-                  goals.map((goal, i) => (
-                    <div
-                      key={goal.name}
-                      className="copilot-goal-row"
-                      style={i === goals.length - 1 ? { marginBottom: 0 } : undefined}
+                  <div>
+                    <p style={{ fontSize: 13, color: 'var(--copilot-text-muted)', marginBottom: 12 }}>
+                      Sätt ett visuellt sparmål med bild — se ditt framtida jag ta form.
+                    </p>
+                    <button
+                      type="button"
+                      className="copilot-card-action"
+                      onClick={() => setDreamBuilderOpen(true)}
                     >
-                      <div className="copilot-goal-icon">{goal.icon}</div>
-                      <div className="copilot-goal-info">
-                        <div className="copilot-goal-name">{goal.name}</div>
-                        <div className="copilot-goal-progress-text">
-                          {fmtKr(goal.current)} / {fmtKr(goal.target)}
-                          {goal.deadline ? ` · ${goal.deadline}` : ' · Löpande'}
+                      Skapa sparmål
+                    </button>
+                  </div>
+                ) : (
+                  goals.map((goal, i) => {
+                    const reached = getReachedMilestones(goal.pct);
+                    return (
+                      <div
+                        key={`${goal.name}-${i}`}
+                        className="copilot-goal-row copilot-goal-row-visual"
+                        style={i === goals.length - 1 ? { marginBottom: 0 } : undefined}
+                      >
+                        <VisualSavingsGoalRing
+                          pct={goal.pct}
+                          size={64}
+                          stroke={5}
+                          imageUrl={goal.isPrimary && goal.visualType === 'image' ? goal.imageUrl : null}
+                          iconId={goal.goalType || 'default'}
+                          showMilestones={goal.isPrimary}
+                          className="flex-shrink-0"
+                        />
+                        <div className="copilot-goal-info">
+                          <div className="copilot-goal-name">{goal.name}</div>
+                          <div className="copilot-goal-progress-text">
+                            {fmtKr(goal.current)} / {fmtKr(goal.target)}
+                            {goal.deadline ? ` · ${goal.deadline}` : ' · Löpande'}
+                          </div>
+                          {goal.isPrimary && reached.length > 0 && (
+                            <div className="copilot-goal-milestones">
+                              {reached.map((m) => (
+                                <span key={m} className="copilot-goal-milestone">{m}%</span>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div className="copilot-goal-bar-track">
-                          <div
-                            className="copilot-goal-bar-fill"
-                            style={{ width: `${goal.pct}%` }}
-                          />
-                        </div>
+                        <span className="copilot-goal-pct">{Math.round(goal.pct)}%</span>
                       </div>
-                      <span className="copilot-goal-pct">{Math.round(goal.pct)}%</span>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>
@@ -537,7 +572,7 @@ export default function FutureDashboard({
                       className="copilot-sub-icon"
                       style={{ background: 'rgba(74,122,255,0.12)' }}
                     >
-                      📱
+                      <CategoryIcon category="subscription" size={16} color="var(--copilot-accent-blue)" />
                     </div>
                     <span className="copilot-sub-name">{sub.name}</span>
                     <span className="copilot-sub-date">
@@ -569,8 +604,12 @@ export default function FutureDashboard({
                 </p>
               </div>
               <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <span className="copilot-tag">🔥 Veckans fokus</span>
-                <span className="copilot-tag blue">📈 Hälsoscore {health.score}</span>
+                <span className="copilot-tag inline-flex items-center gap-1">
+                  <Flame size={12} /> Veckans fokus
+                </span>
+                <span className="copilot-tag blue inline-flex items-center gap-1">
+                  <TrendingUp size={12} /> Hälsoscore {health.score}
+                </span>
               </div>
             </div>
 
@@ -611,7 +650,7 @@ export default function FutureDashboard({
                       {lessonData.lesson.title}
                     </div>
                     <div style={{ fontSize: 12, color: 'var(--copilot-text-muted)' }}>
-                      {lessonData.invite} ↗
+                      {lessonData.invite}
                     </div>
                   </button>
                   <div className="copilot-lesson-card secondary">
@@ -671,6 +710,12 @@ export default function FutureDashboard({
           onComplete={handleLessonComplete}
         />
       )}
+      <DreamBuilder
+        isOpen={dreamBuilderOpen}
+        onClose={() => setDreamBuilderOpen(false)}
+        profile={profile}
+        onSave={(patch) => updateProfile?.(patch)}
+      />
     </>
   );
 }

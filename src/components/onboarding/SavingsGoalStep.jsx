@@ -1,18 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Target, PiggyBank } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
+import GoalVisualPicker from '@/components/savings/GoalVisualPicker';
+import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 
 const suggestions = [
-  { name: 'Semesterfond', amount: 15000 },
-  { name: 'Buffert (3 månader)', amount: 45000 },
-  { name: 'Kontantinsats bostad', amount: 150000 },
-  { name: 'Ny bil', amount: 50000 },
+  { name: 'Semester i Thailand', amount: 25000, iconId: 'travel' },
+  { name: 'Kontantinsats bostad', amount: 150000, iconId: 'home' },
+  { name: 'Min första bil', amount: 50000, iconId: 'transport' },
+  { name: 'Buffert (3 månader)', amount: 45000, iconId: 'buffer' },
 ];
 
 export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
+  const [error, setError] = useState(null);
+
   const formatNumber = (value) => {
     return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
   };
@@ -22,31 +26,68 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
   };
 
   const selectSuggestion = (suggestion) => {
+    setError(null);
     onChange({
       ...data,
       savingsGoalName: suggestion.name,
-      savingsGoal: suggestion.amount
+      savingsGoal: suggestion.amount,
+      savingsGoalIcon: suggestion.iconId,
+      savingsGoalVisualType: 'icon',
+      savingsGoalImageUrl: null,
     });
   };
+
+  const handleVisualChange = ({ imageUrl, iconId, visualType }) => {
+    setError(null);
+    onChange({
+      ...data,
+      savingsGoalImageUrl: imageUrl,
+      savingsGoalIcon: iconId,
+      savingsGoalVisualType: visualType,
+    });
+  };
+
+  const handleNext = () => {
+    if (!data.savingsGoal) {
+      onNext();
+      return;
+    }
+    const v = validateSavingsGoal({
+      name: data.savingsGoalName,
+      amount: data.savingsGoal,
+      imageUrl: data.savingsGoalVisualType === 'image' ? data.savingsGoalImageUrl : null,
+      iconId: data.savingsGoalIcon,
+      visualType: data.savingsGoalVisualType,
+    });
+    if (!v.ok) {
+      setError(v.errors[0]);
+      return;
+    }
+    onNext();
+  };
+
+  const previewPct = data.savingsGoal > 0 && data.buffer > 0
+    ? Math.min(100, (data.buffer / data.savingsGoal) * 100)
+    : 10;
 
   return (
     <OnboardingStep
       step={3}
       totalSteps={5}
       title="Ditt sparmål"
-      subtitle="Vad sparar du till? Ett tydligt mål hjälper dig hålla fokus."
+      subtitle="Se din dröm — ett tydligt mål med bild triggar ditt framtida jag."
     >
       <div className="space-y-6">
-        {/* Suggestions */}
         <div>
           <Label className="text-slate-300 text-sm flex items-center gap-2 mb-3">
             <PiggyBank className="w-4 h-4 text-amber-500" />
             Populära sparmål
           </Label>
           <div className="grid grid-cols-2 gap-2">
-            {suggestions.map((s, i) => (
+            {suggestions.map((s) => (
               <button
-                key={i}
+                key={s.name}
+                type="button"
                 onClick={() => selectSuggestion(s)}
                 className={`p-3 rounded-xl text-left border transition-all ${
                   data.savingsGoalName === s.name
@@ -61,11 +102,10 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
           </div>
         </div>
 
-        {/* Custom goal */}
         <div className="space-y-4">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200"></div>
+              <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-xs">
               <span className="bg-[#0B0F1A] px-2 text-slate-400">eller eget mål</span>
@@ -78,9 +118,9 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
               Namn på sparmål
             </Label>
             <Input
-              placeholder="t.ex. Buffert, Semester, Renovering"
+              placeholder="t.ex. Thailand-resa, Min första bil"
               value={data.savingsGoalName || ''}
-              onChange={(e) => onChange({ ...data, savingsGoalName: e.target.value })}
+              onChange={(e) => { onChange({ ...data, savingsGoalName: e.target.value }); setError(null); }}
               className="h-12 rounded-xl border-slate-200"
             />
           </div>
@@ -92,33 +132,29 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
                 type="text"
                 placeholder="50 000"
                 value={formatNumber(data.savingsGoal)}
-                onChange={(e) => onChange({ ...data, savingsGoal: parseNumber(e.target.value) })}
+                onChange={(e) => { onChange({ ...data, savingsGoal: parseNumber(e.target.value) }); setError(null); }}
                 className="h-14 text-lg pr-12 rounded-xl border-slate-200"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
             </div>
           </div>
-        </div>
 
-        {/* Progress preview */}
-        {data.savingsGoal > 0 && data.buffer > 0 && (
-          <div className="p-4 bg-emerald-50 rounded-xl">
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-emerald-700">Du har redan sparat</span>
-              <span className="font-semibold text-emerald-700">
-                {Math.round((data.buffer / data.savingsGoal) * 100)}%
-              </span>
-            </div>
-            <div className="h-2 bg-emerald-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-emerald-500 rounded-full transition-all"
-                style={{ width: `${Math.min(100, (data.buffer / data.savingsGoal) * 100)}%` }}
+          {data.savingsGoal > 0 && (
+            <div>
+              <Label className="text-slate-300 text-sm mb-2 block">Bild eller symbol (obligatoriskt)</Label>
+              <GoalVisualPicker
+                imageUrl={data.savingsGoalImageUrl}
+                iconId={data.savingsGoalIcon || 'default'}
+                visualType={data.savingsGoalVisualType}
+                previewPct={previewPct}
+                onChange={handleVisualChange}
               />
             </div>
-            <p className="text-xs text-emerald-600 mt-2">
-              {formatNumber(data.buffer)} kr av {formatNumber(data.savingsGoal)} kr
-            </p>
-          </div>
+          )}
+        </div>
+
+        {error && (
+          <p className="text-sm text-rose-400 font-medium">{error}</p>
         )}
       </div>
 
@@ -131,7 +167,7 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
           Tillbaka
         </Button>
         <Button
-          onClick={onNext}
+          onClick={handleNext}
           className="flex-1 h-14 rounded-xl bg-emerald-500 hover:bg-emerald-600"
         >
           {!data.savingsGoal ? 'Hoppa över' : 'Fortsätt'}

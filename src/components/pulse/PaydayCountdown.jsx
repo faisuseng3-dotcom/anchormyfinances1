@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { Calendar } from 'lucide-react';
 
 export default function PaydayCountdown({ incomeDay }) {
   const { daysLeft, totalDays, pct } = useMemo(() => {
@@ -36,8 +37,8 @@ export default function PaydayCountdown({ incomeDay }) {
     <div className="rounded-3xl p-5"
       style={{ background: 'rgba(6,8,18,0.95)', border: '1px solid rgba(255,255,255,0.07)' }}>
 
-      <p className="text-[9px] font-black tracking-widest mb-4" style={{ color: 'rgba(255,255,255,0.22)' }}>
-        📅  DAGAR TILL LÖN
+      <p className="text-[9px] font-black tracking-widest mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.22)' }}>
+        <Calendar className="w-3 h-3" aria-hidden /> DAGAR TILL LÖN
       </p>
 
       <div className="flex items-center gap-5">

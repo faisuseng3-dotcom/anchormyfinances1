@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, PiggyBank, Zap, Shield } from 'lucide-react';
 
 const personas = [
   {
     id: 'saver',
-    emoji: '🏦',
+    Icon: PiggyBank,
     title: 'Spararen',
     desc: 'Fokus på mål och buffert. Du vill bygga trygghet steg för steg.',
     color: 'from-emerald-500 to-teal-600',
@@ -13,7 +13,7 @@ const personas = [
   },
   {
     id: 'optimizer',
-    emoji: '⚡',
+    Icon: Zap,
     title: 'Optimeraren',
     desc: 'Fokus på What-If och skatt. Du vill pressa varje krona till max.',
     color: 'from-indigo-500 to-purple-600',
@@ -21,7 +21,7 @@ const personas = [
   },
   {
     id: 'planner',
-    emoji: '🛡️',
+    Icon: Shield,
     title: 'Trygghetssökaren',
     desc: 'Fokus på påminnelser och kontroll. Du vill ha ordning och koll.',
     color: 'from-amber-500 to-orange-600',
@@ -66,8 +66,8 @@ export default function SignupPersonaStep({ onSelect }) {
               }}
             >
               <div className="flex items-center gap-4">
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-2xl shadow-lg flex-shrink-0`}>
-                  {p.emoji}
+                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center shadow-lg flex-shrink-0`}>
+                  <p.Icon className="w-7 h-7 text-white" />
                 </div>
                 <div>
                   <p className="font-bold text-white">{p.title}</p>

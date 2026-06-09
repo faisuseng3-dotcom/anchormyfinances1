@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Landmark } from 'lucide-react';
+import { Loader2, Landmark, Zap, Turtle, Lock } from 'lucide-react';
 
 const ACCOUNT_TYPES = {
   fast: {
-    icon: '⚡',
+    Icon: Zap,
     label: 'Snabbt konto',
     color: 'from-amber-500/20 to-yellow-500/10',
     border: 'rgba(245,158,11,0.3)',
@@ -14,7 +14,7 @@ const ACCOUNT_TYPES = {
     when: 'Mål inom 0–3 månader eller buffert',
   },
   trog: {
-    icon: '🐢',
+    Icon: Turtle,
     label: 'Trögt konto',
     color: 'from-blue-500/20 to-cyan-500/10',
     border: 'rgba(59,130,246,0.3)',
@@ -23,7 +23,7 @@ const ACCOUNT_TYPES = {
     when: 'Mål om 3–12 månader',
   },
   last: {
-    icon: '🔒',
+    Icon: Lock,
     label: 'Låst konto / ISK',
     color: 'from-purple-500/20 to-indigo-500/10',
     border: 'rgba(139,92,246,0.3)',
@@ -42,10 +42,11 @@ function getAccountType(months, isBuffer) {
 export function AccountTypeBadge({ months, isBuffer }) {
   const key = getAccountType(months, isBuffer);
   const t = ACCOUNT_TYPES[key];
+  const Icon = t.Icon;
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${t.textColor}`}
       style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${t.border}` }}>
-      {t.icon} {t.label}
+      <Icon className="w-3 h-3" aria-hidden /> {t.label}
     </span>
   );
 }
@@ -57,6 +58,7 @@ export default function AccountTypeAdvisor({ months, isBuffer = false, goalName,
 
   const key = getAccountType(months, isBuffer);
   const type = ACCOUNT_TYPES[key];
+  const TypeIcon = type.Icon;
 
   useEffect(() => {
     setAdvice(null);
@@ -92,7 +94,10 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
       {/* Header row */}
       <div className="p-4">
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-3xl">{type.icon}</span>
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${type.textColor}`}
+            style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <TypeIcon className="w-5 h-5" aria-hidden />
+          </div>
           <div>
             <p className={`text-sm font-bold ${type.textColor}`}>{type.label}</p>
             <p className="text-xs text-slate-400">{type.tagline}</p>

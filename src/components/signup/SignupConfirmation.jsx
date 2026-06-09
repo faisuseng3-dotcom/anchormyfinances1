@@ -1,7 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import AnchorKey from './AnchorKey';
-import { ArrowRight, Compass } from 'lucide-react';
+import { ArrowRight, Compass, Star, Sparkles, PartyPopper, Zap } from 'lucide-react';
+
+const CONFETTI_ICONS = [Star, Sparkles, PartyPopper, Sparkles, Star, Zap];
 
 export default function SignupConfirmation({ profile, persona, onContinue }) {
   return (
@@ -26,7 +28,10 @@ export default function SignupConfirmation({ profile, persona, onContinue }) {
             className="absolute pointer-events-none text-xl"
             style={{ left: '50%', top: '30%' }}
           >
-            {['⭐', '✨', '🎉', '💫', '🌟', '⚡'][i]}
+            {(() => {
+              const Icon = CONFETTI_ICONS[i];
+              return <Icon className="w-5 h-5 text-indigo-300" />;
+            })()}
           </motion.div>
         ))}
 

@@ -2,26 +2,24 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Lock, Bot, Smartphone, ArrowRight, Eye } from 'lucide-react';
+import { AnchorLogoMark } from '@/lib/anchorIcons';
 import { createPageUrl } from '@/utils';
 
 const perks = [
   {
     icon: Lock,
-    emoji: '🔒',
     title: 'Permanent minne',
     desc: 'Din ekonomi raderas aldrig. Se din utveckling över månader och år.',
     color: 'from-indigo-500 to-blue-600',
   },
   {
     icon: Bot,
-    emoji: '🤖',
     title: 'Personliga signaler',
     desc: 'Anchor lär känna ditt beteende och ger skarpare insikter ju längre du använder appen.',
     color: 'from-purple-500 to-pink-600',
   },
   {
     icon: Smartphone,
-    emoji: '📱',
     title: 'Multi-enhet',
     desc: 'Börja på datorn, fortsätt i mobilen. Din data är alltid synkad.',
     color: 'from-emerald-500 to-teal-600',
@@ -44,7 +42,7 @@ export default function SignupValueScreen({ onContinue, onGuest }) {
           transition={{ delay: 0.1 }}
           className="text-center mb-8"
         >
-          <div className="text-5xl mb-4">⚓</div>
+          <div className="mb-4 flex justify-center"><AnchorLogoMark size={40} className="text-indigo-400" /></div>
           <h1 className="text-3xl font-bold text-white mb-2">Skapa ditt konto</h1>
           <p className="text-slate-400">Lås upp hela Anchor-upplevelsen</p>
         </motion.div>
@@ -61,7 +59,7 @@ export default function SignupValueScreen({ onContinue, onGuest }) {
               style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${perk.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                <span className="text-xl">{perk.emoji}</span>
+                <perk.icon className="w-6 h-6 text-white" />
               </div>
               <div>
                 <p className="font-semibold text-white text-sm">{perk.title}</p>

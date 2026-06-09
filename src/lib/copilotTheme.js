@@ -1,6 +1,5 @@
 /**
  * Copilot Design DNA — shared tokens matching the premium Dashboard.
- * Use these across pages, sheets, and modals for visual consistency.
  */
 
 export const COPILOT_GRADIENT =
@@ -21,20 +20,20 @@ export const copilotColors = {
   danger: '#f87171',
 };
 
-/** Category tint backgrounds for asymmetric cards */
+/** Category tint backgrounds — icons via anchorIcons CategoryIcon */
 export const CATEGORY_TINTS = {
-  food: { bg: 'rgba(74,122,255,0.12)', accent: '#4a7aff', emoji: '🍎' },
-  transport: { bg: 'rgba(79,195,247,0.12)', accent: '#4fc3f7', emoji: '🚗' },
-  entertainment: { bg: 'rgba(167,139,250,0.12)', accent: '#a78bfa', emoji: '🎯' },
-  travel: { bg: 'rgba(74,122,255,0.1)', accent: '#4a7aff', emoji: '✈️' },
-  health: { bg: 'rgba(34,217,122,0.12)', accent: '#22d97a', emoji: '💊' },
-  home: { bg: 'rgba(79,195,247,0.1)', accent: '#4fc3f7', emoji: '🏠' },
-  shopping: { bg: 'rgba(244,114,182,0.12)', accent: '#f472b6', emoji: '🛍️' },
-  income: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a', emoji: '💰' },
-  savings: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a', emoji: '🐷' },
-  savings_deposit: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a', emoji: '🐷' },
-  subscription: { bg: 'rgba(74,122,255,0.12)', accent: '#4a7aff', emoji: '🎵' },
-  other: { bg: 'rgba(255,255,255,0.06)', accent: '#8fa8d8', emoji: '📦' },
+  food: { bg: 'rgba(74,122,255,0.12)', accent: '#4a7aff' },
+  transport: { bg: 'rgba(79,195,247,0.12)', accent: '#4fc3f7' },
+  entertainment: { bg: 'rgba(167,139,250,0.12)', accent: '#a78bfa' },
+  travel: { bg: 'rgba(74,122,255,0.1)', accent: '#4a7aff' },
+  health: { bg: 'rgba(34,217,122,0.12)', accent: '#22d97a' },
+  home: { bg: 'rgba(79,195,247,0.1)', accent: '#4fc3f7' },
+  shopping: { bg: 'rgba(244,114,182,0.12)', accent: '#f472b6' },
+  income: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a' },
+  savings: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a' },
+  savings_deposit: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a' },
+  subscription: { bg: 'rgba(74,122,255,0.12)', accent: '#4a7aff' },
+  other: { bg: 'rgba(255,255,255,0.06)', accent: '#8fa8d8' },
 };
 
 export function getCategoryTint(category) {

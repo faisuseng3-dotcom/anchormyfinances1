@@ -51,7 +51,7 @@ export default function SavingsDepositModal({ profile, onSave, onClose }) {
               <div>
                 <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>Spara mot</p>
                 <p className="font-bold" style={{ color: 'var(--color-text-primary)' }}>
-                  {profile?.savingsGoalEmoji || '🎯'} {profile?.savingsGoalName || 'Mitt mål'}
+                  {profile?.savingsGoalName || 'Mitt mål'}
                 </p>
               </div>
             </div>

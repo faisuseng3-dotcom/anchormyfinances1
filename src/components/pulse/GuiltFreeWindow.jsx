@@ -1,16 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield } from 'lucide-react';
+import { Shield, PartyPopper } from 'lucide-react';
 import { formatNumber } from './pulseEngine';
+import { StatusDot } from '@/lib/anchorIcons';
 
 export default function GuiltFreeWindow({ amount, nextCriticalName, nextCriticalDays }) {
   const level = amount > 5000 ? 'great' : amount > 1000 ? 'ok' : amount > 0 ? 'tight' : 'danger';
 
   const config = {
-    great: { color: 'from-emerald-500 to-green-600', glow: 'rgba(16,185,129,0.3)', label: 'Du kan shoppa fritt! 🎉', emoji: '🟢' },
-    ok: { color: 'from-blue-500 to-indigo-600', glow: 'rgba(59,130,246,0.3)', label: 'Lite spelrum – var smart', emoji: '🟡' },
-    tight: { color: 'from-amber-500 to-orange-600', glow: 'rgba(245,158,11,0.3)', label: 'Tajt – tänk två gånger', emoji: '🟠' },
-    danger: { color: 'from-rose-500 to-red-600', glow: 'rgba(239,68,68,0.3)', label: 'Spendera ingenting nu', emoji: '🔴' },
+    great: { color: 'from-emerald-500 to-green-600', glow: 'rgba(16,185,129,0.3)', label: 'Du kan shoppa fritt!', statusKey: 'grön', celebrate: true },
+    ok: { color: 'from-blue-500 to-indigo-600', glow: 'rgba(59,130,246,0.3)', label: 'Lite spelrum – var smart', statusKey: 'gul' },
+    tight: { color: 'from-amber-500 to-orange-600', glow: 'rgba(245,158,11,0.3)', label: 'Tajt – tänk två gånger', statusKey: 'warning' },
+    danger: { color: 'from-rose-500 to-red-600', glow: 'rgba(239,68,68,0.3)', label: 'Spendera ingenting nu', statusKey: 'röd' },
   }[level];
 
   return (
@@ -53,7 +54,11 @@ export default function GuiltFreeWindow({ amount, nextCriticalName, nextCritical
         {/* Status badge */}
         <div className={`rounded-xl px-3 py-2 bg-gradient-to-r ${config.color} bg-opacity-10 text-center`}
           style={{ background: `${config.glow.replace('0.3', '0.12')}` }}>
-          <p className="text-white font-semibold text-sm">{config.emoji} {config.label}</p>
+          <p className="text-white font-semibold text-sm flex items-center justify-center gap-1.5">
+            <StatusDot status={config.statusKey} size={8} />
+            {config.label}
+            {config.celebrate && <PartyPopper className="w-4 h-4" />}
+          </p>
         </div>
 
         {/* Context */}

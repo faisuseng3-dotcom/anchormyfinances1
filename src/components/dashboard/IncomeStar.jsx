@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Star } from 'lucide-react';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -51,7 +52,7 @@ export default function IncomeStar({ income }) {
           boxShadow: '0 0 20px rgba(246,173,85,0.4), inset 0 0 12px rgba(255,215,0,0.15)',
         }}
       >
-        <span style={{ fontSize: 22 }}>⭐</span>
+        <Star size={22} style={{ color: '#F6AD55' }} strokeWidth={2} aria-hidden />
       </motion.button>
 
       {/* Expanded glow beam + label */}

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Wallet, Receipt, TrendingUp, Zap, CheckCircle } from 'lucide-react';
 
 const STORIES = [
   {
     id: 1,
-    emoji: '💰',
+    Icon: Wallet,
     color: '#0D7377',
     title: 'Dagens likviditet',
     preview: 'Du har 28 400 kr att röra dig med idag',
@@ -13,7 +13,7 @@ const STORIES = [
   },
   {
     id: 2,
-    emoji: '🧾',
+    Icon: Receipt,
     color: '#1A6B5A',
     title: 'Faktura hittad',
     preview: 'Jag hittade en obokförd faktura på 14 900 kr',
@@ -22,7 +22,7 @@ const STORIES = [
   },
   {
     id: 3,
-    emoji: '📈',
+    Icon: TrendingUp,
     color: '#2D4A8A',
     title: 'Runway-uppdatering',
     preview: 'Din runway är 4,2 månader med nuvarande burn',
@@ -31,7 +31,7 @@ const STORIES = [
   },
   {
     id: 4,
-    emoji: '⚡',
+    Icon: Zap,
     color: '#7A3E9D',
     title: 'Skattetips',
     preview: 'Du kör mycket bil — förmånsbil kan löna sig',
@@ -40,7 +40,7 @@ const STORIES = [
   },
   {
     id: 5,
-    emoji: '✅',
+    Icon: CheckCircle,
     color: '#1A7A4A',
     title: 'Allt ser bra ut',
     preview: 'Momsen är reserverad och inget förfaller',
@@ -59,7 +59,7 @@ function StoryModal({ story, onClose }) {
         className="w-full max-w-md rounded-t-3xl p-6"
         style={{ background: story.color }}>
         <div className="flex items-start justify-between mb-4">
-          <div className="text-4xl">{story.emoji}</div>
+          <story.Icon className="w-10 h-10 text-white" />
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ background: 'rgba(255,255,255,0.2)' }}>
             <X className="w-4 h-4 text-white" />
@@ -104,7 +104,7 @@ export default function StoriesDigest() {
                   border: isSeen ? '2px solid #E8EBF0' : `2px solid ${story.color}55`,
                   boxShadow: isSeen ? 'none' : '0 2px 8px rgba(0,0,0,0.08)',
                 }}>
-                {story.emoji}
+                <story.Icon className="w-6 h-6" style={{ color: story.color }} />
                 {!isSeen && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2"
                     style={{ background: '#0D7377', borderColor: '#0F1724' }} />

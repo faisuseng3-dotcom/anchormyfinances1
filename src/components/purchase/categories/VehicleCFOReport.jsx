@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingDown, TrendingUp, AlertTriangle, Shield, Zap } from 'lucide-react';
+import { TrendingDown, TrendingUp, AlertTriangle, Shield, Zap, Medal, Waves, Utensils, Salad, Clock, LineChart } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -123,7 +123,11 @@ export default function VehicleCFOReport({ analysis }) {
           <div className="rounded-xl p-3 text-sm text-slate-300 leading-relaxed"
             style={{ background: 'rgba(0,0,0,0.3)', border: `1px solid ${analysis.cfo_score >= 7 ? 'rgba(251,191,36,0.4)' : analysis.cfo_score >= 5 ? 'rgba(148,163,184,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
             <span className="text-[10px] font-bold tracking-widest uppercase text-slate-500 block mb-1">
-              {analysis.cfo_score >= 7 ? '🥇 Gold Verdict' : analysis.cfo_score >= 5 ? '🥈 Silver Verdict' : '⚠️ Risk Alert'}
+              {analysis.cfo_score >= 7
+                ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-amber-400" aria-hidden /> Gold Verdict</span>
+                : analysis.cfo_score >= 5
+                ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-slate-400" aria-hidden /> Silver Verdict</span>
+                : <span className="inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-rose-400" aria-hidden /> Risk Alert</span>}
             </span>
             {analysis.cfo_recommendation}
           </div>
@@ -149,7 +153,7 @@ export default function VehicleCFOReport({ analysis }) {
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           className="rounded-xl p-4"
           style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)' }}>
-          <p className="text-xs font-bold text-rose-400 mb-1">🌊 Under vatten vid halvtid</p>
+          <p className="text-xs font-bold text-rose-400 mb-1 inline-flex items-center gap-1"><Waves className="w-3.5 h-3.5" aria-hidden /> Under vatten vid halvtid</p>
           <p className="text-xs text-rose-200">
             Vid lånets mitt punkt: skuld <strong>{fmt(analysis.remainingDebt)} kr</strong> vs bilens värde <strong>{fmt(analysis.midResidualValue)} kr</strong>.
             Om du säljer bilen halvvägs kan du inte betala tillbaka lånet.
@@ -170,7 +174,9 @@ export default function VehicleCFOReport({ analysis }) {
               <strong className={analysis.newBufferMonths < 1 ? 'text-rose-300' : analysis.newBufferMonths < 2 ? 'text-amber-300' : 'text-indigo-200'}>
                 {analysis.newBufferMonths.toFixed(1)} månader
               </strong>.
-              {analysis.newBufferMonths < 1 && ' ⚠️ Kritiskt låg buffert!'}
+              {analysis.newBufferMonths < 1 && (
+                <span className="inline-flex items-center gap-1 ml-1"><AlertTriangle className="w-3 h-3" aria-hidden /> Kritiskt låg buffert!</span>
+              )}
             </p>
           </div>
         </div>
@@ -201,7 +207,7 @@ export default function VehicleCFOReport({ analysis }) {
         <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
           className="rounded-xl p-4"
           style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
-          <p className="text-xs font-bold text-amber-400 mb-1">⏳ The {analysis.months}-Month Twist</p>
+          <p className="text-xs font-bold text-amber-400 mb-1 inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" aria-hidden /> The {analysis.months}-Month Twist</p>
           <p className="text-xs text-amber-200">
             Priset för bekvämlighet: <strong className="text-white">{fmt(analysis.interestExtra)} kr extra</strong> i ränta jämfört med 36 månader.
             Skulden hänger kvar längre än garantin.
@@ -236,10 +242,10 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Trade-off */}
       <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🍽 Trade-off kalkylatorn</p>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 inline-flex items-center gap-1"><Utensils className="w-3.5 h-3.5" aria-hidden /> Trade-off kalkylatorn</p>
         <div className="space-y-2 text-xs text-slate-300">
           <div className="flex justify-between items-center">
-            <span>🥗 Luncher ute (130 kr/st)</span>
+            <span className="inline-flex items-center gap-1"><Salad className="w-3.5 h-3.5" aria-hidden /> Luncher ute (130 kr/st)</span>
             <span className="font-bold text-white">{fmt(analysis.lunchEquivalent)} st</span>
           </div>
           <div className="h-px bg-white/5" />
@@ -250,7 +256,7 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Opportunity investment */}
       {analysis.opportunity_investment && (
         <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">📈 Alternativet – Indexfond</p>
+          <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 inline-flex items-center gap-1"><LineChart className="w-3.5 h-3.5" aria-hidden /> Alternativet – Indexfond</p>
           <p className="text-xs text-slate-300">{analysis.opportunity_investment}</p>
           <p className="text-sm font-bold text-emerald-400 mt-2">
             {fmt(analysis.downPaymentAmount)} kr → {fmt(analysis.opportunityFinalValue)} kr

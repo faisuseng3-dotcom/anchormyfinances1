@@ -1,4 +1,5 @@
 import React from 'react';
+import { Sparkles, Clock } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 function buildChartData(currentMonthlyNet, brusSavings) {
@@ -52,7 +53,7 @@ export default function DualPathChart({ currentMonthlyNet, brusSavings, sliderPc
       style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.07)' }}>
       <div className="px-5 pt-5 pb-3">
         <p className="text-xs font-black uppercase tracking-widest mb-1" style={{ color: '#8896A5' }}>
-          ⏱ Tidsmaskinen — 10-årsvy
+          <span className="inline-flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" aria-hidden /> Tidsmaskinen — 10-årsvy</span>
         </p>
         <p className="text-2xl font-black" style={{ color: '#1A2332' }}>
           +{Math.round(diff).toLocaleString('sv-SE')} kkr
@@ -106,7 +107,7 @@ export default function DualPathChart({ currentMonthlyNet, brusSavings, sliderPc
         </div>
         <div className="flex items-center gap-2">
           <div className="w-6 h-0.5 rounded-full" style={{ background: '#0FDEBD' }} />
-          <span className="text-xs font-bold" style={{ color: '#0FDEBD' }}>Anchor-vägen ✨</span>
+          <span className="text-xs font-bold inline-flex items-center gap-1" style={{ color: '#0FDEBD' }}><Sparkles className="w-3 h-3" aria-hidden /> Anchor-vägen</span>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Coffee, ShoppingBag, Wine } from 'lucide-react';
 import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
 import { sectionMetaClass, sectionSubtitleClass } from '@/lib/anchorTheme';
 
@@ -24,19 +24,19 @@ export function classifyTransaction(tx) {
 
 const CLUSTERS = {
   brus: {
-    emoji: '☕',
+    Icon: Coffee,
     label: 'Småköp',
     subtitle: 'Under cirka 150 kr',
     color: '#FCD34D',
   },
   invest: {
-    emoji: '🛍️',
+    Icon: ShoppingBag,
     label: 'Större köp',
     subtitle: 'Sällan men tydligt',
     color: '#9FB5FF',
   },
   social: {
-    emoji: '🥂',
+    Icon: Wine,
     label: 'Ute & middag',
     subtitle: 'Socialt',
     color: '#C4B5FD',
@@ -70,7 +70,9 @@ function ClusterInsight({ type, txs }) {
         className="w-full flex items-center gap-4 px-4 py-4 text-left"
         onClick={() => setOpen((v) => !v)}
       >
-        <span className="text-2xl flex-shrink-0">{cfg.emoji}</span>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ background: `${cfg.color}22` }}>
+          <cfg.Icon className="w-5 h-5" style={{ color: cfg.color }} />
+        </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-medium text-white">{cfg.label}</p>
           <p className={sectionMetaClass}>{cfg.subtitle}</p>

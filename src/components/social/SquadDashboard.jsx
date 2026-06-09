@@ -4,6 +4,7 @@ import ProfileAvatar from './ProfileAvatar';
 import SquadMemberRow from './SquadMemberRow';
 import NudgeToast from './NudgeToast';
 import { Users, Calendar, ChevronDown, Filter, Copy } from 'lucide-react';
+import { SquadIcon } from '@/lib/anchorIcons';
 import { toast } from 'sonner';
 
 const CATEGORIES = [
@@ -40,10 +41,10 @@ export default function SquadDashboard({ squad, memberProfiles, myProfile, myFin
   const groupPct = goalAmount > 0 ? Math.min(100, (totalSaved / goalAmount) * 100) : 0;
 
   const handlePepp = (member) => {
-    setNudge({ type: 'pepp', message: `Du gav @${member.username || 'vännen'} en high-five! 👏` });
+    setNudge({ type: 'pepp', message: `Du gav @${member.username || 'vännen'} en high-five!` });
   };
   const handleDram = (member) => {
-    setNudge({ type: 'dram', message: `@${member.username || 'vännen'} är påmind om målet! 💪` });
+    setNudge({ type: 'dram', message: `@${member.username || 'vännen'} är påmind om målet!` });
   };
 
   return (
@@ -55,7 +56,7 @@ export default function SquadDashboard({ squad, memberProfiles, myProfile, myFin
         style={{ background: 'linear-gradient(135deg, rgba(13,115,119,0.15) 0%, rgba(75,124,243,0.1) 100%)', border: '1px solid rgba(13,115,119,0.25)' }}>
         {/* Title */}
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-3xl">{squad.emoji || '🚀'}</span>
+          <SquadIcon name={squad.icon || squad.emoji || 'rocket'} size={32} color="var(--color-accent)" />
           <div className="flex-1 min-w-0">
             <h3 className="text-base font-black" style={{ color: 'var(--color-text-primary)' }}>{squad.name}</h3>
             {squad.description && <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>{squad.description}</p>}

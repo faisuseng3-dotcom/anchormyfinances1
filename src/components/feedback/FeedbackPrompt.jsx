@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle, X, Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 export default function FeedbackPrompt({ isOpen, onClose, question, options, context }) {
@@ -82,7 +82,7 @@ export default function FeedbackPrompt({ isOpen, onClose, question, options, con
                   animate={{ scale: 1 }}
                   className="text-3xl"
                 >
-                  ✓
+                <Check className="w-8 h-8 text-emerald-600" aria-hidden />
                 </motion.div>
               </div>
               <p className="font-semibold text-white">Tack för din feedback!</p>

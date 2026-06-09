@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Info } from 'lucide-react';
+import { Info, Home, AlertTriangle, TrendingDown, Turtle, Rocket, KeyRound, Shield, TrendingUp, Sparkles, SlidersHorizontal, Anchor } from 'lucide-react';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -58,7 +58,9 @@ function AlternativkostnadBubble({ brusTotal }) {
           className="absolute left-0 top-7 z-50 w-72 rounded-2xl p-4 shadow-xl"
           style={{ background: '#fff', border: '1px solid rgba(233,168,37,0.25)' }}
         >
-          <p className="text-[11px] font-black mb-1" style={{ color: '#B7791F' }}>⚓ Anchor-insikt</p>
+          <p className="text-[11px] font-black mb-1 flex items-center gap-1" style={{ color: '#B7791F' }}>
+            <Anchor className="w-3 h-3" /> Anchor-insikt
+          </p>
           <p className="text-xs leading-relaxed" style={{ color: '#4A5568' }}>
             Dina <strong>{fmt(brusTotal)} kr</strong> i brus-pengar (kaffe, småköp) varje månad
             växer till <strong>över 2 miljoner kr</strong> på börsen med 8% snittavkastning. 
@@ -129,13 +131,13 @@ export default function ScenarioCards({ profile, brusSavings, brusTotal, onSlide
             Spår A
           </p>
           <p className="text-sm font-black leading-tight mb-3" style={{ color: '#4A5568' }}>
-            🐢 Långsamma<br />spåret
+            <span className="inline-flex items-center gap-1"><Turtle className="w-4 h-4" /> Långsamma<br />spåret</span>
           </p>
 
           <div className="space-y-3">
-            <Stat emoji="🏠" label="Inflyttning" value={`år ${Math.round(s.moveInYearA)}`} color="#718096" />
-            <Stat emoji="⚠️" label="Trygghet" value={`${s.runwayA_days} dagar`} color="#718096" sub="om lönen uteblir" />
-            <Stat emoji="💸" label="Förlusten" value={`${fmt(s.lostWealth)} kr`} color="#E53E3E" sub="kastad i vinden" />
+            <Stat Icon={Home} label="Inflyttning" value={`år ${Math.round(s.moveInYearA)}`} color="#718096" />
+            <Stat Icon={AlertTriangle} label="Trygghet" value={`${s.runwayA_days} dagar`} color="#718096" sub="om lönen uteblir" />
+            <Stat Icon={TrendingDown} label="Förlusten" value={`${fmt(s.lostWealth)} kr`} color="#E53E3E" sub="kastad i vinden" />
           </div>
 
           <div className="mt-4">
@@ -163,17 +165,17 @@ export default function ScenarioCards({ profile, brusSavings, brusTotal, onSlide
             style={{ background: 'radial-gradient(circle, rgba(15,222,189,0.18) 0%, transparent 70%)' }} />
 
           <p className="text-[9px] font-black uppercase tracking-widest mb-1" style={{ color: '#0FDEBD' }}>
-            Spår B ✨
+            <span className="inline-flex items-center gap-1">Spår B <Sparkles className="w-3 h-3" /></span>
           </p>
           <p className="text-sm font-black leading-tight mb-3" style={{ color: '#0D7377' }}>
-            🚀 Snabbspåret<br />med Anchor
+            <span className="inline-flex items-center gap-1"><Rocket className="w-4 h-4" /> Snabbspåret<br />med Anchor</span>
           </p>
 
           <div className="space-y-3">
-            <Stat emoji="🔑" label="Inflyttning" value={`år ${Math.round(s.moveInYearB)}`} color="#0D7377"
+            <Stat Icon={KeyRound} label="Inflyttning" value={`år ${Math.round(s.moveInYearB)}`} color="#0D7377"
               sub={s.monthsSaved > 0 ? `${s.monthsSaved} mån tidigare` : ''} />
-            <Stat emoji="🛡️" label="Trygghet" value={`${s.runwayB_days} dagar`} color="#0D7377" sub="full sinnesro" />
-            <Stat emoji="📈" label="Bonus" value={`+${fmt(s.wealthB - s.wealthA)} kr`} color="#0FDEBD" sub="indexfond 20 år" />
+            <Stat Icon={Shield} label="Trygghet" value={`${s.runwayB_days} dagar`} color="#0D7377" sub="full sinnesro" />
+            <Stat Icon={TrendingUp} label="Bonus" value={`+${fmt(s.wealthB - s.wealthA)} kr`} color="#0FDEBD" sub="indexfond 20 år" />
           </div>
 
           <div className="mt-4">
@@ -194,7 +196,7 @@ export default function ScenarioCards({ profile, brusSavings, brusTotal, onSlide
         style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.07)' }}
       >
         <p className="text-xs font-black mb-1" style={{ color: '#1A2332' }}>
-          🎚️ What-if: Dra ner på Bruset
+          <span className="inline-flex items-center gap-1.5"><SlidersHorizontal className="w-4 h-4" /> What-if: Dra ner på Bruset</span>
         </p>
         <p className="text-xs mb-4" style={{ color: '#6B7E96' }}>
           Hur mycket av dina småköp vill du flytta till indexfonden?
@@ -234,11 +236,11 @@ export default function ScenarioCards({ profile, brusSavings, brusTotal, onSlide
   );
 }
 
-function Stat({ emoji, label, value, color, sub }) {
+function Stat({ Icon, label, value, color, sub }) {
   return (
     <div>
-      <p className="text-[9px] uppercase tracking-wide mb-0.5" style={{ color: '#A0AEC0' }}>
-        {emoji} {label}
+      <p className="text-[9px] uppercase tracking-wide mb-0.5 flex items-center gap-1" style={{ color: '#A0AEC0' }}>
+        {Icon && <Icon className="w-3 h-3" />} {label}
       </p>
       <p className="text-xs font-black leading-tight" style={{ color }}>{value}</p>
       {sub && <p className="text-[9px]" style={{ color: '#A0AEC0' }}>{sub}</p>}

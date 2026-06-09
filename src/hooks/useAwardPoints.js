@@ -19,7 +19,7 @@ export function useAwardPoints() {
       const response = await base44.functions.invoke('awardPoints', { event_type: eventType });
       const { points } = response.data;
       if (points > 0) {
-        toast.success(`+${points} poäng till tävlingen! 🏆`, {
+        toast.success(`+${points} poäng till tävlingen!`, {
           description: EVENT_LABELS[eventType] || eventType,
           duration: 3000,
           style: {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BUDGET_CATEGORY_META } from '@/lib/budgetCategories';
 import { getCategoryTint } from '@/lib/copilotTheme';
+import { CategoryIcon } from '@/lib/anchorIcons';
 import { copilotPrimaryBtnClass, copilotInputClass } from '@/lib/copilotTheme';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
@@ -23,8 +24,8 @@ export default function SetBudgetModal({ category, currentLimit, onSave, onClose
           className="flex items-center gap-3 p-4 rounded-2xl border border-[var(--copilot-border)]"
           style={{ background: tint.bg }}
         >
-          <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl">
-            {tint.emoji}
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: tint.bg }}>
+            <CategoryIcon category={category} size={22} color={meta.color} />
           </div>
           <div>
             <p className="text-[14px] font-semibold text-white">{meta.label}</p>

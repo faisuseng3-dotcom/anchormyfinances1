@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Edit2, CheckCircle2, AlertTriangle, Image, Clock, Check } from 'lucide-react';
+import { X, Edit2, CheckCircle2, AlertTriangle, Image, Clock, Check, Wallet, Receipt } from 'lucide-react';
+
+const ENTRY_ICON_MAP = {
+  income: Wallet,
+  receipt: Receipt,
+};
 
 const ACCOUNTS = [
   { code: '5420', label: 'Programvaror & IT' },
@@ -53,7 +58,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
         <div className="px-5 pt-5 pb-4 flex items-center justify-between sticky top-0 z-10"
           style={{ background: '#1A2B3C', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div className="flex items-center gap-3">
-            <span className="text-2xl">{entry.icon}</span>
+            {(() => { const Icon = ENTRY_ICON_MAP[entry.iconKey] || Receipt; return <Icon className="w-6 h-6" style={{ color: 'rgba(155,173,184,0.8)' }} aria-hidden />; })()}
             <div>
               <p className="font-bold text-sm" style={{ color: '#F0EAD6' }}>{entry.vendor}</p>
               <p className="text-xs" style={{ color: 'rgba(155,173,184,0.5)' }}>{entry.date} · Verifikat #{entry.id}</p>
@@ -63,7 +68,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
             {entry.synced && (
               <span className="text-[10px] font-bold px-2 py-1 rounded-full"
                 style={{ background: 'rgba(61,170,122,0.15)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.25)' }}>
-                Fortnox ✅
+                <Check className="w-3 h-3 inline mr-0.5" aria-hidden /> Fortnox
               </span>
             )}
             <button onClick={onClose} className="w-7 h-7 rounded-full flex items-center justify-center"
@@ -157,7 +162,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
 
             {!balanced && (
               <p className="text-[11px] mt-1.5 text-center" style={{ color: '#D95F5F' }}>
-                ⚠ Debet och Kredit balanserar inte — justera kontona
+                <AlertTriangle className="w-3 h-3 inline mr-1" aria-hidden /> Debet och Kredit balanserar inte — justera kontona
               </p>
             )}
           </div>
@@ -172,7 +177,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
             </button>
           )}
           {saved && (
-            <p className="text-xs text-center" style={{ color: '#3DAA7A' }}>✓ Ändringar sparade</p>
+            <p className="text-xs text-center inline-flex items-center justify-center gap-1 w-full" style={{ color: '#3DAA7A' }}><Check className="w-3 h-3" aria-hidden /> Ändringar sparade</p>
           )}
 
           {/* Receipt */}
@@ -188,7 +193,9 @@ export default function LedgerEntryDetail({ entry, onClose }) {
               <Image className="w-4 h-4 flex-shrink-0" style={{ color: entry.hasReceipt ? '#3DAA7A' : '#D4AF37' }} />
               <div>
                 <p className="text-xs font-medium" style={{ color: entry.hasReceipt ? '#3DAA7A' : '#D4AF37' }}>
-                  {entry.hasReceipt ? '✓ Kvitto bifogat och OCR-läst' : '⚠ Kvitto saknas — ladda upp för att låsa bokföringen'}
+                  {entry.hasReceipt
+                    ? <span className="inline-flex items-center gap-1"><Check className="w-3 h-3" aria-hidden /> Kvitto bifogat och OCR-läst</span>
+                    : <span className="inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3" aria-hidden /> Kvitto saknas — ladda upp för att låsa bokföringen</span>}
                 </p>
                 {entry.hasReceipt && (
                   <p className="text-[10px] mt-0.5" style={{ color: 'rgba(155,173,184,0.45)' }}>

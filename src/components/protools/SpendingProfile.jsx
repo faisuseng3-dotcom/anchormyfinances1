@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Brain } from 'lucide-react';
+import { Brain, Moon, PartyPopper, Check } from 'lucide-react';
 
 export default function SpendingProfile({ profile }) {
   const [personality, setPersonality] = useState(null);
@@ -83,9 +83,11 @@ export default function SpendingProfile({ profile }) {
           personality.type === 'weekend_warrior' ? 'bg-blue-500/20 text-blue-400' :
           'bg-emerald-500/20 text-emerald-400'
         } font-medium`}>
-          {personality.type === 'night_owl' ? '🌙 Nattuggle' :
-           personality.type === 'weekend_warrior' ? '🎉 Helgkonsument' :
-           '✓ Balanserad'}
+          {personality.type === 'night_owl'
+            ? <><Moon className="w-3.5 h-3.5 inline mr-1" aria-hidden /> Nattuggle</>
+            : personality.type === 'weekend_warrior'
+            ? <><PartyPopper className="w-3.5 h-3.5 inline mr-1" aria-hidden /> Helgkonsument</>
+            : <><Check className="w-3.5 h-3.5 inline mr-1" aria-hidden /> Balanserad</>}
         </div>
       </div>
 

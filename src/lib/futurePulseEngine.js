@@ -78,7 +78,7 @@ function buildEvents(profile, horizonDays = 60) {
         date: d,
         dayOffset,
         priority: 'income',
-        icon: '💰',
+        icon: 'income',
       });
     }
   }
@@ -290,7 +290,6 @@ function buildCoachMessage({ overallStatus, minBalance, minDay, day30Balance, li
 }
 
 const STATUS_SHORT = { grön: 'Stabil', gul: 'Tight', röd: 'Kritisk' };
-const STATUS_EMOJI = { grön: '🟢', gul: '🟡', röd: '🔴' };
 
 function truncate(str, max) {
   if (!str) return '';
@@ -331,7 +330,7 @@ export function compactFuturePulse(forecast, options = {}) {
   const base = {
     ...forecast,
     status_label: STATUS_SHORT[key] || 'Okänd',
-    status_emoji: STATUS_EMOJI[key] || '⚪',
+    status_key: key,
     prognos_saldo_30: extractSaldo30(forecast),
     idag_saldo: forecast.tidslinje?.[0]?.saldo ?? forecast._meta?.startBalance,
     min_saldo: forecast._meta?.minBalance,

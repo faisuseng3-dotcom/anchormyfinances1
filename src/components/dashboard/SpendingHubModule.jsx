@@ -6,24 +6,11 @@ import { ChevronRight, Clock } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { DashboardDivider, DashboardListRow, DashboardSection } from './DashboardChrome';
 import { sectionMetaClass } from '@/lib/anchorTheme';
+import { CategoryIcon } from '@/lib/anchorIcons';
 
-const CATEGORY_META = {
-  food: { emoji: '🍽️' },
-  transport: { emoji: '🚊' },
-  entertainment: { emoji: '🎮' },
-  shopping: { emoji: '🛍️' },
-  health: { emoji: '💊' },
-  home: { emoji: '🏠' },
-  savings: { emoji: '🐷' },
-  travel: { emoji: '✈️' },
-  income: { emoji: '🏦' },
-  other: { emoji: '📦' },
-};
-
-function getEmoji(category, amount, override) {
-  if (override) return override;
-  if (category && CATEGORY_META[category]) return CATEGORY_META[category].emoji;
-  return amount > 0 ? '🏦' : '📦';
+function getCategoryKey(category, amount) {
+  if (category) return category;
+  return amount > 0 ? 'income' : 'other';
 }
 
 function fmt(dateStr) {
@@ -124,7 +111,7 @@ export default function SpendingHubModule({ transactions = [], profile }) {
               <React.Fragment key={item.id}>
                 {i > 0 && <DashboardDivider />}
                 <DashboardListRow
-                  leading={<span className="text-lg">{getEmoji(item.category, item.amount, item.emoji)}</span>}
+                  leading={<CategoryIcon category={getCategoryKey(item.category, item.amount)} size={20} className="text-white/70" />}
                   title={item.label}
                   subtitle={fmt(item.dueDate)}
                   trailing={
@@ -169,7 +156,7 @@ export default function SpendingHubModule({ transactions = [], profile }) {
                     onClick={() =>
                       navigate(`${createPageUrl('TransactionHistory')}?category=${tx.category || ''}`)
                     }
-                    leading={<span className="text-lg">{getEmoji(tx.category, tx.amount)}</span>}
+                    leading={<CategoryIcon category={getCategoryKey(tx.category, tx.amount)} size={20} className="text-white/70" />}
                     title={tx.vendor || tx.label}
                     subtitle={fmt(tx.created_date)}
                     trailing={

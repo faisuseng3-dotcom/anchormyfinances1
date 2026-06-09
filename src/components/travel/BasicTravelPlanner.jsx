@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, CheckCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Plane, Hotel, Utensils, Film, Wallet, Search, Calendar, Check } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -101,15 +101,15 @@ export default function BasicTravelPlanner({ profile }) {
         <h3 className="font-semibold text-white mb-4">Budgetera dina kostnader</h3>
         <div className="space-y-4">
           {[
-            { key: 'flight', label: 'Flyg', icon: '✈️' },
-            { key: 'accommodation', label: 'Boende', icon: '🏨' },
-            { key: 'food', label: 'Mat', icon: '🍽️' },
-            { key: 'activities', label: 'Aktiviteter', icon: '🎭' },
-            { key: 'other', label: 'Övrigt', icon: '💰' }
+            { key: 'flight', label: 'Flyg', Icon: Plane },
+            { key: 'accommodation', label: 'Boende', Icon: Hotel },
+            { key: 'food', label: 'Mat', Icon: Utensils },
+            { key: 'activities', label: 'Aktiviteter', Icon: Film },
+            { key: 'other', label: 'Övrigt', Icon: Wallet }
           ].map((item) => (
             <div key={item.key}>
               <Label className="flex items-center gap-2">
-                <span>{item.icon}</span>
+                <item.Icon className="w-4 h-4 text-slate-400" />
                 {item.label}
               </Label>
               <div className="relative mt-1">
@@ -160,7 +160,7 @@ export default function BasicTravelPlanner({ profile }) {
             </div>
             {isOverBudget && (
               <p className="text-rose-400 text-sm mt-3 font-medium">
-                ⚠️ Varning: Du överskrider din budget med {formatNumber(totalCost - availableBalance)} kr
+                <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> Varning: Du överskrider din budget med {formatNumber(totalCost - availableBalance)} kr</span>
               </p>
             )}
           </div>
@@ -175,7 +175,7 @@ export default function BasicTravelPlanner({ profile }) {
           transition={{ delay: 0.25 }}
           className="glass-effect p-5 rounded-2xl border border-indigo-500/20"
         >
-          <h3 className="font-semibold text-white mb-2">📅 Din sparplan</h3>
+          <h3 className="font-semibold text-white mb-2 flex items-center gap-2"><Calendar className="w-4 h-4" /> Din sparplan</h3>
           <p className="text-slate-300 text-sm">
             Med din nuvarande marginal kan du spara ca{' '}
             <span className="text-indigo-300 font-semibold">{formatNumber(Math.round(monthlySavings))} kr/mån</span>.
@@ -197,7 +197,7 @@ export default function BasicTravelPlanner({ profile }) {
           rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-300 text-sm font-medium transition-colors"
         >
-          🔍 Sök boende i {destination} på Booking.com
+          <Search className="w-4 h-4" /> Sök boende i {destination} på Booking.com
         </a>
       )}
 
@@ -210,7 +210,7 @@ export default function BasicTravelPlanner({ profile }) {
             : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700'
         }`}
       >
-        {saved ? '✓ Budget sparad!' : 'Spara resebudget'}
+        {saved ? <><Check className="w-4 h-4 mr-1" /> Budget sparad!</> : 'Spara resebudget'}
       </Button>
 
       {saved && (
@@ -229,7 +229,7 @@ export default function BasicTravelPlanner({ profile }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium transition-colors"
             >
-              🏨 Sök boende i {destination} på Booking.com
+              <Hotel className="w-4 h-4" /> Sök boende i {destination} på Booking.com
             </a>
           )}
         </motion.div>

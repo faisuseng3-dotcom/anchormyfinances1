@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCheck, ThumbsUp, MessageSquare, Lock, Send, X } from 'lucide-react';
+import { UserCheck, ThumbsUp, MessageSquare, Lock, Send, X, Check, AlertTriangle, Palette, Train, Monitor, UtensilsCrossed } from 'lucide-react';
+
+const REVIEW_ICON_MAP = {
+  software: Palette,
+  travel: Train,
+  equipment: Monitor,
+  dining: UtensilsCrossed,
+};
 
 const REVIEW_EVENTS = [
-  { id: 1, icon: '🎨', vendor: 'Adobe Inc', account: '5420', amount: 699, hasReceipt: true, review: null },
-  { id: 2, icon: '🚆', vendor: 'SJ AB', account: '5800', amount: 580, hasReceipt: true, review: null },
-  { id: 3, icon: '💻', vendor: 'Webhallen', account: '5410', amount: 4990, hasReceipt: false, review: null },
-  { id: 4, icon: '🍽️', vendor: 'Restaurang PM & Vänner', account: '5900', amount: 1840, hasReceipt: false, review: null },
+  { id: 1, iconKey: 'software', vendor: 'Adobe Inc', account: '5420', amount: 699, hasReceipt: true, review: null },
+  { id: 2, iconKey: 'travel', vendor: 'SJ AB', account: '5800', amount: 580, hasReceipt: true, review: null },
+  { id: 3, iconKey: 'equipment', vendor: 'Webhallen', account: '5410', amount: 4990, hasReceipt: false, review: null },
+  { id: 4, iconKey: 'dining', vendor: 'Restaurang PM & Vänner', account: '5900', amount: 1840, hasReceipt: false, review: null },
 ];
 
 export default function ReviewMode() {
@@ -98,7 +105,7 @@ export default function ReviewMode() {
                 ) : (
                   <div className="p-3 rounded-xl text-center"
                     style={{ background: 'rgba(61,170,122,0.1)', border: '1px solid rgba(61,170,122,0.25)' }}>
-                    <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>✓ Inbjudan skickad till {inviteEmail}</p>
+                    <p className="text-xs font-bold inline-flex items-center justify-center gap-1" style={{ color: '#3DAA7A' }}><Check className="w-3 h-3" aria-hidden /> Inbjudan skickad till {inviteEmail}</p>
                     <p className="text-[11px] mt-0.5" style={{ color: 'rgba(155,173,184,0.5)' }}>Revisorn ser en begränsad, skrivskyddad vy</p>
                   </div>
                 )}
@@ -111,19 +118,19 @@ export default function ReviewMode() {
                       border: `1px solid ${e.review === 'approved' ? 'rgba(61,170,122,0.25)' : e.review === 'comment' ? 'rgba(212,175,55,0.3)' : 'rgba(255,255,255,0.06)'}`,
                     }}>
                     <div className="flex items-center gap-3">
-                      <span className="text-base">{e.icon}</span>
+                      {(() => { const Icon = REVIEW_ICON_MAP[e.iconKey] || Monitor; return <Icon className="w-4 h-4 flex-shrink-0" style={{ color: 'rgba(155,173,184,0.7)' }} aria-hidden />; })()}
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-bold" style={{ color: '#F0EAD6' }}>{e.vendor}</p>
                         <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.5)' }}>
                           Konto {e.account} · {e.amount.toLocaleString('sv-SE')} kr
-                          {!e.hasReceipt && <span style={{ color: '#D4AF37' }}> · ⚠ Saknar kvitto</span>}
+                          {!e.hasReceipt && <span className="inline-flex items-center gap-0.5" style={{ color: '#D4AF37' }}> · <AlertTriangle className="w-3 h-3" aria-hidden /> Saknar kvitto</span>}
                         </p>
                         {e.review === 'comment' && (
-                          <p className="text-[11px] mt-1 italic" style={{ color: '#D4AF37' }}>💬 "{e.reviewText}"</p>
+                          <p className="text-[11px] mt-1 italic inline-flex items-start gap-1" style={{ color: '#D4AF37' }}><MessageSquare className="w-3 h-3 flex-shrink-0 mt-0.5" aria-hidden /> "{e.reviewText}"</p>
                         )}
                       </div>
                       {e.review === 'approved' ? (
-                        <span className="text-xs font-bold" style={{ color: '#3DAA7A' }}>✓</span>
+                        <Check className="w-3.5 h-3.5" style={{ color: '#3DAA7A' }} aria-hidden />
                       ) : (
                         <div className="flex gap-1.5">
                           <button onClick={() => handleApprove(e.id)}

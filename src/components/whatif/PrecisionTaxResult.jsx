@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react';
+import { CheckCircle2, ChevronDown, ChevronUp, RotateCcw, Sparkles, Car, AlertTriangle, Building2, Wrench } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const MUNICIPALITIES = [
@@ -166,7 +166,7 @@ export default function PrecisionTaxResult({ wizardData, onReset }) {
       <div className="rounded-2xl p-5 space-y-4"
         style={{ background: 'rgba(17,24,39,0.85)', border: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="flex items-center justify-between">
-          <h3 className="font-bold text-white text-sm uppercase tracking-wider">🔮 Skatte-Siaren</h3>
+          <h3 className="font-bold text-white text-sm uppercase tracking-wider inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-indigo-400" aria-hidden /> Skatte-Siaren</h3>
           <Button variant="ghost" size="sm" onClick={onReset}
             className="text-slate-500 hover:text-white text-xs h-7 px-2 gap-1">
             <RotateCcw className="w-3 h-3" /> Ändra uppgifter
@@ -237,7 +237,7 @@ export default function PrecisionTaxResult({ wizardData, onReset }) {
         {/* Travel */}
         <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.15)' }}>
           <div className="flex justify-between items-center">
-            <p className="text-xs font-semibold text-indigo-400">🚗 Reseavdrag</p>
+            <p className="text-xs font-semibold text-indigo-400 inline-flex items-center gap-1"><Car className="w-3.5 h-3.5" aria-hidden /> Reseavdrag</p>
             {deductions.travelRedux > 0 && <span className="text-xs font-bold text-emerald-400">+{fmt(deductions.travelRedux)} kr</span>}
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -252,14 +252,14 @@ export default function PrecisionTaxResult({ wizardData, onReset }) {
                 className="w-full h-8 rounded-lg px-2 text-xs text-white" style={inputStyle} />
             </div>
           </div>
-          {kmPerDay > 0 && kmPerDay < 5 && <p className="text-[10px] text-amber-400">⚠️ Kräver minst 5 km enkel väg</p>}
+          {kmPerDay > 0 && kmPerDay < 5 && <p className="text-[10px] text-amber-400 inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3" aria-hidden /> Kräver minst 5 km enkel väg</p>}
           {kmPerDay >= 5 && <p className="text-[10px] text-slate-500">({fmt(deductions.annualKm / 10)} mil/år × 25 kr) − 11 000 kr = {fmt(deductions.travelDed)} kr avdrag → {fmt(deductions.travelRedux)} kr skattereduktion</p>}
         </div>
 
         {/* Interest */}
         <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.15)' }}>
           <div className="flex justify-between items-center">
-            <p className="text-xs font-semibold text-amber-400">🏦 Ränteavdrag</p>
+            <p className="text-xs font-semibold text-amber-400 inline-flex items-center gap-1"><Building2 className="w-3.5 h-3.5" aria-hidden /> Ränteavdrag</p>
             {deductions.interestRedux > 0 && <span className="text-xs font-bold text-emerald-400">+{fmt(deductions.interestRedux)} kr</span>}
           </div>
           <div>
@@ -273,7 +273,7 @@ export default function PrecisionTaxResult({ wizardData, onReset }) {
         {/* ROT/RUT */}
         <div className="rounded-xl p-3 space-y-2" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.15)' }}>
           <div className="flex justify-between items-center">
-            <p className="text-xs font-semibold text-emerald-400">🔧 ROT / RUT</p>
+            <p className="text-xs font-semibold text-emerald-400 inline-flex items-center gap-1"><Wrench className="w-3.5 h-3.5" aria-hidden /> ROT / RUT</p>
             {deductions.rotRedux > 0 && <span className="text-xs font-bold text-emerald-400">+{fmt(deductions.rotRedux)} kr</span>}
           </div>
           <div>

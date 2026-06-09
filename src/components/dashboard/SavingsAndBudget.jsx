@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { DashboardSection } from './DashboardChrome';
 import { sectionMetaClass } from '@/lib/anchorTheme';
+import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -115,26 +116,27 @@ function SavingsGoalRow({ profile }) {
   const current = profile.savingsCurrentBalance || 0;
   const goal = profile.savingsGoal;
   const pct = Math.min(100, Math.round((current / goal) * 100));
-  const emoji = profile.savingsGoalEmoji || '🎯';
+  const goalIcon = profile.savingsGoalIcon || 'default';
   const name = profile.savingsGoalName || 'Sparmål';
+  const visualType = profile.savingsGoalVisualType || (profile.savingsGoalImageUrl ? 'image' : 'icon');
 
   return (
     <Link to={createPageUrl('Settings')} className="block no-underline py-3 active:opacity-70">
       <div className="flex items-center gap-3">
-        <span className="text-2xl">{emoji}</span>
+        <VisualSavingsGoalRing
+          pct={pct}
+          size={56}
+          stroke={4}
+          color="#E8B86B"
+          imageUrl={visualType === 'image' ? profile.savingsGoalImageUrl : null}
+          iconId={goalIcon}
+          className="flex-shrink-0"
+        />
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-medium text-white">{name}</p>
           <p className={sectionMetaClass}>
             {fmt(current)} / {fmt(goal)} kr
           </p>
-          <div className="mt-2 h-1 rounded-full bg-white/[0.06] overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 1.2, ease: 'easeOut' }}
-              className="h-full rounded-full bg-gradient-to-r from-[#E8B86B] to-[#F0D090]"
-            />
-          </div>
         </div>
         <p className="text-[17px] font-semibold text-white/90 tabular-nums">{pct}%</p>
       </div>

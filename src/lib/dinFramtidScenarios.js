@@ -7,7 +7,7 @@ export const SCENARIO_MODES = [
   {
     id: 'optimistic',
     label: 'Optimistisk',
-    emoji: '🌤️',
+    icon: 'optimistic',
     incomeMult: 1.05,
     spendMult: 0.82,
     saveBoostKr: 400,
@@ -16,7 +16,7 @@ export const SCENARIO_MODES = [
   {
     id: 'realistic',
     label: 'Realistisk',
-    emoji: '📊',
+    icon: 'realistic',
     incomeMult: 1,
     spendMult: 1,
     saveBoostKr: 0,
@@ -25,7 +25,7 @@ export const SCENARIO_MODES = [
   {
     id: 'pessimistic',
     label: 'Pessimistisk',
-    emoji: '🌧️',
+    icon: 'pessimistic',
     incomeMult: 0.93,
     spendMult: 1.2,
     saveBoostKr: 0,

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator } from 'lucide-react';
+import { Calculator, Wallet } from 'lucide-react';
 
 const TAX_RATE = 0.30;
 const VAT_RATE = 0.25;
@@ -60,12 +60,15 @@ export default function TaxWidget() {
                 { label: 'Fakturerat (ex moms)', value: amount, color: '#F0EAD6', bg: 'rgba(255,255,255,0.05)' },
                 { label: `Moms att redovisa (25%)`, value: vatAmount, color: '#D4AF37', bg: 'rgba(212,175,55,0.08)', prefix: '+' },
                 { label: 'Preliminär skatt (30%)', value: tax, color: '#D95F5F', bg: 'rgba(217,95,95,0.08)', prefix: '−' },
-                { label: '💰 Netto i fickan', value: netSalary, color: '#3DAA7A', bg: 'rgba(61,170,122,0.1)', bold: true },
+                { label: 'Netto i fickan', value: netSalary, color: '#3DAA7A', bg: 'rgba(61,170,122,0.1)', bold: true, Icon: Wallet },
               ].map(row => (
                 <div key={row.label}
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl"
                   style={{ background: row.bg }}>
-                  <p className="text-xs" style={{ color: 'rgba(155,173,184,0.7)', fontWeight: row.bold ? 700 : 400 }}>{row.label}</p>
+                  <p className="text-xs inline-flex items-center gap-1.5" style={{ color: 'rgba(155,173,184,0.7)', fontWeight: row.bold ? 700 : 400 }}>
+                    {row.Icon && <row.Icon className="w-3.5 h-3.5" style={{ color: row.color }} aria-hidden />}
+                    {row.label}
+                  </p>
                   <p className={`text-sm ${row.bold ? 'font-black' : 'font-bold'}`} style={{ color: row.color }}>
                     {row.prefix || ''}{row.value.toLocaleString('sv-SE', { maximumFractionDigits: 0 })} kr
                   </p>

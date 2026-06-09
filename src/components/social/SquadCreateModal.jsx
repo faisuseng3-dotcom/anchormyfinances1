@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Target, Calendar } from 'lucide-react';
+import { SQUAD_ICON_OPTIONS, SquadIcon } from '@/lib/anchorIcons';
 import { Input } from '@/components/ui/input';
 import ProfileAvatar from './ProfileAvatar';
 
 export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProfiles = [] }) {
   const [form, setForm] = useState({
     name: '',
-    emoji: '🚀',
+    icon: 'rocket',
     description: '',
     goal_name: '',
     goal_amount: '',
     deadline: '',
     member_ids: [],
   });
-
-  const EMOJIS = ['🚀', '🏖️', '🏠', '🎸', '🎓', '✈️', '🏋️', '💎', '🌍', '🐾'];
 
   const toggleMember = (uid) => {
     setForm(f => ({
@@ -32,7 +31,7 @@ export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProf
       ...form,
       goal_amount: parseInt(form.goal_amount.replace(/\s/g, '')) || 0,
     });
-    setForm({ name: '', emoji: '🚀', description: '', goal_name: '', goal_amount: '', deadline: '', member_ids: [] });
+    setForm({ name: '', icon: 'rocket', description: '', goal_name: '', goal_amount: '', deadline: '', member_ids: [] });
   };
 
   return (
@@ -66,11 +65,11 @@ export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProf
             <div>
               <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Ikon</p>
               <div className="flex flex-wrap gap-2">
-                {EMOJIS.map(e => (
-                  <button key={e} onClick={() => setForm(f => ({ ...f, emoji: e }))}
-                    className="w-10 h-10 rounded-2xl text-xl flex items-center justify-center transition-all"
-                    style={{ background: form.emoji === e ? 'var(--color-accent)' : 'var(--color-surface)' }}>
-                    {e}
+                {SQUAD_ICON_OPTIONS.map(({ id }) => (
+                  <button key={id} type="button" onClick={() => setForm(f => ({ ...f, icon: id }))}
+                    className="w-10 h-10 rounded-2xl flex items-center justify-center transition-all"
+                    style={{ background: form.icon === id ? 'var(--color-accent)' : 'var(--color-surface)' }}>
+                    <SquadIcon name={id} size={18} />
                   </button>
                 ))}
               </div>
@@ -135,7 +134,7 @@ export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProf
               disabled={!form.name || !form.goal_amount}
               className="w-full h-13 rounded-2xl text-sm font-black text-white disabled:opacity-40"
               style={{ background: 'var(--color-accent)', height: 52 }}>
-              Skapa Squad 🚀
+              <span className="inline-flex items-center justify-center gap-2"><SquadIcon name="rocket" size={16} /> Skapa Squad</span>
             </button>
           </motion.div>
         </motion.div>

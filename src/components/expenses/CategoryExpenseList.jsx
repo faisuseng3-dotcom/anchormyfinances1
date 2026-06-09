@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Coffee, Car, Film, Heart, Zap, Package, Wifi, ChevronDown, ChevronRight, TrendingDown } from 'lucide-react';
+import { FeelingIcon } from '@/lib/anchorIcons';
 import OptimizationHub from './OptimizationHub';
 import { toast } from 'sonner';
 
 const fmt = (v) => v ? Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
 
 export const categoryConfig = {
-  food:          { label: 'Livsmedel',    icon: Coffee,       color: '#F97316', bg: 'bg-orange-500/10',  text: 'text-orange-400',  emoji: '🛒' },
-  shopping:      { label: 'Shopping',     icon: ShoppingCart, color: '#A855F7', bg: 'bg-purple-500/10',  text: 'text-purple-400',  emoji: '🛍️' },
-  transport:     { label: 'Fordon',       icon: Car,          color: '#3B82F6', bg: 'bg-blue-500/10',    text: 'text-blue-400',    emoji: '🚗' },
-  entertainment: { label: 'Streaming',    icon: Film,         color: '#EC4899', bg: 'bg-pink-500/10',    text: 'text-pink-400',    emoji: '📺' },
-  health:        { label: 'Hälsa/Fritid', icon: Heart,        color: '#10B981', bg: 'bg-emerald-500/10', text: 'text-emerald-400', emoji: '💪' },
-  utilities:     { label: 'Boende & El',  icon: Zap,          color: '#F59E0B', bg: 'bg-amber-500/10',   text: 'text-amber-400',   emoji: '⚡' },
-  other:         { label: 'Telekom',      icon: Wifi,         color: '#6366F1', bg: 'bg-indigo-500/10',  text: 'text-indigo-400',  emoji: '📱' },
+  food:          { label: 'Livsmedel',    icon: Coffee,       color: '#F97316', bg: 'bg-orange-500/10',  text: 'text-orange-400' },
+  shopping:      { label: 'Shopping',     icon: ShoppingCart, color: '#A855F7', bg: 'bg-purple-500/10',  text: 'text-purple-400' },
+  transport:     { label: 'Fordon',       icon: Car,          color: '#3B82F6', bg: 'bg-blue-500/10',    text: 'text-blue-400' },
+  entertainment: { label: 'Streaming',    icon: Film,         color: '#EC4899', bg: 'bg-pink-500/10',    text: 'text-pink-400' },
+  health:        { label: 'Hälsa/Fritid', icon: Heart,        color: '#10B981', bg: 'bg-emerald-500/10', text: 'text-emerald-400' },
+  utilities:     { label: 'Boende & El',  icon: Zap,          color: '#F59E0B', bg: 'bg-amber-500/10',   text: 'text-amber-400' },
+  other:         { label: 'Telekom',      icon: Wifi,         color: '#6366F1', bg: 'bg-indigo-500/10',  text: 'text-indigo-400' },
 };
 
 // Categories with high AI optimization potential
@@ -70,9 +71,9 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
       setTimeout(() => setSparkle(null), 1200);
       toast.success(`Uppfattat! Jag prioriterar ${itemName || 'detta köp'} i din framtida budget.`);
     } else if (feeling === 'neutral') {
-      toast('Noterat – jag håller koll på den här posten.', { icon: '😐' });
+      toast('Noterat – jag håller koll på den här posten.');
     } else if (feeling === 'skip') {
-      toast('Markerat som onödigt – jag föreslår alternativ nästa gång.', { icon: '💸' });
+      toast('Markerat som onödigt – jag föreslår alternativ nästa gång.');
     }
   };
 
@@ -118,7 +119,7 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
                 </div>
                 <div className="flex-1 text-left">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-white uppercase tracking-wider">{cfg.emoji} {cfg.label}</span>
+                    <span className="text-xs font-bold text-white uppercase tracking-wider">{cfg.label}</span>
                     {isHighOpt && (
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full font-semibold" style={{ background: `${cfg.color}25`, color: cfg.color }}>
                         Sparförslag
@@ -173,13 +174,13 @@ export default function CategoryExpenseList({ expenses, subscriptions = [], auto
                                   animate={{ scale: 1 }}
                                   className="text-base"
                                 >
-                                  {feel === 'star' ? (sparkle === key ? '✨' : '⭐') : feel === 'neutral' ? '😐' : '💸'}
+                                  <FeelingIcon type={feel === 'star' ? (sparkle === key ? 'sparkle' : 'star') : feel} size={16} className={feel === 'star' ? 'text-yellow-400' : feel === 'neutral' ? 'text-slate-400' : 'text-rose-400'} />
                                 </motion.span>
                               ) : (
                                 <>
-                                  <button onClick={() => handleFeel(key, 'star', item.name)} className="text-sm hover:scale-125 transition-transform" title="Värt det">⭐</button>
-                                  <button onClick={() => handleFeel(key, 'neutral', item.name)} className="text-sm hover:scale-125 transition-transform" title="Okej">😐</button>
-                                  <button onClick={() => handleFeel(key, 'skip', item.name)} className="text-sm hover:scale-125 transition-transform" title="Onödigt">💸</button>
+                                  <button onClick={() => handleFeel(key, 'star', item.name)} className="hover:scale-125 transition-transform" title="Värt det"><FeelingIcon type="star" size={16} className="text-yellow-400/70 hover:text-yellow-400" /></button>
+                                  <button onClick={() => handleFeel(key, 'neutral', item.name)} className="hover:scale-125 transition-transform" title="Okej"><FeelingIcon type="neutral" size={16} className="text-slate-500 hover:text-slate-300" /></button>
+                                  <button onClick={() => handleFeel(key, 'skip', item.name)} className="hover:scale-125 transition-transform" title="Onödigt"><FeelingIcon type="skip" size={16} className="text-rose-400/70 hover:text-rose-400" /></button>
                                 </>
                               )}
                             </div>

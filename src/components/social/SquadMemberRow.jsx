@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProfileAvatar from './ProfileAvatar';
-import { Eye, BarChart2, Ghost } from 'lucide-react';
+import { Eye, BarChart2, Ghost, HandHeart, Briefcase, Cake, Wallet } from 'lucide-react';
+import { StreakIcon } from '@/lib/anchorIcons';
 
 const PRIVACY = {
   full:   { label: 'Full', color: '#0FDEBD', Icon: Eye },
@@ -96,13 +97,13 @@ export default function SquadMemberRow({ member, goalAmount, isMe, onPepp, onDra
               className="w-8 h-8 rounded-full flex items-center justify-center text-base"
               style={{ background: 'rgba(15,222,189,0.12)', border: '1px solid rgba(15,222,189,0.3)' }}
               title="Pepp!">
-              🙌
+              <HandHeart className="w-4 h-4 text-[#0FDEBD]" aria-hidden />
             </motion.button>
             <motion.button whileTap={{ scale: 0.88 }} onClick={() => onDram?.(member)}
               className="w-8 h-8 rounded-full flex items-center justify-center text-base"
               style={{ background: 'rgba(246,173,85,0.12)', border: '1px solid rgba(246,173,85,0.3)' }}
               title="Dra på!">
-              🔥
+              <StreakIcon variant="fire" size={16} className="text-amber-400" />
             </motion.button>
           </div>
         )}
@@ -121,9 +122,9 @@ export default function SquadMemberRow({ member, goalAmount, isMe, onPepp, onDra
             <div className="p-3 rounded-2xl mb-2" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
               {member.bio && <p className="text-xs mb-1" style={{ color: 'var(--color-text-secondary)' }}>"{member.bio}"</p>}
               <div className="flex flex-wrap gap-2 text-xs" style={{ color: 'var(--color-text-muted)' }}>
-                {member.occupation && <span>💼 {member.occupation}</span>}
-                {member.age && <span>🎂 {member.age} år</span>}
-                {privacy === 'full' && <span>💰 {saved.toLocaleString('sv-SE')} kr sparat</span>}
+                {member.occupation && <span className="inline-flex items-center gap-1"><Briefcase className="w-3 h-3" aria-hidden /> {member.occupation}</span>}
+                {member.age && <span className="inline-flex items-center gap-1"><Cake className="w-3 h-3" aria-hidden /> {member.age} år</span>}
+                {privacy === 'full' && <span className="inline-flex items-center gap-1"><Wallet className="w-3 h-3" aria-hidden /> {saved.toLocaleString('sv-SE')} kr sparat</span>}
               </div>
             </div>
           </motion.div>

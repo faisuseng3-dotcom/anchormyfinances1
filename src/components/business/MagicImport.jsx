@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Zap, CheckCircle2, ScanLine } from 'lucide-react';
+import { X, Upload, Zap, CheckCircle2, ScanLine, FileText, BarChart3 } from 'lucide-react';
 
 const STEPS = [
   { text: 'Läser av 142 transaktioner...', duration: 900 },
@@ -12,8 +12,8 @@ const STEPS = [
 ];
 
 const DEMO_FILES = [
-  { name: 'kontoutdrag_mars_2026.pdf', size: '148 KB', icon: '📄' },
-  { name: 'bokforing_q1_2026.csv', size: '32 KB', icon: '📊' },
+  { name: 'kontoutdrag_mars_2026.pdf', size: '148 KB', Icon: FileText },
+  { name: 'bokforing_q1_2026.csv', size: '32 KB', Icon: BarChart3 },
 ];
 
 export default function MagicImport({ onClose, onComplete }) {
@@ -122,7 +122,7 @@ export default function MagicImport({ onClose, onComplete }) {
                       <button key={f.name} onClick={startProcessing}
                         className="w-full flex items-center gap-3 p-3 rounded-xl text-left"
                         style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
-                        <span className="text-xl">{f.icon}</span>
+                        <f.Icon className="w-5 h-5" style={{ color: '#D4AF37' }} aria-hidden />
                         <div>
                           <p className="text-xs font-bold" style={{ color: '#F0EAD6' }}>{f.name}</p>
                           <p className="text-[10px]" style={{ color: 'rgba(155,173,184,0.45)' }}>{f.size}</p>
@@ -209,7 +209,7 @@ export default function MagicImport({ onClose, onComplete }) {
                 </div>
 
                 <div>
-                  <p className="text-xl font-black" style={{ color: '#F0EAD6' }}>Importen är klar! 🎉</p>
+                  <p className="text-xl font-black" style={{ color: '#F0EAD6' }}>Importen är klar!</p>
                   <p className="text-sm mt-1" style={{ color: 'rgba(155,173,184,0.6)' }}>142 transaktioner analyserade</p>
                 </div>
 

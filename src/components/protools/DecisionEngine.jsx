@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Swords, Loader2, Check } from 'lucide-react';
+import { Swords, Loader2, Check, Zap, Brain, Award } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
@@ -100,7 +100,7 @@ Svara ENDAST med JSON.`,
       {/* Proactive suggestions */}
       {!choiceA && (
         <div className="space-y-2">
-          <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">⚡ Vanliga battles – välj ett par att testa</p>
+          <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-amber-400" aria-hidden /> Vanliga battles – välj ett par att testa</p>
           {PROACTIVE.map((p, i) => (
             <button key={i} onClick={() => loadProactive(p)}
               className="w-full p-3 rounded-xl text-left border border-white/10 hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all text-sm text-slate-300">
@@ -143,7 +143,7 @@ Svara ENDAST med JSON.`,
 
         <Button onClick={handleBattle} disabled={!choiceA || !choiceB || loading}
           className="w-full h-12 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-600 font-bold text-white">
-          {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />AI räknar på frihet & pengar…</> : '⚔️ Starta Battle'}
+          {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />AI räknar på frihet & pengar…</> : <><Swords className="w-4 h-4 mr-2" aria-hidden /> Starta Battle</>}
         </Button>
       </div>
 
@@ -178,13 +178,13 @@ Svara ENDAST med JSON.`,
 
             {/* Final wisdom */}
             <div className="rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)' }}>
-              <p className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider">🧠 Guru-domen</p>
+              <p className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider flex items-center gap-1.5"><Brain className="w-3.5 h-3.5" aria-hidden /> Guru-domen</p>
               <p className="text-sm text-slate-300 leading-relaxed">{result.final_wisdom}</p>
             </div>
 
             {/* Decision certificate */}
             <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))', border: '1px solid rgba(139,92,246,0.3)' }}>
-              <div className="text-3xl mb-2">🏅</div>
+              <Award className="w-8 h-8 text-purple-300 mx-auto mb-2" aria-hidden />
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Besluts-certifikat</p>
               <p className="text-lg font-black text-white mb-1">{result.certificate_headline}</p>
               <p className="text-xs text-slate-400">Analyserat av Anchor · {new Date().toLocaleDateString('sv-SE')}</p>

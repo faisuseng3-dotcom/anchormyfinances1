@@ -100,7 +100,7 @@ export default function VerifikatConfirmModal({ transactions, onConfirm, onCance
                       </p>
                       <p className="text-xs" style={{ color: '#9AA5B4' }}>
                         {tx.date} · {tx.vatRate}% moms
-                        {tx.needs_review && <span className="ml-2 text-red-500 font-bold">⚠ Granska</span>}
+                        {tx.needs_review && <span className="ml-2 text-red-500 font-bold inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3" aria-hidden /> Granska</span>}
                       </p>
                     </div>
                     <p className="text-sm font-black"
@@ -131,8 +131,10 @@ export default function VerifikatConfirmModal({ transactions, onConfirm, onCance
                       </div>
                     ))}
                     <div className="mt-1.5 pt-1.5 flex items-center gap-2" style={{ borderTop: '1px solid #F0F2F5' }}>
-                      <span className="text-[10px] font-bold" style={{ color: balanced ? '#0D7377' : '#E53E3E' }}>
-                        {balanced ? '✓ Balanserar' : '⚠ Obalanserad'}
+                      <span className="text-[10px] font-bold inline-flex items-center gap-1" style={{ color: balanced ? '#0D7377' : '#E53E3E' }}>
+                        {balanced
+                          ? <><Check className="w-3 h-3" aria-hidden /> Balanserar</>
+                          : <><AlertTriangle className="w-3 h-3" aria-hidden /> Obalanserad</>}
                       </span>
                     </div>
                   </div>

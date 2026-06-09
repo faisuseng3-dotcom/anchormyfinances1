@@ -1,6 +1,8 @@
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { formatNumber } from './pulseEngine';
+import { EventCategoryIcon } from '@/lib/anchorIcons';
+import { Zap } from 'lucide-react';
 
 const PRIORITY_COLOR = {
   critical: 'bg-rose-500 border-rose-400 shadow-rose-500/40',
@@ -102,7 +104,7 @@ export default function PulseTimeline({ events, today, whatIfAmount }) {
                       title={`${ev.name}: ${formatNumber(ev.amount)} kr`}
                       className={`w-7 h-7 rounded-xl flex items-center justify-center text-sm border shadow-md cursor-pointer ${PRIORITY_COLOR[ev.priority] || 'bg-slate-600 border-slate-500'}`}
                     >
-                      {ev.icon}
+                      <EventCategoryIcon event={ev} size={14} className="text-white" />
                     </motion.div>
                   ))}
                 </div>
@@ -120,7 +122,7 @@ export default function PulseTimeline({ events, today, whatIfAmount }) {
       {/* What-if overlay hint */}
       {whatIfAmount > 0 && (
         <div className="mt-2 flex items-center gap-2 text-xs text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-xl px-3 py-2">
-          <span>⚡</span>
+          <Zap className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" aria-hidden />
           <span>What-if aktiv: -{formatNumber(whatIfAmount)} kr påverkar tidslinjen</span>
         </div>
       )}

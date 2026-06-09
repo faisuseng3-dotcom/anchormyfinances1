@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { getTotalFixedCosts } from '@/lib/financialUtils';
+import { StatusDot } from '@/lib/anchorIcons';
 
 export default function StrategyCenter({ profile }) {
   const income = profile?.income || 0;
@@ -108,12 +109,15 @@ export default function StrategyCenter({ profile }) {
         className="rounded-2xl p-4 border border-violet-500/20"
         style={{ background: 'rgba(139,92,246,0.08)' }}
       >
-        <p className="text-xs text-slate-400">
-          {marginPct >= 30
-            ? `🟢 Utmärkt! Du har ${marginPct}% frihet — en VD-standard enligt ekonomer. Investera överskottet.`
-            : marginPct >= 15
-            ? `🟡 Du har ${marginPct}% frihet. Målet är 30%. Optimera 1-2 fasta poster för att nå dit.`
-            : `🔴 Varning: Endast ${marginPct}% frihetsmarginal. Dina fasta kostnader dominerar — se Marginal-Maxaren.`}
+        <p className="text-xs text-slate-400 inline-flex items-start gap-2">
+          <StatusDot status={marginPct >= 30 ? 'grön' : marginPct >= 15 ? 'gul' : 'röd'} size={8} className="mt-1" />
+          <span>
+            {marginPct >= 30
+              ? `Utmärkt! Du har ${marginPct}% frihet — en VD-standard enligt ekonomer. Investera överskottet.`
+              : marginPct >= 15
+              ? `Du har ${marginPct}% frihet. Målet är 30%. Optimera 1-2 fasta poster för att nå dit.`
+              : `Varning: Endast ${marginPct}% frihetsmarginal. Dina fasta kostnader dominerar — se Marginal-Maxaren.`}
+          </span>
         </p>
       </motion.div>
     </div>

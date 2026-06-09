@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
-import CopilotProgressRing from '@/components/ui-premium/copilot/CopilotProgressRing';
+import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
 import { copilotChipClass, copilotPrimaryBtnClass, copilotInputClass } from '@/lib/copilotTheme';
 import TheSwipe from './TheSwipe';
 
@@ -218,18 +218,18 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
     >
       {goal > 0 && (
         <div className="flex items-center gap-4 mb-5 p-4 rounded-2xl border border-[var(--copilot-border)] bg-[rgba(34,217,122,0.08)]">
-          <CopilotProgressRing
-            value={saved}
-            max={goal}
-            size={64}
+          <VisualSavingsGoalRing
+            pct={goalPct}
+            size={72}
             stroke={5}
-            color="#22d97a"
-            label={`${Math.round(goalPct)}%`}
+            imageUrl={profile?.savingsGoalVisualType === 'image' ? profile?.savingsGoalImageUrl : null}
+            iconId={profile?.savingsGoalIcon || 'default'}
+            showMilestones
           />
           <div>
             <p className="text-[13px] font-semibold text-white">{profile?.savingsGoalName || 'Sparmål'}</p>
             <p className="text-[12px] text-[var(--copilot-text-muted)] tabular-nums">
-              {fmt(saved)} / {fmt(goal)} kr
+              {fmt(saved)} / {fmt(goal)} kr · {Math.round(goalPct)}%
             </p>
           </div>
         </div>

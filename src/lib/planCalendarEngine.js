@@ -9,22 +9,22 @@ const MONTHS_SV = [
 ];
 
 const SUB_ICONS = {
-  streaming: '🎬',
-  entertainment: '🎮',
-  transport: '🚌',
-  health: '💪',
-  food: '🛒',
-  insurance: '🛡️',
-  other: '📱',
+  streaming: 'subscription',
+  entertainment: 'entertainment',
+  transport: 'transport',
+  health: 'health',
+  food: 'food',
+  insurance: 'other',
+  other: 'other',
 };
 
 const PLAN_ICONS = {
-  social: '🍽',
-  food: '🛒',
-  travel: '✈',
-  gift: '🎁',
-  health: '💪',
-  other: '📌',
+  social: 'food',
+  food: 'food',
+  travel: 'travel',
+  gift: 'shopping',
+  health: 'health',
+  other: 'other',
 };
 
 const DUE_DAYS = [8, 12, 15, 18, 22, 27];
@@ -145,7 +145,7 @@ function buildAutoEventsForDate(profile, date) {
         type: 'bill',
         title: sub.name || 'Abonnemang',
         amount: -(sub.amount || 0),
-        icon: SUB_ICONS[sub.category] || '📱',
+        icon: SUB_ICONS[sub.category] || 'other',
         color: EVENT_COLORS.bill,
       });
     }

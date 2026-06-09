@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Plane, Loader2, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, ExternalLink } from 'lucide-react';
+import { Send, Plane, Loader2, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, ExternalLink, Backpack, Building2, Wine, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
 import BookingModal from './BookingModal';
@@ -37,7 +37,7 @@ const DEST_IMAGES = {
 
 const VIBE_THEMES = {
   experience: {
-    emoji: '🎒',
+    Icon: Backpack,
     vibe: 'Maxad Upplevelse',
     gradient: 'from-orange-600 to-rose-600',
     glow: 'rgba(234,88,12,0.3)',
@@ -45,7 +45,7 @@ const VIBE_THEMES = {
     tagColor: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
   },
   balance: {
-    emoji: '🏛️',
+    Icon: Building2,
     vibe: 'Bästa Balansen',
     gradient: 'from-blue-600 to-indigo-600',
     glow: 'rgba(59,130,246,0.3)',
@@ -53,7 +53,7 @@ const VIBE_THEMES = {
     tagColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
   },
   safety: {
-    emoji: '🥂',
+    Icon: Wine,
     vibe: 'Säkrast Marginal',
     gradient: 'from-purple-600 to-pink-600',
     glow: 'rgba(147,51,234,0.3)',
@@ -143,7 +143,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
         <div className="absolute bottom-0 left-0 right-0 px-4 py-3">
           <div className="flex items-end justify-between">
             <div>
-              <span className="text-2xl">{theme.emoji}</span>
+              <theme.Icon className="w-6 h-6 text-white" />
               <div className="text-white font-bold text-sm leading-tight mt-0.5">{theme.vibe}</div>
               <div className="text-white/70 text-xs">{pkg.name}</div>
             </div>
@@ -210,7 +210,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
 
         {/* AI comment */}
         <div className="text-xs italic text-slate-400 bg-white/5 rounded-xl px-3 py-2">
-          {theme.emoji} {pkg.aiComment}
+          <span className="inline-flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> {pkg.aiComment}</span>
         </div>
 
         {/* CTA row */}
@@ -225,7 +225,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
             }`}
           >
             {selected ? (
-              <><CheckCircle className="w-3.5 h-3.5" />Vald ✓</>
+              <><CheckCircle className="w-3.5 h-3.5" />Vald</>
             ) : (
               <>Välj plan <Plane className="w-3.5 h-3.5" /></>
             )}
@@ -314,7 +314,7 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
                 selectedPkg?.id === pkg.id ? 'bg-indigo-500/10' : 'hover:bg-white/5'
               }`}
             >
-              <span className="text-white font-medium flex items-center gap-1">{theme.emoji} Alt {i+1}</span>
+              <span className="text-white font-medium flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> Alt {i+1}</span>
               <span className="text-center text-slate-300">{formatNumber(pkg.accommodationCost)}</span>
               <span className="text-center text-slate-300">{formatNumber(pkg.activitiesCost)}</span>
               <span className={`text-center font-medium ${pocketMoney < 150 ? 'text-rose-400' : 'text-emerald-400'}`}>
@@ -385,7 +385,7 @@ export default function TravelAgentChat({ profile }) {
     if (cached?.messages) return cached.messages;
     return [{
       role: 'assistant',
-      content: '✈️ Hej! Jag är din **Anchor Travel Agent**. Beskriv din resa — destination, datum, budget och vad du vill göra. Jag bygger tre skräddarsydda resplaner åt dig!',
+      content: 'Hej! Jag är din **Anchor Travel Agent**. Beskriv din resa — destination, datum, budget och vad du vill göra. Jag bygger tre skräddarsydda resplaner åt dig!',
       type: 'text'
     }];
   });
@@ -582,7 +582,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
     setGoalSaved(true);
     setMessages(prev => [...prev, {
       role: 'assistant', type: 'text',
-      content: `✅ Sparmålet **"${goalName}"** har skapats på din Dashboard med ett mål på **${formatNumber(selectedPkg.totalCost)} kr**! Bon voyage! ✈️`
+      content: `Sparmålet **"${goalName}"** har skapats på din Dashboard med ett mål på **${formatNumber(selectedPkg.totalCost)} kr**! Bon voyage!`
     }]);
   };
 
@@ -654,7 +654,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
                 }`}>
                   <div className="text-slate-400 text-[10px]">{d.label}</div>
                   <div className="text-white font-medium text-xs mt-0.5">{d.event}</div>
-                  {d.highlight && <div className="mt-1 text-indigo-300 text-[9px]">★</div>}
+                  {d.highlight && <Star className="w-3 h-3 mt-1 text-indigo-300 fill-indigo-300" />}
                 </div>
               ))}
             </div>
@@ -685,7 +685,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
                   onClick={handleSaveGoal}
                   className="w-full h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-bold text-sm shadow-lg shadow-indigo-500/30"
                 >
-                  ✨ Skapa sparmål — {selectedPkg.name} · {formatNumber(selectedPkg.totalCost)} kr
+                  <Sparkles className="w-4 h-4" /> Skapa sparmål — {selectedPkg.name} · {formatNumber(selectedPkg.totalCost)} kr
                 </Button>
               </motion.div>
             )}

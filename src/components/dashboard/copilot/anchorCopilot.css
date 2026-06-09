@@ -757,6 +757,26 @@
   white-space: nowrap;
 }
 
+.anchor-copilot-shell .copilot-goal-row-visual {
+  align-items: flex-start;
+}
+
+.anchor-copilot-shell .copilot-goal-milestones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.anchor-copilot-shell .copilot-goal-milestone {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(34, 217, 122, 0.15);
+  color: var(--copilot-accent-green);
+}
+
 .anchor-copilot-shell .copilot-sub-row {
   display: flex;
   align-items: center;
@@ -807,13 +827,6 @@
   font-size: 13.5px;
   line-height: 1.6;
   color: var(--copilot-text-primary);
-}
-
-.anchor-copilot-shell .copilot-coach-bubble::before {
-  content: '✦';
-  color: var(--copilot-accent-blue);
-  font-size: 12px;
-  margin-right: 6px;
 }
 
 .anchor-copilot-shell .copilot-coach-input {

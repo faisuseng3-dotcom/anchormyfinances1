@@ -1,58 +1,110 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import {
+  X,
+  Salad,
+  Footprints,
+  Moon,
+  Smartphone,
+  ShoppingBag,
+  Box,
+  Recycle,
+  Hourglass,
+  Gamepad2,
+  CloudRain,
+  Bike,
+  Gift,
+  PenLine,
+  Dumbbell,
+  Ban,
+  Goal,
+  Coffee,
+  Users,
+  Utensils,
+} from 'lucide-react';
+
+const TRIGGER_ICON_MAP = {
+  health: Salad,
+  footsteps: Footprints,
+  sleep: Moon,
+  screentime: Smartphone,
+  shopping: ShoppingBag,
+  lunchbox: Box,
+  secondhand: Recycle,
+  wait: Hourglass,
+  fun: Gamepad2,
+  rain: CloudRain,
+  transport: Bike,
+  bonus: Gift,
+  custom: PenLine,
+  workout: Dumbbell,
+  no_purchase: Ban,
+  football: Goal,
+  coffee: Coffee,
+  users: Users,
+  lunch: Utensils,
+};
 
 const TRIGGER_CATEGORIES = [
   {
     id: 'health',
-    label: '🥗 Hälsa',
+    label: 'Hälsa',
+    iconKey: 'health',
     color: 'from-emerald-500 to-green-600',
     border: 'rgba(16,185,129,0.3)',
     bg: 'rgba(16,185,129,0.08)',
     triggers: [
-      { id: 'steps', label: '👣 Steg-utmaningen', desc: 'Spara 1 kr per 1 000 steg du går.', amount: 10, users: 3241 },
-      { id: 'sleep', label: '😴 Sömntuta', desc: 'Spara 20 kr varje natt du sover 7+ timmar.', amount: 20, users: 1872 },
-      { id: 'screentime', label: '📵 Skärmtid-skatt', desc: 'Mobil > 3 h? 50 kr straffas till bufferten.', amount: 50, users: 894 },
+      { id: 'steps', label: 'Steg-utmaningen', iconKey: 'footsteps', desc: 'Spara 1 kr per 1 000 steg du går.', amount: 10, users: 3241 },
+      { id: 'sleep', label: 'Sömntuta', iconKey: 'sleep', desc: 'Spara 20 kr varje natt du sover 7+ timmar.', amount: 20, users: 1872 },
+      { id: 'screentime', label: 'Skärmtid-skatt', iconKey: 'screentime', desc: 'Mobil > 3 h? 50 kr straffas till bufferten.', amount: 50, users: 894 },
     ]
   },
   {
     id: 'mindful',
-    label: '🛍️ Shopping-stopp',
+    label: 'Shopping-stopp',
+    iconKey: 'shopping',
     color: 'from-blue-500 to-indigo-600',
     border: 'rgba(99,102,241,0.3)',
     bg: 'rgba(99,102,241,0.08)',
     triggers: [
-      { id: 'luncbox', label: '🥡 Matlåda-vinsten', desc: 'Ta med matlåda istället för att äta ute → spara 100 kr.', amount: 100, users: 1420 },
-      { id: 'secondhand', label: '♻️ Second Hand-bonus', desc: 'Köp begagnat → spara 50% av det du "tjänade".', amount: 50, users: 677 },
-      { id: 'cart_wait', label: '⏳ Vänta 24 timmar', desc: 'Lägg i varukorg men vänta → spara en tålamods-peng på 20 kr.', amount: 20, users: 2105 },
+      { id: 'luncbox', label: 'Matlåda-vinsten', iconKey: 'lunchbox', desc: 'Ta med matlåda istället för att äta ute → spara 100 kr.', amount: 100, users: 1420 },
+      { id: 'secondhand', label: 'Second Hand-bonus', iconKey: 'secondhand', desc: 'Köp begagnat → spara 50% av det du "tjänade".', amount: 50, users: 677 },
+      { id: 'cart_wait', label: 'Vänta 24 timmar', iconKey: 'wait', desc: 'Lägg i varukorg men vänta → spara en tålamods-peng på 20 kr.', amount: 20, users: 2105 },
     ]
   },
   {
     id: 'fun',
-    label: '🎮 Livsnjut',
+    label: 'Livsnjut',
+    iconKey: 'fun',
     color: 'from-purple-500 to-pink-600',
     border: 'rgba(168,85,247,0.3)',
     bg: 'rgba(168,85,247,0.08)',
     triggers: [
-      { id: 'rain', label: '🌧️ Väder-spararen', desc: 'Spara 10 kr varje dag det regnar.', amount: 10, users: 561 },
-      { id: 'transport', label: '🚲 Transport-hack', desc: 'Cykla/gå istället för buss → spara 39 kr.', amount: 39, users: 988 },
-      { id: 'bonus', label: '🎁 Lönegodis', desc: 'Bonus eller Swish från kompis → spara 1% extra.', amount: null, users: 342 },
+      { id: 'rain', label: 'Väder-spararen', iconKey: 'rain', desc: 'Spara 10 kr varje dag det regnar.', amount: 10, users: 561 },
+      { id: 'transport', label: 'Transport-hack', iconKey: 'transport', desc: 'Cykla/gå istället för buss → spara 39 kr.', amount: 39, users: 988 },
+      { id: 'bonus', label: 'Lönegodis', iconKey: 'bonus', desc: 'Bonus eller Swish från kompis → spara 1% extra.', amount: null, users: 342 },
     ]
   },
   {
     id: 'custom',
-    label: '✍️ Custom',
+    label: 'Custom',
+    iconKey: 'custom',
     color: 'from-amber-500 to-orange-600',
     border: 'rgba(245,158,11,0.3)',
     bg: 'rgba(245,158,11,0.08)',
     triggers: [
-      { id: 'workout', label: '🏋️ Träningspass', desc: 'Spara ett belopp varje gång du tränar.', amount: 50, users: 2830 },
-      { id: 'no_purchase', label: '🛑 Shoppa-fritt', desc: 'Klarar du en dag utan köp? Spara 100 kr.', amount: 100, users: 1654 },
-      { id: 'football', label: '⚽ Favoritlaget gör mål', desc: 'Ditt lag gör mål → spara 10 kr.', amount: 10, users: 419 },
-      { id: 'coffee_skip', label: '☕ Hoppa köpkaffe', desc: 'Brygger hemma istället → spara 45 kr.', amount: 45, users: 3102 },
+      { id: 'workout', label: 'Träningspass', iconKey: 'workout', desc: 'Spara ett belopp varje gång du tränar.', amount: 50, users: 2830 },
+      { id: 'no_purchase', label: 'Shoppa-fritt', iconKey: 'no_purchase', desc: 'Klarar du en dag utan köp? Spara 100 kr.', amount: 100, users: 1654 },
+      { id: 'football', label: 'Favoritlaget gör mål', iconKey: 'football', desc: 'Ditt lag gör mål → spara 10 kr.', amount: 10, users: 419 },
+      { id: 'coffee_skip', label: 'Hoppa köpkaffe', iconKey: 'coffee', desc: 'Brygger hemma istället → spara 45 kr.', amount: 45, users: 3102 },
     ]
   },
 ];
+
+function TriggerIcon({ iconKey, className = 'w-3.5 h-3.5' }) {
+  const Icon = TRIGGER_ICON_MAP[iconKey] || Salad;
+  return <Icon className={className} aria-hidden />;
+}
 
 export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
   const [activeCategory, setActiveCategory] = useState('health');
@@ -79,7 +131,8 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
       <div className="flex gap-1.5 px-4 pb-3 overflow-x-auto">
         {TRIGGER_CATEGORIES.map(c => (
           <button key={c.id} onClick={() => setActiveCategory(c.id)}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${activeCategory === c.id ? `bg-gradient-to-r ${c.color} text-white shadow` : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${activeCategory === c.id ? `bg-gradient-to-r ${c.color} text-white shadow` : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+            <TriggerIcon iconKey={c.iconKey} />
             {c.label}
           </button>
         ))}
@@ -95,10 +148,11 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
                 <button key={t.id} onClick={() => onSelect(t)}
                   className={`w-full p-3 rounded-xl text-left transition-all flex items-start gap-3 ${isActive ? 'ring-2 ring-purple-500' : 'hover:bg-white/5'}`}
                   style={{ background: isActive ? cat.bg : 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? cat.border : 'transparent'}` }}>
+                  <TriggerIcon iconKey={t.iconKey} className="w-4 h-4 text-purple-300 flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-white">{t.label}</p>
                     <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{t.desc}</p>
-                    <p className="text-[10px] text-slate-600 mt-1">👥 {t.users.toLocaleString('sv-SE')} sparar med denna trigger</p>
+                    <p className="text-[10px] text-slate-600 mt-1 inline-flex items-center gap-1"><Users className="w-3 h-3" aria-hidden /> {t.users.toLocaleString('sv-SE')} sparar med denna trigger</p>
                   </div>
                   {t.amount && (
                     <div className="flex-shrink-0 text-right">

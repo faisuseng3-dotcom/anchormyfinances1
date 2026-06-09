@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, AlertCircle } from 'lucide-react';
+import { AlertCircle, PartyPopper, Zap } from 'lucide-react';
+import { EventCategoryIcon } from '@/lib/anchorIcons';
 import { buildUpcomingExpenses, getUpcomingDates, calculateRunningBalance } from '@/components/pulse/pulseEngine';
 
 export default function FutureTimeline({ profile }) {
@@ -19,14 +20,17 @@ export default function FutureTimeline({ profile }) {
       description: e.name,
       amount: e.priority === 'income' ? e.amount : -e.amount,
       balance: e.balanceAfter,
-      icon: e.icon,
+      category: e.category,
+      priority: e.priority,
     }))
     .slice(0, 8);
 
   if (futureEvents.length === 0) {
     return (
       <div className="text-center py-8 text-slate-500 text-sm">
-        Ingen kommande händelser. Du är i kontroll! 🎉
+        <span className="inline-flex items-center gap-1.5 justify-center">
+          Ingen kommande händelser. Du är i kontroll! <PartyPopper className="w-4 h-4" />
+        </span>
       </div>
     );
   }
@@ -58,11 +62,11 @@ export default function FutureTimeline({ profile }) {
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
                   isCritical ? 'bg-red-500/20' : isImmediate ? 'bg-amber-500/20' : 'bg-white/10'
                 }`}>
-                  {event.icon ? (
-                    <span className="text-lg">{event.icon}</span>
-                  ) : (
-                    <Calendar className={`w-5 h-5 ${isCritical ? 'text-red-400' : isImmediate ? 'text-amber-400' : 'text-slate-400'}`} />
-                  )}
+                  <EventCategoryIcon
+                    event={event}
+                    size={18}
+                    className={isCritical ? 'text-red-400' : isImmediate ? 'text-amber-400' : 'text-slate-400'}
+                  />
                 </div>
 
                 {/* Content */}
@@ -75,7 +79,7 @@ export default function FutureTimeline({ profile }) {
                         transition={{ duration: 0.6, repeat: Infinity }}
                         className="text-amber-400 text-lg"
                       >
-                        ⚡
+                        <Zap className="w-4 h-4" />
                       </motion.span>
                     )}
                   </div>

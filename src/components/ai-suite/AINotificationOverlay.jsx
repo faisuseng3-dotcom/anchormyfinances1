@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 export default function AINotificationOverlay({ notification, onAction, onDismiss }) {
   if (!notification) return null;
 
-  const { icon, badge, badgeColor, accentColor, headline, message, actionLabel } = notification;
+  const { icon: Icon, badge, badgeColor, accentColor, headline, message, actionLabel } = notification;
 
   return (
     <AnimatePresence>
@@ -47,7 +47,7 @@ export default function AINotificationOverlay({ notification, onAction, onDismis
                   className="relative w-11 h-11 rounded-xl flex items-center justify-center text-xl"
                   style={{ background: `${accentColor}20`, border: `1px solid ${accentColor}40` }}
                 >
-                  {icon}
+                  {Icon && <Icon size={22} style={{ color: accentColor }} strokeWidth={2} aria-hidden />}
                 </div>
               </div>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield } from 'lucide-react';
+import { X, Shield, Wallet } from 'lucide-react';
 import { Slider } from '@/components/ui/slider';
 
 const fmt = (v) => v ? Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '0';
@@ -136,7 +136,7 @@ export default function BufferModal({ isOpen, onClose, profile, onDeposit }) {
               <button onClick={onDeposit}
                 className="mt-4 w-full py-3 rounded-xl text-sm font-semibold text-emerald-300 flex items-center justify-center gap-2"
                 style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.25)' }}>
-                💰 Gör en insättning i bufferten
+                <Wallet className="w-4 h-4" /> Gör en insättning i bufferten
               </button>
             )}
 

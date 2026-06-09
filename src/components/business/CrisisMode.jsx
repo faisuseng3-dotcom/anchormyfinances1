@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertTriangle, X, TrendingDown } from 'lucide-react';
+import { AlertTriangle, X, TrendingDown, Check } from 'lucide-react';
 import { BusinessDivider } from '@/components/business/BusinessChrome';
 
 const CUTS = [
@@ -104,7 +104,7 @@ export default function CrisisMode({ monthlyBurn = 45000 }) {
                             <div
                               className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 ${selected ? 'bg-[#0D7377]' : 'border border-[#E8ECF0]'}`}
                             >
-                              {selected && <span className="text-[10px] text-white font-bold">✓</span>}
+                              {selected && <Check className="w-3 h-3 text-white" aria-hidden />}
                             </div>
                             <span className="text-[15px] font-medium text-[#1A2332] truncate">{c.label}</span>
                           </div>

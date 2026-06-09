@@ -136,10 +136,13 @@ export default function HorizonScroll({ eventsWithBalance, whatIfAmount = 0 }) {
                     />
                   )}
 
-                  {/* Emoji icon */}
-                  <text x={x} y={TRACK_H + 18} textAnchor="middle" fontSize="14">
-                    {event.icon || (isIncome ? '💰' : '📅')}
-                  </text>
+                  {/* Category marker */}
+                  <circle
+                    cx={x}
+                    cy={TRACK_H + 16}
+                    r={4}
+                    fill={isIncome ? '#34D399' : isCritical ? '#F87171' : '#818CF8'}
+                  />
 
                   {/* Days label */}
                   <text x={x} y={TRACK_H + 36} textAnchor="middle" fontSize="8"

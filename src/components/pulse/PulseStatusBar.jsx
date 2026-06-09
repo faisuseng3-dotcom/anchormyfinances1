@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { formatNumber } from './pulseEngine';
+import { StatusDot } from '@/lib/anchorIcons';
 
 export default function PulseStatusBar({ currentBalance, totalUpcomingCritical, totalUpcomingLifestyle }) {
   const totalUpcoming = totalUpcomingCritical + totalUpcomingLifestyle;
@@ -12,10 +13,10 @@ export default function PulseStatusBar({ currentBalance, totalUpcomingCritical, 
     safePercent >= 60 ? 'caution' : 'danger';
 
   const statusConfig = {
-    excellent: { label: 'Utmärkt', color: '#10b981', glow: 'rgba(16,185,129,0.5)', emoji: '🟢', desc: 'Du har god marginal till alla utgifter' },
-    safe: { label: 'Säker', color: '#6366f1', glow: 'rgba(99,102,241,0.5)', emoji: '🔵', desc: 'Saldo täcker kommande utgifter' },
-    caution: { label: 'Försiktigt', color: '#f59e0b', glow: 'rgba(245,158,11,0.5)', emoji: '🟡', desc: 'Begränsat spelrum denna månad' },
-    danger: { label: 'Fara!', color: '#ef4444', glow: 'rgba(239,68,68,0.5)', emoji: '🔴', desc: 'Saldot täcker inte alla utgifter' },
+    excellent: { label: 'Utmärkt', color: '#10b981', glow: 'rgba(16,185,129,0.5)', statusKey: 'grön', desc: 'Du har god marginal till alla utgifter' },
+    safe: { label: 'Säker', color: '#6366f1', glow: 'rgba(99,102,241,0.5)', statusKey: 'ok', desc: 'Saldo täcker kommande utgifter' },
+    caution: { label: 'Försiktigt', color: '#f59e0b', glow: 'rgba(245,158,11,0.5)', statusKey: 'gul', desc: 'Begränsat spelrum denna månad' },
+    danger: { label: 'Fara!', color: '#ef4444', glow: 'rgba(239,68,68,0.5)', statusKey: 'röd', desc: 'Saldot täcker inte alla utgifter' },
   }[status];
 
   return (
@@ -33,7 +34,8 @@ export default function PulseStatusBar({ currentBalance, totalUpcomingCritical, 
         </div>
         <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
           style={{ background: `${statusConfig.glow.replace('0.5', '0.15')}`, color: statusConfig.color, border: `1px solid ${statusConfig.glow.replace('0.5', '0.4')}` }}>
-          {statusConfig.emoji} {statusConfig.label}
+          <StatusDot status={statusConfig.statusKey} size={8} className="inline-block mr-1" />
+          {statusConfig.label}
         </span>
       </div>
 

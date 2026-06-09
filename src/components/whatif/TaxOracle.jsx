@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { Sparkles, Car, AlertTriangle, Building2, Wrench } from 'lucide-react';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -92,7 +93,7 @@ export default function TaxOracle({ simulatedNet }) {
   return (
     <div className="rounded-2xl p-4 space-y-4"
       style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
-      <h3 className="font-bold text-white text-sm uppercase tracking-wider">🔮 Skatte-Siaren</h3>
+      <h3 className="font-bold text-white text-sm uppercase tracking-wider inline-flex items-center gap-1.5"><Sparkles className="w-4 h-4 text-indigo-400" aria-hidden /> Skatte-Siaren</h3>
 
       <TaxGauge refund={calc.refund} />
 
@@ -101,7 +102,7 @@ export default function TaxOracle({ simulatedNet }) {
         {/* Travel */}
         <div className="rounded-xl p-3" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.15)' }}>
           <div className="flex justify-between items-center mb-2">
-            <p className="text-xs font-semibold text-indigo-400">🚗 Reseavdrag</p>
+            <p className="text-xs font-semibold text-indigo-400 inline-flex items-center gap-1"><Car className="w-3.5 h-3.5" aria-hidden /> Reseavdrag</p>
             {calc.travelTaxReduction > 0 && (
               <span className="text-xs font-bold text-emerald-400">+{fmt(calc.travelTaxReduction)} kr</span>
             )}
@@ -124,14 +125,14 @@ export default function TaxOracle({ simulatedNet }) {
             <p className="text-[10px] text-slate-500 mt-1">{fmt(calc.annualKm)} km/år → avdrag {fmt(calc.travelDeduction)} kr</p>
           )}
           {kmPerDay > 0 && kmPerDay < 5 && (
-            <p className="text-[10px] text-amber-400 mt-1">⚠️ Kräver minst 5 km enkel väg</p>
+            <p className="text-[10px] text-amber-400 mt-1 inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3" aria-hidden /> Kräver minst 5 km enkel väg</p>
           )}
         </div>
 
         {/* Interest */}
         <div className="rounded-xl p-3" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.15)' }}>
           <div className="flex justify-between items-center mb-2">
-            <p className="text-xs font-semibold text-amber-400">🏦 Ränteavdrag (30%)</p>
+            <p className="text-xs font-semibold text-amber-400 inline-flex items-center gap-1"><Building2 className="w-3.5 h-3.5" aria-hidden /> Ränteavdrag (30%)</p>
             {calc.interestDeduction > 0 && (
               <span className="text-xs font-bold text-emerald-400">+{fmt(calc.interestDeduction)} kr</span>
             )}
@@ -148,7 +149,7 @@ export default function TaxOracle({ simulatedNet }) {
         {/* ROT/RUT */}
         <div className="rounded-xl p-3" style={{ background: 'rgba(16,185,129,0.07)', border: '1px solid rgba(16,185,129,0.15)' }}>
           <div className="flex justify-between items-center mb-2">
-            <p className="text-xs font-semibold text-emerald-400">🔧 ROT / RUT</p>
+            <p className="text-xs font-semibold text-emerald-400 inline-flex items-center gap-1"><Wrench className="w-3.5 h-3.5" aria-hidden /> ROT / RUT</p>
             {calc.rotRutReduction > 0 && (
               <span className="text-xs font-bold text-emerald-400">+{fmt(calc.rotRutReduction)} kr</span>
             )}

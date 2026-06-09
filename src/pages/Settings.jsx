@@ -39,6 +39,9 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import GoalVisualPicker from '@/components/savings/GoalVisualPicker';
+import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
+import { toast } from 'sonner';
 
 const categories = [
   { id: 'entertainment', label: 'Nöje' },
@@ -116,7 +119,23 @@ export default function Settings() {
   const parseNumber = (v) => parseInt(v.replace(/\s/g, ''), 10) || 0;
   const formatNumber = (v) => (v ? v.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '');
 
-  const handleSave = async () => { setSaving(true); await updateProfile.mutateAsync(formData); };
+  const handleSave = async () => {
+    if (formData.savingsGoal > 0) {
+      const v = validateSavingsGoal({
+        name: formData.savingsGoalName,
+        amount: formData.savingsGoal,
+        imageUrl: formData.savingsGoalVisualType === 'image' ? formData.savingsGoalImageUrl : null,
+        iconId: formData.savingsGoalIcon,
+        visualType: formData.savingsGoalVisualType,
+      });
+      if (!v.ok) {
+        toast.error(v.errors[0]);
+        return;
+      }
+    }
+    setSaving(true);
+    await updateProfile.mutateAsync(formData);
+  };
 
   const addSubscription = () => {
     if (!newSub.name || !newSub.amount) return;
@@ -228,7 +247,7 @@ export default function Settings() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <FieldRow label="Sparmål (namn)" icon={Target}>
                 <Input
-                  placeholder="ex. Resa"
+                  placeholder="ex. Thailand-resa, Min första bil"
                   value={formData.savingsGoalName || ''}
                   onChange={(e) => setFormData({ ...formData, savingsGoalName: e.target.value })}
                   className={anchorInputClass}
@@ -246,6 +265,28 @@ export default function Settings() {
                 </div>
               </FieldRow>
             </div>
+            {formData.savingsGoal > 0 && (
+              <FieldRow label="Bild eller symbol för sparmålet">
+                <GoalVisualPicker
+                  imageUrl={formData.savingsGoalImageUrl}
+                  iconId={formData.savingsGoalIcon || 'default'}
+                  visualType={formData.savingsGoalVisualType}
+                  previewPct={
+                    formData.savingsGoal > 0 && formData.savingsCurrentBalance
+                      ? Math.min(100, (formData.savingsCurrentBalance / formData.savingsGoal) * 100)
+                      : 10
+                  }
+                  onChange={({ imageUrl, iconId, visualType }) =>
+                    setFormData({
+                      ...formData,
+                      savingsGoalImageUrl: imageUrl,
+                      savingsGoalIcon: iconId,
+                      savingsGoalVisualType: visualType,
+                    })
+                  }
+                />
+              </FieldRow>
+            )}
           </div>
         </GlassSection>
       </StaggerBlock>

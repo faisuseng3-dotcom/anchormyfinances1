@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Coins, Loader2, ChevronRight, Radar, CheckCircle2 } from 'lucide-react';
+import { Coins, Loader2, ChevronRight, Radar, CheckCircle2, Check, Building2, Smartphone, Zap, Bot } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
+const OPP_ICON_MAP = {
+  buffer_rate: Building2,
+  margin_boost: Zap,
+  ai: Bot,
+  default: Coins,
+};
+
 function GoldCoin({ delay = 0 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20, scale: 0.5 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay, type: 'spring', stiffness: 300 }}
-      className="text-2xl">🪙</motion.div>
+      transition={{ delay, type: 'spring', stiffness: 300 }}>
+      <Coins className="w-5 h-5 text-amber-400" aria-hidden />
+    </motion.div>
   );
+}
+
+function OppIcon({ opp }) {
+  const Icon = OPP_ICON_MAP[opp.iconKey] || (opp.id?.startsWith('sub_') ? Smartphone : OPP_ICON_MAP.default);
+  return <Icon className="w-5 h-5 text-amber-400" aria-hidden />;
 }
 
 export default function OpportunityScanner({ profile }) {
@@ -43,7 +56,7 @@ export default function OpportunityScanner({ profile }) {
     if (yearlyMissed > 500) {
       localOpportunities.push({
         id: 'buffer_rate',
-        icon: '🏦',
+        iconKey: 'buffer_rate',
         title: 'Bättre sparkonto',
         description: `Din buffert på ${fmt(buffer)} kr ger ~0.5% ränta. Marknadsbäst är 4.2%.`,
         monthly_saving: Math.round(yearlyMissed / 12),
@@ -59,7 +72,7 @@ export default function OpportunityScanner({ profile }) {
     if (sub.amount > 200 && sub.category === 'streaming') {
       localOpportunities.push({
         id: `sub_${sub.name}`,
-        icon: '📱',
+        iconKey: 'subscription',
         title: `Optimera ${sub.name}`,
         description: `${sub.name} kostar ${fmt(sub.amount)} kr/mån. Delar du med någon?`,
         monthly_saving: Math.round(sub.amount * 0.4),
@@ -74,7 +87,7 @@ export default function OpportunityScanner({ profile }) {
   if (margin < income * 0.15) {
     localOpportunities.push({
       id: 'margin_boost',
-      icon: '⚡',
+      iconKey: 'margin_boost',
       title: 'Marginal-booster',
       description: `Din marginal är ${Math.round((margin / income) * 100)}% av inkomsten. 20%+ är målet.`,
       monthly_saving: Math.round(income * 0.2 - margin),
@@ -128,7 +141,7 @@ Svara ENDAST med JSON.`,
 
     const combined = [
       ...localOpportunities,
-      ...(ai.opportunities || []).map((o, i) => ({ ...o, id: `ai_${i}`, icon: '🤖' }))
+      ...(ai.opportunities || []).map((o, i) => ({ ...o, id: `ai_${i}`, iconKey: 'ai' }))
     ];
     setOpportunities(combined);
     setTotalFound(combined.reduce((s, o) => s + (o.monthly_saving || 0), 0));
@@ -176,7 +189,7 @@ Svara ENDAST med JSON.`,
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}
               className="px-3 py-1 rounded-full text-xs font-black text-amber-900"
               style={{ background: 'linear-gradient(135deg, #FCD34D, #F59E0B)' }}>
-              🪙 {fmt(totalFound)} kr/mån hittat!
+              <Coins className="w-3.5 h-3.5 inline mr-1" aria-hidden /> {fmt(totalFound)} kr/mån hittat!
             </motion.div>
           )}
         </div>
@@ -200,7 +213,7 @@ Svara ENDAST med JSON.`,
                 style={{ background: 'rgba(17,24,39,0.6)', border: claimed[opp.id] ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(251,191,36,0.25)' }}>
                 <div className="flex items-start gap-3">
                   <div className="flex flex-col items-center gap-1">
-                    <span className="text-xl">{opp.icon || '🪙'}</span>
+                    <OppIcon opp={opp} />
                     {!claimed[opp.id] && <GoldCoin delay={i * 0.1 + 0.3} />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -230,7 +243,7 @@ Svara ENDAST med JSON.`,
                         </button>
                       )
                     ) : (
-                      <p className="text-xs text-emerald-400 font-bold">✓ +{fmt(opp.monthly_saving)} kr till {savingsGoalName}!</p>
+                      <p className="text-xs text-emerald-400 font-bold inline-flex items-center gap-1"><Check className="w-3 h-3" aria-hidden /> +{fmt(opp.monthly_saving)} kr till {savingsGoalName}!</p>
                     )}
                   </div>
                 </div>
