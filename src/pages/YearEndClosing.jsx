@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getDashboardPath, isBusinessMode } from '@/lib/onboardingRouter';
 import {
   ArrowLeft, CheckCircle2, AlertTriangle, Lock, FileText, Calculator, Scale, Loader2, ChevronRight, Zap, Check, Lightbulb, Calendar
 } from 'lucide-react';
@@ -17,6 +18,7 @@ const STEPS = [
 const fmt = n => n?.toLocaleString('sv-SE', { maximumFractionDigits: 0 }) + ' kr';
 
 export default function YearEndClosing() {
+  const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState('reconcile');
   const [completedSteps, setCompletedSteps] = useState(() => {
     try { return JSON.parse(localStorage.getItem('anchor_yec_completed') || '[]'); } catch { return []; }
@@ -25,6 +27,12 @@ export default function YearEndClosing() {
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const isAB = legalEntity === 'ab';
   const companyName = localStorage.getItem('anchor_biz_company') || 'Mitt Företag AB';
+
+  useEffect(() => {
+    if (!isBusinessMode()) {
+      navigate(getDashboardPath('personal'), { replace: true });
+    }
+  }, [navigate]);
 
   const completeStep = (id) => {
     const next = [...new Set([...completedSteps, id])];

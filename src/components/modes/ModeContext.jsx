@@ -24,13 +24,8 @@ export function ModeProvider({ children }) {
 
   const isAlexLocked = localStorage.getItem('anchor_alex_mode') === 'true';
 
-  const toggleMode = () => {
-    // Blockera byte till business under Alex Mode
-    if (isAlexLocked) return;
-    const next = mode === 'personal' ? 'business' : 'personal';
-    setMode(next);
-    localStorage.setItem('anchor_mode', next);
-  };
+  /** In-app byte är avstängt — välj instans på landningssidan efter utloggning. */
+  const toggleMode = () => {};
 
   const setPersonal = () => { setMode('personal'); localStorage.setItem('anchor_mode', 'personal'); };
   const setBusiness = () => {

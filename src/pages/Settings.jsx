@@ -92,7 +92,7 @@ function StaggerBlock({ index, children }) {
 
 export default function Settings() {
   const queryClient = useQueryClient();
-  const { isBusiness, setPersonal, setBusiness } = useModeContext();
+  const { isBusiness, setPersonal } = useModeContext();
   const [formData, setFormData] = useState(null);
   const [saving, setSaving] = useState(false);
   const [newSub, setNewSub] = useState({ name: '', amount: '', category: 'other', billingDay: '', frequency: 'monthly' });
@@ -488,20 +488,21 @@ export default function Settings() {
         <Link to="/PrivacyPolicy" className="text-xs text-white/45 hover:text-white/70 anchor-pressable px-2 py-1">Integritetspolicy</Link>
       </div>
 
-      <AnchorPressable
-        type="button"
-        onClick={() => {
-          if (isBusiness) setPersonal();
-          else setBusiness();
-          base44.auth.logout(window.location.origin);
-        }}
-        className={`w-full ${copilotSecondaryBtnClass} rounded-[var(--anchor-radius-lg)]`}
-      >
-        <span className="flex items-center justify-center gap-2">
-          <RefreshCw className="w-4 h-4" />
-          Byt till {isBusiness ? 'Personal' : 'Business'} &amp; logga ut
-        </span>
-      </AnchorPressable>
+      {isBusiness && (
+        <AnchorPressable
+          type="button"
+          onClick={() => {
+            setPersonal();
+            base44.auth.logout(window.location.origin);
+          }}
+          className={`w-full ${copilotSecondaryBtnClass} rounded-[var(--anchor-radius-lg)]`}
+        >
+          <span className="flex items-center justify-center gap-2">
+            <RefreshCw className="w-4 h-4" />
+            Logga ut och välj Personal
+          </span>
+        </AnchorPressable>
+      )}
 
       <AnchorPressable
         type="button"

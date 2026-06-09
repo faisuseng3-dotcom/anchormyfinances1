@@ -186,8 +186,8 @@ export default function Landing() {
             <p className={dashLabel}>Välkommen</p>
             <h1 className="anchor-type-display mt-1">Välj din instans</h1>
             <p className="anchor-type-body-sm mt-3 text-left">
-              Personal och Business är separata miljöer — välj din instans för att logga in med rätt
-              behörighet.
+              Personal och Business är separata miljöer. Välj instans här vid inloggning — för att byta
+              måste du logga ut och välja igen.
             </p>
           </div>
         </motion.div>

@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, Lock } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import { useModeContext } from '@/components/modes/ModeContext';
 import SwipeApprove from '@/components/business/SwipeApprove';
 import AuditorAccess from '@/components/business/AuditorAccess';
@@ -11,7 +12,7 @@ import DataResetSection from '@/components/business/DataResetSection';
 import { BusinessSection } from '@/components/business/BusinessChrome';
 
 export default function ProfilTab({ companyName, orgNr, legalLabel, monthlyBurn }) {
-  const { toggleMode } = useModeContext();
+  const { setPersonal } = useModeContext();
 
   return (
     <div className="space-y-8 pb-4">
@@ -63,11 +64,14 @@ export default function ProfilTab({ companyName, orgNr, legalLabel, monthlyBurn 
         <motion.button
           type="button"
           whileTap={{ scale: 0.98 }}
-          onClick={toggleMode}
+          onClick={() => {
+            setPersonal();
+            base44.auth.logout(window.location.origin);
+          }}
           className="w-full h-[52px] rounded-xl flex items-center justify-center gap-2 font-semibold text-[15px] text-white bg-[#0D7377] shadow-[0_8px_24px_rgba(13,115,119,0.25)]"
         >
           <Briefcase className="w-4 h-4" />
-          Byt till Anchor Personal
+          Logga ut och välj Personal
         </motion.button>
       </div>
     </div>

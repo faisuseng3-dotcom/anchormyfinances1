@@ -41,7 +41,7 @@ export default function Layout({ children, currentPageName }) {
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [actionMenuOpen, setActionMenuOpen] = useState(false);
   const [planSheetOpen, setPlanSheetOpen] = useState(false);
-  const { isBusiness, toggleMode } = useModeContext();
+  const { isBusiness } = useModeContext();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth } = useAuth();
@@ -57,14 +57,15 @@ export default function Layout({ children, currentPageName }) {
     return () => window.removeEventListener('anchor:alex_mode', handler);
   }, []);
 
-  // Route to business or personal dashboard based on mode
+  // Separata instanser — personal når inte business-vyer utan utloggning + ny inloggning
   React.useEffect(() => {
+    const businessOnlyPages = new Set(['BusinessDashboard']);
     if (!hideNav && isBusiness && currentPageName === 'Dashboard') {
       navigate('/BusinessDashboard', { replace: true });
-    } else if (!hideNav && !isBusiness && currentPageName === 'BusinessDashboard') {
+    } else if (!hideNav && !isBusiness && businessOnlyPages.has(currentPageName)) {
       navigate(createPageUrl('Dashboard'), { replace: true });
     }
-  }, [isBusiness]);
+  }, [isBusiness, currentPageName, hideNav, navigate]);
 
   React.useEffect(() => {
     const openPlan = () => setPlanSheetOpen(true);

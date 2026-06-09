@@ -16,7 +16,6 @@ const TOOLS_NAV = [
   { page: 'ProTools', icon: 'tools', label: 'Verktyg' },
   { page: 'Dashboard', icon: 'goals', label: 'Sparmål', hash: '#goals' },
   { page: 'ProTools', icon: 'subscriptions', label: 'Prenumerationer', query: '?deep=subscriptions' },
-  { href: createPageUrl('BusinessDashboard'), icon: 'business', label: 'Business' },
   { page: 'Social', icon: 'squads', label: 'Squads' },
   { page: 'Dashboard', icon: 'academy', label: 'Anchor Academy', hash: '#academy' },
 ];
