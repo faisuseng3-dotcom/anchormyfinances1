@@ -1,14 +1,13 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
-import PageShell from '@/components/layout/PageShell';
+import PageShell, { GlassSection } from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
 import { Scissors, Target, PiggyBank, Users } from 'lucide-react';
-import { DashboardDivider, DashboardListRow, DashboardSection } from '@/components/dashboard/DashboardChrome';
-import { dashLabel } from '@/lib/appSurface';
 import { PROTOOLS_SCENARIOS, PROTOOLS_EXPLORE, sortTools, toolPageHref } from '@/lib/toolCatalog';
 import ProToolsHero from '@/components/protools/ProToolsHero';
+import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
 import AIGuru from '@/components/protools/mastery/AIGuru';
 import FutureSimulator from '@/components/protools/mastery/FutureSimulator';
 import MarginMaxer from '@/components/protools/mastery/MarginMaxer';
@@ -20,6 +19,7 @@ const DEEP_MODULES = [
     title: 'Skär ner fasta kostnader',
     hint: 'Pausa abonnemang du inte behöver',
     icon: Scissors,
+    category: 'subscription',
     component: MarginMaxer,
   },
   {
@@ -27,6 +27,7 @@ const DEEP_MODULES = [
     title: 'När når jag mina mål?',
     hint: 'Buffert, skuldfri och sparande',
     icon: Target,
+    category: 'savings',
     component: FutureSimulator,
   },
   {
@@ -34,6 +35,7 @@ const DEEP_MODULES = [
     title: 'Effekt av extra sparande',
     hint: 'Se effekten per månad och per år',
     icon: PiggyBank,
+    category: 'savings',
     component: AIGuru,
   },
   {
@@ -41,19 +43,13 @@ const DEEP_MODULES = [
     title: 'Planera tillsammans',
     hint: 'Gemensamma mål med partner',
     icon: Users,
+    category: 'other',
     component: LifePuzzle,
   },
 ];
 
-function ToolIcon({ icon: Icon }) {
-  return (
-    <div className="w-11 h-11 rounded-[var(--anchor-radius-lg)] bg-[var(--color-accent)]/10 flex items-center justify-center ring-1 ring-[var(--color-accent)]/20 anchor-elev-1">
-      <Icon className="w-5 h-5 text-[var(--color-accent)]" />
-    </div>
-  );
-}
-
 export default function ProTools() {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeModule, setActiveModule] = useState(null);
   const { profile } = useFinancialProfile();
@@ -84,6 +80,20 @@ export default function ProTools() {
     );
   }
 
+  const renderToolRow = (item) => {
+    const Icon = item.icon;
+    return (
+      <TintIconCard
+        key={item.id}
+        category={item.category || 'other'}
+        icon={<Icon className="w-[18px] h-[18px]" style={{ color: 'var(--copilot-accent-blue)' }} />}
+        title={item.question}
+        subtitle={item.hint}
+        onClick={() => navigate(toolPageHref(item))}
+      />
+    );
+  };
+
   return (
     <PageShell
       title="Verktyg"
@@ -93,61 +103,40 @@ export default function ProTools() {
       <ProToolsHero profile={profile} />
 
       {profile?.topConcern && (
-        <p className={`${dashLabel} -mt-1 mb-4`}>
+        <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)] -mt-2 mb-4">
           Prioriterat utifrån ditt fokus
         </p>
       )}
 
-      <DashboardSection title="Räkna på" subtitle="Vanliga frågor om din ekonomi">
-        {scenarios.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <React.Fragment key={item.id}>
-              {i > 0 && <DashboardDivider />}
-              <DashboardListRow
-                href={toolPageHref(item)}
-                leading={<ToolIcon icon={Icon} />}
-                title={item.question}
-                subtitle={item.hint}
-              />
-            </React.Fragment>
-          );
-        })}
-      </DashboardSection>
+      <GlassSection title="Räkna på" subtitle="Vanliga frågor om din ekonomi">
+        <div className="space-y-2">
+          {scenarios.map(renderToolRow)}
+        </div>
+      </GlassSection>
 
-      <DashboardSection title="Utforska">
-        {PROTOOLS_EXPLORE.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <React.Fragment key={item.id}>
-              {i > 0 && <DashboardDivider />}
-              <DashboardListRow
-                href={toolPageHref(item)}
-                leading={<ToolIcon icon={Icon} />}
-                title={item.question}
-                subtitle={item.hint}
-              />
-            </React.Fragment>
-          );
-        })}
-      </DashboardSection>
+      <GlassSection title="Utforska">
+        <div className="space-y-2">
+          {PROTOOLS_EXPLORE.map(renderToolRow)}
+        </div>
+      </GlassSection>
 
-      <DashboardSection title="Gå djupare" subtitle="Bygger på din profil i Anchor">
-        {DEEP_MODULES.map((mod, i) => {
-          const Icon = mod.icon;
-          return (
-            <React.Fragment key={mod.id}>
-              {i > 0 && <DashboardDivider />}
-              <DashboardListRow
-                onClick={() => setActiveModule(mod.id)}
-                leading={<ToolIcon icon={Icon} />}
+      <GlassSection title="Gå djupare" subtitle="Bygger på din profil i Anchor">
+        <div className="space-y-2">
+          {DEEP_MODULES.map((mod) => {
+            const Icon = mod.icon;
+            return (
+              <TintIconCard
+                key={mod.id}
+                category={mod.category}
+                icon={<Icon className="w-[18px] h-[18px]" style={{ color: 'var(--copilot-accent-blue)' }} />}
                 title={mod.title}
                 subtitle={mod.hint}
+                onClick={() => setActiveModule(mod.id)}
               />
-            </React.Fragment>
-          );
-        })}
-      </DashboardSection>
+            );
+          })}
+        </div>
+      </GlassSection>
     </PageShell>
   );
 }

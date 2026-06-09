@@ -9,7 +9,6 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { usePlannedEvents } from '@/hooks/usePlannedEvents';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useModeContext } from '@/components/modes/ModeContext';
-import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { getBufferRunwayMonths } from '@/lib/economicHealth';
 
 export default function FuturePulse() {
@@ -39,10 +38,10 @@ export default function FuturePulse() {
         backHref={createPageUrl('FuturePulse')}
       >
         {runwayMonths != null && runwayMonths > 0 && (
-          <p className={`${sectionSubtitleClass} mb-4 rounded-[var(--anchor-radius-lg)] px-4 py-3 anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]`}>
-            Bufferten räcker ungefär{' '}
-            <span className="text-white font-medium tabular-nums">{runwayMonths}</span>
-            {' '}månad{runwayMonths === 1 ? '' : 'er'} utan ny inkomst.
+          <p className="mb-4 rounded-2xl px-4 py-3 border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)] text-[14px] text-[var(--copilot-text-secondary)]">
+            Din buffert ger{' '}
+            <span className="text-[var(--copilot-accent-green)] font-semibold tabular-nums">{runwayMonths}</span>
+            {' '}månad{runwayMonths === 1 ? '' : 'er'} handlingsutrymme framåt.
           </p>
         )}
         <PlanCalendar
@@ -56,7 +55,7 @@ export default function FuturePulse() {
   return (
     <PageShell
       title="Din Framtid"
-      subtitle="Optimistisk, realistisk eller pessimistisk — justera och se kassan"
+      subtitle="Se vad som väntar — justera och planera framåt"
       backHref={createPageUrl('Dashboard')}
     >
       <DinFramtidPanel profile={profile} transactions={transactions} />

@@ -11,12 +11,13 @@ import {
 } from '@/lib/dinFramtidScenarios';
 import { calculatePengometer } from '@/lib/anchorBrain';
 import { getSafeToSpend, buildUpcomingExpenses, getUpcomingDates, calculateRunningBalance, getNextDangerEvent } from '@/components/pulse/pulseEngine';
-import { DashboardSection, DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
+import { GlassSection } from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
-import { anchorGhostButtonClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { copilotGhostBtnClass } from '@/lib/copilotTheme';
 import { cn } from '@/lib/utils';
 import { staggerItem } from '@/lib/motionPresets';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { triggerHaptic } from '@/lib/haptics';
 
 const STATUS_ACCENT = { grön: '#34D9BE', gul: '#F6AD55', röd: '#FF7A92' };
 
@@ -89,7 +90,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
 
   if (!profile) {
     return (
-      <p className={`${sectionSubtitleClass} py-12 text-center`}>
+      <p className="text-[14px] text-[var(--copilot-text-secondary)] py-12 text-center">
         Slutför onboardingen för att se din framtid.
       </p>
     );
@@ -98,13 +99,13 @@ export default function DinFramtidPanel({ profile, transactions }) {
   return (
     <div className="space-y-8">
       {/* Läget nu — kompakt */}
-      <motion.div {...staggerItem(0)} className="rounded-[var(--anchor-radius-lg)] px-4 py-4 anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]">
-        <p className="text-[12px] font-medium text-white/40 mb-2">Läget nu</p>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-white/75">
+      <motion.div {...staggerItem(0)} className="rounded-2xl px-4 py-4 border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)]">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2">Läget nu</p>
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-[var(--copilot-text-secondary)]">
           <span><strong className="text-white tabular-nums">{fmt(pulseNow?.remainingWeek)}</strong> kvar den här veckan</span>
-          <span><strong className="text-white tabular-nums">{fmt(pulseNow?.safe)}</strong> säkert att spendera</span>
+          <span><strong className="text-[var(--copilot-accent-green)] tabular-nums">{fmt(pulseNow?.safe)}</strong> säkert att spendera</span>
           {pulseNow?.next && (
-            <span className="text-amber-200/90">Nästa: {pulseNow.next.name}</span>
+            <span className="text-[var(--copilot-accent-blue)]">Kommande: {pulseNow.next.name}</span>
           )}
         </div>
       </motion.div>
@@ -112,19 +113,19 @@ export default function DinFramtidPanel({ profile, transactions }) {
       {/* Scenario-väljare */}
       <div>
         <p className="text-[15px] font-semibold text-white mb-1">Din Framtid</p>
-        <p className={`${sectionSubtitleClass} mb-4`}>{activeMode.blurb}</p>
+        <p className="text-[14px] text-[var(--copilot-text-secondary)] mb-4">{activeMode.blurb}</p>
         <div className="grid grid-cols-3 gap-2">
           {SCENARIO_MODES.map((m) => (
             <AnchorPressable
               key={m.id}
               type="button"
               minTouch={false}
-              onClick={() => setMode(m.id)}
+              onClick={() => { triggerHaptic('light'); setMode(m.id); }}
               className={cn(
-                'rounded-[var(--anchor-radius-lg)] px-2 py-3 min-h-[4.5rem] text-center ring-1',
+                'rounded-2xl px-2 py-3 min-h-[4.5rem] text-center border',
                 mode === m.id
-                  ? 'bg-[var(--color-text-primary)] text-[#050d28] ring-white anchor-elev-1'
-                  : 'bg-white/[0.05] text-white/60 ring-white/[0.08]',
+                  ? 'bg-[var(--copilot-accent-blue)] text-white border-[rgba(74,122,255,0.4)]'
+                  : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] border-[var(--copilot-border)]',
               )}
             >
               <ScenarioIcon mode={m.id} size={20} className="block mx-auto mb-1" />
@@ -135,11 +136,11 @@ export default function DinFramtidPanel({ profile, transactions }) {
       </div>
 
       {/* Sliders */}
-      <DashboardSection nested title="Justera antaganden">
+      <GlassSection title="Justera antaganden">
         <div className="space-y-5">
           <div>
             <div className="flex justify-between text-[13px] mb-2">
-              <span className="text-white/55">Inkomstförändring</span>
+              <span className="text-[var(--copilot-text-secondary)]">Inkomstförändring</span>
               <span className="text-white tabular-nums">{incomePct > 0 ? '+' : ''}{incomePct}%</span>
             </div>
             <input
@@ -154,7 +155,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
           </div>
           <div>
             <div className="flex justify-between text-[13px] mb-2">
-              <span className="text-white/55">Vardagsutgifter</span>
+              <span className="text-[var(--copilot-text-secondary)]">Vardagsutgifter</span>
               <span className="text-white tabular-nums">{spendPct > 0 ? '+' : ''}{spendPct}%</span>
             </div>
             <input
@@ -169,7 +170,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
           </div>
           <div>
             <div className="flex justify-between text-[13px] mb-2">
-              <span className="text-white/55">Extra sparande / mån</span>
+              <span className="text-[var(--copilot-text-secondary)]">Extra sparande / mån</span>
               <span className="text-white tabular-nums">{saveKr} kr</span>
             </div>
             <input
@@ -183,48 +184,52 @@ export default function DinFramtidPanel({ profile, transactions }) {
             />
           </div>
         </div>
-      </DashboardSection>
+      </GlassSection>
 
       {/* Prognos */}
       {forecast && (
         <motion.div key={mode + incomePct + spendPct + saveKr} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div className="rounded-[var(--anchor-radius-lg)] p-4 mb-4 anchor-elev-2" style={{ border: `1px solid ${accent}40`, background: `${accent}12` }}>
+          <div className="rounded-2xl p-4 mb-4 border" style={{ borderColor: `${accent}40`, background: `${accent}12` }}>
             <p className="text-[17px] font-semibold text-white">{forecast.status_label}</p>
-            <p className="text-[22px] font-light text-white mt-2 tabular-nums">{forecast.prognos_30_dagar}</p>
+            <p className="text-[22px] font-bold text-white mt-2 tabular-nums">{forecast.prognos_30_dagar}</p>
             {forecast.coach_detaljer && (
-              <p className={`${sectionSubtitleClass} mt-3 leading-relaxed`}>{forecast.coach_detaljer}</p>
+              <p className="text-[14px] text-[var(--copilot-text-secondary)] mt-3 leading-relaxed">{forecast.coach_detaljer}</p>
             )}
           </div>
 
-          <DashboardStatStrip
-            items={[
-              { label: '60 dagar min', value: fmt(forecast._meta?.minBalance) },
-              { label: 'Snitt/dag', value: `${fmt(forecast._meta?.dailySpend)}` },
-            ]}
-          />
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+              <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">60 dagar min</p>
+              <p className="text-[18px] font-bold text-white tabular-nums mt-1">{fmt(forecast._meta?.minBalance)}</p>
+            </div>
+            <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+              <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Snitt/dag</p>
+              <p className="text-[18px] font-bold text-white tabular-nums mt-1">{fmt(forecast._meta?.dailySpend)}</p>
+            </div>
+          </div>
 
           {(forecast.framtida_handelser || []).length > 0 && (
-            <DashboardSection nested title="Det som väntar" className="mt-6">
+            <GlassSection title="Det som väntar" className="mt-6">
               <ul className="space-y-2">
                 {forecast.framtida_handelser.slice(0, 4).map((ev, i) => (
-                  <li key={i} className="text-[14px] text-white/70">
-                    <span className="text-white/40">{ev.tidsfönster}</span>
+                  <li key={i} className="text-[14px] text-[var(--copilot-text-secondary)]">
+                    <span className="text-[var(--copilot-text-muted)]">{ev.tidsfönster}</span>
                     {' · '}
                     {ev.händelse}
                   </li>
                 ))}
               </ul>
-            </DashboardSection>
+            </GlassSection>
           )}
 
-          <DashboardSection nested title="Saldo över tid" className="mt-6">
+          <GlassSection title="Saldo över tid" className="mt-6">
             <Timeline tidslinje={forecast.tidslinje} />
-          </DashboardSection>
+          </GlassSection>
 
           <button
             type="button"
-            onClick={handleShare}
-            className={`${anchorGhostButtonClass} w-full mt-6 justify-center gap-2`}
+            onClick={() => { triggerHaptic('light'); handleShare(); }}
+            className={`${copilotGhostBtnClass} w-full mt-6 justify-center gap-2`}
           >
             <Share2 className="w-4 h-4" />
             Dela scenariot
@@ -234,7 +239,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
 
       <Link
         to={`${createPageUrl('FuturePulse')}?view=kalender`}
-        className={`${anchorGhostButtonClass} w-full justify-center gap-2 no-underline`}
+        className={`${copilotGhostBtnClass} w-full justify-center gap-2 no-underline`}
       >
         <CalendarDays className="w-4 h-4" />
         Öppna ekonomikalender

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Wallet, Home, PiggyBank, CreditCard, ChevronRight, Plus, X } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
-import { anchorInputClass } from '@/lib/anchorTheme';
+import { copilotInputClass } from '@/lib/copilotTheme';
 import {
   onboardingPrimaryBtn,
   onboardingBackBtn,
@@ -108,7 +108,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
           <select
             value={data.city || ''}
             onChange={(e) => onChange({ ...data, city: e.target.value })}
-            className={`${anchorInputClass} h-12`}
+            className={`${copilotInputClass} h-12`}
           >
             <option value="">Välj stad</option>
             {CITY_PRESETS.map((c) => (
@@ -134,7 +134,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                 const val = parseNumber(e.target.value);
                 onChange({ ...data, income: Math.max(0, val) });
               }}
-              className={`${anchorInputClass} h-14 text-lg pr-12`}
+              className={`${copilotInputClass} h-14 text-lg pr-12`}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
           </div>
@@ -156,7 +156,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                   value={item.label}
                   onChange={(e) => updateItem(item.id, 'label', e.target.value)}
                   placeholder="t.ex. Hyra"
-                  className={`${anchorInputClass} flex-1 h-11`}
+                  className={`${copilotInputClass} flex-1 h-11`}
                 />
                 <div className="relative w-32 flex-shrink-0">
                   <input
@@ -164,7 +164,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                     value={item.amount}
                     onChange={(e) => updateItem(item.id, 'amount', e.target.value)}
                     placeholder={item.placeholder}
-                    className={`${anchorInputClass} h-11 pr-8`}
+                    className={`${copilotInputClass} h-11 pr-8`}
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs">kr</span>
                 </div>
@@ -248,7 +248,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               placeholder="0"
               value={formatNumber(data.buffer)}
               onChange={(e) => onChange({ ...data, buffer: parseNumber(e.target.value) })}
-              className={`${anchorInputClass} h-12 pr-12`}
+              className={`${copilotInputClass} h-12 pr-12`}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
           </div>
@@ -265,7 +265,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               placeholder="0"
               value={formatNumber(data.totalLoans || 0)}
               onChange={(e) => onChange({ ...data, totalLoans: parseNumber(e.target.value) })}
-              className={`${anchorInputClass} h-12 pr-12`}
+              className={`${copilotInputClass} h-12 pr-12`}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
           </div>

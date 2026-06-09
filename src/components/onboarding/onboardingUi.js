@@ -1,8 +1,5 @@
 import { cn } from '@/lib/utils';
-import {
-  anchorPrimaryButtonClass,
-  anchorSecondaryButtonClass,
-} from '@/lib/anchorTheme';
+import { copilotPrimaryBtnClass, copilotSecondaryBtnClass } from '@/lib/copilotTheme';
 
 export function onboardingChoiceCard(selected) {
   return cn(
@@ -20,10 +17,10 @@ export function onboardingChoiceCheck(selected) {
   );
 }
 
-export const onboardingPrimaryBtn = `${anchorPrimaryButtonClass} w-full h-14 rounded-2xl text-[15px]`;
+export const onboardingPrimaryBtn = `${copilotPrimaryBtnClass} !h-14 !rounded-2xl`;
 
-export const onboardingSecondaryBtn = `${anchorSecondaryButtonClass} w-full h-14 rounded-2xl text-[15px]`;
+export const onboardingSecondaryBtn = `${copilotSecondaryBtnClass} !h-14 !rounded-2xl`;
 
-export const onboardingBackBtn = `${anchorSecondaryButtonClass} flex-1 h-14 rounded-2xl text-[15px]`;
+export const onboardingBackBtn = `${copilotSecondaryBtnClass} flex-1 !h-14 !rounded-2xl`;
 
 export const onboardingFieldLabel = 'text-[13px] font-medium text-white/50 flex items-center gap-2';

@@ -6,10 +6,8 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
 } from 'recharts';
-import {
-  DashboardSection,
-} from '@/components/dashboard/DashboardChrome';
-import { sectionSubtitleClass } from '@/lib/anchorTheme';
+import { GlassSection } from '@/components/layout/PageShell';
+import { copilotPrimaryBtnClass } from '@/lib/copilotTheme';
 import SavingsBudgetConflictAlert from '@/components/insights/SavingsBudgetConflictAlert';
 import LeakageDetector from '@/components/dashboard/LeakageDetector';
 
@@ -20,8 +18,8 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_COLORS = [
-  '#34D9BE', '#5B8CFF', '#F6AD55', '#8B7CF8',
-  '#3DAABB', '#FCA5A5', '#6EE7B7', '#9AA5B4'
+  '#4a7aff', '#4fc3f7', '#a78bfa', '#22d97a',
+  '#6d4aff', '#f472b6', '#34d9be', '#8fa8d8'
 ];
 
 function getMonthKey(dateStr) {
@@ -46,7 +44,7 @@ function isIncome(tx) {
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-lg px-3 py-2 text-sm bg-[#0a1628]/95 text-white shadow-xl border border-white/10">
+    <div className="rounded-xl px-3 py-2 text-sm bg-[var(--copilot-bg-deep)] text-white shadow-xl border border-[var(--copilot-border)]">
       <p className="font-semibold">{payload[0].name}</p>
       <p className="tabular-nums">{payload[0].value?.toLocaleString('sv-SE')} kr</p>
     </div>
@@ -88,11 +86,13 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
 
   const topCategory = pieData[0];
   const totalExpenses = pieData.reduce((s, d) => s + d.value, 0);
+  const lastMonth = barData.slice(-1)[0];
+  const netPositive = lastMonth && lastMonth.Inkomst >= lastMonth.Utgifter;
 
   if (isLoading) {
     return (
       <div className="space-y-6 mt-2">
-        {[1, 2, 3].map(i => <div key={i} className="h-40 rounded-xl skeleton" />)}
+        {[1, 2, 3].map(i => <div key={i} className="h-40 rounded-2xl skeleton" />)}
       </div>
     );
   }
@@ -100,10 +100,10 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
   if (transactions.length === 0) {
     return (
       <div className="py-16 text-center">
-        <TrendingUp className="w-10 h-10 mx-auto mb-4 text-white/35" />
-        <p className="text-[17px] font-semibold text-white mb-1">Ingen data än</p>
-        <p className={sectionSubtitleClass}>Importera transaktioner för kategorier och trender.</p>
-        <Link to="/Import" className="anchor-btn-primary inline-flex mt-6 px-6">
+        <TrendingUp className="w-10 h-10 mx-auto mb-4 text-[var(--copilot-text-muted)]" />
+        <p className="text-[17px] font-semibold text-white mb-1">Din ekonomi väntar på data</p>
+        <p className="text-[14px] text-[var(--copilot-text-secondary)]">Importera transaktioner för kategorier och trender.</p>
+        <Link to="/Import" className={`inline-flex mt-6 px-6 no-underline ${copilotPrimaryBtnClass}`}>
           Importera bank-data
         </Link>
       </div>
@@ -111,13 +111,13 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
   }
 
   return (
-    <div className="space-y-10 mt-2">
+    <div className="space-y-8 mt-2">
       <LeakageDetector profile={profile} transactions={transactions} variant="full" nested className="!px-0" />
       <SavingsBudgetConflictAlert profile={profile} />
 
-      <DashboardSection nested title="Denna månad" subtitle="Utgiftsfördelning">
+      <GlassSection title="Denna månad" subtitle="Vart pengarna tar vägen">
         {pieData.length === 0 ? (
-          <p className={`${sectionSubtitleClass} py-6 text-center`}>Inga utgifter denna månad.</p>
+          <p className="text-[14px] text-[var(--copilot-text-secondary)] py-6 text-center">Inga utgifter registrerade än denna månad.</p>
         ) : (
           <>
             <ResponsiveContainer width="100%" height={200}>
@@ -135,49 +135,49 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
             <p className="text-center text-[28px] font-semibold text-white tabular-nums -mt-1">
               {totalExpenses.toLocaleString('sv-SE')} kr
             </p>
-            <p className="text-center text-[13px] text-white/45 mb-4">totalt ut denna månad</p>
+            <p className="text-center text-[13px] text-[var(--copilot-text-muted)] mb-4">investerat i din vardag</p>
 
             <div className="space-y-2">
               {pieData.slice(0, 6).map((d, i) => (
                 <div key={d.key} className="flex items-center gap-2 py-1">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: CATEGORY_COLORS[i % CATEGORY_COLORS.length] }} />
-                  <p className="text-[14px] text-white/70 flex-1 truncate">{d.name}</p>
+                  <p className="text-[14px] text-[var(--copilot-text-secondary)] flex-1 truncate">{d.name}</p>
                   <p className="text-[14px] font-medium tabular-nums text-white">{d.value.toLocaleString('sv-SE')}</p>
                 </div>
               ))}
             </div>
 
             {topCategory && (
-              <p className="text-[14px] text-emerald-200/85 mt-4 leading-relaxed">
-                Störst: <strong className="text-white">{topCategory.name}</strong> — {topCategory.value.toLocaleString('sv-SE')} kr ({Math.round((topCategory.value / totalExpenses) * 100)}%)
+              <p className="text-[14px] text-[var(--copilot-accent-green)] mt-4 leading-relaxed">
+                Störst fokus: <strong className="text-white">{topCategory.name}</strong> — {topCategory.value.toLocaleString('sv-SE')} kr ({Math.round((topCategory.value / totalExpenses) * 100)}%)
               </p>
             )}
           </>
         )}
-      </DashboardSection>
+      </GlassSection>
 
-      <DashboardSection nested title="Senaste 6 månaderna" subtitle="Inkomst vs utgifter">
+      <GlassSection title="Senaste 6 månaderna" subtitle="Inkomst och utgifter i balans">
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={barData} barSize={12} barGap={4}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-            <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.45)' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.45)' }} axisLine={false} tickLine={false}
+            <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--copilot-text-muted)' }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: 'var(--copilot-text-muted)' }} axisLine={false} tickLine={false}
               tickFormatter={v => v >= 1000 ? `${Math.round(v / 1000)}k` : v} />
             <Tooltip content={<CustomTooltip />} />
-            <Legend wrapperStyle={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', paddingTop: 8 }} />
-            <Bar dataKey="Inkomst" fill="#34D9BE" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Utgifter" fill="#FF8A9A" radius={[4, 4, 0, 0]} />
+            <Legend wrapperStyle={{ fontSize: 12, color: 'var(--copilot-text-secondary)', paddingTop: 8 }} />
+            <Bar dataKey="Inkomst" fill="#22d97a" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Utgifter" fill="#4a7aff" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
 
-        {barData.slice(-1)[0] && (
-          <p className="text-[14px] text-white/55 mt-4 leading-relaxed">
-            {barData.slice(-1)[0].Inkomst > barData.slice(-1)[0].Utgifter
-              ? `Denna månad: ${(barData.slice(-1)[0].Inkomst - barData.slice(-1)[0].Utgifter).toLocaleString('sv-SE')} kr netto kvar.`
-              : `Denna månad: ${(barData.slice(-1)[0].Utgifter - barData.slice(-1)[0].Inkomst).toLocaleString('sv-SE')} kr mer ut än in.`}
+        {lastMonth && (
+          <p className="text-[14px] text-[var(--copilot-text-secondary)] mt-4 leading-relaxed">
+            {netPositive
+              ? `Denna månad: ${(lastMonth.Inkomst - lastMonth.Utgifter).toLocaleString('sv-SE')} kr kvar att planera med.`
+              : `Denna månad: ${(lastMonth.Utgifter - lastMonth.Inkomst).toLocaleString('sv-SE')} kr över inkomst — justera nästa steg.`}
           </p>
         )}
-      </DashboardSection>
+      </GlassSection>
     </div>
   );
 }

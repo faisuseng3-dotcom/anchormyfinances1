@@ -7,38 +7,30 @@ import { useTransactions } from '@/hooks/useTransactions';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, MessageSquare, X, Scissors, Zap, PiggyBank } from 'lucide-react';
+import { CheckCircle, MessageSquare, X, Scissors, Zap, TrendingUp } from 'lucide-react';
 import PageShell, { GlassSection } from '@/components/layout/PageShell';
-import {
-  DashboardDivider,
-  DashboardSection,
-  DashboardStatStrip,
-} from '@/components/dashboard/DashboardChrome';
-import { sectionSubtitleClass } from '@/lib/anchorTheme';
+import CopilotDebtFreedomHero from '@/components/ui-premium/copilot/CopilotDebtFreedomHero';
+import CopilotProgressRing from '@/components/ui-premium/copilot/CopilotProgressRing';
+import { copilotSecondaryBtnClass, copilotPrimaryBtnClass } from '@/lib/copilotTheme';
 import { staggerItem } from '@/lib/motionPresets';
-import { surface } from '@/lib/designTokens';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { triggerHaptic } from '@/lib/haptics';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-function LoansHero({ totalDebt, totalMonthly, loanCount }) {
-  return (
-    <div className="anchor-premium-hero">
-      <div className="relative z-10 anchor-hero-asymmetric">
-        <div>
-          <p className="anchor-type-body-sm text-white/45">Total skuld</p>
-          <p className="anchor-type-headline text-[26px] mt-1 tabular-nums">{fmt(totalDebt)} kr</p>
-          <p className="anchor-type-body-sm mt-2">
-            {fmt(totalMonthly)} kr/mån · {loanCount} lån
-          </p>
-        </div>
-        <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-rose-400/10 ring-1 ring-rose-400/20 flex items-center justify-center anchor-elev-1 shrink-0">
-          <PiggyBank className="w-5 h-5 text-rose-300" />
-        </div>
-      </div>
-    </div>
-  );
+function estimateMonthsToDebtFree(loans) {
+  if (!loans?.length) return 0;
+  let maxMonths = 0;
+  loans.forEach((loan) => {
+    const balance = loan.totalAmount || 0;
+    const payment = loan.monthlyPayment || 0;
+    const interest = balance * ((loan.interestRate || 0) / 100 / 12);
+    const principal = Math.max(0, payment - interest);
+    if (principal <= 0 || balance <= 0) return;
+    maxMonths = Math.max(maxMonths, Math.ceil(balance / principal));
+  });
+  return maxMonths;
 }
 
 export default function Loans() {
@@ -89,6 +81,7 @@ Kort svar svenska, max 3 meningar.`,
       },
     });
     setDebtEraserResult({ ...res, loanName: loan.name, extra: extraPayment, idx });
+    triggerHaptic('success');
     setLoadingEraser(null);
   };
 
@@ -103,20 +96,22 @@ Kort svar svenska, max 3 meningar.`,
   };
 
   const highestInterestLoan = sortedLoans.find((l) => (l.interestRate || 0) > 0);
-  const interestPct = totalMonthly > 0 ? Math.min((totalInterestMonthly / totalMonthly) * 100, 100) : 0;
+  const monthsLeft = estimateMonthsToDebtFree(loans);
+  const principalMonthly = Math.max(0, totalMonthly - totalInterestMonthly);
+  const principalPct = totalMonthly > 0 ? Math.min((principalMonthly / totalMonthly) * 100, 100) : 100;
 
   return (
-    <PageShell title="Lån" subtitle="Jämför och förbättra" backHref={createPageUrl('Dashboard')}>
+    <PageShell title="Skuldfrihet" subtitle="Din plan mot frihet — steg för steg" backHref={createPageUrl('Dashboard')}>
       {loans.length === 0 ? (
         <div className="py-16 text-center">
           <CheckCircle className="w-10 h-10 mx-auto mb-4 text-emerald-400/80" />
-          <p className="anchor-type-headline mb-1">Inget lån här ännu</p>
-          <p className={sectionSubtitleClass}>
-            Lägg till ditt lån under inställningar — då kan vi räkna på ränta och extra betalningar.
+          <p className="text-[20px] font-bold text-white mb-1">Du är redan på rätt spår</p>
+          <p className="text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed">
+            Inga lån registrerade — lägg till under inställningar om du vill bygga en skuldfrihetsplan.
           </p>
           <Link
             to={createPageUrl('Settings')}
-            className="inline-flex mt-6 h-12 px-6 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold items-center anchor-elev-2 no-underline"
+            className={`inline-flex mt-6 px-6 no-underline ${copilotPrimaryBtnClass}`}
           >
             Gå till inställningar
           </Link>
@@ -124,16 +119,24 @@ Kort svar svenska, max 3 meningar.`,
       ) : (
         <>
           <motion.div {...staggerItem(0)}>
-            <LoansHero totalDebt={totalDebt} totalMonthly={totalMonthly} loanCount={loans.length} />
+            <CopilotDebtFreedomHero loans={loans} className="mb-6" />
           </motion.div>
 
           <motion.div {...staggerItem(1)}>
-            <DashboardStatStrip
-              items={[
-                { label: 'Total skuld', value: `${fmt(totalDebt)} kr` },
-                { label: 'Per månad', value: `${fmt(totalMonthly)} kr` },
-              ]}
-            />
+            <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+                <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Mot frihet</p>
+                <p className="text-[20px] font-bold text-white tabular-nums mt-1">
+                  {monthsLeft > 0 ? `${monthsLeft} mån` : 'På väg'}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+                <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Plan per månad</p>
+                <p className="text-[20px] font-bold text-[var(--copilot-accent-green)] tabular-nums mt-1">
+                  {fmt(totalMonthly)} kr
+                </p>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div {...staggerItem(2)}>
@@ -141,69 +144,69 @@ Kort svar svenska, max 3 meningar.`,
           </motion.div>
 
           <motion.div {...staggerItem(3)}>
-            <GlassSection title="Räntekostnad">
-              {totalInterestMonthly > 0 ? (
-                <>
-                  <p className="text-[28px] font-light text-rose-300 tabular-nums leading-none tracking-tight">
-                    {fmt(totalInterestMonthly)} <span className="text-lg text-white/45">kr/mån</span>
+            <GlassSection title="Varje betalning räknas">
+              <div className="flex items-center gap-4">
+                <CopilotProgressRing
+                  value={principalPct}
+                  max={100}
+                  size={72}
+                  stroke={5}
+                  color="#22d97a"
+                  label={`${Math.round(principalPct)}%`}
+                  sublabel="mot skuld"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-[15px] text-[var(--copilot-text-secondary)] leading-relaxed">
+                    {principalMonthly > 0 ? (
+                      <>
+                        <span className="text-white font-semibold tabular-nums">{fmt(principalMonthly)} kr</span>
+                        {' '}av din månadsbetalning minskar skulden direkt.
+                      </>
+                    ) : (
+                      'Hela betalningen går mot skuldfrihet — inga räntekostnader.'
+                    )}
                   </p>
-                  <p className={`${sectionSubtitleClass} mt-2`}>
-                    {fmt(totalInterestYearly)} kr per år i ren ränta · {Math.round(interestPct)}% av betalningen
-                  </p>
-                  <div className="mt-3 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${interestPct}%` }}
-                      className="h-full bg-rose-400/80 rounded-full"
-                    />
-                  </div>
-                </>
-              ) : (
-                <p className="text-[15px] text-emerald-300/90">
-                  Inga räntekostnader — hela betalningen minskar skulden.
-                </p>
-              )}
+                  {totalInterestMonthly > 0 && (
+                    <p className="text-[12px] text-[var(--copilot-text-muted)] mt-2 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-[var(--copilot-accent-green)]" />
+                      Extra betalningar sparar upp till {fmt(totalInterestYearly)} kr/år.
+                    </p>
+                  )}
+                </div>
+              </div>
             </GlassSection>
           </motion.div>
 
           <motion.div {...staggerItem(4)}>
-            <DashboardSection nested title="Dina lån">
+            <GlassSection title="Nästa steg i planen">
+              <div className="space-y-3">
               {sortedLoans.map((loan, i) => {
-                const monthlyInterest = (loan.totalAmount || 0) * ((loan.interestRate || 0) / 100 / 12);
                 const isZeroInterest = (loan.interestRate || 0) === 0;
                 const isHighestPrio =
                   highestInterestLoan && loan.name === highestInterestLoan.name && (loan.interestRate || 0) > 0;
 
                 return (
-                  <React.Fragment key={i}>
-                    {i > 0 && <DashboardDivider className="my-2" />}
-                    <div className={`${surface.cardInset} p-4 my-2`}>
+                  <div key={i} className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
                           <p className="text-[15px] font-medium text-white flex items-center gap-2 flex-wrap">
                             {loan.name}
                             {isHighestPrio && (
-                              <span className="text-[11px] text-rose-300/90 font-medium px-2 py-0.5 rounded-full bg-rose-500/10 ring-1 ring-rose-400/20">
-                                Högst prio
+                              <span className="text-[11px] text-[var(--copilot-accent-blue)] font-medium px-2 py-0.5 rounded-full bg-[rgba(74,122,255,0.15)] border border-[rgba(74,122,255,0.25)]">
+                                Fokus nu
                               </span>
                             )}
                             {isZeroInterest && (
-                              <span className="text-[11px] text-emerald-300/90 font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 ring-1 ring-emerald-400/20">
+                              <span className="text-[11px] text-[var(--copilot-accent-green)] font-medium px-2 py-0.5 rounded-full bg-[rgba(34,217,122,0.12)] border border-[rgba(34,217,122,0.25)]">
                                 Räntefritt
                               </span>
                             )}
                           </p>
-                          <p className="anchor-type-body-sm mt-0.5">
-                            {loan.interestRate || 0}% · {fmt(loan.totalAmount)} kr · {fmt(loan.monthlyPayment)} kr/mån
+                          <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-0.5">
+                            {fmt(loan.monthlyPayment)} kr/mån · kvar {fmt(loan.totalAmount)} kr
                           </p>
                         </div>
                       </div>
-
-                      {!isZeroInterest && monthlyInterest > 0 && (
-                        <p className="text-[13px] text-rose-300/85 mb-3 tabular-nums">
-                          {fmt(monthlyInterest)} kr i ränta per månad
-                        </p>
-                      )}
 
                       <div className="flex gap-2">
                         <AnchorPressable
@@ -211,7 +214,7 @@ Kort svar svenska, max 3 meningar.`,
                           minTouch={false}
                           onClick={() => runDebtEraser(loan, i)}
                           disabled={loadingEraser === i || !(loan.monthlyPayment > 0)}
-                          className="flex-1 h-11 rounded-full bg-white/[0.08] text-white/90 text-[13px] font-semibold flex items-center justify-center gap-1.5 disabled:opacity-40"
+                          className={`flex-1 !h-11 !text-[13px] flex items-center justify-center gap-1.5 disabled:opacity-40 ${copilotSecondaryBtnClass}`}
                         >
                           {loadingEraser === i ? (
                             <span className="w-4 h-4 rounded-full skeleton" />
@@ -226,7 +229,7 @@ Kort svar svenska, max 3 meningar.`,
                             minTouch={false}
                             onClick={() => runNegotiation(loan, i)}
                             disabled={loadingNegotiate === i}
-                            className="flex-1 h-11 rounded-full bg-white/[0.08] text-white/90 text-[13px] font-semibold flex items-center justify-center gap-1.5 disabled:opacity-40"
+                            className={`flex-1 !h-11 !text-[13px] flex items-center justify-center gap-1.5 disabled:opacity-40 ${copilotSecondaryBtnClass}`}
                           >
                             {loadingNegotiate === i ? (
                               <span className="w-4 h-4 rounded-full skeleton" />
@@ -314,21 +317,21 @@ Kort svar svenska, max 3 meningar.`,
                         )}
                       </AnimatePresence>
                     </div>
-                  </React.Fragment>
                 );
               })}
-            </DashboardSection>
+              </div>
+            </GlassSection>
           </motion.div>
 
           <motion.div {...staggerItem(5)}>
-            <GlassSection title="Tips">
+            <GlassSection title="Bygg momentum">
               <ul className="space-y-3">
                 {[
-                  'Betala mer på lånet med högst ränta först',
-                  'Amortera extra vid bonus eller skatteåterbäring',
-                  'Jämför räntor — byt till billigare alternativ',
+                  'Fokusera på ett lån i taget — snabbast väg till skuldfrihet',
+                  'Lägg bonus eller skatteåterbäring som extra steg i planen',
+                  'Förhandla ränta — varje sparad krona fyller din frihetsring',
                 ].map((tip) => (
-                  <li key={tip} className="flex items-start gap-2 text-[14px] text-white/55 leading-relaxed">
+                  <li key={tip} className="flex items-start gap-2 text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed">
                     <CheckCircle className="w-4 h-4 mt-0.5 text-emerald-400 flex-shrink-0" />
                     {tip}
                   </li>

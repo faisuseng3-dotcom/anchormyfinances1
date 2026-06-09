@@ -19,11 +19,8 @@ import {
   DashboardListRow,
   DashboardSection,
 } from '@/components/dashboard/DashboardChrome';
-import {
-  anchorInputClass,
-  anchorSecondaryButtonClass,
-  sectionSubtitleClass,
-} from '@/lib/anchorTheme';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
+import { copilotInputClass, copilotSecondaryBtnClass } from '@/lib/copilotTheme';
 import { staggerItem } from '@/lib/motionPresets';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
@@ -217,7 +214,7 @@ export default function Settings() {
                   type="text"
                   value={formatNumber(formData.income)}
                   onChange={(e) => setFormData({ ...formData, income: parseNumber(e.target.value) })}
-                  className={`${anchorInputClass} pr-10`}
+                  className={`${copilotInputClass} pr-10`}
                 />
                 {krSuffix}
               </div>
@@ -228,7 +225,7 @@ export default function Settings() {
                   type="text"
                   value={formatNumber(formData.housingCost)}
                   onChange={(e) => setFormData({ ...formData, housingCost: parseNumber(e.target.value) })}
-                  className={`${anchorInputClass} pr-10`}
+                  className={`${copilotInputClass} pr-10`}
                 />
                 {krSuffix}
               </div>
@@ -239,7 +236,7 @@ export default function Settings() {
                   type="text"
                   value={formatNumber(formData.buffer)}
                   onChange={(e) => setFormData({ ...formData, buffer: parseNumber(e.target.value) })}
-                  className={`${anchorInputClass} pr-10`}
+                  className={`${copilotInputClass} pr-10`}
                 />
                 {krSuffix}
               </div>
@@ -250,7 +247,7 @@ export default function Settings() {
                   placeholder="ex. Thailand-resa, Min första bil"
                   value={formData.savingsGoalName || ''}
                   onChange={(e) => setFormData({ ...formData, savingsGoalName: e.target.value })}
-                  className={anchorInputClass}
+                  className={copilotInputClass}
                 />
               </FieldRow>
               <FieldRow label="Belopp">
@@ -259,7 +256,7 @@ export default function Settings() {
                     type="text"
                     value={formatNumber(formData.savingsGoal)}
                     onChange={(e) => setFormData({ ...formData, savingsGoal: parseNumber(e.target.value) })}
-                    className={`${anchorInputClass} pr-10`}
+                    className={`${copilotInputClass} pr-10`}
                   />
                   {krSuffix}
                 </div>
@@ -320,16 +317,16 @@ export default function Settings() {
 
             {showAddSub ? (
               <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
-                <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className={anchorInputClass} />
-                <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className={anchorInputClass} />
+                <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className={copilotInputClass} />
+                <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className={copilotInputClass} />
                 <DayPicker value={parseInt(newSub.billingDay, 10) || 15} onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })} label="Dragningsdag" hint="Standard: 15" />
                 <div className="flex flex-col sm:flex-row gap-2">
                   <Select value={newSub.category} onValueChange={(v) => setNewSub({ ...newSub, category: v })}>
-                    <SelectTrigger className={`${anchorInputClass} flex-1`}><SelectValue /></SelectTrigger>
+                    <SelectTrigger className={`${copilotInputClass} flex-1`}><SelectValue /></SelectTrigger>
                     <SelectContent>{categories.map((c) => <SelectItem key={c.id} value={c.id}>{c.label}</SelectItem>)}</SelectContent>
                   </Select>
                   <Select value={newSub.frequency} onValueChange={(v) => setNewSub({ ...newSub, frequency: v })}>
-                    <SelectTrigger className={`${anchorInputClass} flex-1`}><SelectValue /></SelectTrigger>
+                    <SelectTrigger className={`${copilotInputClass} flex-1`}><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="monthly">Månad</SelectItem>
                       <SelectItem value="quarterly">Kvartal</SelectItem>
@@ -390,12 +387,12 @@ export default function Settings() {
 
             {showAddLoan ? (
               <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
-                <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className={anchorInputClass} />
+                <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className={copilotInputClass} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className={anchorInputClass} />
-                  <Input type="number" step="0.1" placeholder="Ränta %" value={newLoan.interestRate} onChange={(e) => setNewLoan({ ...newLoan, interestRate: e.target.value })} className={anchorInputClass} />
+                  <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className={copilotInputClass} />
+                  <Input type="number" step="0.1" placeholder="Ränta %" value={newLoan.interestRate} onChange={(e) => setNewLoan({ ...newLoan, interestRate: e.target.value })} className={copilotInputClass} />
                 </div>
-                <Input placeholder="Månadskostnad (kr)" value={newLoan.monthlyPayment} onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })} className={anchorInputClass} />
+                <Input placeholder="Månadskostnad (kr)" value={newLoan.monthlyPayment} onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })} className={copilotInputClass} />
                 <div className="flex gap-2">
                   <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddLoan(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]">
                     Avbryt
@@ -498,7 +495,7 @@ export default function Settings() {
           else setBusiness();
           base44.auth.logout(window.location.origin);
         }}
-        className={`w-full ${anchorSecondaryButtonClass} rounded-[var(--anchor-radius-lg)]`}
+        className={`w-full ${copilotSecondaryBtnClass} rounded-[var(--anchor-radius-lg)]`}
       >
         <span className="flex items-center justify-center gap-2">
           <RefreshCw className="w-4 h-4" />

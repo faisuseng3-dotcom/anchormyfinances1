@@ -2,17 +2,25 @@
 import React, { useState } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Loader2 } from 'lucide-react';
+import { CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { categorizePipeline } from '@/lib/categoryRouter';
 import { saveOverride } from '@/lib/enrichmentEngine';
 import CSVUploadZone from '@/components/import/CSVUploadZone';
-import CSVPreviewTable from '@/components/import/CSVPreviewTable';
-import { BusinessPageHeader, BusinessSection, bizSubtitleClass } from '@/components/business/BusinessChrome';
+import TransactionActiveReview from '@/components/transactions/TransactionActiveReview';
+import PageShell, { GlassSection } from '@/components/layout/PageShell';
 import { createPageUrl } from '@/utils';
 import { normalizeCSVRows, rowsToTransactions } from '@/lib/bankImportHelpers';
+import { copilotPrimaryBtnClass } from '@/lib/copilotTheme';
+
+const stepMotion = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+};
 
 export default function Import() {
   const [parsedRows, setParsedRows] = useState(null);
@@ -31,7 +39,7 @@ export default function Import() {
     setAnalyzeLabel('Läser PDF…');
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `Bank-PDF. Extrahera transaktioner: date, description, amount (negativ=utgift).`,
+      prompt: 'Bank-PDF. Extrahera transaktioner: date, description, amount (negativ=utgift).',
       file_urls: [file_url],
       response_json_schema: {
         type: 'object',
@@ -136,74 +144,87 @@ export default function Import() {
   };
 
   return (
-    <div className="min-h-screen min-h-[100dvh] pb-20 overflow-x-hidden w-full max-w-lg mx-auto" style={{ background: '#F4F6F8' }}>
-      <BusinessPageHeader
-        title="Importera"
-        subtitle="CSV, PDF eller klistra in"
-        backHref={createPageUrl('Dashboard')}
-      />
+    <PageShell
+      title="Importera"
+      subtitle="Aktiv kontroll"
+      backHref={createPageUrl('Dashboard')}
+      headerExtra={
+        <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-3 leading-relaxed">
+          Swajpa och godkänn varje transaktion — du behåller kontrollen, som i Excel.
+        </p>
+      }
+    >
+      <AnimatePresence mode="wait">
+        {step === 'upload' && (
+          <motion.div key="upload" {...stepMotion}>
+            <CSVUploadZone
+              onFileParsed={handleFileParsed}
+              onPdfFile={handlePdfFile}
+              onPasteText={handlePasteText}
+            />
+            <GlassSection title="Så exporterar du" className="mt-5">
+              <p className="text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed">
+                Swedbank, SEB, Nordea och Handelsbanken: exportera transaktioner som CSV eller PDF.
+                Du kan också klistra in text direkt från bankappen.
+              </p>
+            </GlassSection>
+          </motion.div>
+        )}
 
-      <div className="px-5 space-y-6">
-        <AnimatePresence mode="wait">
-          {step === 'upload' && (
-            <motion.div key="upload" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <CSVUploadZone onFileParsed={handleFileParsed} onPdfFile={handlePdfFile} onPasteText={handlePasteText} />
-              <BusinessSection title="Så exporterar du" className="!px-0 mt-6">
-                <div className={`${bizSubtitleClass} space-y-2`}>
-                  <p>Swedbank, SEB, Nordea och Handelsbanken: exportera transaktioner som CSV eller PDF.</p>
-                  <p className="text-[#0D7377] font-medium">Du kan också klistra in text från bankappen.</p>
-                </div>
-              </BusinessSection>
-            </motion.div>
-          )}
+        {step === 'analyzing' && (
+          <motion.div
+            key="analyzing"
+            {...stepMotion}
+            className="flex flex-col items-center py-24 gap-4"
+          >
+            <Loader2 className="w-10 h-10 animate-spin text-[var(--copilot-accent-blue)]" />
+            <p className="text-[16px] font-semibold text-white">{analyzeLabel}</p>
+            <p className="text-[13px] text-[var(--copilot-text-muted)]">Detta tar några sekunder</p>
+          </motion.div>
+        )}
 
-          {step === 'analyzing' && (
-            <motion.div
-              key="analyzing"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex flex-col items-center py-20 gap-4"
+        {step === 'preview' && parsedRows && (
+          <motion.div key="preview" {...stepMotion}>
+            <GlassSection
+              title="Granska transaktioner"
+              subtitle={`${parsedRows.length} hittade — godkänn en i taget`}
             >
-              <Loader2 className="w-8 h-8 animate-spin text-[#0D7377]" />
-              <p className="text-[15px] font-medium text-[#1A2332]">{analyzeLabel}</p>
-              <p className={bizSubtitleClass}>Detta tar några sekunder</p>
-            </motion.div>
-          )}
-
-          {step === 'preview' && parsedRows && (
-            <motion.div key="preview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-              <CSVPreviewTable
+              <TransactionActiveReview
                 rows={parsedRows}
                 isLoading={saving}
                 onConfirm={handleConfirm}
                 onCancel={reset}
                 onCategoryChange={handleCategoryChange}
               />
-            </motion.div>
-          )}
+            </GlassSection>
+          </motion.div>
+        )}
 
-          {step === 'done' && (
-            <motion.div
-              key="done"
-              initial={{ opacity: 0, scale: 0.98 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center py-20 gap-4 text-center"
+        {step === 'done' && (
+          <motion.div
+            key="done"
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center py-20 gap-4 text-center"
+          >
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(34,217,122,0.15)', border: '1px solid rgba(34,217,122,0.3)' }}
             >
-              <CheckCircle2 className="w-8 h-8 text-[#0D7377]" />
-              <p className="text-[20px] font-semibold text-[#1A2332]">Import klar</p>
-              <p className={bizSubtitleClass}>Transaktionerna är sparade och kategoriserade.</p>
-              <Link
-                to={createPageUrl('Dashboard')}
-                className="mt-4 px-8 py-3 rounded-xl text-[15px] font-semibold text-white bg-[#0D7377]"
-              >
-                Till översikt
-              </Link>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+              <CheckCircle2 className="w-8 h-8 text-[var(--copilot-accent-green)]" />
+            </div>
+            <p className="text-[22px] font-bold text-white">Import klar</p>
+            <p className="text-[14px] text-[var(--copilot-text-secondary)] max-w-xs">
+              Transaktionerna är sparade. Din översikt uppdateras med dina fria pengar.
+            </p>
+            <Link to={createPageUrl('Dashboard')} className={`mt-4 max-w-xs ${copilotPrimaryBtnClass} inline-flex items-center justify-center no-underline`}>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Till översikt
+            </Link>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </PageShell>
   );
 }
 

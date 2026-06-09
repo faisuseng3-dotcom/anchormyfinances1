@@ -2,6 +2,8 @@
  * Copilot Design DNA — shared tokens matching the premium Dashboard.
  */
 
+import { getMonthlyMargin } from '@/lib/financialUtils';
+
 export const COPILOT_GRADIENT =
   'linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%)';
 
@@ -58,4 +60,24 @@ export const copilotChipClass = (active) =>
   ].join(' ');
 
 export const copilotPrimaryBtnClass =
-  'w-full h-12 rounded-full bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white font-semibold text-[15px] disabled:opacity-40 shadow-[0_4px_20px_rgba(74,122,255,0.35)] transition-transform active:scale-[0.98]';
+  'w-full h-12 rounded-full bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white font-semibold text-[15px] disabled:opacity-40 shadow-[0_4px_20px_rgba(74,122,255,0.35)] transition-transform active:scale-[0.98] min-h-12';
+
+export const copilotSecondaryBtnClass =
+  'w-full h-12 rounded-full bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)] font-semibold text-[15px] hover:bg-[var(--copilot-bg-card-hover)] hover:text-white transition-all active:scale-[0.98] min-h-12';
+
+export const copilotGhostBtnClass =
+  'inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-12 rounded-2xl text-[13px] font-semibold text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card)] transition-all active:scale-[0.98]';
+
+/** Månadsmarginal minus utgifter denna månad — "dina fria pengar". */
+export function computeFreeMoney(profile, transactions = []) {
+  const margin = getMonthlyMargin(profile);
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const spent = (transactions || [])
+    .filter((tx) => {
+      const d = new Date(tx.created_date || tx.date || 0);
+      return d >= monthStart && tx.amount < 0 && tx.type !== 'transfer_to_savings';
+    })
+    .reduce((s, tx) => s + Math.abs(tx.amount), 0);
+  return Math.max(0, margin - spent);
+}

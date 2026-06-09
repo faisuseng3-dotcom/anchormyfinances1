@@ -1,7 +1,7 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Calculator } from 'lucide-react';
 import { getTotalFixedCosts, getMonthlyMargin } from '@/lib/financialUtils';
-import { dashLabel } from '@/lib/dashboardTheme';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -11,38 +11,48 @@ export default function ProToolsHero({ profile }) {
   const fixed = getTotalFixedCosts(profile);
 
   return (
-    <div className="anchor-premium-hero mb-6 -mt-1">
-      <div className="relative z-10 anchor-hero-asymmetric">
-        <div className="min-w-0 pr-4">
-          <p className={dashLabel}>Verktyg</p>
-          <p className="anchor-type-headline mt-1 text-[17px]">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-2xl border border-[var(--copilot-border)] overflow-hidden mb-6"
+      style={{ background: 'linear-gradient(135deg, rgba(74,122,255,0.14) 0%, rgba(109,74,255,0.1) 100%)' }}
+    >
+      <div className="p-5 flex items-start gap-4">
+        <div
+          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
+          style={{ background: 'rgba(74,122,255,0.18)', border: '1px solid rgba(74,122,255,0.25)' }}
+        >
+          <Calculator className="w-5 h-5 text-[var(--copilot-accent-blue)]" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
+            Verktyg
+          </p>
+          <p className="text-[17px] font-bold text-white mt-1 leading-snug">
             Räkna och simulera utifrån din profil
           </p>
           {income > 0 ? (
-            <div className="flex gap-6 mt-4 pt-3 border-t border-white/[0.08]">
+            <div className="flex gap-6 mt-4 pt-3 border-t border-[var(--copilot-border)]">
               <div>
-                <p className={dashLabel}>Marginal</p>
-                <p className="text-[18px] font-light text-white tabular-nums tracking-tight">
+                <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Marginal</p>
+                <p className="text-[18px] font-bold text-[var(--copilot-accent-green)] tabular-nums">
                   {fmt(margin)} kr
                 </p>
               </div>
               <div>
-                <p className={dashLabel}>Fasta</p>
-                <p className="text-[18px] font-light text-white tabular-nums tracking-tight">
+                <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Fasta</p>
+                <p className="text-[18px] font-bold text-white tabular-nums">
                   {fmt(fixed)} kr
                 </p>
               </div>
             </div>
           ) : (
-            <p className="anchor-type-body-sm mt-3">
+            <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-3">
               Fyll i inkomst under Inställningar för belopp i kronor.
             </p>
           )}
         </div>
-        <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08] anchor-elev-1 shrink-0">
-          <Calculator className="w-5 h-5 text-[var(--color-accent)]" />
-        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -8,7 +8,9 @@ import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { Skeleton } from '@/components/ui/skeleton';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
-import { anchorInputClass, anchorIconButtonClass } from '@/lib/anchorTheme';
+import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
+import { copilotInputClass, copilotChipClass, copilotPrimaryBtnClass } from '@/lib/copilotTheme';
+import { triggerHaptic } from '@/lib/haptics';
 
 const CATEGORIES = [
   { value: 'food', label: 'Mat' },
@@ -64,6 +66,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
 
   const handleSave = () => {
     if (!amount || !label) return;
+    triggerHaptic('success');
     const type = isExpense ? 'expense' : 'income';
     const data = {
       type,
@@ -90,19 +93,29 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
       title={existingTx ? 'Redigera' : 'Ny transaktion'}
       maxHeight="min(88dvh, 720px)"
       headerRight={
-        <AnchorPressable onClick={onClose} className={anchorIconButtonClass} aria-label="Stäng">
+        <AnchorPressable
+          onClick={onClose}
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)]"
+          aria-label="Stäng"
+        >
           <X className="w-4 h-4" />
         </AnchorPressable>
       }
     >
       <div className="space-y-4 -mx-1">
-        <div className="flex rounded-[var(--anchor-radius-lg)] bg-white/[0.05] p-1 ring-1 ring-white/[0.08]">
+        <CopilotFreeMoneyHero
+          previewAmount={amount ? parseFloat(amount) : null}
+          isExpensePreview={isExpense}
+          className="!p-4"
+        />
+
+        <div className="flex rounded-2xl bg-[var(--copilot-bg-card)] p-1 border border-[var(--copilot-border)]">
           <AnchorPressable
             type="button"
             minTouch={false}
             onClick={() => setIsExpense(true)}
-            className={`flex-1 py-2.5 min-h-11 rounded-[var(--anchor-radius-md)] text-sm font-semibold ${
-              isExpense ? 'bg-rose-400/90 text-white' : 'text-white/45'
+            className={`flex-1 py-2.5 min-h-12 rounded-xl text-sm font-semibold active:scale-[0.98] ${
+              isExpense ? 'bg-rose-500/25 text-rose-200 border border-rose-400/30' : 'text-[var(--copilot-text-muted)]'
             }`}
           >
             − Utgift
@@ -111,8 +124,8 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
             type="button"
             minTouch={false}
             onClick={() => setIsExpense(false)}
-            className={`flex-1 py-2.5 min-h-11 rounded-[var(--anchor-radius-md)] text-sm font-semibold ${
-              !isExpense ? 'bg-emerald-400/90 text-[#050d28]' : 'text-white/45'
+            className={`flex-1 py-2.5 min-h-12 rounded-xl text-sm font-semibold active:scale-[0.98] ${
+              !isExpense ? 'bg-[rgba(34,217,122,0.2)] text-[var(--copilot-accent-green)] border border-[rgba(34,217,122,0.35)]' : 'text-[var(--copilot-text-muted)]'
             }`}
           >
             + Inkomst
@@ -126,11 +139,11 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
             placeholder="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className={`w-full h-14 rounded-[var(--anchor-radius-lg)] text-center text-2xl font-semibold tabular-nums outline-none anchor-elev-1 ${
-              isExpense ? 'text-rose-300' : 'text-emerald-300'
-            } bg-white/[0.06] ring-1 ring-white/[0.1]`}
+            className={`w-full h-14 rounded-2xl text-center text-2xl font-semibold tabular-nums outline-none border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)] ${
+              isExpense ? 'text-rose-300' : 'text-[var(--copilot-accent-green)]'
+            }`}
           />
-          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-white/40">kr</span>
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[var(--copilot-text-muted)]">kr</span>
         </div>
 
         <input
@@ -139,28 +152,23 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
           value={vendor}
           onChange={(e) => setVendor(e.target.value)}
           onBlur={handleVendorBlur}
-          className={anchorInputClass}
+          className={copilotInputClass}
         />
         <input
           type="text"
           placeholder="Beskrivning *"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          className={anchorInputClass}
+          className={copilotInputClass}
         />
 
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <p className="anchor-type-body-sm text-white/45">Kategori</p>
+            <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Kategori</p>
             {categorizing && <Skeleton className="h-3 w-12 rounded-full" />}
             {aiConfidence === 'high' && (
               <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300">
                 <Check className="w-2.5 h-2.5" /> Säker
-              </span>
-            )}
-            {aiConfidence === 'low' && (
-              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-200">
-                ? Osäker
               </span>
             )}
           </div>
@@ -171,11 +179,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
                 type="button"
                 minTouch={false}
                 onClick={() => handleCategoryChange(c.value)}
-                className={`px-3 py-2 min-h-10 rounded-full text-xs font-semibold ${
-                  category === c.value
-                    ? 'bg-[var(--color-text-primary)] text-[#050d28]'
-                    : 'bg-white/[0.06] text-white/60 ring-1 ring-white/[0.08]'
-                }`}
+                className={`${copilotChipClass(category === c.value)} min-h-10`}
               >
                 {c.label}
               </AnchorPressable>
@@ -184,7 +188,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
         </div>
 
         <div>
-          <p className="anchor-type-body-sm text-white/45 mb-2">Betalmetod</p>
+          <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2">Betalmetod</p>
           <div className="flex gap-2 flex-wrap">
             {PAYMENT_METHODS.map((m) => (
               <AnchorPressable
@@ -192,11 +196,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
                 type="button"
                 minTouch={false}
                 onClick={() => setPaymentMethod(m)}
-                className={`px-3 py-2 min-h-10 rounded-full text-xs font-semibold ${
-                  paymentMethod === m
-                    ? 'bg-white/[0.14] text-white ring-1 ring-white/20'
-                    : 'bg-white/[0.06] text-white/55 ring-1 ring-white/[0.08]'
-                }`}
+                className={`${copilotChipClass(paymentMethod === m)} min-h-10`}
               >
                 {m}
               </AnchorPressable>
@@ -209,7 +209,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
           placeholder="Anteckning (valfri)"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className={anchorInputClass}
+          className={copilotInputClass}
         />
 
         {overridePrompt && (
@@ -225,7 +225,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
           type="button"
           onClick={handleSave}
           disabled={!amount || !label}
-          className="w-full h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2 flex items-center justify-center gap-2"
+          className={`${copilotPrimaryBtnClass} flex items-center justify-center gap-2`}
         >
           <Check className="w-4 h-4" />
           {existingTx ? 'Spara ändringar' : 'Spara transaktion'}

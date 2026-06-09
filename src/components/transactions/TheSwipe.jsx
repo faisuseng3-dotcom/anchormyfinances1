@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { PiggyBank, Wallet, Check, Zap, ArrowDown } from 'lucide-react';
+import { copilotChipClass, copilotInputClass, copilotPrimaryBtnClass } from '@/lib/copilotTheme';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');
 
@@ -32,7 +33,7 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
       initial={{ opacity: 0, y: 16, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8 }}
-      className="rounded-2xl border border-amber-500/40 bg-amber-900/30 p-4"
+      className="rounded-2xl border border-[rgba(74,122,255,0.35)] bg-[rgba(74,122,255,0.1)] p-4"
     >
       <div className="flex items-start gap-3">
         <div className="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
@@ -61,8 +62,7 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
   );
 }
 
-function CircleVisual({ direction, amount, onDragToSpending, onDragToSavings, profile }) {
-  const controls = useAnimation();
+function CircleVisual({ direction, amount, profile }) {
   const [dragging, setDragging] = useState(false);
   const [dragTarget, setDragTarget] = useState(null); // 'spending' | 'savings'
 
@@ -159,24 +159,18 @@ export default function TheSwipe({ profile, onTransfer }) {
   return (
     <div className="space-y-4">
       {/* Direction tabs */}
-      <div className="flex rounded-2xl overflow-hidden border border-white/10 p-1 gap-1 bg-white/5">
+      <div className="flex gap-2">
         <button
+          type="button"
           onClick={() => { setDirection('to_spending'); setShowAI(false); }}
-          className={`flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-            direction === 'to_spending'
-              ? 'bg-amber-500/30 text-amber-300 border border-amber-500/40'
-              : 'text-slate-500 hover:text-slate-300'
-          }`}
+          className={`flex-1 min-h-12 ${copilotChipClass(direction === 'to_spending')} flex items-center justify-center gap-1.5 active:scale-[0.98]`}
         >
           <PiggyBank className="w-3.5 h-3.5" /> Spar → Spendera
         </button>
         <button
+          type="button"
           onClick={() => { setDirection('to_savings'); setShowAI(false); }}
-          className={`flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
-            direction === 'to_savings'
-              ? 'bg-emerald-500/30 text-emerald-300 border border-emerald-500/40'
-              : 'text-slate-500 hover:text-slate-300'
-          }`}
+          className={`flex-1 min-h-12 ${copilotChipClass(direction === 'to_savings')} flex items-center justify-center gap-1.5 active:scale-[0.98]`}
         >
           <Wallet className="w-3.5 h-3.5" /> Spendera → Spar
         </button>
@@ -195,12 +189,8 @@ export default function TheSwipe({ profile, onTransfer }) {
           <button
             key={a}
             onClick={() => setAmount(a)}
-            className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${
-              amount === a
-                ? direction === 'to_spending'
-                  ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/30'
-                  : 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
-                : 'bg-white/8 text-slate-300 hover:bg-white/12'
+            className={`py-2.5 min-h-12 rounded-xl text-sm font-semibold transition-all active:scale-[0.98] ${
+              amount === a ? copilotChipClass(true) : copilotChipClass(false)
             }`}
           >
             {fmt(a)} kr
@@ -214,7 +204,7 @@ export default function TheSwipe({ profile, onTransfer }) {
           type="number"
           value={amount}
           onChange={e => setAmount(parseInt(e.target.value) || 0)}
-          className="w-full h-12 rounded-xl bg-white/8 border border-white/10 text-white text-center text-lg font-bold focus:outline-none focus:border-indigo-500/70"
+          className={`${copilotInputClass} text-center text-lg font-bold`}
           placeholder="Eget belopp"
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
@@ -249,14 +239,9 @@ export default function TheSwipe({ profile, onTransfer }) {
           <motion.button
             key="cta"
             whileTap={{ scale: 0.97 }}
-            whileHover={{ scale: 1.01 }}
             onClick={handleConfirm}
             disabled={amount <= 0 || showAI}
-            className="w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 text-white transition-all disabled:opacity-40"
-            style={direction === 'to_spending'
-              ? { background: 'linear-gradient(135deg, #f59e0b, #ea580c)', boxShadow: '0 8px 24px rgba(245,158,11,0.3)' }
-              : { background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 8px 24px rgba(16,185,129,0.3)' }
-            }
+            className={`${copilotPrimaryBtnClass} !h-14 flex items-center justify-center gap-2`}
           >
             {direction === 'to_spending' ? (
               <><PiggyBank className="w-4 h-4" /> Flytta {fmt(amount)} kr till spendera</>

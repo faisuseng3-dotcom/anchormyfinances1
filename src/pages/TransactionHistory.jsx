@@ -27,6 +27,8 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
 import StreakBadge from '@/components/ui-premium/copilot/StreakBadge';
 import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
+import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
+import CopilotEnvelopeGoal from '@/components/ui-premium/copilot/CopilotEnvelopeGoal';
 import { copilotInputClass, copilotChipClass } from '@/lib/copilotTheme';
 import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { calcSavingsStreak } from '@/lib/microWins';
@@ -380,12 +382,26 @@ export default function TransactionHistory() {
         <LedgerVaultPanel />
       ) : (
         <>
-      <div className="flex flex-wrap gap-2 mb-3">
-        <StreakBadge count={calcUnderBudgetStreak(profile, transactions)} label="dagar under budget" variant="budget" />
-        <StreakBadge count={calcSavingsStreak(transactions)} label="dagars sparande" variant="save" />
+      <CopilotFreeMoneyHero className="mb-4" />
+
+      {profile?.savingsGoal > 0 && (
+        <CopilotEnvelopeGoal
+          name={profile.savingsGoalName || 'Sparmål'}
+          current={profile.savingsCurrentBalance || 0}
+          target={profile.savingsGoal}
+          imageUrl={profile.savingsGoalImageUrl}
+          iconId={profile.savingsGoalIcon || 'default'}
+          visualType={profile.savingsGoalVisualType || (profile.savingsGoalImageUrl ? 'image' : 'icon')}
+          className="mb-4"
+        />
+      )}
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        <StreakBadge count={calcUnderBudgetStreak(profile, transactions)} label="dagar inom budget" variant="budget" />
+        <StreakBadge count={calcSavingsStreak(transactions)} label="dagar sparande i rad" variant="save" />
       </div>
 
-      <p className={`${sectionSubtitleClass} mb-3`}>{filtered.length} poster</p>
+      <p className="text-[13px] text-[var(--copilot-text-muted)] mb-3">{filtered.length} poster · tryck för att redigera</p>
 
       <div className="flex gap-2 mb-2">
         <div className={`flex-1 flex items-center gap-2 px-4 min-h-12 ${copilotInputClass}`}>

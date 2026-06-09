@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { GoalIcon } from '@/lib/anchorIcons';
+import { triggerHaptic } from '@/lib/haptics';
 import {
   GOAL_MILESTONE_PCTS,
   getGoalVisualEffects,
@@ -31,6 +32,18 @@ export default function VisualSavingsGoalRing({
   className = '',
 }) {
   const clampedPct = Math.min(100, Math.max(0, pct));
+  const prevPct = useRef(clampedPct);
+  const milestoneRef = useRef(0);
+
+  useEffect(() => {
+    const milestones = [25, 50, 75, 100];
+    const crossed = milestones.find((m) => prevPct.current < m && clampedPct >= m);
+    if (crossed && crossed > milestoneRef.current) {
+      milestoneRef.current = crossed;
+      triggerHaptic(crossed >= 75 ? 'success' : 'light');
+    }
+    prevPct.current = clampedPct;
+  }, [clampedPct]);
   const r = (size - stroke) / 2;
   const circ = 2 * Math.PI * r;
   const offset = circ - (clampedPct / 100) * circ;
