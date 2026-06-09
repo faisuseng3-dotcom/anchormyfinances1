@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { planeraTabHref } from '@/lib/planeraTabs';
-import { COPILOT_VIEWS } from '@/lib/copilotViews';
+import { COPILOT_VIEWS, TOOL_VIEW_IDS, copilotToolHref } from '@/lib/copilotViews';
 import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
 import { AnchorLogoMark, NavIcon } from '@/lib/anchorIcons';
@@ -58,17 +58,17 @@ export default function AnchorCopilotSidebar({
   const initial = firstName.charAt(0).toUpperCase();
 
   const openToolView = (view) => {
+    if (!TOOL_VIEW_IDS.has(view)) return;
     triggerHaptic('light');
     setActiveView(view);
-    if (currentPage !== 'Dashboard') {
-      navigate(createPageUrl('Dashboard'));
-    }
+    navigate(copilotToolHref(view));
     onClose?.();
   };
 
   const handleHome = () => {
     triggerHaptic('light');
     goHome();
+    navigate(createPageUrl('Dashboard'));
     onGoHome?.();
     onClose?.();
   };
@@ -78,6 +78,11 @@ export default function AnchorCopilotSidebar({
       handleHome();
       return;
     }
+    goHome();
+    onClose?.();
+  };
+
+  const handleExternalToolNav = () => {
     goHome();
     onClose?.();
   };
@@ -198,7 +203,7 @@ export default function AnchorCopilotSidebar({
                 key={item.label}
                 to={navHref(item)}
                 className="copilot-nav-item"
-                onClick={() => { goHome(); onClose?.(); }}
+                onClick={handleExternalToolNav}
               >
                 <span className="copilot-nav-icon">
                   <NavIcon name={item.icon} size={16} />

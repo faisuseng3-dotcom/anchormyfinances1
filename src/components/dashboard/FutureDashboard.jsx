@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { COPILOT_VIEWS } from '@/lib/copilotViews';
+import { COPILOT_VIEWS, copilotToolHref } from '@/lib/copilotViews';
 import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import {
   MOOD_OPTIONS,
@@ -62,7 +62,14 @@ export default function FutureDashboard({
   onOpenTransactionHub,
   user,
 }) {
+  const navigate = useNavigate();
   const { openSidebar, setActiveView } = useCopilotNav();
+
+  const openSubscriptionsView = () => {
+    setActiveView(COPILOT_VIEWS.subscriptions);
+    navigate(copilotToolHref(COPILOT_VIEWS.subscriptions));
+  };
+
   const [kalkylatornOpen, setKalkylatornOpen] = useState(false);
   const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
   const [coachInput, setCoachInput] = useState('');
@@ -556,7 +563,7 @@ export default function FutureDashboard({
                 <button
                   type="button"
                   className="copilot-card-action active:scale-[0.98] transition-transform"
-                  onClick={() => setActiveView(COPILOT_VIEWS.subscriptions)}
+                  onClick={openSubscriptionsView}
                 >
                   Hantera →
                 </button>

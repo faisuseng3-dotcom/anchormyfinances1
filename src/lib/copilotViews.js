@@ -13,3 +13,20 @@ export const TOOL_VIEW_IDS = new Set([
   COPILOT_VIEWS.squads,
   COPILOT_VIEWS.academy,
 ]);
+
+export const COPILOT_VIEW_PARAM = 'view';
+
+/** Kanonisk Dashboard-URL för en verktygsvy i copilot-main. */
+export function copilotToolHref(view) {
+  if (!TOOL_VIEW_IDS.has(view)) return '/Dashboard';
+  return `/Dashboard?${COPILOT_VIEW_PARAM}=${encodeURIComponent(view)}`;
+}
+
+export function parseCopilotViewFromSearch(search) {
+  const raw = new URLSearchParams(search).get(COPILOT_VIEW_PARAM);
+  return raw && TOOL_VIEW_IDS.has(raw) ? raw : null;
+}
+
+export function isCopilotToolView(view) {
+  return TOOL_VIEW_IDS.has(view);
+}
