@@ -46,6 +46,7 @@ export default function Layout({ children, currentPageName }) {
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [alexActive, setAlexActive] = React.useState(() => isAlexMode());
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
+  const isCopilotDashboard = currentPageName === 'Dashboard';
   const embedded = isEmbeddedApp();
 
   // Lyssna på Alex Mode-event för att dölja business-element
@@ -68,6 +69,12 @@ export default function Layout({ children, currentPageName }) {
     const openPlan = () => setPlanSheetOpen(true);
     window.addEventListener('anchor:open-plan', openPlan);
     return () => window.removeEventListener('anchor:open-plan', openPlan);
+  }, []);
+
+  React.useEffect(() => {
+    const openVoice = () => setVoiceOpen(true);
+    window.addEventListener('anchor:open-voice', openVoice);
+    return () => window.removeEventListener('anchor:open-voice', openVoice);
   }, []);
 
   const handleAction = (actionId) => {
@@ -97,9 +104,10 @@ export default function Layout({ children, currentPageName }) {
       <main
         className={cn(
           embedded ? 'anchor-app-main' : !hideNav ? 'overflow-y-auto overflow-x-hidden' : 'overflow-x-hidden',
+          isCopilotDashboard && 'max-lg:pb-[var(--anchor-page-pad-bottom)]',
         )}
         style={
-          !embedded && !hideNav
+          !embedded && !hideNav && !isCopilotDashboard
             ? { paddingBottom: 'var(--anchor-page-pad-bottom)' }
             : {}
         }
@@ -118,6 +126,7 @@ export default function Layout({ children, currentPageName }) {
               'rounded-full border border-white/12 bg-[var(--color-surface)] anchor-elev-2',
               embedded ? 'anchor-voice-fab' : 'fixed z-40 right-4 sm:right-6',
               !embedded && !isMobile && 'bottom-24',
+              isCopilotDashboard && 'lg:hidden',
             )}
             style={!embedded && isMobile ? { bottom: 'var(--anchor-voice-fab-bottom)' } : undefined}
             aria-label="Öppna röstassistent"
@@ -153,12 +162,13 @@ export default function Layout({ children, currentPageName }) {
         />
       )}
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation — dold på desktop när Copilot-sidebar används */}
       {!hideNav && (
         <nav
           className={cn(
             'anchor-bottom-nav left-0 right-0 mobile-safe-area border-t border-white/10',
             embedded ? 'relative w-full' : 'fixed bottom-0 z-50',
+            isCopilotDashboard && 'lg:hidden',
           )}
         >
           <div className="flex items-center justify-between py-2 max-w-lg mx-auto px-2 sm:px-3">

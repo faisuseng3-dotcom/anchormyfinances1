@@ -124,12 +124,6 @@ export default function Dashboard() {
         user={isAlex ? { full_name: 'Alex Lindqvist' } : undefined}
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
-        onFocusAction={(action) => {
-          if (action === 'register') window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'));
-          if (action === 'debt') navigate(createPageUrl('Loans'));
-          if (action === 'savings') setShowTransactionHub(true);
-          if (action === 'plan') window.dispatchEvent(new CustomEvent('anchor:open-plan'));
-        }}
       />
       {isAlex && <AlexConflictAlert />}
 

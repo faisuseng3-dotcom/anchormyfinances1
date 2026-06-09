@@ -1,52 +1,45 @@
 // @ts-nocheck
 import React from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { SkeletonCard, SkeletonLine, SkeletonCircle } from './SkeletonBlocks';
-import { dashZone } from '@/lib/dashboardTheme';
+import { SkeletonLine } from './SkeletonBlocks';
+import '../dashboard/copilot/anchorCopilot.css';
 
-/** Layout-skeleton för Hem — visar struktur medan profil laddas. */
+/** Layout-skeleton för Hem — Copilot-struktur medan profil laddas. */
 export default function DashboardSkeleton() {
   return (
-    <div className="min-h-screen anchor-page anchor-dashboard-pad-bottom anchor-mobile-frame relative overflow-x-hidden">
-      <header className={`relative z-10 ${dashZone} pt-11 sm:pt-14 pb-6`}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-3 flex-1">
-            <SkeletonLine width="w-24" className="h-3" />
-            <Skeleton className="h-9 w-40 rounded-xl" />
+    <div className="anchor-copilot-shell">
+      <aside className="copilot-sidebar hidden lg:flex">
+        <div className="copilot-sidebar-logo">
+          <Skeleton className="h-8 w-8 rounded-lg" />
+          <Skeleton className="h-5 w-20 rounded" />
+        </div>
+        {[1, 2, 3, 4].map((i) => (
+          <Skeleton key={i} className="h-9 mx-5 my-1 rounded" />
+        ))}
+      </aside>
+
+      <main className="copilot-main">
+        <header className="copilot-topbar">
+          <div className="space-y-2">
+            <SkeletonLine width="w-32" className="h-3" />
+            <Skeleton className="h-7 w-40 rounded-lg" />
           </div>
-          <SkeletonCircle size={44} />
-        </div>
-      </header>
+          <Skeleton className="h-10 w-28 rounded-full" />
+        </header>
 
-      <div className={`relative z-10 space-y-8 ${dashZone}`}>
-        <SkeletonCard className="space-y-4">
-          <SkeletonLine width="w-28" />
-          <Skeleton className="h-16 w-full rounded-2xl" />
-          <div className="flex gap-2">
-            <Skeleton className="h-10 flex-1 rounded-full" />
-            <Skeleton className="h-10 flex-1 rounded-full" />
+        <div className="copilot-content">
+          <Skeleton className="h-14 w-full rounded-2xl mb-7" />
+          <div className="copilot-summary-row">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-24 rounded-xl" />
+            ))}
           </div>
-        </SkeletonCard>
-
-        <div className="space-y-3">
-          <SkeletonLine width="w-16" />
-          <SkeletonCard>
-            <SkeletonLine width="w-3/4" className="mb-2" />
-            <SkeletonLine width="w-1/2" />
-          </SkeletonCard>
+          <div className="copilot-grid-main">
+            <Skeleton className="h-64 rounded-2xl" />
+            <Skeleton className="h-64 rounded-2xl" />
+          </div>
         </div>
-
-        <SkeletonCard>
-          <SkeletonLine width="w-32" className="mb-4" />
-          <Skeleton className="h-24 w-full rounded-xl" />
-        </SkeletonCard>
-
-        <div className="flex gap-3">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-12 flex-1 rounded-full" />
-          ))}
-        </div>
-      </div>
+      </main>
     </div>
   );
 }
