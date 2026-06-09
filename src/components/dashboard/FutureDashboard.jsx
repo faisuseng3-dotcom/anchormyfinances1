@@ -331,7 +331,7 @@ export default function FutureDashboard({
                       className="copilot-budget-row"
                       style={i === budgetRows.length - 1 ? { marginBottom: 0 } : undefined}
                     >
-                      <span className="copilot-budget-emoji">
+                      <span className="copilot-budget-icon">
                         <CategoryIcon category={row.category || row.key} size={16} color="var(--copilot-text-secondary)" />
                       </span>
                       <div className="copilot-budget-info">

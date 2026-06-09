@@ -127,7 +127,7 @@ Deno.serve(async (req) => {
 
       if (type === 'morning') {
         payload = {
-          title: 'God morgon ☕',
+          title: 'God morgon',
           body: `Du har ${Math.max(0, remaining).toLocaleString('sv-SE')} kr att leva på idag — lugnt och förutsägbart.`,
           icon: '/icon-192.png',
           badge: '/icon-96.png',

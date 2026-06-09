@@ -9,9 +9,10 @@
     "description": {
       "type": "string"
     },
-    "emoji": {
+    "icon": {
       "type": "string",
-      "default": "\ud83d\ude80"
+      "default": "rocket",
+      "description": "Lucide-ikonnyckel (t.ex. rocket, travel, home)"
     },
     "goal_name": {
       "type": "string",

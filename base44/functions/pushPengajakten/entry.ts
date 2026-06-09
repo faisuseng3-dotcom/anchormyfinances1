@@ -68,7 +68,7 @@ Deno.serve(async (req) => {
 
         if (!hasUsed && sub.amount > 0) {
           const payload = {
-            title: '💰 Besparing hittad!',
+            title: 'Besparing hittad',
             body: `Du betalar för ${sub.name} men har inte använt den på 30 dagar. Vill du pausa den?`,
             icon: '/icon-192.png',
             badge: '/icon-96.png',
@@ -101,7 +101,7 @@ Deno.serve(async (req) => {
           if (daysSinceAdded > 7 && watch.currentLowestPrice > 100) {
             const potentialEarning = Math.round(watch.currentLowestPrice * 0.75);
             const payload = {
-              title: '🚀 Säljläge!',
+              title: 'Säljläge',
               body: `Marknadspriset på ${watch.productName} är ${watch.currentLowestPrice.toLocaleString('sv-SE')} kr. Sälj nu och tjäna ca ${potentialEarning.toLocaleString('sv-SE')} kr.`,
               icon: '/icon-192.png',
               badge: '/icon-96.png',

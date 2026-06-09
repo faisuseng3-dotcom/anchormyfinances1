@@ -61,7 +61,7 @@ export default function SquadCreateModal({ isOpen, onClose, onSubmit, friendProf
               </button>
             </div>
 
-            {/* Emoji picker */}
+            {/* Ikonväljare */}
             <div>
               <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: 'var(--color-text-muted)' }}>Ikon</p>
               <div className="flex flex-wrap gap-2">

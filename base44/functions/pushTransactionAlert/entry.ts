@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     const formattedAmount = currentAmount.toLocaleString('sv-SE');
 
     const payload = {
-      title: '🛡️ Säkerhetskoll',
+      title: 'Säkerhetskoll',
       body: `En ovanligt stor dragning (${formattedAmount} kr) gjordes hos ${vendor}. Var det du?`,
       icon: '/icon-192.png',
       badge: '/icon-96.png',

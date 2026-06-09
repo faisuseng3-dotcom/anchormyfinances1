@@ -78,9 +78,18 @@
       "type": "string",
       "description": "Namn p\u00e5 sparm\u00e5let"
     },
-    "savingsGoalEmoji": {
+    "savingsGoalIcon": {
       "type": "string",
-      "description": "Emoji-ikon f\u00f6r sparm\u00e5let"
+      "description": "Ikonnyckel f\u00f6r sparm\u00e5let (Lucide via anchorIcons)"
+    },
+    "savingsGoalImageUrl": {
+      "type": "string",
+      "description": "Uppladdad bild-URL f\u00f6r visuellt sparm\u00e5l"
+    },
+    "savingsGoalVisualType": {
+      "type": "string",
+      "enum": ["image", "icon"],
+      "description": "Om sparm\u00e5let visas med bild eller ikon"
     },
     "savingsCurrentBalance": {
       "type": "number",

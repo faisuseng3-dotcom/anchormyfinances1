@@ -211,7 +211,7 @@ export function ScenarioIcon({ mode = 'realistic', size = SIZE_DEFAULT, classNam
   return <Icon size={size} className={className} strokeWidth={2} aria-hidden />;
 }
 
-/** Sparmål-ikonväljare (ersätter emoji-picker) */
+/** Sparmål-ikonväljare */
 export const DREAM_GOAL_ICON_OPTIONS = [
   { id: 'travel', Icon: Plane },
   { id: 'home', Icon: Home },
@@ -255,6 +255,13 @@ export function SquadIcon({ name = 'rocket', size = SIZE_DEFAULT, className = ''
   );
 }
 
+/** Mappar ikonnyckel; legacy emoji-fält renderas aldrig som text. */
+export function resolveSquadIconName(iconOrLegacy) {
+  if (!iconOrLegacy) return 'rocket';
+  if (SQUAD_ICON_LOOKUP[iconOrLegacy]) return iconOrLegacy;
+  return 'rocket';
+}
+
 /** Pulse-/kalenderhändelser */
 export function resolveEventCategory(event) {
   if (!event) return 'other';
@@ -277,7 +284,7 @@ export function EventCategoryIcon({ event, size = SIZE_DEFAULT, className = '', 
   );
 }
 
-/** Känslo-/feedbackikoner (ersätter stjärna/neutral/onödig-emoji) */
+/** Känslo-/feedbackikoner */
 export const FEELING_ICON_MAP = {
   star: Star,
   sparkle: Sparkle,
