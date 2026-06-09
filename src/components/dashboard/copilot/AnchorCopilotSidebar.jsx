@@ -12,6 +12,7 @@ const OVERVIEW_NAV = [
 ];
 
 const TOOLS_NAV = [
+  { page: 'ProTools', icon: '🔧', label: 'Verktyg' },
   { page: 'Dashboard', icon: '🎯', label: 'Sparmål', hash: '#goals' },
   { page: 'ProTools', icon: '🔁', label: 'Prenumerationer', query: '?deep=subscriptions' },
   { href: createPageUrl('BusinessDashboard'), icon: '🏢', label: 'Business' },

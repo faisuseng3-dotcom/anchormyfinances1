@@ -17,8 +17,8 @@ import { planeraTabHref } from '@/lib/planeraTabs';
 import { historyTabHref } from '@/lib/historyTabs';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import QuickExpenseSheet from './QuickExpenseSheet';
-import AnchorCopilotSidebar from './copilot/AnchorCopilotSidebar';
 import AcademyLessonSheet from '@/components/anchorBrain/AcademyLessonSheet';
+import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import {
   fmtKr,
   getMonthRange,
@@ -32,8 +32,6 @@ import {
   getSubscriptionTotal,
   getUpcomingSubscriptions,
 } from './copilot/copilotDashboardUtils';
-import './copilot/anchorCopilot.css';
-
 const MOOD_EMOJI = { calm: '😌', stressed: '😰', motivated: '💪' };
 
 const BAR_GRADIENTS = {
@@ -56,7 +54,7 @@ export default function FutureDashboard({
   onOpenTransactionHub,
   user,
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { openSidebar } = useCopilotNav();
   const [kalkylatornOpen, setKalkylatornOpen] = useState(false);
   const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
   const [coachInput, setCoachInput] = useState('');
@@ -157,22 +155,14 @@ export default function FutureDashboard({
   const showMoodBar = profile?.onboardingCompleted;
 
   return (
-    <div className="anchor-copilot-shell">
-      <AnchorCopilotSidebar
-        profile={profile}
-        user={user}
-        mobileOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
-
-      <main className="copilot-main">
+    <>
         <header className="copilot-topbar">
           <div className="copilot-topbar-left">
             <button
               type="button"
               className="copilot-icon-btn lg:hidden mb-2"
               aria-label="Öppna meny"
-              onClick={() => setSidebarOpen(true)}
+              onClick={openSidebar}
             >
               ☰
             </button>
@@ -650,7 +640,6 @@ export default function FutureDashboard({
             </div>
           </div>
         </div>
-      </main>
 
       <button
         type="button"
@@ -682,6 +671,6 @@ export default function FutureDashboard({
           onComplete={handleLessonComplete}
         />
       )}
-    </div>
+    </>
   );
 }

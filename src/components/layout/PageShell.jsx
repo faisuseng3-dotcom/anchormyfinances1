@@ -5,6 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { copilotPageClass } from '@/lib/copilotTheme';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
+import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 
 /**
  * @param {Object} props
@@ -27,6 +28,8 @@ export default function PageShell({
   children,
   className = '',
 }) {
+  const { openSidebar } = useCopilotNav();
+
   const backControl = backHref ? (
     <Link to={backHref} className="no-underline">
       <span
@@ -47,10 +50,18 @@ export default function PageShell({
   ) : null;
 
   return (
-    <div className={`${copilotPageClass} copilot-mobile-frame ${className}`}>
+    <div className={`${copilotPageClass} ${className}`}>
       <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl border-b border-[var(--copilot-border)]">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
+            <button
+              type="button"
+              className="copilot-icon-btn lg:hidden shrink-0"
+              aria-label="Öppna meny"
+              onClick={openSidebar}
+            >
+              ☰
+            </button>
             {backControl}
             <div className="min-w-0 pt-0.5">
               {subtitle && (

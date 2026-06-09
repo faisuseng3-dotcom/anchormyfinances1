@@ -882,7 +882,7 @@
 
 .anchor-copilot-shell .copilot-fab {
   position: fixed;
-  bottom: calc(var(--anchor-nav-height, 0px) + var(--anchor-safe-bottom, 0px) + 28px);
+  bottom: calc(var(--anchor-safe-bottom, 0px) + 28px);
   right: 28px;
   width: 52px;
   height: 52px;
@@ -899,12 +899,6 @@
   transition: all 0.2s;
   z-index: 200;
   font-family: inherit;
-}
-
-@media (min-width: 1024px) {
-  .anchor-copilot-shell .copilot-fab {
-    bottom: 28px;
-  }
 }
 
 .anchor-copilot-shell .copilot-fab:hover {

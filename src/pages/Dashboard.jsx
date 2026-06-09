@@ -19,7 +19,6 @@ import { useGamification, checkAndUnlockBadges } from '@/hooks/useGamification';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexModeHUD from '@/components/demo/AlexModeHUD';
-import AlexConflictAlert from '@/components/demo/AlexConflictAlert';
 import { getDashboardPath, getOnboardingPath, isBusinessMode } from '@/lib/onboardingRouter';
 
 export default function Dashboard() {
@@ -125,8 +124,6 @@ export default function Dashboard() {
         onOpenMagicEntry={() => setShowMagicEntry(true)}
         onOpenTransactionHub={() => setShowTransactionHub(true)}
       />
-      {isAlex && <AlexConflictAlert />}
-
       <TransactionHub
         isOpen={showTransactionHub}
         onClose={() => setShowTransactionHub(false)}

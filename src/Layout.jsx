@@ -24,6 +24,7 @@ import { isEmbeddedApp } from '@/lib/embedLayout';
 import { cn } from '@/lib/utils';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import PageTransition from '@/components/ui-premium/PageTransition';
+import CopilotAppLayout from '@/components/layout/CopilotAppLayout';
 
 /** 5 kärnflikar + FAB — Jämför och socialt ligger under Inställningar. */
 const navItems = [
@@ -45,9 +46,9 @@ export default function Layout({ children, currentPageName }) {
   const navigate = useNavigate();
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const [alexActive, setAlexActive] = React.useState(() => isAlexMode());
-  const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
-  const isCopilotDashboard = currentPageName === 'Dashboard';
   const embedded = isEmbeddedApp();
+  const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
+  const useCopilotShell = !hideNav && !isBusiness && !embedded;
 
   // Lyssna på Alex Mode-event för att dölja business-element
   React.useEffect(() => {
@@ -101,19 +102,24 @@ export default function Layout({ children, currentPageName }) {
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
-      <main
-        className={cn(
-          embedded ? 'anchor-app-main' : !hideNav ? 'overflow-y-auto overflow-x-hidden' : 'overflow-x-hidden',
-          isCopilotDashboard && 'max-lg:pb-[var(--anchor-page-pad-bottom)]',
-        )}
-        style={
-          !embedded && !hideNav && !isCopilotDashboard
-            ? { paddingBottom: 'var(--anchor-page-pad-bottom)' }
-            : {}
-        }
-      >
-        <PageTransition>{children}</PageTransition>
-      </main>
+      {useCopilotShell ? (
+        <CopilotAppLayout>
+          <div className="overflow-y-auto overflow-x-hidden min-h-screen">
+            <PageTransition>{children}</PageTransition>
+          </div>
+        </CopilotAppLayout>
+      ) : (
+        <main
+          className={cn(
+            embedded ? 'anchor-app-main' : !hideNav ? 'overflow-y-auto overflow-x-hidden' : 'overflow-x-hidden',
+          )}
+          style={
+            !embedded && !hideNav ? { paddingBottom: 'var(--anchor-page-pad-bottom)' } : {}
+          }
+        >
+          <PageTransition>{children}</PageTransition>
+        </main>
+      )}
 
 
 
@@ -125,10 +131,13 @@ export default function Layout({ children, currentPageName }) {
             className={cn(
               'rounded-full border border-white/12 bg-[var(--color-surface)] anchor-elev-2',
               embedded ? 'anchor-voice-fab' : 'fixed z-40 right-4 sm:right-6',
-              !embedded && !isMobile && 'bottom-24',
-              isCopilotDashboard && 'lg:hidden',
+              !embedded && !isMobile && (useCopilotShell ? 'bottom-6' : 'bottom-24'),
             )}
-            style={!embedded && isMobile ? { bottom: 'var(--anchor-voice-fab-bottom)' } : undefined}
+            style={
+              !embedded && isMobile
+                ? { bottom: useCopilotShell ? '1.5rem' : 'var(--anchor-voice-fab-bottom)' }
+                : undefined
+            }
             aria-label="Öppna röstassistent"
           >
             <Mic className="w-5 h-5 text-[var(--color-text-primary)]" />
@@ -162,13 +171,12 @@ export default function Layout({ children, currentPageName }) {
         />
       )}
 
-      {/* Bottom Navigation — dold på desktop när Copilot-sidebar används */}
-      {!hideNav && (
+      {/* Bottom Navigation — ersatt av Copilot-sidebar */}
+      {!hideNav && !useCopilotShell && (
         <nav
           className={cn(
             'anchor-bottom-nav left-0 right-0 mobile-safe-area border-t border-white/10',
             embedded ? 'relative w-full' : 'fixed bottom-0 z-50',
-            isCopilotDashboard && 'lg:hidden',
           )}
         >
           <div className="flex items-center justify-between py-2 max-w-lg mx-auto px-2 sm:px-3">
