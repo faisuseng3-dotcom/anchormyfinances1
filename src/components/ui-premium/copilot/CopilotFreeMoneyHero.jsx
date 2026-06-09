@@ -1,13 +1,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Wallet } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { useFreeMoney } from '@/hooks/useFreeMoney';
+import { springPop } from '@/lib/motionPresets';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
+function statusFromFree(free, margin) {
+  if (margin <= 0) return { label: 'Sätt upp budget', tone: 'muted' };
+  const ratio = free / margin;
+  if (ratio >= 0.35) return { label: 'Trygg marginal', tone: 'green' };
+  if (ratio >= 0.15) return { label: 'Håll koll', tone: 'amber' };
+  return { label: 'Tight månad', tone: 'amber' };
+}
+
 /**
- * Framåtblickande hero — "Dina fria pengar" (inte vad du misslyckats med).
- * Synkas globalt via useFreeMoney / React Query.
+ * Framåtblickande hero — "Säkert att spendera" (inte vad du misslyckats med).
  */
 export default function CopilotFreeMoneyHero({
   previewAmount = null,
@@ -22,35 +30,45 @@ export default function CopilotFreeMoneyHero({
       ? baseFree + Math.abs(Number(previewAmount) || 0)
       : baseFree;
 
+  const status = statusFromFree(free, margin);
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      className={`anchor-premium-hero organic-surface--hero rounded-3xl overflow-hidden ${className}`}
+      transition={springPop}
+      className={`anchor-premium-hero organic-surface--hero rounded-[24px] overflow-hidden active:scale-[0.995] transition-transform ${className}`}
       style={{
-        background: 'linear-gradient(135deg, rgba(34,217,122,0.14) 0%, rgba(74,122,255,0.1) 100%)',
+        background: 'linear-gradient(145deg, rgba(34,217,122,0.16) 0%, rgba(74,122,255,0.08) 55%, rgba(10,15,107,0.2) 100%)',
+        boxShadow: 'var(--organic-shadow-lift), var(--organic-shadow-inset)',
       }}
     >
-      <div className="p-5 flex items-start gap-4">
-        <div
-          className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ background: 'rgba(34,217,122,0.18)', boxShadow: 'var(--anchor-shadow-1)' }}
+      <div className="p-6 sm:p-7">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--copilot-text-muted)]">
+          Säkert att spendera
+        </p>
+        <p className="text-[40px] sm:text-[48px] font-bold text-white tabular-nums leading-none mt-2 tracking-tight">
+          {fmt(free)}
+          <span className="text-[20px] sm:text-[22px] font-medium text-[var(--copilot-text-secondary)] ml-2">kr</span>
+        </p>
+        <motion.span
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, ...springPop }}
+          className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-[13px] font-semibold"
+          style={{
+            background: status.tone === 'green'
+              ? 'rgba(34,217,122,0.18)'
+              : 'rgba(251,191,36,0.14)',
+            color: status.tone === 'green' ? '#22d97a' : '#fbbf24',
+            boxShadow: 'var(--organic-shadow-soft)',
+          }}
         >
-          <Wallet className="w-5 h-5 text-[var(--copilot-accent-green)]" />
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
-            Dina fria pengar
-          </p>
-          <p className="text-[32px] sm:text-[36px] font-bold text-white tabular-nums leading-none mt-1 tracking-tight">
-            {fmt(free)}
-            <span className="text-[18px] font-medium text-[var(--copilot-text-secondary)] ml-1">kr</span>
-          </p>
-          <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-2 leading-relaxed">
-            Kvar att leva på denna månad — av {fmt(margin)} kr marginal.
-          </p>
-        </div>
+          <ShieldCheck className="w-4 h-4" />
+          {status.label}
+          <span className="text-white/50 font-medium">·</span>
+          <span className="text-white/80 font-medium">{fmt(margin)} kr marginal</span>
+        </motion.span>
       </div>
     </motion.div>
   );

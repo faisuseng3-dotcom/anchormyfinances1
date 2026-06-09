@@ -141,9 +141,15 @@
 }
 
 .anchor-copilot-shell .copilot-summary-card:hover,
-.anchor-copilot-shell .copilot-card:hover {
+.anchor-copilot-shell .copilot-card:hover,
+.anchor-copilot-shell .organic-surface:hover {
   transform: translateY(-2px);
   box-shadow: var(--organic-shadow-lift), var(--organic-shadow-inset);
+}
+
+.anchor-copilot-shell .copilot-bento .organic-surface,
+.anchor-copilot-shell .copilot-secondary-strip .copilot-card {
+  border-radius: var(--organic-radius-lg) !important;
 }
 
 .anchor-copilot-shell .copilot-icon-btn,

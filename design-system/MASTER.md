@@ -3,8 +3,9 @@
 Source: ui-ux-pro-max + Copilot Dashboard DNA (`src/lib/copilotTheme.js`, `src/index.css`).
 
 ## Pattern
+- **Asymmetric bento grid** — hero full-width, wide left (review + timeline), narrow right (goals + streaks)
 - **Bento / card-first** — information in tinted glass cards, not flat tables
-- **Future-forward** — hero metrics show *what you can do*, not what you failed at
+- **Future-forward** — hero shows *Säkert att spendera*, not guilt metrics
 - **Active control** — swipe/approve flows (Excel & kuvertmetoden), not passive lists
 
 ## Style
@@ -32,10 +33,16 @@ Source: ui-ux-pro-max + Copilot Dashboard DNA (`src/lib/copilotTheme.js`, `src/i
 - `AnchorSheet` — bottom sheets (no pop-in modals)
 - `TransactionActiveReview` — swipe/approve import & history
 
+## Radius & depth
+- Cards/panels: **16–24px** (`rounded-[16px]` … `rounded-[24px]`)
+- Pills (buttons, badges, inputs): **9999px**
+- **No hard borders** — use `organic-surface` + `--organic-shadow-float`
+- Badges/chips: min **12px** radius or pill
+
 ## Motion
-- Page enter: `opacity + y:8` 220ms
+- Page enter: spring `springPop` or `opacity + y:12`
 - Sheets: spring slide-up (`AnchorSheet`)
-- Buttons: `active:scale-[0.98]`, min touch **48×48**
+- All clickables: `active:scale-[0.97]`–`[0.98]`, min touch **48×48**
 
 ## Anti-patterns
 - No emojis as icons (Lucide only)

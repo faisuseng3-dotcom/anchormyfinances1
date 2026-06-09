@@ -7,6 +7,21 @@ import { getMonthlyMargin } from '@/lib/financialUtils';
 export const COPILOT_GRADIENT =
   'linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%)';
 
+/** Organic premium radii — ui-ux-pro-max / MASTER.md */
+export const ORGANIC_RADIUS = {
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 28,
+  pill: 9999,
+};
+
+export const ORGANIC_SHADOW = {
+  soft: 'var(--organic-shadow-soft)',
+  float: 'var(--organic-shadow-float)',
+  lift: 'var(--organic-shadow-lift)',
+};
+
 export const copilotColors = {
   bgDeep: '#0a0f6b',
   bgMid: '#1228cc',
@@ -46,7 +61,10 @@ export const copilotPageClass =
   'min-h-screen min-h-[100dvh] overflow-x-hidden anchor-page copilot-subpage';
 
 export const copilotCardClass =
-  'copilot-surface-card organic-card rounded-3xl p-5 transition-all duration-300';
+  'copilot-surface-card organic-card organic-surface rounded-[24px] p-5 transition-all duration-300 active:scale-[0.98]';
+
+export const copilotPanelClass =
+  'organic-surface rounded-[24px] p-5 transition-transform active:scale-[0.99]';
 
 export const copilotInputClass =
   'organic-input w-full h-12 rounded-full bg-[var(--copilot-bg-card)] px-5 text-[15px] text-white placeholder:text-[var(--copilot-text-muted)] outline-none focus:shadow-[0_0_0_3px_rgba(74,122,255,0.25)] transition-all active:scale-[0.99]';
