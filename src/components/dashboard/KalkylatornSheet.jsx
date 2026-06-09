@@ -58,7 +58,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
       }
     >
       {profile?.income > 0 && (
-        <div className="anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white/[0.04] ring-1 ring-white/[0.08] px-4 py-4 mb-5">
+        <div className="anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white/[0.04] shadow-[var(--anchor-shadow-1)] px-4 py-4 mb-5">
           <p className={sectionMetaClass}>Kvar den här månaden</p>
           <p className="text-[26px] font-light text-white tabular-nums mt-1 tracking-tight">
             {fmt(safeToSpend)} kr

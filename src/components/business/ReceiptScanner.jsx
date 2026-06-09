@@ -164,7 +164,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                   style={{ borderColor: 'rgba(212,175,55,0.4)', background: 'rgba(212,175,55,0.04)' }}
                 >
                   <div className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                    style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}>
+                    style={{ background: 'rgba(212,175,55,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}>
                     <Camera className="w-8 h-8" style={{ color: '#D4AF37' }} />
                   </div>
                   <div className="text-center">
@@ -172,7 +172,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                     <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.55)' }}>JPG, PNG, PDF · data läses av automatiskt</p>
                   </div>
                   <div className="flex items-center gap-2 px-4 py-2 rounded-full"
-                    style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.3)' }}>
+                    style={{ background: 'rgba(212,175,55,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}>
                     <Upload className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />
                     <span className="text-xs font-bold" style={{ color: '#D4AF37' }}>Välj fil</span>
                   </div>
@@ -219,7 +219,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
 
                 {extracted?.confidence && (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl"
-                    style={{ background: 'rgba(61,170,122,0.1)', border: '1px solid rgba(61,170,122,0.25)' }}>
+                    style={{ background: 'rgba(61,170,122,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}>
                     <CheckCircle2 className="w-4 h-4" style={{ color: '#3DAA7A' }} />
                     <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>
                       Kvitto tolkat med {extracted.confidence}% säkerhet — granska och justera vid behov
@@ -241,7 +241,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                       onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
                       placeholder={f.placeholder}
                       className="w-full h-11 px-3 rounded-xl text-sm font-bold"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}
+                      style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)', color: '#F0EAD6' }}
                     />
                   </div>
                 ))}
@@ -252,7 +252,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                       style={{ color: 'rgba(155,173,184,0.45)' }}>Momssats</label>
                     <select value={form.vatRate} onChange={e => setForm(prev => ({ ...prev, vatRate: e.target.value }))}
                       className="w-full h-11 px-3 rounded-xl text-sm font-bold"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+                      style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)', color: '#F0EAD6' }}>
                       <option value="25">25%</option>
                       <option value="12">12%</option>
                       <option value="6">6%</option>
@@ -264,7 +264,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                       style={{ color: 'rgba(155,173,184,0.45)' }}>Konto (förslag)</label>
                     <select value={form.account} onChange={e => setForm(prev => ({ ...prev, account: e.target.value }))}
                       className="w-full h-11 px-3 rounded-xl text-sm font-bold"
-                      style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }}>
+                      style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)', color: '#F0EAD6' }}>
                       {ACCOUNTS.map(a => <option key={a.code} value={a.code}>{a.code} {a.label}</option>)}
                     </select>
                   </div>
@@ -276,7 +276,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
                   <input value={form.note} onChange={e => setForm(prev => ({ ...prev, note: e.target.value }))}
                     placeholder="Valfri kommentar…"
                     className="w-full h-11 px-3 rounded-xl text-sm"
-                    style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', color: '#F0EAD6' }} />
+                    style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)', color: '#F0EAD6' }} />
                 </div>
 
                 <button onClick={handleConfirm}

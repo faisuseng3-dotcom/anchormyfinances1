@@ -28,7 +28,7 @@ function getLast6Months() {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1a2235] px-4 py-3 shadow-xl text-sm">
+    <div className="rounded-2xl border-white/10 bg-[#1a2235] px-4 py-3 shadow-xl text-sm">
       <p className="text-slate-400 mb-2 font-medium">{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} style={{ color: p.color }} className="font-bold">

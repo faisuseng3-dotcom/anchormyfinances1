@@ -13,7 +13,7 @@ export default function EmotionalShield({ profile }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`p-6 rounded-2xl border-2 ${
+      className={`p-6 rounded-3xl-2 ${
         isRiskTime 
           ? 'border-amber-500 bg-amber-500/10' 
           : 'border-emerald-500 bg-emerald-500/10'

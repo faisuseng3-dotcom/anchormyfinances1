@@ -295,7 +295,7 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
       </AnimatePresence>
 
       {/* Comparison mini-table */}
-      <div className="rounded-2xl border border-white/8 overflow-hidden">
+      <div className="rounded-3xl border-white/8 overflow-hidden">
         <div className="grid grid-cols-4 text-xs bg-white/5 px-3 py-2 text-slate-400 font-medium">
           <span>Alternativ</span>
           <span className="text-center">Boende</span>

@@ -164,7 +164,7 @@ export default function SmartPasteImport({ onBooked }) {
             {/* needs_review summary bar */}
             {parsed.some(t => t.needs_review) && (
               <div className="mx-5 mb-2 mt-1 flex items-center gap-2 px-3 py-2 rounded-xl"
-                style={{ background: 'rgba(220,38,38,0.07)', border: '1px solid rgba(220,38,38,0.25)' }}>
+                style={{ background: 'rgba(220,38,38,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#dc2626' }} />
                 <p className="text-xs font-semibold" style={{ color: '#dc2626' }}>
                   {parsed.filter(t => t.needs_review).length} rad{parsed.filter(t => t.needs_review).length > 1 ? 'er' : ''} markerade för granskning (säkerhet &lt;90%)

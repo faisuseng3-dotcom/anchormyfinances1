@@ -139,7 +139,7 @@ export default function PriceComparison({
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className={`block p-4 rounded-xl border-2 transition-all ${
+                className={`block p-4 rounded-2xl-2 transition-all ${
                   isLowest
                     ? 'border-emerald-500 bg-emerald-500/10'
                     : 'border-white/10 dark-card hover:border-emerald-500/30'

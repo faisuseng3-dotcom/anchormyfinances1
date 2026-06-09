@@ -46,14 +46,14 @@ function TransferRow({ item, index }) {
       initial={{ opacity: 0, x: 8 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.05, duration: 0.25 }}
-      className="flex items-center gap-3 p-3.5 rounded-2xl border border-[var(--copilot-border)]"
+      className="flex items-center gap-3 p-3.5 rounded-2xl organic-surface"
       style={{ background: `rgba(255,255,255,${0.04 + (index % 3) * 0.02})` }}
     >
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
         style={{
           background: item.incoming ? 'rgba(34,217,122,0.12)' : 'rgba(244,114,182,0.1)',
-          border: `1px solid ${item.incoming ? 'rgba(34,217,122,0.25)' : 'rgba(244,114,182,0.2)'}`,
+          boxShadow: 'var(--anchor-shadow-1)',
         }}
       >
         <ArrowLeftRight
@@ -85,7 +85,7 @@ function MarginBreakdown({ profile }) {
         {breakdown.rows.map((row) => (
           <div
             key={row.key}
-            className="flex items-center justify-between gap-3 p-3.5 rounded-2xl border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)]"
+            className="flex items-center justify-between gap-3 p-3.5 rounded-2xl organic-surface bg-[var(--copilot-bg-card)]"
           >
             <div className="flex items-center gap-2 min-w-0">
               <span
@@ -105,7 +105,7 @@ function MarginBreakdown({ profile }) {
           </div>
         ))}
         <div
-          className="flex items-center justify-between gap-3 p-4 rounded-2xl border border-[rgba(74,122,255,0.35)]"
+          className="flex items-center justify-between gap-3 p-4 rounded-3xl border-[rgba(74,122,255,0.35)]"
           style={{ background: 'rgba(74,122,255,0.12)' }}
         >
           <span className="text-[14px] font-semibold text-white flex items-center gap-2">
@@ -119,7 +119,7 @@ function MarginBreakdown({ profile }) {
       </div>
 
       <div
-        className="mt-5 p-4 rounded-2xl border border-[rgba(34,217,122,0.25)]"
+        className="mt-5 p-4 rounded-3xl border-[rgba(34,217,122,0.25)]"
         style={{ background: 'rgba(34,217,122,0.08)' }}
       >
         <p className="text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed flex items-start gap-2">
@@ -156,7 +156,7 @@ function SavingsAccountPanel({ account, profile, transactions, onOpenSwipe }) {
   return (
     <>
       <div
-        className="rounded-2xl border border-[var(--copilot-border)] p-5 mb-6"
+        className="rounded-2xl organic-surface p-5 mb-6"
         style={{ background: meta.gradient }}
       >
         <div className="flex items-start gap-4">
@@ -179,7 +179,7 @@ function SavingsAccountPanel({ account, profile, transactions, onOpenSwipe }) {
       </div>
 
       {pct != null && (
-        <div className="flex items-center gap-4 mb-6 p-4 rounded-2xl border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)]">
+        <div className="flex items-center gap-4 mb-6 p-4 rounded-2xl organic-surface bg-[var(--copilot-bg-card)]">
           <CopilotProgressRing
             value={pct}
             max={100}
@@ -259,7 +259,7 @@ export default function AccountDetailDrawer({
             role="dialog"
             aria-modal="true"
             aria-labelledby="account-drawer-title"
-            className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col border-l border-[var(--copilot-border)] shadow-2xl overflow-hidden"
+            className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col border-l  shadow-2xl overflow-hidden"
             style={{
               zIndex: zIndex.sheet + 1,
               background: 'linear-gradient(180deg, #0a0f6b 0%, #0d1a9e 55%, #1228cc 100%)',
@@ -274,7 +274,7 @@ export default function AccountDetailDrawer({
               <button
                 type="button"
                 onClick={onClose}
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)] hover:text-white transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)] hover:text-white transition-colors"
                 aria-label="Stäng"
               >
                 <X className="w-4 h-4" />

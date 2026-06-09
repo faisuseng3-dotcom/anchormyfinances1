@@ -99,7 +99,7 @@ Lämna kategori tom — den sätts separat.`,
             initial={{ y: 80, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 80, opacity: 0 }}
-            className="w-full max-w-md rounded-[28px] p-5 space-y-4 ring-1 ring-inset ring-white/[0.1]"
+            className="w-full max-w-md rounded-[28px] p-5 space-y-4 shadow-[var(--anchor-shadow-1)]"
             style={elevatedSheet()}
             onClick={(e) => e.stopPropagation()}
           >

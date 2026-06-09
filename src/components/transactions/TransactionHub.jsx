@@ -217,7 +217,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
       maxHeight="min(88dvh, 640px)"
     >
       {goal > 0 && (
-        <div className="flex items-center gap-4 mb-5 p-4 rounded-2xl border border-[var(--copilot-border)] bg-[rgba(34,217,122,0.08)]">
+        <div className="flex items-center gap-4 mb-5 p-4 rounded-2xl organic-surface bg-[rgba(34,217,122,0.08)]">
           <VisualSavingsGoalRing
             pct={goalPct}
             size={72}
@@ -235,7 +235,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
         </div>
       )}
 
-      <div className="flex rounded-2xl overflow-hidden border border-[var(--copilot-border)] mb-5 bg-[var(--copilot-bg-card)]">
+      <div className="flex rounded-2xl overflow-hidden organic-surface mb-5 bg-[var(--copilot-bg-card)]">
         {TABS.map((t) => {
           const Icon = t.icon;
           return (

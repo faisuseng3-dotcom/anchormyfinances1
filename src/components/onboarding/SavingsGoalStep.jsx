@@ -121,7 +121,7 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
               placeholder="t.ex. Thailand-resa, Min första bil"
               value={data.savingsGoalName || ''}
               onChange={(e) => { onChange({ ...data, savingsGoalName: e.target.value }); setError(null); }}
-              className="h-12 rounded-xl border-slate-200"
+              className="h-12 rounded-2xl-slate-200"
             />
           </div>
 
@@ -133,7 +133,7 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
                 placeholder="50 000"
                 value={formatNumber(data.savingsGoal)}
                 onChange={(e) => { onChange({ ...data, savingsGoal: parseNumber(e.target.value) }); setError(null); }}
-                className="h-14 text-lg pr-12 rounded-xl border-slate-200"
+                className="h-14 text-lg pr-12 rounded-2xl-slate-200"
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
             </div>

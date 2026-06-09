@@ -21,7 +21,7 @@ export default function DailyDigest() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'var(--color-card)', boxShadow: 'var(--anchor-shadow-1)' }}
     >
       <button
         onClick={() => setExpanded(v => !v)}
@@ -30,7 +30,7 @@ export default function DailyDigest() {
       >
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(200,146,58,0.2)', border: '1px solid rgba(200,146,58,0.35)' }}>
+            style={{ background: 'rgba(200,146,58,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Sun className="w-3.5 h-3.5" style={{ color: '#C8923A' }} />
           </div>
           <div className="text-left">
@@ -53,7 +53,7 @@ export default function DailyDigest() {
 
               {/* Insight 1 */}
               <div className="p-3 rounded-xl flex items-center gap-3"
-                style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.2)' }}>
+                style={{ background: 'rgba(61,170,122,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(61,170,122,0.15)' }}>
                   <Banknote className="w-4 h-4" style={{ color: '#3DAA7A' }} />
@@ -68,7 +68,7 @@ export default function DailyDigest() {
 
               {/* Insight 2 */}
               <div className="p-3 rounded-xl flex items-center gap-3"
-                style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.2)' }}>
+                style={{ background: 'rgba(75,124,243,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0"
                   style={{ background: 'rgba(75,124,243,0.15)' }}>
                   <TrendingUp className="w-4 h-4" style={{ color: '#4B7CF3' }} />
@@ -83,7 +83,7 @@ export default function DailyDigest() {
 
               {/* Insight 3 — unpaid clients */}
               <div className="p-3 rounded-xl"
-                style={{ background: 'rgba(217,95,95,0.08)', border: '1px solid rgba(217,95,95,0.2)' }}>
+                style={{ background: 'rgba(217,95,95,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-3.5 h-3.5" style={{ color: '#D95F5F' }} />
                   <p className="text-[11px] font-bold" style={{ color: '#D95F5F' }}>

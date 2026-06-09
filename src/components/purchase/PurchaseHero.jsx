@@ -24,7 +24,7 @@ export default function PurchaseHero({ profile }) {
           </div>
         </div>
       )}
-      <div className="absolute top-5 right-5 w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08]">
+      <div className="absolute top-5 right-5 w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center shadow-[var(--anchor-shadow-1)]">
         <ShoppingBag className="w-5 h-5 text-cyan-300/80" />
       </div>
     </TechHero>

@@ -76,7 +76,7 @@ export const layout = {
 /** Semantic surfaces — no pure #FFF / #000 */
 export const surface = {
   page: 'anchor-page',
-  card: 'anchor-elev-2 rounded-[var(--anchor-radius-lg)] bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]',
+  card: 'anchor-elev-2 rounded-[var(--anchor-radius-lg)] bg-[var(--color-surface-raised)] shadow-[var(--anchor-shadow-1)]',
   cardInset: 'anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white/[0.04] ring-1 ring-inset ring-white/[0.08]',
   overlay: 'anchor-overlay',
 };

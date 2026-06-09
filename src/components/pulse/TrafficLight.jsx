@@ -26,7 +26,7 @@ export default function TrafficLight({ safeToSpend, hasDanger, nextCritical }) {
       <div className="flex items-center gap-5">
         {/* Traffic light housing */}
         <div className="flex-shrink-0 flex flex-col items-center gap-2 px-3 py-4 rounded-2xl"
-          style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.08)', minWidth: 52 }}>
+          style={{ background: 'rgba(0,0,0,0.5)', boxShadow: 'var(--anchor-shadow-1)', minWidth: 52 }}>
           {['red', 'yellow', 'green'].map(c => {
             const active = status === c;
             const col = colors[c];

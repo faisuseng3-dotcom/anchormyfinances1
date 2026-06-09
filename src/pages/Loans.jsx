@@ -124,13 +124,13 @@ Kort svar svenska, max 3 meningar.`,
 
           <motion.div {...staggerItem(1)}>
             <div className="grid grid-cols-2 gap-3 mb-6">
-              <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+              <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
                 <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Mot frihet</p>
                 <p className="text-[20px] font-bold text-white tabular-nums mt-1">
                   {monthsLeft > 0 ? `${monthsLeft} mån` : 'På väg'}
                 </p>
               </div>
-              <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+              <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
                 <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Plan per månad</p>
                 <p className="text-[20px] font-bold text-[var(--copilot-accent-green)] tabular-nums mt-1">
                   {fmt(totalMonthly)} kr
@@ -186,7 +186,7 @@ Kort svar svenska, max 3 meningar.`,
                   highestInterestLoan && loan.name === highestInterestLoan.name && (loan.interestRate || 0) > 0;
 
                 return (
-                  <div key={i} className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+                  <div key={i} className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
                           <p className="text-[15px] font-medium text-white flex items-center gap-2 flex-wrap">

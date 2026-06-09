@@ -45,7 +45,7 @@ export default function PassivityCalculator({ profile, variant = 'default' }) {
   const wrapClass =
     variant === 'inset'
       ? 'relative rounded-[24px] p-5 overflow-hidden'
-      : 'rounded-2xl border border-white/[0.08] px-4 py-4';
+      : 'rounded-3xl border-white/[0.08] px-4 py-4';
 
   return (
     <section

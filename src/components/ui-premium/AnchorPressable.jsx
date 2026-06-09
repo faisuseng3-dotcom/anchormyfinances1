@@ -21,8 +21,8 @@ export default function AnchorPressable({
   return (
     <MotionComp
       type={Component === motion.button ? props.type || 'button' : undefined}
-      whileTap={scaleOnPress ? { scale: 0.96, opacity: 0.72 } : { opacity: 0.72 }}
-      transition={{ duration: 0.12, ease: 'easeOut' }}
+      whileTap={scaleOnPress ? { scale: 0.97 } : undefined}
+      transition={{ type: 'spring', stiffness: 420, damping: 30, mass: 0.8 }}
       className={cn(
         'inline-flex items-center justify-center',
         minTouch && 'min-w-12 min-h-12',

@@ -37,7 +37,7 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
 
   return (
     <div className="rounded-3xl p-5"
-      style={{ background: 'rgba(6,8,18,0.95)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      style={{ background: 'rgba(6,8,18,0.95)', boxShadow: 'var(--anchor-shadow-1)' }}>
 
       <p className="text-[9px] font-black tracking-widest mb-3 flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.22)' }}>
         <Wallet className="w-3.5 h-3.5" /> KOLLA ETT KÖP
@@ -61,7 +61,7 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
                   className="w-full rounded-2xl px-4 py-3 text-lg font-black outline-none"
                   style={{
                     background: 'rgba(255,255,255,0.06)',
-                    border: '1px solid rgba(255,255,255,0.12)',
+                    boxShadow: 'var(--anchor-shadow-1)',
                     color: '#fff',
                   }}
                 />
@@ -73,7 +73,7 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
                 onClick={check}
                 disabled={!input}
                 className="px-5 py-3 rounded-2xl text-sm font-black disabled:opacity-30"
-                style={{ background: 'rgba(15,222,189,0.18)', color: '#0FDEBD', border: '1px solid rgba(15,222,189,0.35)' }}>
+                style={{ background: 'rgba(15,222,189,0.18)', color: '#0FDEBD', boxShadow: 'var(--anchor-shadow-1)' }}>
                 Kolla
               </motion.button>
             </div>
@@ -84,7 +84,7 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
                 <button key={v}
                   onClick={() => setInput(String(v))}
                   className="px-3 py-1 rounded-full text-[10px] font-bold"
-                  style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.35)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  style={{ background: 'rgba(255,255,255,0.04)', color: 'rgba(255,255,255,0.35)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   {fmt(v)} kr
                 </button>
               ))}
@@ -98,7 +98,7 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
             className="rounded-2xl p-4"
             style={{
               background: answer.ok ? 'rgba(15,222,189,0.08)' : 'rgba(255,68,102,0.08)',
-              border: `1px solid ${answer.ok ? 'rgba(15,222,189,0.3)' : 'rgba(255,68,102,0.35)'}`,
+              boxShadow: 'var(--anchor-shadow-1)',
             }}>
 
             {/* Verdict */}
@@ -117,7 +117,7 @@ export default function PurchaseCheck({ safeToSpend, nextCritical, currentBalanc
 
             <button onClick={reset}
               className="mt-4 w-full py-2.5 rounded-xl text-sm font-black"
-              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.4)', border: '1px solid rgba(255,255,255,0.08)' }}>
+              style={{ background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.4)', boxShadow: 'var(--anchor-shadow-1)' }}>
               Kolla ett annat köp
             </button>
           </motion.div>

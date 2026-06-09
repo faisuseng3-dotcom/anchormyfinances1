@@ -113,7 +113,7 @@ Svara ENDAST med JSON.`,
       )}
 
       {/* Battle arena */}
-      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="rounded-2xl p-5 space-y-4" style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <div className="flex items-center gap-2 mb-1">
           <Swords className="w-5 h-5 text-purple-400" />
           <h3 className="font-semibold text-white">Besluts-Battle</h3>
@@ -158,7 +158,7 @@ Svara ENDAST med JSON.`,
                 { label: choiceB, verdict: result.verdict_b, months: result.months_until_b, free: result.freedom_score_b, money: result.money_score_b, isWinner: result.winner === 'B', color: '#A855F7' },
               ].map((s, i) => (
                 <div key={i} className="rounded-2xl p-4 relative"
-                  style={{ background: s.isWinner ? `${s.color}18` : 'rgba(17,24,39,0.6)', border: `1px solid ${s.isWinner ? s.color + '55' : 'rgba(255,255,255,0.07)'}` }}>
+                  style={{ background: s.isWinner ? `${s.color}18` : 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   {s.isWinner && (
                     <div className="absolute -top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-black text-white"
                       style={{ background: s.color }}>VINNARE</div>
@@ -177,19 +177,19 @@ Svara ENDAST med JSON.`,
             </div>
 
             {/* Final wisdom */}
-            <div className="rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)' }}>
+            <div className="rounded-xl p-4" style={{ background: 'rgba(139,92,246,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <p className="text-xs font-bold text-purple-400 mb-2 uppercase tracking-wider flex items-center gap-1.5"><Brain className="w-3.5 h-3.5" aria-hidden /> Guru-domen</p>
               <p className="text-sm text-slate-300 leading-relaxed">{result.final_wisdom}</p>
             </div>
 
             {/* Decision certificate */}
-            <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))', border: '1px solid rgba(139,92,246,0.3)' }}>
+            <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))', boxShadow: 'var(--anchor-shadow-1)' }}>
               <Award className="w-8 h-8 text-purple-300 mx-auto mb-2" aria-hidden />
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Besluts-certifikat</p>
               <p className="text-lg font-black text-white mb-1">{result.certificate_headline}</p>
               <p className="text-xs text-slate-400">Analyserat av Anchor · {new Date().toLocaleDateString('sv-SE')}</p>
               <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-purple-300"
-                style={{ background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.3)' }}>
+                style={{ background: 'rgba(139,92,246,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <Check className="w-3.5 h-3.5" /> Verifierat beslut
               </div>
             </div>

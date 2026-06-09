@@ -240,7 +240,7 @@ Beräkna:
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className={`p-6 rounded-2xl border-2 ${
+        className={`p-6 rounded-3xl-2 ${
           isCritical 
             ? 'border-rose-500 bg-rose-500/10' 
             : isRisky 
@@ -325,7 +325,7 @@ Beräkna:
           </div>
 
           {/* Strategic Recommendation */}
-          <div className={`p-5 rounded-xl border ${
+          <div className={`p-5 rounded-2xl ${
             simulation.is_safe 
               ? 'border-emerald-500/30 bg-emerald-500/10' 
               : 'border-rose-500/30 bg-rose-500/10'

@@ -56,7 +56,7 @@ export default function SignupValueScreen({ onContinue, onGuest }) {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2 + i * 0.12 }}
               className="flex items-start gap-4 p-4 rounded-2xl"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+              style={{ background: 'rgba(255,255,255,0.04)', boxShadow: 'var(--anchor-shadow-1)' }}
             >
               <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${perk.color} flex items-center justify-center flex-shrink-0 shadow-lg`}>
                 <perk.icon className="w-6 h-6 text-white" />

@@ -234,7 +234,7 @@ function StepLegalEntity({ onNext }) {
               }}
             >
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
-                style={{ background: sel ? e.bg : 'rgba(255,255,255,0.06)', border: `1px solid ${e.border}` }}>
+                style={{ background: sel ? e.bg : 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <e.Icon className="w-7 h-7" style={{ color: e.color }} />
               </div>
               <div className="flex-1">
@@ -351,7 +351,7 @@ function StepPersona({ onNext }) {
               }}
             >
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                style={{ background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)', border: `1px solid ${p.borderAccent}` }}>
+                style={{ background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p.Icon className="w-5 h-5" style={{ color: p.color }} />
               </div>
               <div className="flex-1 min-w-0">
@@ -362,7 +362,7 @@ function StepPersona({ onNext }) {
                 style={{
                   background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)',
                   color: sel ? p.color : 'rgba(155,173,184,0.5)',
-                  border: `1px solid ${sel ? p.borderAccent : 'transparent'}`,
+                  boxShadow: 'var(--anchor-shadow-1)',
                 }}>
                 {p.keyMetric}
               </span>
@@ -431,7 +431,7 @@ function StepPainPoints({ persona, onNext }) {
               }}
             >
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: sel ? pt.bg : 'rgba(255,255,255,0.06)', border: `1px solid ${pt.border}` }}>
+                style={{ background: sel ? pt.bg : 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <Icon className="w-6 h-6" style={{ color: sel ? pt.color : 'rgba(155,173,184,0.5)' }} />
               </div>
               <div className="flex-1">
@@ -604,7 +604,7 @@ function StepHoroscope({ persona, onComplete }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ type: 'spring', stiffness: 200 }}
                 className="flex items-start gap-3 p-3 rounded-xl"
-                style={{ background: 'rgba(61,170,122,0.1)', border: '1px solid rgba(61,170,122,0.25)' }}
+                style={{ background: 'rgba(61,170,122,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}
               >
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#3DAA7A' }} />
                 <p className="text-xs font-medium" style={{ color: '#F0EAD6' }}>{action}</p>
@@ -689,7 +689,7 @@ export default function BusinessOnboarding() {
       {/* Logo */}
       <div className="flex items-center gap-2 mb-8">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)' }}>
+          style={{ background: 'rgba(212,175,55,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Building2 className="w-4 h-4" style={{ color: '#D4AF37' }} />
         </div>
         <span className="text-xs font-bold tracking-widest uppercase" style={{ color: 'rgba(212,175,55,0.7)' }}>Anchor Business</span>

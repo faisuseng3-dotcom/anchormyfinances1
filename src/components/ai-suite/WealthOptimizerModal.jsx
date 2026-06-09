@@ -36,7 +36,7 @@ export default function WealthOptimizerModal({ isOpen, onConfirm, onClose }) {
           className="w-full max-w-sm rounded-3xl overflow-hidden"
           style={{
             background: 'rgba(10,14,26,0.98)',
-            border: '1px solid rgba(99,102,241,0.3)',
+            boxShadow: 'var(--anchor-shadow-1)',
             boxShadow: '0 0 60px rgba(99,102,241,0.25), 0 20px 60px rgba(0,0,0,0.6)'
           }}
         >
@@ -104,7 +104,7 @@ export default function WealthOptimizerModal({ isOpen, onConfirm, onClose }) {
                   <ArrowRight className="w-4 h-4 mr-1.5" />
                   Bekräfta överföring
                 </Button>
-                <Button onClick={onClose} variant="outline" className="rounded-xl border-white/10 hover:bg-white/5 text-slate-300 text-sm px-4">
+                <Button onClick={onClose} variant="outline" className="rounded-2xl-white/10 hover:bg-white/5 text-slate-300 text-sm px-4">
                   Avbryt
                 </Button>
               </div>

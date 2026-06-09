@@ -22,7 +22,7 @@ export default function BudgetCategoryCard({ category, spent, limit, onEdit, ind
       transition={{ delay: index * 0.04, duration: 0.3 }}
       whileTap={{ scale: 0.97 }}
       onClick={() => onEdit(category)}
-      className="flex-shrink-0 w-[168px] snap-start p-4 rounded-2xl text-left border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)] hover:bg-[var(--copilot-bg-card-hover)] transition-colors"
+      className="flex-shrink-0 w-[168px] snap-start p-4 rounded-2xl text-left organic-surface bg-[var(--copilot-bg-card)] hover:bg-[var(--copilot-bg-card-hover)] transition-colors"
       style={{ background: `linear-gradient(145deg, ${tint.bg}, var(--copilot-bg-card))` }}
     >
       <div className="flex items-center justify-between mb-3">

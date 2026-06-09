@@ -33,7 +33,7 @@ export default function PulseStatusBar({ currentBalance, totalUpcomingCritical, 
           <span className="text-sm font-bold text-white">Månads-status</span>
         </div>
         <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
-          style={{ background: `${statusConfig.glow.replace('0.5', '0.15')}`, color: statusConfig.color, border: `1px solid ${statusConfig.glow.replace('0.5', '0.4')}` }}>
+          style={{ background: `${statusConfig.glow.replace('0.5', '0.15')}`, color: statusConfig.color, boxShadow: 'var(--anchor-shadow-1)' }}>
           <StatusDot status={statusConfig.statusKey} size={8} className="inline-block mr-1" />
           {statusConfig.label}
         </span>

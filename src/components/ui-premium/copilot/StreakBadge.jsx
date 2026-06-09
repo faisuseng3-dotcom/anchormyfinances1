@@ -17,7 +17,7 @@ export default function StreakBadge({ count, label, variant = 'fire' }) {
       initial={{ opacity: 0, scale: 0.92 }}
       animate={{ opacity: 1, scale: 1 }}
       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold text-white"
-      style={{ background: c.bg, border: `1px solid ${c.border}` }}
+      style={{ background: c.bg, boxShadow: 'var(--anchor-shadow-1)' }}
     >
       <StreakIcon variant={variant} size={14} className="text-[var(--copilot-accent-green)]" />
       <span>{count} {label || 'dagar i rad'}</span>

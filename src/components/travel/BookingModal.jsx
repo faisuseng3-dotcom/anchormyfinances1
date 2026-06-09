@@ -50,7 +50,7 @@ export default function BookingModal({ pkg, onClose }) {
           exit={{ opacity: 0, y: 60, scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 300, damping: 28 }}
           className="w-full max-w-sm rounded-3xl overflow-hidden"
-          style={{ background: '#131b2e', border: '1px solid rgba(255,255,255,0.1)' }}
+          style={{ background: '#131b2e', boxShadow: 'var(--anchor-shadow-1)' }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Hero strip */}

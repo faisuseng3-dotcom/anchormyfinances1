@@ -26,8 +26,9 @@ export default function CopilotEnvelopeGoal({
       tabIndex={0}
       onClick={() => triggerHaptic(pct >= 75 ? 'success' : 'light')}
       onKeyDown={(e) => { if (e.key === 'Enter') triggerHaptic('light'); }}
-      whileTap={{ scale: 0.99 }}
-      className={`relative rounded-3xl border border-[var(--copilot-border)] overflow-hidden cursor-pointer ${className}`}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+      className={`organic-surface organic-surface--hero relative rounded-3xl overflow-hidden cursor-pointer ${className}`}
       style={{ background: 'var(--copilot-bg-card)' }}
     >
       <motion.div

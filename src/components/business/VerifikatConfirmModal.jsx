@@ -69,7 +69,7 @@ export default function VerifikatConfirmModal({ transactions, onConfirm, onCance
           {/* needs_review warning */}
           {totalNeedsReview > 0 && (
             <div className="mx-5 mt-4 flex items-center gap-2 px-3 py-2.5 rounded-xl"
-              style={{ background: 'rgba(220,38,38,0.07)', border: '1px solid rgba(220,38,38,0.25)' }}>
+              style={{ background: 'rgba(220,38,38,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: '#dc2626' }} />
               <p className="text-xs font-semibold" style={{ color: '#dc2626' }}>
                 {totalNeedsReview} rad{totalNeedsReview > 1 ? 'er' : ''} med låg säkerhet — kontrollera kontona

@@ -6,7 +6,7 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 export default function SegmentTabs({ value, onChange, tabs, className = '' }) {
   return (
     <div
-      className={`flex p-1 rounded-[var(--anchor-radius-md)] bg-white/[0.06] ring-1 ring-white/[0.08] anchor-elev-1 ${className}`}
+      className={`flex p-1 rounded-[var(--anchor-radius-md)] bg-white/[0.06] shadow-[var(--anchor-shadow-1)] anchor-elev-1 ${className}`}
       role="tablist"
     >
       {tabs.map((tab) => {

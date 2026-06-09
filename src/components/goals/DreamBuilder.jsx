@@ -292,7 +292,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
               {form.targetDate && form.amount && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)' }}>
+                  className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm text-slate-300">Tid kvar</span>
                     <span className="text-sm font-bold text-white">{monthsUntil()} månader</span>
@@ -321,7 +321,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                 </div>
               ) : aiInsight && (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                  className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.25)' }}>
+                  className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <div className="flex items-start gap-3">
                     <div className="w-9 h-9 rounded-xl bg-purple-600/30 flex items-center justify-center flex-shrink-0">
                       <LineChart className="w-5 h-5 text-[#0FDEBD]" />
@@ -354,7 +354,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
               {/* Custom Flow Builder */}
               {strategy === 'custom' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 p-4 rounded-2xl space-y-4" style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                  className="mt-2 p-4 rounded-2xl space-y-4" style={{ background: 'rgba(99,102,241,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <p className="text-xs font-semibold text-indigo-300 uppercase tracking-widest flex items-center gap-1.5"><Wrench className="w-3.5 h-3.5" /> Bygg ditt schema</p>
 
                   {/* Frequency */}
@@ -394,7 +394,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {/* Real-time simulation */}
                   {customAmount && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                      className="p-3 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      className="p-3 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <p className="text-xs text-slate-400">Simulering</p>
                       <p className="text-sm font-bold text-emerald-400 mt-0.5">
                         ≈ {customMonthlyEquivalent().toLocaleString('sv-SE')} kr / månad
@@ -422,7 +422,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
                     {customTrigger && !showTriggerLib && (
                       <div className="p-3 rounded-xl text-xs flex items-center justify-between"
-                        style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)' }}>
+                        style={{ background: 'rgba(99,102,241,0.12)', boxShadow: 'var(--anchor-shadow-1)' }}>
                         <span className="text-white font-medium">{customTrigger.label}</span>
                         <button onClick={() => setCustomTrigger(null)} className="text-slate-500 hover:text-white"><X className="w-3 h-3" /></button>
                       </div>
@@ -449,7 +449,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
                   {customAiMsg && (
                     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                      className="p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)' }}>
+                      className="p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.12)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <p className="text-xs text-[#0FDEBD] font-semibold mb-1">Sparinsikt</p>
                       <p className="text-xs text-slate-200 leading-relaxed">{customAiMsg.message}</p>
                     </motion.div>

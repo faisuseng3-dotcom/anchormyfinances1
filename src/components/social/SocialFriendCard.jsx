@@ -20,7 +20,7 @@ export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
       initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.05 }}
-      className="flex items-center gap-3 p-3 min-h-[4.5rem] rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]"
+      className="flex items-center gap-3 p-3 min-h-[4.5rem] rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] shadow-[var(--anchor-shadow-1)]"
     >
       <ProfileAvatar profile={friend} size={48} />
 

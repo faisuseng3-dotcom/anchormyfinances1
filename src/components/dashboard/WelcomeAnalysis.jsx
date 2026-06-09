@@ -62,7 +62,7 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.96, opacity: 0, y: 12 }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-[28px] p-6 ring-1 ring-inset ring-white/[0.1]"
+        className="w-full max-w-md rounded-[28px] p-6 shadow-[var(--anchor-shadow-1)]"
         style={elevatedSheet()}
       >
         <div className="flex items-start justify-between gap-3 mb-6">
@@ -86,7 +86,7 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
               key={label}
               className="flex items-center gap-3 py-3 border-b border-white/[0.06] last:border-0"
             >
-              <div className="w-10 h-10 rounded-2xl bg-white/[0.05] flex items-center justify-center ring-1 ring-white/[0.08]">
+              <div className="w-10 h-10 rounded-2xl bg-white/[0.05] flex items-center justify-center shadow-[var(--anchor-shadow-1)]">
                 <Icon className="w-4 h-4 text-cyan-300/80" />
               </div>
               <div className="flex-1 min-w-0">

@@ -352,7 +352,7 @@ export default function Landing() {
       </section>
 
       <footer
-        className="relative z-10 mt-auto pb-10 pt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs border-t border-white/[0.06] text-[var(--color-text-tertiary)]"
+        className="relative z-10 mt-auto pb-10 pt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs mt-2 pt-2 text-[var(--color-text-tertiary)]"
       >
         {[
           { to: '/Login', label: 'Logga in' },

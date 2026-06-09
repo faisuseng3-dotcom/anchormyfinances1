@@ -136,7 +136,7 @@ export function DashboardListRow({
 /** Three stats in a row — Copilot card strip */
 export function DashboardStatStrip({ items }) {
   return (
-    <div className="flex items-start justify-between gap-2 p-4 rounded-2xl border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)]">
+    <div className="flex items-start justify-between gap-2 p-4 rounded-2xl organic-surface bg-[var(--copilot-bg-card)]">
       {items.map((item, i) => (
         <React.Fragment key={item.label}>
           {i > 0 && <div className="w-px self-stretch bg-[var(--copilot-border)] my-1" />}

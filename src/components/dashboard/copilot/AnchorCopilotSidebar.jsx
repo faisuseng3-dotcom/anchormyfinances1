@@ -1,24 +1,26 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { planeraTabHref } from '@/lib/planeraTabs';
+import { COPILOT_VIEWS } from '@/lib/copilotViews';
+import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
 import { AnchorLogoMark, NavIcon } from '@/lib/anchorIcons';
 import { triggerHaptic } from '@/lib/haptics';
 
 const OVERVIEW_NAV = [
-  { page: 'Dashboard', icon: 'home', label: 'Hem' },
+  { page: 'Dashboard', icon: 'home', label: 'Hem', isHome: true },
   { page: 'Budget', icon: 'budget', label: 'Budget', badge: 'OK', badgeGreen: true },
   { href: planeraTabHref('nu'), icon: 'future', label: 'Din Framtid', match: 'FuturePulse' },
   { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach', badge: '3' },
 ];
 
 const TOOLS_NAV = [
-  { page: 'ProTools', icon: 'tools', label: 'Verktyg' },
-  { page: 'Dashboard', icon: 'goals', label: 'Sparmål', hash: '#goals' },
-  { page: 'ProTools', icon: 'subscriptions', label: 'Prenumerationer', query: '?deep=subscriptions' },
-  { page: 'Social', icon: 'squads', label: 'Squads' },
-  { page: 'Dashboard', icon: 'academy', label: 'Anchor Academy', hash: '#academy' },
+  { page: 'ProTools', icon: 'tools', label: 'Verktyg', external: true },
+  { view: COPILOT_VIEWS.goals, icon: 'goals', label: 'Sparmål' },
+  { view: COPILOT_VIEWS.subscriptions, icon: 'subscriptions', label: 'Prenumerationer' },
+  { view: COPILOT_VIEWS.squads, icon: 'squads', label: 'Squads' },
+  { view: COPILOT_VIEWS.academy, icon: 'academy', label: 'Anchor Academy' },
 ];
 
 function navHref(item) {
@@ -29,10 +31,12 @@ function navHref(item) {
   return url;
 }
 
-function isNavActive(item, pathname, currentPage) {
+function isOverviewActive(item, pathname, currentPage, activeView) {
+  if (item.isHome) {
+    return activeView === COPILOT_VIEWS.home && currentPage === 'Dashboard';
+  }
   if (item.match) return currentPage === item.match;
-  if (item.page === 'Dashboard' && !item.hash) return currentPage === 'Dashboard' && !item.query;
-  if (item.page && !item.hash && !item.query) return currentPage === item.page;
+  if (item.page && !item.hash && !item.query) return currentPage === item.page && activeView === COPILOT_VIEWS.home;
   return false;
 }
 
@@ -42,13 +46,41 @@ export default function AnchorCopilotSidebar({
   mobileOpen,
   onClose,
   onAccountSelect,
+  onGoHome,
   className = '',
 }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { activeView, setActiveView, goHome } = useCopilotNav();
   const currentPage = location.pathname.split('/').pop() || 'Dashboard';
   const accounts = buildAccountItems(profile);
   const firstName = user?.full_name?.split(' ')[0] || 'Du';
   const initial = firstName.charAt(0).toUpperCase();
+
+  const openToolView = (view) => {
+    triggerHaptic('light');
+    setActiveView(view);
+    if (currentPage !== 'Dashboard') {
+      navigate(createPageUrl('Dashboard'));
+    }
+    onClose?.();
+  };
+
+  const handleHome = () => {
+    triggerHaptic('light');
+    goHome();
+    onGoHome?.();
+    onClose?.();
+  };
+
+  const handleOverviewNav = (item) => {
+    if (item.isHome) {
+      handleHome();
+      return;
+    }
+    goHome();
+    onClose?.();
+  };
 
   return (
     <>
@@ -72,13 +104,30 @@ export default function AnchorCopilotSidebar({
 
         <div className="copilot-sidebar-section-label">Översikt</div>
         {OVERVIEW_NAV.map((item) => {
-          const active = isNavActive(item, location.pathname, currentPage);
+          const active = isOverviewActive(item, location.pathname, currentPage, activeView);
+
+          if (item.isHome) {
+            return (
+              <button
+                key={item.label}
+                type="button"
+                onClick={handleHome}
+                className={`copilot-nav-item w-full text-left ${active ? 'active' : ''}`}
+              >
+                <span className="copilot-nav-icon">
+                  <NavIcon name={item.icon} size={16} />
+                </span>
+                {item.label}
+              </button>
+            );
+          }
+
           return (
             <Link
               key={item.label}
               to={navHref(item)}
               className={`copilot-nav-item ${active ? 'active' : ''}`}
-              onClick={onClose}
+              onClick={() => handleOverviewNav(item)}
             >
               <span className="copilot-nav-icon">
                 <NavIcon name={item.icon} size={16} />
@@ -142,19 +191,38 @@ export default function AnchorCopilotSidebar({
         <div className="copilot-sidebar-section-label" style={{ marginTop: 8 }}>
           Verktyg
         </div>
-        {TOOLS_NAV.map((item) => (
-          <Link
-            key={item.label}
-            to={navHref(item)}
-            className="copilot-nav-item"
-            onClick={onClose}
-          >
-            <span className="copilot-nav-icon">
-              <NavIcon name={item.icon} size={16} />
-            </span>
-            {item.label}
-          </Link>
-        ))}
+        {TOOLS_NAV.map((item) => {
+          if (item.external) {
+            return (
+              <Link
+                key={item.label}
+                to={navHref(item)}
+                className="copilot-nav-item"
+                onClick={() => { goHome(); onClose?.(); }}
+              >
+                <span className="copilot-nav-icon">
+                  <NavIcon name={item.icon} size={16} />
+                </span>
+                {item.label}
+              </Link>
+            );
+          }
+
+          const active = activeView === item.view;
+          return (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => openToolView(item.view)}
+              className={`copilot-nav-item w-full text-left active:scale-[0.98] transition-transform ${active ? 'active' : ''}`}
+            >
+              <span className="copilot-nav-icon">
+                <NavIcon name={item.icon} size={16} />
+              </span>
+              {item.label}
+            </button>
+          );
+        })}
 
         <div className="copilot-sidebar-footer">
           <Link to={createPageUrl('Settings')} className="copilot-user-row" onClick={onClose}>

@@ -121,7 +121,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                 {profile.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-white/[0.06] text-white/55 ring-1 ring-white/[0.08]"
+                    className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-white/[0.06] text-white/55 shadow-[var(--anchor-shadow-1)]"
                   >
                     {tag}
                   </span>
@@ -207,7 +207,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                 ))
               )}
               {tip && (
-                <div className="mt-4 rounded-[var(--anchor-radius-md)] px-4 py-3 ring-1 ring-white/[0.08] bg-white/[0.03] anchor-elev-1">
+                <div className="mt-4 rounded-[var(--anchor-radius-md)] px-4 py-3 shadow-[var(--anchor-shadow-1)] bg-white/[0.03] anchor-elev-1">
                   <p className="text-[14px] text-white/85 leading-relaxed">{tip}</p>
                 </div>
               )}
@@ -216,7 +216,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
         )}
 
         {!userIncome && !isOwn && (
-          <div className="rounded-[var(--anchor-radius-md)] px-4 py-3 ring-1 ring-white/[0.08] bg-white/[0.03]">
+          <div className="rounded-[var(--anchor-radius-md)] px-4 py-3 shadow-[var(--anchor-shadow-1)] bg-white/[0.03]">
             <p className={sectionSubtitleClass}>
               Lägg in din månadsinkomst under inställningar för att se belopp i kronor och kopiera budgeten.
             </p>

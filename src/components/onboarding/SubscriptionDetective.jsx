@@ -44,7 +44,7 @@ export default function SubscriptionDetective({ selected, onToggle }) {
   const selectedCount = selected.length;
 
   return (
-    <div className="rounded-xl border border-indigo-500/30 overflow-hidden">
+    <div className="rounded-2xl border-indigo-500/30 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 bg-indigo-500/10 hover:bg-indigo-500/15 transition-colors"
@@ -90,7 +90,7 @@ export default function SubscriptionDetective({ selected, onToggle }) {
                         <button
                           key={service.name}
                           onClick={() => onToggle(service)}
-                          className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-left transition-all ${
+                          className={`flex items-center gap-2 px-3 py-2.5 rounded-2xl text-left transition-all ${
                             isSelected
                               ? 'border-indigo-500 bg-indigo-500/20 text-white'
                               : 'border-white/8 bg-white/3 text-slate-400 hover:border-white/20'

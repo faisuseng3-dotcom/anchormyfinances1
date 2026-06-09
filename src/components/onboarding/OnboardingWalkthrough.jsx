@@ -143,7 +143,7 @@ export default function OnboardingWalkthrough({ onFinish }) {
       <button
         onClick={onFinish}
         className="absolute top-12 right-5 z-10 pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm text-slate-400 hover:text-white transition-colors"
-        style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+        style={{ background: 'rgba(255,255,255,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}
       >
         <X className="w-3.5 h-3.5" />
         Hoppa över
@@ -179,7 +179,7 @@ export default function OnboardingWalkthrough({ onFinish }) {
               left: 16,
               right: 16,
               background: 'linear-gradient(135deg, rgba(26,34,51,0.98), rgba(15,23,42,0.98))',
-              border: '1px solid rgba(99,102,241,0.35)',
+              boxShadow: 'var(--anchor-shadow-1)',
               borderRadius: 24,
               boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.15)',
               padding: '20px 20px 18px',

@@ -21,7 +21,7 @@ export default function SetBudgetModal({ category, currentLimit, onSave, onClose
     <AnchorSheet isOpen onClose={onClose} title={`Budget — ${meta.label}`} subtitle="Max belopp per månad">
       <div className="space-y-5 -mx-1">
         <div
-          className="flex items-center gap-3 p-4 rounded-2xl border border-[var(--copilot-border)]"
+          className="flex items-center gap-3 p-4 rounded-2xl organic-surface"
           style={{ background: tint.bg }}
         >
           <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: tint.bg }}>
@@ -53,7 +53,7 @@ export default function SetBudgetModal({ category, currentLimit, onSave, onClose
               key={preset}
               type="button"
               onClick={() => setAmount(String(preset))}
-              className="px-4 py-2 rounded-full text-[13px] font-medium bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)]"
+              className="px-4 py-2 rounded-full text-[13px] font-medium bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)]"
               minTouch={false}
             >
               {preset.toLocaleString('sv-SE')}

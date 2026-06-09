@@ -125,7 +125,7 @@ Svara ENDAST med JSON.`,
     <div className="space-y-5">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5 space-y-4"
-        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <h3 className="font-semibold text-white flex items-center gap-2">
           <PartyPopper className="w-5 h-5 text-amber-400" /> Eventinformation
         </h3>
@@ -182,7 +182,7 @@ Svara ENDAST med JSON.`,
           {liveCalc && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
               className="rounded-xl p-3 space-y-2"
-              style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
+              style={{ background: 'rgba(245,158,11,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="flex justify-between"><span className="text-slate-500">Biljett</span><span className="text-white font-medium">{fmt(liveCalc.ticket)} kr</span></div>
                 {liveCalc.travelCost > 0 && <div className="flex justify-between"><span className="text-slate-500">Tåg/transport</span><span className="text-white font-medium">~{fmt(liveCalc.travelCost)} kr</span></div>}
@@ -237,7 +237,7 @@ Svara ENDAST med JSON.`,
                   </div>
 
                   {/* Total cost breakdown */}
-                  <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
                     <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5"><Receipt className="w-3.5 h-3.5" aria-hidden /> Totalbilden</p>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-slate-400">Total uppskattad kostnad</span>
@@ -251,7 +251,7 @@ Svara ENDAST med JSON.`,
                   {/* Goal impact */}
                   {analysis.goal_impact && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
-                      style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                      style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <Target className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.goal_impact}</p>
                     </div>
@@ -260,7 +260,7 @@ Svara ENDAST med JSON.`,
                   {/* Smart tip */}
                   {analysis.smart_tip && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
-                      style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                      style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <Lightbulb className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.smart_tip}</p>
                     </div>

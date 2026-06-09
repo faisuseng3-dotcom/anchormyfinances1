@@ -42,7 +42,7 @@ export default function CSVPreviewTable({ rows, onConfirm, onCancel, onCategoryC
           {reviewCount > 0 ? `${reviewCount} behöver granskas` : 'Kategoriserade'}
         </p>
       </div>
-      <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(0,0,0,0.07)' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
         <div className="max-h-80 overflow-y-auto">
           {rows.map((row, i) => {
             const cat = row._category || 'other';

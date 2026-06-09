@@ -42,7 +42,7 @@ export default function HorizonScroll({ eventsWithBalance, whatIfAmount = 0 }) {
 
   return (
     <div className="rounded-3xl overflow-hidden"
-      style={{ background: 'rgba(6,8,18,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      style={{ background: 'rgba(6,8,18,0.9)', boxShadow: 'var(--anchor-shadow-1)' }}>
 
       {/* Header */}
       <div className="px-4 pt-4 pb-1 flex items-center justify-between">

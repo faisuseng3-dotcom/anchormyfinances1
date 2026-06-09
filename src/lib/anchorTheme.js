@@ -13,7 +13,7 @@ export function glassSurface(overrides = {}) {
       'linear-gradient(165deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.04) 40%, rgba(4,10,28,0.85) 100%)',
     backdropFilter: 'blur(24px)',
     WebkitBackdropFilter: 'blur(24px)',
-    border: '1px solid rgba(255,255,255,0.12)',
+    boxShadow: 'var(--anchor-shadow-1)',
     boxShadow: '0 24px 56px rgba(2, 6, 20, 0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
     ...overrides,
   };
@@ -75,4 +75,4 @@ export const anchorIconButtonClass =
   'w-12 h-12 rounded-full flex items-center justify-center bg-white/[0.08] text-white/80 hover:bg-white/[0.12] transition-colors anchor-pressable';
 
 export const anchorInputClass =
-  'flex w-full h-12 rounded-xl border-0 px-4 text-[15px] text-white bg-white/[0.08] placeholder:text-white/35 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-50';
+  'organic-input flex w-full h-12 rounded-full px-5 text-[15px] text-white bg-white/[0.08] placeholder:text-white/35 focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(74,122,255,0.25)] disabled:opacity-50';

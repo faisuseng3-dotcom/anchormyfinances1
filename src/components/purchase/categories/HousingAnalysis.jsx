@@ -157,7 +157,7 @@ Svara ENDAST med JSON.`,
     <div className="space-y-5">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5 space-y-4"
-        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <h3 className="font-semibold text-white flex items-center gap-2">
           <Home className="w-5 h-5 text-emerald-400" /> Bostadsinformation
         </h3>
@@ -223,7 +223,7 @@ Svara ENDAST med JSON.`,
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
               className="space-y-2">
               <div className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
-                style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
+                style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div>
                   <p className="text-[10px] text-slate-500">Månadskostnad</p>
                   <p className="text-sm font-bold text-emerald-400">{fmt(liveCalc.totalMonthly)} kr</p>
@@ -244,7 +244,7 @@ Svara ENDAST med JSON.`,
 
               {housing.type === 'house' && liveCalc.hiddenCosts > 0 && (
                 <div className="rounded-xl p-3 flex gap-2 text-xs"
-                  style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                  style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                   <p className="text-amber-200">
                     Dolda kostnader för hus: lagfart ({fmt(liveCalc.lagfart)} kr) + pantbrev ({fmt(liveCalc.pantbrev)} kr) = <strong>{fmt(liveCalc.hiddenCosts)} kr extra</strong>
@@ -254,7 +254,7 @@ Svara ENDAST med JSON.`,
 
               {liveCalc.incomeShare > 0.4 && (
                 <div className="rounded-xl p-3 flex gap-2 text-xs"
-                  style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                  style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
                   <p className="text-rose-200">Månadskostnaden överstiger 40% av din inkomst. CFO-rekommendationen är max 30-35%.</p>
                 </div>
@@ -302,7 +302,7 @@ Svara ENDAST med JSON.`,
             })()}
 
             {/* Stress tests */}
-            <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><FlaskConical className="w-3.5 h-3.5" aria-hidden /> Ränte-stresstest</p>
               {[
                 { label: 'Nuläge (~4.5%)', value: analysis.monthlyLoan },
@@ -326,7 +326,7 @@ Svara ENDAST med JSON.`,
 
             {/* KALP + hidden costs */}
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-[10px] text-slate-500 mb-1 uppercase tracking-wider">KALP-kalkyl</p>
                 <p className={`text-xl font-black flex items-center gap-1.5 ${analysis.kalp_ok ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {analysis.kalp_ok
@@ -336,13 +336,13 @@ Svara ENDAST med JSON.`,
                 <p className="text-[10px] text-slate-500 mt-1">Kvar efter 70%-regel: {fmt(analysis.kalp)} kr</p>
               </div>
               {analysis.housing.type === 'house' && (
-                <div className="rounded-2xl p-4" style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.2)' }}>
+                <div className="rounded-2xl p-4" style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <p className="text-[10px] text-amber-400 mb-1 uppercase tracking-wider">Dolda kostnader</p>
                   <p className="text-xl font-black text-white">{fmt(analysis.hiddenCosts)} kr</p>
                   <p className="text-[10px] text-slate-500 mt-1">Lagfart + pantbrev</p>
                 </div>
               )}
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-[10px] text-indigo-400 mb-1 uppercase tracking-wider">Värdeutveckling 5 år</p>
                 <p className="text-xl font-black text-white">{analysis.value_growth_5y > 0 ? '+' : ''}{analysis.value_growth_5y}%</p>
                 <p className="text-[10px] text-slate-500 mt-1">Uppskattning för {analysis.housing.location}</p>
@@ -351,7 +351,7 @@ Svara ENDAST med JSON.`,
 
             {/* Risk factors */}
             {analysis.risk_factors?.length > 0 && (
-              <div className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' }}>
+              <div className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-xs font-bold text-rose-400 mb-2 uppercase tracking-wider flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5" aria-hidden /> Riskfaktorer</p>
                 <div className="space-y-1">
                   {analysis.risk_factors.map((r, i) => (
@@ -365,7 +365,7 @@ Svara ENDAST med JSON.`,
 
             {/* Hidden tip */}
             {analysis.hidden_tip && (
-              <div className="rounded-xl p-3 flex gap-3" style={{ background: 'rgba(17,24,39,0.5)', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <div className="rounded-xl p-3 flex gap-3" style={{ background: 'rgba(17,24,39,0.5)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-[11px] font-bold text-cyan-400 mb-0.5">CFO-tips du missar</p>

@@ -16,11 +16,11 @@ export default function TaxWidget() {
 
   return (
     <div className="rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      style={{ background: 'var(--color-card)', boxShadow: 'var(--anchor-shadow-1)' }}>
       <div className="px-4 pt-4 pb-3 flex items-center gap-2"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-          style={{ background: 'rgba(75,124,243,0.2)', border: '1px solid rgba(75,124,243,0.3)' }}>
+          style={{ background: 'rgba(75,124,243,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Calculator className="w-3.5 h-3.5" style={{ color: '#4B7CF3' }} />
         </div>
         <div>
@@ -40,7 +40,7 @@ export default function TaxWidget() {
             className="w-full h-14 px-4 pr-12 rounded-xl text-2xl font-black text-right"
             style={{
               background: 'rgba(255,255,255,0.05)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: 'var(--anchor-shadow-1)',
               color: '#F0EAD6',
             }}
           />

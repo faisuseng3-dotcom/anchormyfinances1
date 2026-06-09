@@ -93,7 +93,7 @@ export default function Pricing() {
                 djupare.
               </p>
             </div>
-            <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08] anchor-elev-1 shrink-0">
+            <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-white/[0.06] flex items-center justify-center shadow-[var(--anchor-shadow-1)] anchor-elev-1 shrink-0">
               <Sparkles className="w-5 h-5 text-[var(--color-accent)]" />
             </div>
           </div>

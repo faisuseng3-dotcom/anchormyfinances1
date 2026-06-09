@@ -14,13 +14,13 @@ export default function ProToolsHero({ profile }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-2xl border border-[var(--copilot-border)] overflow-hidden mb-6"
+      className="rounded-2xl organic-surface overflow-hidden mb-6"
       style={{ background: 'linear-gradient(135deg, rgba(74,122,255,0.14) 0%, rgba(109,74,255,0.1) 100%)' }}
     >
       <div className="p-5 flex items-start gap-4">
         <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ background: 'rgba(74,122,255,0.18)', border: '1px solid rgba(74,122,255,0.25)' }}
+          style={{ background: 'rgba(74,122,255,0.18)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <Calculator className="w-5 h-5 text-[var(--copilot-accent-blue)]" />
         </div>
@@ -32,7 +32,7 @@ export default function ProToolsHero({ profile }) {
             Räkna och simulera utifrån din profil
           </p>
           {income > 0 ? (
-            <div className="flex gap-6 mt-4 pt-3 border-t border-[var(--copilot-border)]">
+            <div className="flex gap-6 mt-4 pt-3 border-t ">
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Marginal</p>
                 <p className="text-[18px] font-bold text-[var(--copilot-accent-green)] tabular-nums">

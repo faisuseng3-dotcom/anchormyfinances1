@@ -90,7 +90,7 @@ export default function TaxOptimizer({ entityType, annualRevenue, annualExpenses
         {/* Breakpoint analysis */}
         {aiData.breakpointAnalysis && (
           <div className="mx-5 mt-4 mb-1 px-4 py-3 rounded-2xl"
-            style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.15)' }}>
+            style={{ background: 'rgba(13,115,119,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <p className="text-xs font-bold" style={{ color: '#0D7377' }}>Avstånd till statlig skatt</p>
             <p className="text-2xl font-black mt-0.5" style={{ color: '#1A2332' }}>
               {(aiData.breakpointAnalysis.distanceKr || 0).toLocaleString('sv-SE')} kr

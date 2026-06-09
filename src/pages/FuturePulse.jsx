@@ -38,7 +38,7 @@ export default function FuturePulse() {
         backHref={createPageUrl('FuturePulse')}
       >
         {runwayMonths != null && runwayMonths > 0 && (
-          <p className="mb-4 rounded-2xl px-4 py-3 border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)] text-[14px] text-[var(--copilot-text-secondary)]">
+          <p className="mb-4 rounded-2xl px-4 py-3 organic-surface bg-[var(--copilot-bg-card)] text-[14px] text-[var(--copilot-text-secondary)]">
             Din buffert ger{' '}
             <span className="text-[var(--copilot-accent-green)] font-semibold tabular-nums">{runwayMonths}</span>
             {' '}månad{runwayMonths === 1 ? '' : 'er'} handlingsutrymme framåt.

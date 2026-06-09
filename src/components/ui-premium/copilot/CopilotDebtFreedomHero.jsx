@@ -44,7 +44,7 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`rounded-2xl border border-[var(--copilot-border)] p-6 text-center ${className}`}
+        className={`rounded-2xl organic-surface p-6 text-center ${className}`}
         style={{ background: 'linear-gradient(135deg, rgba(34,217,122,0.12), rgba(74,122,255,0.08))' }}
         onClick={handleCelebrate}
       >
@@ -59,7 +59,7 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-2xl border border-[var(--copilot-border)] overflow-hidden ${className}`}
+      className={`rounded-2xl organic-surface overflow-hidden ${className}`}
       style={{ background: 'linear-gradient(135deg, rgba(74,122,255,0.12) 0%, rgba(34,217,122,0.08) 100%)' }}
       onClick={handleCelebrate}
     >

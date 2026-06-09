@@ -2,15 +2,23 @@
 
 export const springSheet = {
   type: 'spring',
-  damping: 34,
-  stiffness: 380,
-  mass: 0.85,
+  damping: 28,
+  stiffness: 340,
+  mass: 0.75,
 };
 
 export const springSheetExit = {
   type: 'spring',
-  damping: 38,
-  stiffness: 420,
+  damping: 32,
+  stiffness: 380,
+  mass: 0.8,
+};
+
+export const springPop = {
+  type: 'spring',
+  damping: 22,
+  stiffness: 380,
+  mass: 0.65,
 };
 
 export const easeOverlay = {
@@ -55,4 +63,12 @@ export const drawerPanel = {
 
 export const drawerPanelExit = {
   transition: springSheetExit,
+};
+
+/** Cross-fade mellan copilot-vyer */
+export const crossFade = {
+  initial: { opacity: 0, scale: 0.98 },
+  animate: { opacity: 1, scale: 1 },
+  exit: { opacity: 0, scale: 0.99 },
+  transition: springPop,
 };

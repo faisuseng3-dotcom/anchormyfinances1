@@ -7,7 +7,7 @@ import { SkeletonLine } from './SkeletonBlocks';
 export default function DashboardSkeleton() {
   return (
     <>
-      <header className="copilot-topbar px-5 sm:px-8 py-5 border-b border-[var(--copilot-border)]">
+      <header className="copilot-topbar px-5 sm:px-8 py-5 border-b ">
         <div className="flex items-center justify-between gap-4">
           <div className="space-y-2">
             <SkeletonLine width="w-32" className="h-3" />

@@ -95,7 +95,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
       headerRight={
         <AnchorPressable
           onClick={onClose}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)]"
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] organic-surface"
           aria-label="Stäng"
         >
           <X className="w-4 h-4" />
@@ -109,7 +109,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
           className="!p-4"
         />
 
-        <div className="flex rounded-2xl bg-[var(--copilot-bg-card)] p-1 border border-[var(--copilot-border)]">
+        <div className="flex rounded-2xl bg-[var(--copilot-bg-card)] p-1 organic-surface">
           <AnchorPressable
             type="button"
             minTouch={false}
@@ -139,7 +139,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
             placeholder="0"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className={`w-full h-14 rounded-2xl text-center text-2xl font-semibold tabular-nums outline-none border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)] ${
+            className={`w-full h-14 rounded-2xl text-center text-2xl font-semibold tabular-nums outline-none organic-surface bg-[var(--copilot-bg-card)] ${
               isExpense ? 'text-rose-300' : 'text-[var(--copilot-accent-green)]'
             }`}
           />

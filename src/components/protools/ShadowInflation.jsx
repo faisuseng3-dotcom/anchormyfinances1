@@ -28,7 +28,7 @@ function XrayCost({ item, onClose }) {
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
       className="rounded-xl p-4 mt-3 space-y-3"
-      style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+      style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
       <div className="flex justify-between items-start">
         <p className="text-xs font-bold text-rose-400 uppercase tracking-wider flex items-center gap-1.5"><ScanSearch className="w-3.5 h-3.5" aria-hidden /> Röntgen: {item.name}</p>
         <button onClick={onClose} className="text-slate-500 text-xs hover:text-white" aria-label="Stäng"><X className="w-3.5 h-3.5" /></button>
@@ -120,7 +120,7 @@ Svara ENDAST med JSON.`,
   return (
     <div className="space-y-5">
       {/* Proactive lifestyle inflation */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <div className="flex items-center gap-2 mb-4">
           <Eye className="w-5 h-5 text-rose-400" />
           <h3 className="font-semibold text-white">Din Dolda Prislapp</h3>
@@ -167,7 +167,7 @@ Svara ENDAST med JSON.`,
         {aiInflation && aiInflation.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-3">
             {aiInflation.map((item, i) => (
-              <div key={i} className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.15)' }}>
+              <div key={i} className="rounded-xl p-4" style={{ background: 'rgba(239,68,68,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div className="flex justify-between items-start mb-2">
                   <p className="text-sm font-semibold text-white">{item.category}</p>
                   <span className="text-rose-400 font-black text-sm">+{item.pct_increase}%</span>
@@ -181,7 +181,7 @@ Svara ENDAST med JSON.`,
       </AnimatePresence>
 
       {/* X-ray tool */}
-      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="rounded-2xl p-5 space-y-3" style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><ScanSearch className="w-3.5 h-3.5" aria-hidden /> Röntgen-knappen – Köp-Scanner</p>
         <p className="text-xs text-slate-500">Klistra in ett köp för att se den <em>verkliga</em> totalkostnaden över 24 månader.</p>
         <div className="grid grid-cols-2 gap-2">

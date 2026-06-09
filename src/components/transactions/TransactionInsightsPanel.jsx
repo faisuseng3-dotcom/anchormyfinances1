@@ -44,7 +44,7 @@ function isIncome(tx) {
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl px-3 py-2 text-sm bg-[var(--copilot-bg-deep)] text-white shadow-xl border border-[var(--copilot-border)]">
+    <div className="rounded-xl px-3 py-2 text-sm bg-[var(--copilot-bg-deep)] text-white shadow-xl organic-surface">
       <p className="font-semibold">{payload[0].name}</p>
       <p className="tabular-nums">{payload[0].value?.toLocaleString('sv-SE')} kr</p>
     </div>
