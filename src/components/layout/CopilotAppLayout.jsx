@@ -36,7 +36,9 @@ function CopilotShell({ children }) {
   const [swipeOpen, setSwipeOpen] = useState(false);
 
   const displayUser = isAlex ? { full_name: 'Alex Lindqvist' } : user;
-  const showToolView = activeView !== COPILOT_VIEWS.home;
+  const currentPage = location.pathname.split('/').filter(Boolean).pop() || 'Dashboard';
+  const showToolView =
+    activeView !== COPILOT_VIEWS.home && currentPage === 'Dashboard';
 
   const getFreshProfile = useCallback(async () => {
     const profiles = await base44.entities.FinancialProfile.list();

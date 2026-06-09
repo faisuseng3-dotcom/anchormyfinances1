@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { COPILOT_VIEWS } from '@/lib/copilotViews';
+import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import {
   MOOD_OPTIONS,
   moodToToneMode,
@@ -18,7 +20,6 @@ import { historyTabHref } from '@/lib/historyTabs';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import AcademyLessonSheet from '@/components/anchorBrain/AcademyLessonSheet';
-import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import {
   CategoryIcon,
   MoodIcon,
@@ -61,7 +62,7 @@ export default function FutureDashboard({
   onOpenTransactionHub,
   user,
 }) {
-  const { openSidebar } = useCopilotNav();
+  const { openSidebar, setActiveView } = useCopilotNav();
   const [kalkylatornOpen, setKalkylatornOpen] = useState(false);
   const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
   const [coachInput, setCoachInput] = useState('');
@@ -552,12 +553,13 @@ export default function FutureDashboard({
             <div className="copilot-card">
               <div className="copilot-card-header">
                 <span className="copilot-card-title">Prenumerationer</span>
-                <Link
-                  to={`${createPageUrl('ProTools')}?deep=subscriptions`}
-                  className="copilot-card-action"
+                <button
+                  type="button"
+                  className="copilot-card-action active:scale-[0.98] transition-transform"
+                  onClick={() => setActiveView(COPILOT_VIEWS.subscriptions)}
                 >
                   Hantera →
-                </Link>
+                </button>
               </div>
               <div style={{ fontSize: 12, color: 'var(--copilot-text-muted)', marginBottom: 12 }}>
                 Totalt <strong style={{ color: '#f87171' }}>{fmtKr(subTotal)}/mån</strong>

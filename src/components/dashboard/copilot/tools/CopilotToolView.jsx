@@ -10,7 +10,13 @@ export default function CopilotToolView({ view, profile, transactions, updatePro
     case COPILOT_VIEWS.goals:
       return <SavingsGoalsHub profile={profile} updateProfile={updateProfile} />;
     case COPILOT_VIEWS.subscriptions:
-      return <SubscriptionsHub profile={profile} transactions={transactions} />;
+      return (
+        <SubscriptionsHub
+          profile={profile}
+          transactions={transactions}
+          updateProfile={updateProfile}
+        />
+      );
     case COPILOT_VIEWS.squads:
       return <SquadsHub />;
     case COPILOT_VIEWS.academy:
