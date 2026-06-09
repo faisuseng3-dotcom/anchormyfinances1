@@ -44,3 +44,15 @@ export const sheetPanel = {
   exit: { y: '100%' },
   transition: springSheet,
 };
+
+/** Slide-over drawer från höger */
+export const drawerPanel = {
+  initial: { x: '100%' },
+  animate: { x: 0 },
+  exit: { x: '100%' },
+  transition: springSheet,
+};
+
+export const drawerPanelExit = {
+  transition: springSheetExit,
+};

@@ -4,6 +4,7 @@ import { createPageUrl } from '@/utils';
 import { planeraTabHref } from '@/lib/planeraTabs';
 import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
 import { AnchorLogoMark, NavIcon } from '@/lib/anchorIcons';
+import { triggerHaptic } from '@/lib/haptics';
 
 const OVERVIEW_NAV = [
   { page: 'Dashboard', icon: 'home', label: 'Hem' },
@@ -40,6 +41,7 @@ export default function AnchorCopilotSidebar({
   user,
   mobileOpen,
   onClose,
+  onAccountSelect,
   className = '',
 }) {
   const location = useLocation();
@@ -95,15 +97,38 @@ export default function AnchorCopilotSidebar({
           Konton
         </div>
         <div>
-          {accounts.map((acc) => (
-            <div key={acc.name} className="copilot-account-item">
-              <div className="copilot-account-dot" style={{ background: acc.color }} />
-              {acc.name}
-              <span className="copilot-account-amount">
-                {acc.amount < 0 ? `−${fmtKr(acc.amount).replace(' kr', '')} kr` : fmtKr(acc.amount)}
-              </span>
-            </div>
-          ))}
+          {accounts.map((acc) => {
+            const amountLabel = acc.amount < 0
+              ? `−${fmtKr(acc.amount).replace(' kr', '')} kr`
+              : fmtKr(acc.amount);
+
+            if (acc.interactive && onAccountSelect) {
+              return (
+                <button
+                  key={acc.id}
+                  type="button"
+                  onClick={() => {
+                    triggerHaptic('light');
+                    onAccountSelect(acc);
+                    onClose?.();
+                  }}
+                  className="copilot-account-item copilot-account-item--interactive w-full text-left active:scale-[0.97] transition-transform"
+                >
+                  <div className="copilot-account-dot" style={{ background: acc.color }} />
+                  {acc.name}
+                  <span className="copilot-account-amount">{amountLabel}</span>
+                </button>
+              );
+            }
+
+            return (
+              <div key={acc.id || acc.name} className="copilot-account-item">
+                <div className="copilot-account-dot" style={{ background: acc.color }} />
+                {acc.name}
+                <span className="copilot-account-amount">{amountLabel}</span>
+              </div>
+            );
+          })}
           <Link
             to={createPageUrl('Settings')}
             className="copilot-account-item"

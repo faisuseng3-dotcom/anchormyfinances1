@@ -111,20 +111,49 @@ export function buildAccountItems(profile) {
   const buffer = profile.buffer || 0;
   const saved = profile.savingsCurrentBalance || 0;
   const loanDebt = (profile?.loans || []).reduce((s, l) => s + (l.remaining || l.amount || 0), 0);
+  const fixed = getTotalFixedCosts(profile);
   const items = [];
 
   if (buffer > 0) {
-    items.push({ name: 'Buffert', amount: buffer, color: '#4fc3f7' });
+    items.push({
+      id: 'buffer',
+      name: 'Buffert',
+      amount: buffer,
+      color: '#4fc3f7',
+      goalTarget: fixed * 3,
+      interactive: true,
+    });
   }
   if (saved > 0 || profile.savingsGoal) {
-    items.push({ name: profile.savingsGoalName || 'Sparkonto', amount: saved, color: '#22d97a' });
+    items.push({
+      id: 'savings',
+      name: profile.savingsGoalName || 'Sparkonto',
+      amount: saved,
+      color: '#22d97a',
+      goalTarget: profile.savingsGoal || 0,
+      interactive: true,
+    });
   }
   if (profile.income) {
     const margin = getMonthlyMargin(profile);
-    items.push({ name: 'Månadsmarginal', amount: margin, color: '#4a7aff' });
+    items.push({
+      id: 'margin',
+      name: 'Månadsmarginal',
+      amount: margin,
+      color: '#4a7aff',
+      goalTarget: null,
+      interactive: true,
+    });
   }
   if (loanDebt > 0) {
-    items.push({ name: 'Skulder', amount: -loanDebt, color: '#f87171' });
+    items.push({
+      id: 'debt',
+      name: 'Skulder',
+      amount: -loanDebt,
+      color: '#f87171',
+      goalTarget: null,
+      interactive: false,
+    });
   }
   return items;
 }
