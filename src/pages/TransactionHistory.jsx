@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, X, Bot, Search, Filter, FileUp, ChevronDown, ArrowLeft, List, TrendingUp, LineChart, BookOpen } from 'lucide-react';
 import TransactionForm from '@/components/transactions/TransactionForm';
 import TransactionInsightsPanel from '@/components/transactions/TransactionInsightsPanel';
-import CategoryConfidenceBadge from '@/components/transactions/CategoryConfidenceBadge';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useModeContext } from '@/components/modes/ModeContext';
 import FinancialTrendsPanel from '@/components/history/FinancialTrendsPanel';
@@ -22,18 +21,18 @@ import { TransactionListSkeleton } from '@/components/loading/SkeletonBlocks';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
 import SegmentTabs from '@/components/ui/SegmentTabs';
-import { DashboardDivider, DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
-import { anchorInputClass, sectionSubtitleClass } from '@/lib/anchorTheme';
+import { DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
+import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
+import StreakBadge from '@/components/ui-premium/copilot/StreakBadge';
+import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
+import { copilotInputClass, copilotChipClass } from '@/lib/copilotTheme';
+import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
+import { calcSavingsStreak } from '@/lib/microWins';
 import { cn } from '@/lib/utils';
 
-const filterChipClass = (active) =>
-  cn(
-    'px-3 py-1.5 rounded-[var(--anchor-radius-md)] text-[13px] font-medium transition-colors min-h-10 touch-manipulation',
-    active
-      ? 'bg-[var(--color-text-primary)] text-[var(--color-background-primary)] anchor-elev-1'
-      : 'bg-white/[0.08] text-[var(--color-text-secondary)] hover:bg-white/[0.12]',
-  );
+const filterChipClass = (active) => copilotChipClass(active);
 
 const CATEGORY_COLORS = {
   food: '#4B7CF3', transport: '#3DAA7A', entertainment: '#C8923A',
@@ -130,80 +129,67 @@ function TransactionRow({ tx, onDelete, onEdit }) {
   const [showActions, setShowActions] = useState(false);
   const longPressTimer = useRef(null);
   const isPositive = tx.amount > 0 || ['income', 'savings_withdrawal', 'transfer_to_spending'].includes(tx.type);
-  const color = CATEGORY_COLORS[tx.category] || '#8B97A8';
 
-  const handleLongPressStart = () => {longPressTimer.current = setTimeout(() => setShowActions(true), 500);};
-  const handleLongPressEnd = () => {clearTimeout(longPressTimer.current);};
+  const handleLongPressStart = () => { longPressTimer.current = setTimeout(() => setShowActions(true), 500); };
+  const handleLongPressEnd = () => { clearTimeout(longPressTimer.current); };
+
+  const amountLabel = `${isPositive ? '+' : '−'}${Math.abs(tx.amount).toLocaleString('sv-SE')} kr`;
 
   return (
-    <div>
-      <motion.div
-        onTouchStart={handleLongPressStart} onTouchEnd={handleLongPressEnd}
-        onMouseDown={handleLongPressStart} onMouseUp={handleLongPressEnd} onMouseLeave={handleLongPressEnd}
-        onClick={() => {if (!showActions) onEdit(tx);}}
-        className={`flex items-center gap-3 py-3.5 cursor-pointer active:opacity-60 ${tx._optimistic ? 'opacity-70' : ''}`}
-        whileTap={{ scale: 0.99 }}>
-
-        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: color }} />
-        <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-medium text-[var(--color-text-primary)] truncate">{tx.vendor || tx.label}</p>
-          <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-            <p className="text-[13px] text-[var(--color-text-tertiary)] truncate">
-              {CATEGORY_LABELS[tx.category] || 'Övrigt'} · {getTxDate(tx).toLocaleDateString('sv-SE')}
-            </p>
-            <CategoryConfidenceBadge vendor={tx.vendor} label={tx.label} amount={tx.amount} />
-          </div>
-        </div>
-        <p className={`text-[15px] font-semibold tabular-nums flex-shrink-0 ${isPositive ? 'text-emerald-300' : 'text-rose-300'}`}>
-          {isPositive ? '+' : '-'}{Math.abs(tx.amount).toLocaleString('sv-SE')} kr
-        </p>
-      </motion.div>
+    <div className={tx._optimistic ? 'opacity-70' : ''}>
+      <div
+        onTouchStart={handleLongPressStart}
+        onTouchEnd={handleLongPressEnd}
+        onMouseDown={handleLongPressStart}
+        onMouseUp={handleLongPressEnd}
+        onMouseLeave={handleLongPressEnd}
+      >
+        <TintIconCard
+          category={tx.category || (isPositive ? 'income' : 'other')}
+          title={tx.vendor || tx.label}
+          subtitle={`${CATEGORY_LABELS[tx.category] || 'Övrigt'} · ${getTxDate(tx).toLocaleDateString('sv-SE')}`}
+          amount={amountLabel}
+          amountPositive={isPositive}
+          onClick={() => { if (!showActions) onEdit(tx); }}
+        />
+      </div>
 
       <AnimatePresence>
-        {showActions &&
-        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
-        className="flex gap-2 px-5 pb-3 overflow-hidden">
+        {showActions && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex gap-2 mt-2 overflow-hidden"
+          >
             <AnchorPressable
               type="button"
               onClick={() => { onEdit(tx); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--anchor-radius-md)] text-xs font-semibold min-h-10"
-              style={{
-                background: 'color-mix(in srgb, var(--color-accent) 15%, transparent)',
-                color: 'var(--color-accent)',
-                border: '1px solid color-mix(in srgb, var(--color-accent) 30%, transparent)',
-              }}
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold min-h-10 bg-[rgba(74,122,255,0.15)] text-[var(--copilot-accent-cyan)] border border-[rgba(74,122,255,0.25)]"
             >
               <Edit2 className="w-3.5 h-3.5" /> Redigera
             </AnchorPressable>
             <AnchorPressable
               type="button"
               onClick={() => { onDelete(tx.id); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--anchor-radius-md)] text-xs font-semibold bg-rose-500/15 text-rose-200 border border-rose-400/30 min-h-10"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold bg-rose-500/15 text-rose-200 border border-rose-400/30 min-h-10"
             >
               <Trash2 className="w-3.5 h-3.5" /> Ta bort
             </AnchorPressable>
-            <AnchorPressable
-              type="button"
-              onClick={() => setShowActions(false)}
-              className="w-10 h-10 flex items-center justify-center rounded-[var(--anchor-radius-md)] bg-white/[0.08] text-[var(--color-text-tertiary)]"
-              aria-label="Stäng"
-            >
-              <X className="w-4 h-4" />
-            </AnchorPressable>
           </motion.div>
-        }
+        )}
       </AnimatePresence>
 
-      {tx.aiNote &&
-      <div className="pb-3 pl-5">
-          <p className="text-[13px] text-[var(--color-text-secondary)] flex gap-2">
-            <Bot className="w-4 h-4 flex-shrink-0 text-[var(--color-accent)]" />
+      {tx.aiNote && (
+        <div className="mt-2 px-3 pb-1">
+          <p className="text-[12px] text-[var(--copilot-text-secondary)] flex gap-2">
+            <Bot className="w-4 h-4 flex-shrink-0 text-[var(--copilot-accent-blue)]" />
             {tx.aiNote}
           </p>
         </div>
-      }
-    </div>);
-
+      )}
+    </div>
+  );
 }
 
 function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
@@ -251,12 +237,11 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.22 }}
           className="overflow-hidden">
-            {group.txs.map((tx, i) => (
-              <React.Fragment key={tx.id}>
-                {i > 0 && <DashboardDivider />}
-                <TransactionRow tx={tx} onDelete={onDelete} onEdit={onEdit} />
-              </React.Fragment>
-            ))}
+            <div className="space-y-2 pt-1">
+              {group.txs.map((tx) => (
+                <TransactionRow key={tx.id} tx={tx} onDelete={onDelete} onEdit={onEdit} />
+              ))}
+            </div>
           </motion.div>
         }
       </AnimatePresence>
@@ -395,10 +380,15 @@ export default function TransactionHistory() {
         <LedgerVaultPanel />
       ) : (
         <>
+      <div className="flex flex-wrap gap-2 mb-3">
+        <StreakBadge count={calcUnderBudgetStreak(profile, transactions)} label="dagar under budget" variant="budget" />
+        <StreakBadge count={calcSavingsStreak(transactions)} label="dagars sparande" variant="save" />
+      </div>
+
       <p className={`${sectionSubtitleClass} mb-3`}>{filtered.length} poster</p>
 
       <div className="flex gap-2 mb-2">
-        <div className={`flex-1 flex items-center gap-2 px-4 min-h-12 anchor-elev-1 ${anchorInputClass}`}>
+        <div className={`flex-1 flex items-center gap-2 px-4 min-h-12 ${copilotInputClass}`}>
           <Search className="w-4 h-4 flex-shrink-0 text-[var(--color-text-tertiary)]" />
           <input
             type="text"
@@ -444,7 +434,7 @@ export default function TransactionHistory() {
           initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
           className="mt-2 overflow-hidden">
           
-            <div className="space-y-4 py-2 rounded-[var(--anchor-radius-lg)] p-4 anchor-elev-2 border border-white/[0.08] bg-[var(--color-surface-raised)]">
+            <CopilotCard className="!p-4">
               <div>
                 <p className="text-[13px] text-[var(--color-text-tertiary)] mb-2">Typ</p>
                 <div className="flex gap-2 flex-wrap">
@@ -477,7 +467,7 @@ export default function TransactionHistory() {
                   ))}
                 </div>
               </div>
-            </div>
+            </CopilotCard>
           </motion.div>
         }
       </AnimatePresence>

@@ -7,21 +7,26 @@
 @layer base {
   :root {
     /* ── Anchor Premium tokens (ui-ux-pro-max) ── */
-    --anchor-page-gradient: linear-gradient(
-      165deg,
-      #1a3dff 0%,
-      #0f2a9e 28%,
-      #081858 55%,
-      #050d28 82%,
-      #030610 100%
-    );
+    --anchor-page-gradient: linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%);
+    /* Copilot DNA — shared with Dashboard */
+    --copilot-bg-deep: #0a0f6b;
+    --copilot-bg-mid: #1228cc;
+    --copilot-bg-card: rgba(255, 255, 255, 0.07);
+    --copilot-bg-card-hover: rgba(255, 255, 255, 0.11);
+    --copilot-accent-green: #22d97a;
+    --copilot-accent-cyan: #4fc3f7;
+    --copilot-accent-blue: #4a7aff;
+    --copilot-text-primary: #ffffff;
+    --copilot-text-secondary: #8fa8d8;
+    --copilot-text-muted: #5a78c0;
+    --copilot-border: rgba(255, 255, 255, 0.08);
     --color-background-primary: #040814;
     --color-background-secondary: rgba(8, 14, 30, 0.88);
     --color-surface: rgba(255, 255, 255, 0.07);
     --color-surface-raised: rgba(14, 20, 42, 0.72);
     --color-card: rgba(255, 255, 255, 0.05);
-    --color-accent: #7fa0ff;
-    --color-accent-hover: #5b7cfa;
+    --color-accent: #4a7aff;
+    --color-accent-hover: #3a6aef;
     --color-text-primary: rgba(255, 255, 255, 0.94);
     --color-text-secondary: rgba(255, 255, 255, 0.72);
     --color-text-muted: rgba(255, 255, 255, 0.42);
@@ -422,12 +427,44 @@
   }
 
   .anchor-sheet-panel {
-    background: rgba(10, 16, 36, 0.96);
+    background: rgba(8, 14, 100, 0.97);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--copilot-border);
     border-radius: var(--anchor-radius-xl) var(--anchor-radius-xl) 0 0;
-    box-shadow: var(--anchor-shadow-4);
+    box-shadow: 0 -8px 40px rgba(74, 122, 255, 0.15), var(--anchor-shadow-4);
+  }
+
+  .copilot-subpage {
+    font-family: 'Inter', sans-serif;
+  }
+
+  .copilot-surface-card {
+    background: var(--copilot-bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .copilot-surface-card:hover {
+    background: var(--copilot-bg-card-hover);
+  }
+
+  .copilot-page-zone {
+    @apply px-4 sm:px-6 lg:px-8 w-full max-w-lg lg:max-w-3xl mx-auto box-border;
+  }
+
+  .copilot-mobile-frame {
+    width: 100%;
+    max-width: 32rem;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 1024px) {
+    .copilot-mobile-frame {
+      max-width: 56rem;
+    }
   }
 
   /* Typography roles */

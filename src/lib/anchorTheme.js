@@ -4,7 +4,7 @@
  */
 
 export const ANCHOR_PAGE_GRADIENT =
-  'linear-gradient(165deg, #1a3dff 0%, #0f2a9e 28%, #081858 55%, #050d28 82%, #030610 100%)';
+  'linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%)';
 
 /** Legacy glass — use only for sheets/modals */
 export function glassSurface(overrides = {}) {

@@ -133,17 +133,19 @@ export function DashboardListRow({
   );
 }
 
-/** Three stats in a row — no enclosing box */
+/** Three stats in a row — Copilot card strip */
 export function DashboardStatStrip({ items }) {
   return (
-    <div className="flex items-start justify-between gap-2 py-2">
+    <div className="flex items-start justify-between gap-2 p-4 rounded-2xl border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)]">
       {items.map((item, i) => (
         <React.Fragment key={item.label}>
-          {i > 0 && <div className="w-px self-stretch bg-white/[0.08] my-1" />}
+          {i > 0 && <div className="w-px self-stretch bg-[var(--copilot-border)] my-1" />}
           <div className="flex-1 text-center min-w-0">
-            <p className={sectionMetaClass}>{item.label}</p>
-            <p className="text-[17px] font-semibold text-white tabular-nums mt-1 leading-none">{item.value}</p>
-            {item.sub && <p className="text-[12px] text-white/40 mt-1">{item.sub}</p>}
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)]">
+              {item.label}
+            </p>
+            <p className="text-[17px] font-bold text-white tabular-nums mt-1 leading-none">{item.value}</p>
+            {item.sub && <p className="text-[12px] text-[var(--copilot-text-muted)] mt-1">{item.sub}</p>}
           </div>
         </React.Fragment>
       ))}

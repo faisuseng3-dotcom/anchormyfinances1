@@ -5,13 +5,15 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import PageShell from '@/components/layout/PageShell';
-import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
-import { sectionSubtitleClass } from '@/lib/anchorTheme';
 import { createPageUrl } from '@/utils';
 import { TRACKED_BUDGET_CATEGORIES } from '@/lib/budgetCategories';
-import BudgetHero from '@/components/budget/BudgetHero';
-import BudgetCategoryRow from '@/components/budget/BudgetCategoryRow';
+import BudgetCategoryCard from '@/components/budget/BudgetCategoryCard';
 import SetBudgetModal from '@/components/budget/SetBudgetModal';
+import CopilotProgressRing from '@/components/ui-premium/copilot/CopilotProgressRing';
+import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
+import StreakBadge from '@/components/ui-premium/copilot/StreakBadge';
+import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
+import { calcSavingsStreak } from '@/lib/microWins';
 
 function getMonthRange() {
   const now = new Date();
@@ -46,6 +48,10 @@ export default function BudgetDashboard() {
     (s, cat) => s + (monthlySpent[cat] || 0),
     0,
   );
+  const remaining = Math.max(0, totalBudgeted - totalSpent);
+  const budgetPct = totalBudgeted > 0 ? (totalSpent / totalBudgeted) * 100 : 0;
+  const underBudgetStreak = calcUnderBudgetStreak(profile, transactions);
+  const savingsStreak = calcSavingsStreak(transactions);
 
   const handleSaveBudget = async (category, amount) => {
     if (!profile) return;
@@ -56,33 +62,67 @@ export default function BudgetDashboard() {
   };
 
   const now = new Date();
-  const monthName = now.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' });
+  const monthName = now.toLocaleDateString('sv-SE', { month: 'long' });
 
   return (
-    <PageShell title="Budget" subtitle="Plan mot utfall" backHref={createPageUrl('Dashboard')}>
-      <BudgetHero
-        totalSpent={totalSpent}
-        totalBudgeted={totalBudgeted}
-        monthName={monthName}
-      />
+    <PageShell title="Budget" subtitle={`${monthName} · plan mot utfall`} backHref={createPageUrl('Dashboard')}>
+      <div className="flex flex-wrap gap-2 mb-2">
+        <StreakBadge count={underBudgetStreak} label="dagar under budget" variant="budget" />
+        <StreakBadge count={savingsStreak} label="dagars sparande" variant="save" />
+      </div>
 
-      <DashboardSection nested title="Kategorier" subtitle="Tryck för att ändra gräns">
-        {TRACKED_BUDGET_CATEGORIES.map((cat, i) => (
-          <React.Fragment key={cat}>
-            {i > 0 && <DashboardDivider />}
-            <BudgetCategoryRow
+      <CopilotCard className="flex flex-col items-center py-8">
+        <CopilotProgressRing
+          value={totalBudgeted > 0 ? Math.min(totalSpent, totalBudgeted) : 0}
+          max={totalBudgeted || 1}
+          size={148}
+          stroke={10}
+          color={budgetPct >= 100 ? '#f87171' : budgetPct >= 80 ? '#fcd34d' : '#22d97a'}
+          label={totalBudgeted > 0 ? `${Math.round(budgetPct)}%` : '—'}
+          sublabel="använt"
+        />
+        <div className="grid grid-cols-3 gap-6 mt-6 w-full max-w-sm text-center">
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Budget</p>
+            <p className="text-[16px] font-bold text-white tabular-nums mt-1">
+              {totalBudgeted.toLocaleString('sv-SE')}
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Spenderat</p>
+            <p className="text-[16px] font-bold text-[#f87171] tabular-nums mt-1">
+              {totalSpent.toLocaleString('sv-SE')}
+            </p>
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Kvar</p>
+            <p className="text-[16px] font-bold text-[var(--copilot-accent-green)] tabular-nums mt-1">
+              {remaining.toLocaleString('sv-SE')}
+            </p>
+          </div>
+        </div>
+      </CopilotCard>
+
+      <div>
+        <p className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-secondary)] mb-3 px-1">
+          Kategorier — svep för att se alla
+        </p>
+        <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-none">
+          {TRACKED_BUDGET_CATEGORIES.map((cat, i) => (
+            <BudgetCategoryCard
+              key={cat}
               category={cat}
               spent={monthlySpent[cat] || 0}
               limit={budgetLimits[cat] || 0}
               onEdit={setEditCategory}
+              index={i}
             />
-          </React.Fragment>
-        ))}
-      </DashboardSection>
-
-      <p className={`text-center ${sectionSubtitleClass} mt-2 px-2 font-light`}>
-        Uppdateras från dina transaktioner den här månaden. Gränser kan kopieras från Jämför.
-      </p>
+          ))}
+        </div>
+        <p className="text-[12px] text-[var(--copilot-text-muted)] text-center mt-3">
+          Tryck på ett kort för att sätta eller ändra gräns
+        </p>
+      </div>
 
       {editCategory && (
         <SetBudgetModal

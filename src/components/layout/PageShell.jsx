@@ -2,10 +2,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import { anchorIconButtonClass, anchorPageClass } from '@/lib/anchorTheme';
-import { dashZone, dashLabel } from '@/lib/dashboardTheme';
-import { surface } from '@/lib/designTokens';
+import { copilotPageClass } from '@/lib/copilotTheme';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
 
 /**
  * @param {Object} props
@@ -14,7 +13,8 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
  * @param {string} [props.backHref]
  * @param {() => void} [props.onBack]
  * @param {React.ReactNode} [props.action]
- * @param {React.ReactNode} props.children
+ * @param {React.ReactNode} [props.children]
+ * @param {React.ReactNode} [props.headerExtra]
  * @param {string} [props.className]
  */
 export default function PageShell({
@@ -23,36 +23,51 @@ export default function PageShell({
   backHref,
   onBack,
   action,
+  headerExtra,
   children,
   className = '',
 }) {
   const backControl = backHref ? (
     <Link to={backHref} className="no-underline">
-      <span className={`${anchorIconButtonClass} anchor-elev-1`} aria-label="Tillbaka">
+      <span
+        className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card-hover)] transition-colors"
+        aria-label="Tillbaka"
+      >
         <ArrowLeft className="w-4 h-4" />
       </span>
     </Link>
   ) : onBack ? (
-    <AnchorPressable onClick={onBack} className={`${anchorIconButtonClass} anchor-elev-1`} aria-label="Tillbaka">
+    <AnchorPressable
+      onClick={onBack}
+      className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)]"
+      aria-label="Tillbaka"
+    >
       <ArrowLeft className="w-4 h-4" />
     </AnchorPressable>
   ) : null;
 
   return (
-    <div className={`${anchorPageClass} anchor-mobile-frame ${className}`}>
-      <header
-        className={`${dashZone} pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:pt-11 pb-5 anchor-hero-asymmetric`}
-      >
-        <div className="flex items-start gap-3 min-w-0">
-          {backControl}
-          <div className="min-w-0 pt-1">
-            {subtitle && <p className={dashLabel}>{subtitle}</p>}
-            <h1 className="anchor-type-display text-[24px] sm:text-[28px] truncate">{title}</h1>
+    <div className={`${copilotPageClass} copilot-mobile-frame ${className}`}>
+      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl border-b border-[var(--copilot-border)]">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start gap-3 min-w-0">
+            {backControl}
+            <div className="min-w-0 pt-0.5">
+              {subtitle && (
+                <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
+                  {subtitle}
+                </p>
+              )}
+              <h1 className="text-[22px] sm:text-[26px] font-bold tracking-tight text-white truncate">
+                {title}
+              </h1>
+            </div>
           </div>
+          {action && <div className="shrink-0 pt-1">{action}</div>}
         </div>
-        {action && <div className="shrink-0 pt-1">{action}</div>}
+        {headerExtra}
       </header>
-      <div className={`${dashZone} space-y-8 pb-10`}>
+      <div className="copilot-page-zone space-y-5 pb-12 pt-6">
         {children}
       </div>
     </div>
@@ -61,14 +76,18 @@ export default function PageShell({
 
 export function GlassSection({ title, subtitle, children, className = '' }) {
   return (
-    <section className={`${surface.card} p-5 ${className}`}>
+    <CopilotCard className={className}>
       {title && (
         <div className="mb-4">
-          <h2 className="anchor-type-headline">{title}</h2>
-          {subtitle && <p className="anchor-type-body-sm mt-1">{subtitle}</p>}
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-secondary)]">
+            {title}
+          </h2>
+          {subtitle && (
+            <p className="text-[14px] text-[var(--copilot-text-muted)] mt-1 leading-relaxed">{subtitle}</p>
+          )}
         </div>
       )}
       {children}
-    </section>
+    </CopilotCard>
   );
 }

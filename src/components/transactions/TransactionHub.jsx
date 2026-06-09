@@ -1,36 +1,25 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Plus, ArrowLeftRight, History, Check } from 'lucide-react';
+import { Plus, ArrowLeftRight, History, Check } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
+import AnchorSheet from '@/components/ui-premium/AnchorSheet';
+import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
+import CopilotProgressRing from '@/components/ui-premium/copilot/CopilotProgressRing';
+import { copilotChipClass, copilotPrimaryBtnClass, copilotInputClass } from '@/lib/copilotTheme';
 import TheSwipe from './TheSwipe';
 
 const fmt = (v) => Math.round(v || 0).toLocaleString('sv-SE');
 
 const QUICK_AMOUNTS = [100, 200, 500, 1000, 2000, 5000];
-
 const INCOME_LABELS = ['Lön', 'Swish', 'Present', 'Frilans', 'Bidrag', 'Övrigt'];
-
-
 
 function AddIncomeTab({ onSave }) {
   const [amount, setAmount] = useState(0);
   const [label, setLabel] = useState('Lön');
   const [customLabel, setCustomLabel] = useState('');
   const [done, setDone] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [particles, setParticles] = useState([]);
-
-  const triggerParticles = () => {
-    const p = Array.from({ length: 6 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 160 - 80,
-      y: -(Math.random() * 80 + 40),
-    }));
-    setParticles(p);
-    setTimeout(() => setParticles([]), 800);
-  };
 
   const handleSave = () => {
     if (amount <= 0) return;
@@ -40,29 +29,19 @@ function AddIncomeTab({ onSave }) {
       amount,
       label: label === 'Övrigt' ? (customLabel || 'Inkomst') : label,
     });
-
-    base44.entities.FinancialProfile.list()
-      .then((profiles) => {
-        if (!profiles[0]) return;
-        return base44.entities.FinancialProfile.update(profiles[0].id, {
-          totalXP: (profiles[0].totalXP || 0) + 15,
-        });
-      })
-      .catch(() => {});
-
-    triggerParticles();
     setDone(true);
-    setTimeout(() => { setDone(false); setAmount(0); }, 2500);
+    setTimeout(() => { setDone(false); setAmount(0); }, 2000);
   };
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-3 gap-2">
-        {INCOME_LABELS.map(l => (
+        {INCOME_LABELS.map((l) => (
           <button
             key={l}
+            type="button"
             onClick={() => setLabel(l)}
-            className={`py-2.5 rounded-xl text-xs font-semibold transition-all ${label === l ? 'bg-emerald-500 text-white' : 'bg-white/8 text-slate-300 hover:bg-white/12'}`}
+            className={copilotChipClass(label === l)}
           >
             {l}
           </button>
@@ -71,18 +50,18 @@ function AddIncomeTab({ onSave }) {
       {label === 'Övrigt' && (
         <input
           value={customLabel}
-          onChange={e => setCustomLabel(e.target.value)}
+          onChange={(e) => setCustomLabel(e.target.value)}
           placeholder="Vad är det för?"
-          className="w-full h-11 rounded-xl bg-white/8 border border-white/10 text-white px-4 text-sm focus:outline-none focus:border-emerald-500/70"
+          className={copilotInputClass}
         />
       )}
-
       <div className="grid grid-cols-3 gap-2">
-        {QUICK_AMOUNTS.map(a => (
+        {QUICK_AMOUNTS.map((a) => (
           <button
             key={a}
+            type="button"
             onClick={() => setAmount(a)}
-            className={`py-2.5 rounded-xl text-sm font-semibold transition-all ${amount === a ? 'bg-emerald-500 text-white' : 'bg-white/8 text-slate-300 hover:bg-white/12'}`}
+            className={copilotChipClass(amount === a)}
           >
             {fmt(a)} kr
           </button>
@@ -92,48 +71,24 @@ function AddIncomeTab({ onSave }) {
         <input
           type="number"
           value={amount || ''}
-          onChange={e => setAmount(parseInt(e.target.value) || 0)}
-          className="w-full h-12 rounded-xl bg-white/8 border border-white/10 text-white text-center text-lg font-bold focus:outline-none focus:border-emerald-500/70"
+          onChange={(e) => setAmount(parseInt(e.target.value, 10) || 0)}
+          className={`${copilotInputClass} text-center text-lg font-bold`}
           placeholder="Belopp"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--copilot-text-muted)] text-sm">kr</span>
       </div>
-
-      <div className="relative">
-        {/* Flying particles */}
-        <AnimatePresence>
-          {particles.map(p => (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-              animate={{ opacity: 0, x: p.x, y: p.y, scale: 0.3 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.7, ease: 'easeOut' }}
-              className="absolute left-1/2 top-0 pointer-events-none text-emerald-400 font-bold text-sm"
-              style={{ zIndex: 10 }}
-            >
-              +{fmt(amount)} kr
-            </motion.div>
-          ))}
-        </AnimatePresence>
-
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={handleSave}
-          disabled={amount <= 0 || done || saving}
-          className={`w-full h-14 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 ${done ? 'bg-emerald-500/20 text-emerald-300' : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/30'}`}
-        >
-          {saving ? (
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 0.6, repeat: Infinity, ease: 'linear' }}>
-              <Plus className="w-4 h-4" />
-            </motion.div>
-          ) : done ? (
-            <><Check className="w-4 h-4" /> Pengarna registrerade!</>
-          ) : (
-            <><Plus className="w-4 h-4" /> Registrera +{fmt(amount)} kr</>
-          )}
-        </motion.button>
-      </div>
+      <button
+        type="button"
+        onClick={handleSave}
+        disabled={amount <= 0 || done}
+        className={copilotPrimaryBtnClass}
+      >
+        {done ? (
+          <span className="flex items-center justify-center gap-2"><Check className="w-4 h-4" /> Registrerat!</span>
+        ) : (
+          `Registrera +${fmt(amount)} kr`
+        )}
+      </button>
     </div>
   );
 }
@@ -145,46 +100,41 @@ function HistoryTab() {
     staleTime: 0,
   });
 
-  const typeConfig = {
-    income: { icon: '💰', color: 'text-emerald-400', sign: '+' },
-    expense: { icon: '💸', color: 'text-rose-400', sign: '-' },
-    savings_deposit: { icon: '🐷', color: 'text-blue-400', sign: '+' },
-    savings_withdrawal: { icon: '↩️', color: 'text-amber-400', sign: '-' },
-    transfer_to_savings: { icon: '→🐷', color: 'text-emerald-400', sign: '' },
-    transfer_to_spending: { icon: '🐷→', color: 'text-amber-400', sign: '' },
+  const typeCategory = {
+    income: 'income',
+    expense: 'other',
+    savings_deposit: 'savings',
+    savings_withdrawal: 'savings',
+    transfer_to_savings: 'savings',
+    transfer_to_spending: 'savings',
   };
 
   if (transactions.length === 0) {
     return (
-      <div className="text-center py-12 text-slate-500 text-sm">
+      <p className="text-center py-10 text-[var(--copilot-text-muted)] text-sm">
         Inga händelser ännu. Börja registrera transaktioner!
-      </div>
+      </p>
     );
   }
 
   return (
     <div className="space-y-2">
-      {transactions.map((tx, i) => {
-        const cfg = typeConfig[tx.type] || { icon: '💳', color: 'text-slate-400', sign: '' };
+      {transactions.map((tx) => {
+        const isPositive = tx.amount > 0 || tx.type === 'income';
         return (
-          <motion.div
+          <TintIconCard
             key={tx.id}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.04 }}
-            className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/8"
-          >
-            <span className="text-lg">{cfg.icon}</span>
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">{tx.label}</p>
-              <p className="text-slate-500 text-xs">
-                {new Date(tx.created_date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
-              </p>
-            </div>
-            <p className={`text-sm font-bold ${cfg.color}`}>
-              {cfg.sign}{fmt(tx.amount)} kr
-            </p>
-          </motion.div>
+            category={typeCategory[tx.type] || 'other'}
+            title={tx.label}
+            subtitle={new Date(tx.created_date).toLocaleDateString('sv-SE', {
+              day: 'numeric',
+              month: 'short',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+            amount={`${isPositive ? '+' : '−'}${fmt(Math.abs(tx.amount))} kr`}
+            amountPositive={isPositive}
+          />
         );
       })}
     </div>
@@ -196,7 +146,10 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
   const queryClient = useQueryClient();
   const { createTransaction } = useOptimisticTransactions();
 
-  // Always fetch fresh profile to avoid stale data bugs during consecutive operations
+  const goal = profile?.savingsGoal || 0;
+  const saved = profile?.savingsCurrentBalance || 0;
+  const goalPct = goal > 0 ? Math.min(100, (saved / goal) * 100) : 0;
+
   const getFreshProfile = async () => {
     const profiles = await base44.entities.FinancialProfile.list();
     return profiles[0] || null;
@@ -204,7 +157,6 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
 
   const saveTransaction = (txData) => {
     createTransaction(txData);
-
     if (txData.type === 'income' || txData.type === 'expense') {
       getFreshProfile()
         .then((fresh) => {
@@ -231,7 +183,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
             createTransaction({
               type: 'transfer_to_savings',
               amount,
-              label: `Överföring till Spar: +${fmt(amount)} kr`,
+              label: `Överföring till spar: +${fmt(amount)} kr`,
             });
           });
         }
@@ -242,7 +194,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
           createTransaction({
             type: 'transfer_to_spending',
             amount,
-            label: `Överföring från Spar: +${fmt(amount)} kr`,
+            label: `Överföring från spar: +${fmt(amount)} kr`,
           });
         });
       })
@@ -257,76 +209,65 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
   ];
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+    <AnchorSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Hantera pengar"
+      subtitle="Inkomst, flytta till sparmål eller historik"
+      maxHeight="min(88dvh, 640px)"
+    >
+      {goal > 0 && (
+        <div className="flex items-center gap-4 mb-5 p-4 rounded-2xl border border-[var(--copilot-border)] bg-[rgba(34,217,122,0.08)]">
+          <CopilotProgressRing
+            value={saved}
+            max={goal}
+            size={64}
+            stroke={5}
+            color="#22d97a"
+            label={`${Math.round(goalPct)}%`}
           />
-          <motion.div
-            initial={{ opacity: 0, y: '100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl overflow-hidden"
-            style={{ background: '#111827', border: '1px solid rgba(255,255,255,0.1)', maxHeight: '90vh' }}
-          >
-            {/* Handle */}
-            <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 rounded-full bg-white/20" />
-            </div>
-
-            <div className="px-5 pb-6 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 2rem)' }}>
-              {/* Header */}
-              <div className="flex items-center justify-between mb-5 pt-2">
-                <h2 className="text-white font-bold text-lg">Hantera Pengar</h2>
-                <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                  <X className="w-4 h-4 text-slate-400" />
-                </button>
-              </div>
-
-              {/* Tabs */}
-              <div className="flex rounded-xl overflow-hidden border border-white/10 mb-5">
-                {TABS.map(t => {
-                  const Icon = t.icon;
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => setTab(t.id)}
-                      className={`flex-1 py-2.5 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${tab === t.id ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-slate-300'}`}
-                    >
-                      <Icon className="w-3.5 h-3.5" />
-                      {t.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Content */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={tab}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                >
-                  {tab === 'income' && (
-                    <AddIncomeTab onSave={saveTransaction} />
-                  )}
-                  {tab === 'transfer' && (
-                    <TheSwipe profile={profile} onTransfer={handleTransfer} />
-                  )}
-                  {tab === 'history' && <HistoryTab />}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        </>
+          <div>
+            <p className="text-[13px] font-semibold text-white">{profile?.savingsGoalName || 'Sparmål'}</p>
+            <p className="text-[12px] text-[var(--copilot-text-muted)] tabular-nums">
+              {fmt(saved)} / {fmt(goal)} kr
+            </p>
+          </div>
+        </div>
       )}
-    </AnimatePresence>
+
+      <div className="flex rounded-2xl overflow-hidden border border-[var(--copilot-border)] mb-5 bg-[var(--copilot-bg-card)]">
+        {TABS.map((t) => {
+          const Icon = t.icon;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTab(t.id)}
+              className={`flex-1 py-3 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
+                tab === t.id
+                  ? 'bg-[var(--copilot-accent-blue)] text-white'
+                  : 'text-[var(--copilot-text-secondary)] hover:text-white'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={tab}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+        >
+          {tab === 'income' && <AddIncomeTab onSave={saveTransaction} />}
+          {tab === 'transfer' && <TheSwipe profile={profile} onTransfer={handleTransfer} />}
+          {tab === 'history' && <HistoryTab />}
+        </motion.div>
+      </AnimatePresence>
+    </AnchorSheet>
   );
 }
