@@ -40,6 +40,8 @@ export const LEGACY_REDIRECTS = {
   Squads: `${createPageUrl('Social')}?tab=friends`,
   Optimize: `${createPageUrl('ProTools')}?deep=margin`,
   SavingsGoals: createPageUrl('Dashboard'),
+  Subscriptions: '/Dashboard?view=subscriptions',
+  Prenumerationer: '/Dashboard?view=subscriptions',
   Expenses: historyTabHref('list'),
   Jamfor: createPageUrl('Galaxy'),
   BudgetDashboard: '/Budget',

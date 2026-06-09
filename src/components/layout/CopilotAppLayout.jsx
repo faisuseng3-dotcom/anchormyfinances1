@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
@@ -9,11 +9,7 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { useDemoMode } from '@/components/demo/DemoMode';
-import {
-  isCopilotToolView,
-  parseCopilotViewFromSearch,
-  copilotToolHref,
-} from '@/lib/copilotViews';
+import { COPILOT_VIEWS, parseCopilotViewFromSearch } from '@/lib/copilotViews';
 import { crossFade } from '@/lib/motionPresets';
 import AnchorCopilotSidebar from '@/components/dashboard/copilot/AnchorCopilotSidebar';
 import AccountDetailDrawer from '@/components/dashboard/copilot/AccountDetailDrawer';
@@ -28,7 +24,7 @@ const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 function CopilotShell({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { sidebarOpen, closeSidebar, activeView, setActiveView } = useCopilotNav();
+  const { sidebarOpen, closeSidebar, setActiveView } = useCopilotNav();
   const { user } = useAuth();
   const { profile, updateProfile } = useFinancialProfile();
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 500 });
@@ -41,25 +37,11 @@ function CopilotShell({ children }) {
 
   const displayUser = isAlex ? { full_name: 'Alex Lindqvist' } : user;
   const currentPage = location.pathname.split('/').filter(Boolean).pop() || 'Dashboard';
-  const showToolView = isCopilotToolView(activeView);
+  const onDashboard = currentPage === 'Dashboard';
 
-  // URL ?view=subscriptions → activeView (bokmärken / refresh)
-  useEffect(() => {
-    const fromUrl = parseCopilotViewFromSearch(location.search);
-    if (fromUrl && fromUrl !== activeView) {
-      setActiveView(fromUrl);
-    }
-  }, [location.search, activeView, setActiveView]);
-
-  // Verktygsvy ska alltid visa copilot-main — inte ProTools/andra routes som children
-  useEffect(() => {
-    if (!showToolView) return;
-    const target = copilotToolHref(activeView);
-    const current = `${location.pathname}${location.search}`;
-    if (current !== target) {
-      navigate(target, { replace: true });
-    }
-  }, [showToolView, activeView, location.pathname, location.search, navigate]);
+  // URL ?view=subscriptions är enda källan på Dashboard — undvik desync mot ProTools
+  const toolViewFromUrl = onDashboard ? parseCopilotViewFromSearch(location.search) : null;
+  const showToolView = Boolean(toolViewFromUrl);
 
   const getFreshProfile = useCallback(async () => {
     const profiles = await base44.entities.FinancialProfile.list();
@@ -98,10 +80,9 @@ function CopilotShell({ children }) {
   }, [createTransaction, getFreshProfile, queryClient]);
 
   const handleGoHome = useCallback(() => {
-    if (location.pathname.split('/').pop() !== 'Dashboard') {
-      navigate(createPageUrl('Dashboard'));
-    }
-  }, [location.pathname, navigate]);
+    setActiveView(COPILOT_VIEWS.home);
+    navigate(createPageUrl('Dashboard'));
+  }, [navigate, setActiveView]);
 
   return (
     <div className="anchor-copilot-shell">
@@ -112,13 +93,14 @@ function CopilotShell({ children }) {
         onClose={closeSidebar}
         onAccountSelect={setSelectedAccount}
         onGoHome={handleGoHome}
+        toolViewFromUrl={toolViewFromUrl}
       />
       <main className="copilot-main">
         <AnimatePresence mode="wait">
           {showToolView ? (
-            <motion.div key={activeView} {...crossFade} className="min-h-full">
+            <motion.div key={toolViewFromUrl} {...crossFade} className="min-h-full">
               <CopilotToolView
-                view={activeView}
+                view={toolViewFromUrl}
                 profile={profile}
                 transactions={transactions}
                 updateProfile={updateProfile}

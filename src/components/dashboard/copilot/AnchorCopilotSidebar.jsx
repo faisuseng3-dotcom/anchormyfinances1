@@ -15,12 +15,17 @@ const OVERVIEW_NAV = [
   { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach', badge: '3' },
 ];
 
-const TOOLS_NAV = [
-  { page: 'ProTools', icon: 'tools', label: 'Verktyg', external: true },
-  { view: COPILOT_VIEWS.goals, icon: 'goals', label: 'Sparmål' },
+/** Interna SPA-vyer i copilot-main (inte ProTools-sidan). */
+const INLINE_TOOLS_NAV = [
   { view: COPILOT_VIEWS.subscriptions, icon: 'subscriptions', label: 'Prenumerationer' },
+  { view: COPILOT_VIEWS.goals, icon: 'goals', label: 'Sparmål' },
   { view: COPILOT_VIEWS.squads, icon: 'squads', label: 'Squads' },
   { view: COPILOT_VIEWS.academy, icon: 'academy', label: 'Anchor Academy' },
+];
+
+/** Separat fullsidavy — öppnas via route /ProTools, aldrig via ?view= */
+const EXTERNAL_TOOLS_NAV = [
+  { page: 'ProTools', icon: 'tools', label: 'Alla verktyg' },
 ];
 
 function navHref(item) {
@@ -31,12 +36,12 @@ function navHref(item) {
   return url;
 }
 
-function isOverviewActive(item, pathname, currentPage, activeView) {
+function isOverviewActive(item, pathname, currentPage, toolViewFromUrl) {
   if (item.isHome) {
-    return activeView === COPILOT_VIEWS.home && currentPage === 'Dashboard';
+    return !toolViewFromUrl && currentPage === 'Dashboard';
   }
   if (item.match) return currentPage === item.match;
-  if (item.page && !item.hash && !item.query) return currentPage === item.page && activeView === COPILOT_VIEWS.home;
+  if (item.page && !item.hash && !item.query) return currentPage === item.page && !toolViewFromUrl;
   return false;
 }
 
@@ -47,11 +52,12 @@ export default function AnchorCopilotSidebar({
   onClose,
   onAccountSelect,
   onGoHome,
+  toolViewFromUrl = null,
   className = '',
 }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { activeView, setActiveView, goHome } = useCopilotNav();
+  const { setActiveView, goHome } = useCopilotNav();
   const currentPage = location.pathname.split('/').pop() || 'Dashboard';
   const accounts = buildAccountItems(profile);
   const firstName = user?.full_name?.split(' ')[0] || 'Du';
@@ -61,7 +67,8 @@ export default function AnchorCopilotSidebar({
     if (!TOOL_VIEW_IDS.has(view)) return;
     triggerHaptic('light');
     setActiveView(view);
-    navigate(copilotToolHref(view));
+    // URL styr rendering — alltid Dashboard + ?view=, aldrig /ProTools
+    navigate(copilotToolHref(view), { replace: false });
     onClose?.();
   };
 
@@ -109,7 +116,7 @@ export default function AnchorCopilotSidebar({
 
         <div className="copilot-sidebar-section-label">Översikt</div>
         {OVERVIEW_NAV.map((item) => {
-          const active = isOverviewActive(item, location.pathname, currentPage, activeView);
+          const active = isOverviewActive(item, location.pathname, currentPage, toolViewFromUrl);
 
           if (item.isHome) {
             return (
@@ -194,31 +201,19 @@ export default function AnchorCopilotSidebar({
         </div>
 
         <div className="copilot-sidebar-section-label" style={{ marginTop: 8 }}>
-          Verktyg
+          Prenumerationer & mål
         </div>
-        {TOOLS_NAV.map((item) => {
-          if (item.external) {
-            return (
-              <Link
-                key={item.label}
-                to={navHref(item)}
-                className="copilot-nav-item"
-                onClick={handleExternalToolNav}
-              >
-                <span className="copilot-nav-icon">
-                  <NavIcon name={item.icon} size={16} />
-                </span>
-                {item.label}
-              </Link>
-            );
-          }
-
-          const active = activeView === item.view;
+        {INLINE_TOOLS_NAV.map((item) => {
+          const active = toolViewFromUrl === item.view;
           return (
             <button
               key={item.label}
               type="button"
-              onClick={() => openToolView(item.view)}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openToolView(item.view);
+              }}
               className={`copilot-nav-item w-full text-left active:scale-[0.98] transition-transform ${active ? 'active' : ''}`}
             >
               <span className="copilot-nav-icon">
@@ -228,6 +223,23 @@ export default function AnchorCopilotSidebar({
             </button>
           );
         })}
+
+        <div className="copilot-sidebar-section-label" style={{ marginTop: 8 }}>
+          Pro-verktyg
+        </div>
+        {EXTERNAL_TOOLS_NAV.map((item) => (
+          <Link
+            key={item.label}
+            to={navHref(item)}
+            className="copilot-nav-item"
+            onClick={handleExternalToolNav}
+          >
+            <span className="copilot-nav-icon">
+              <NavIcon name={item.icon} size={16} />
+            </span>
+            {item.label}
+          </Link>
+        ))}
 
         <div className="copilot-sidebar-footer">
           <Link to={createPageUrl('Settings')} className="copilot-user-row" onClick={onClose}>

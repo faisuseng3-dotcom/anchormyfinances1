@@ -1,22 +1,21 @@
 import React from 'react';
 import { COPILOT_VIEWS, isCopilotToolView } from '@/lib/copilotViews';
 import SavingsGoalsHub from './SavingsGoalsHub';
-import SubscriptionsHub from './SubscriptionsHub';
+import SubscriptionListView from './SubscriptionListView';
 import SquadsHub from './SquadsHub';
 import AcademyHub from './AcademyHub';
 
 /**
- * Renderar exakt en verktygsvy i copilot-main.
- * Prenumerationer → SubscriptionsHub (inte ProTools / mastery).
+ * Renderar EN verktygsvy i copilot-main.
+ * subscriptions → SubscriptionListView (abonnemangslista), ALDRIG ProTools.
  */
 export default function CopilotToolView({ view, profile, transactions, updateProfile }) {
   if (!isCopilotToolView(view)) return null;
 
   if (view === COPILOT_VIEWS.subscriptions) {
     return (
-      <SubscriptionsHub
+      <SubscriptionListView
         profile={profile}
-        transactions={transactions}
         updateProfile={updateProfile}
       />
     );
