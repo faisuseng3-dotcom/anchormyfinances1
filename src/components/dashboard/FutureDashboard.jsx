@@ -66,7 +66,9 @@ export default function FutureDashboard({
   const { openSidebar, setActiveView } = useCopilotNav();
 
   const openSubscriptionsView = () => {
-    setActiveView(COPILOT_VIEWS.subscriptions);
+    if (import.meta.env.DEV) {
+      console.log('[FutureDashboard] Hantera prenumerationer → /Subscriptions');
+    }
     navigate(copilotToolHref(COPILOT_VIEWS.subscriptions));
   };
 

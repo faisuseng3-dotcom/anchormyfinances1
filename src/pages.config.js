@@ -8,6 +8,7 @@ import Onboarding from './pages/Onboarding';
 import Settings from './pages/Settings';
 import TransactionHistory from './pages/TransactionHistory';
 import ProTools from './pages/ProTools';
+import Subscriptions from './pages/Subscriptions';
 import FuturePulse from './pages/FuturePulse';
 import Landing from './pages/Landing';
 import Loans from './pages/Loans';
@@ -26,6 +27,7 @@ export const PAGES = {
   Settings,
   TransactionHistory,
   ProTools,
+  Subscriptions,
   FuturePulse,
   Landing,
   Loans,

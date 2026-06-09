@@ -81,6 +81,11 @@ export const PAGE_SEO = {
     description:
       'Avancerade verktyg: marginal, framtidsimulator, extra sparande och gemensam planering. För dig som vill gå djupare.',
   },
+  Subscriptions: {
+    title: 'Prenumerationer — Anchor',
+    description:
+      'Alla dina abonnemang på ett ställe. Se månadskostnad, nästa dragning och pausa eller avsluta tjänster.',
+  },
   PurchaseSimulator: {
     title: 'Köpsimulator — Anchor',
     description:

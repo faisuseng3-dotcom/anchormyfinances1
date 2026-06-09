@@ -3,7 +3,7 @@
  * Dedikerad prenumerationslista — INTE ProTools/verktygspanelen.
  * Visar alla abonnemang som runda kort med pausa/avbryt.
  */
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Plus, Pause, X, Pencil, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSubscriptionTotal, fmtKr, getUpcomingSubscriptions } from '../copilotDashboardUtils';
@@ -124,6 +124,14 @@ function SubscriptionRow({
 }
 
 export default function SubscriptionListView({ profile, updateProfile }) {
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.log('[SubscriptionListView] mounted', {
+        count: profile?.subscriptions?.length ?? 0,
+      });
+    }
+  }, [profile?.subscriptions?.length]);
+
   const subs = profile?.subscriptions || [];
   const total = getSubscriptionTotal(profile);
   const [showAdd, setShowAdd] = useState(false);
@@ -205,6 +213,7 @@ export default function SubscriptionListView({ profile, updateProfile }) {
 
   return (
     <CopilotToolShell
+      eyebrow="Abonnemang"
       title="Prenumerationer"
       subtitle="Alla dina abonnemang — Netflix, Spotify och övriga tjänster på ett ställe."
       action={

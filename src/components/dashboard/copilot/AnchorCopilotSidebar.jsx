@@ -15,9 +15,9 @@ const OVERVIEW_NAV = [
   { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach', badge: '3' },
 ];
 
-/** Interna SPA-vyer i copilot-main (inte ProTools-sidan). */
+/** Interna vyer — Prenumerationer har egen route /Subscriptions (ALDRIG ProTools). */
 const INLINE_TOOLS_NAV = [
-  { view: COPILOT_VIEWS.subscriptions, icon: 'subscriptions', label: 'Prenumerationer' },
+  { page: 'Subscriptions', icon: 'subscriptions', label: 'Prenumerationer' },
   { view: COPILOT_VIEWS.goals, icon: 'goals', label: 'Sparmål' },
   { view: COPILOT_VIEWS.squads, icon: 'squads', label: 'Squads' },
   { view: COPILOT_VIEWS.academy, icon: 'academy', label: 'Anchor Academy' },
@@ -63,12 +63,25 @@ export default function AnchorCopilotSidebar({
   const firstName = user?.full_name?.split(' ')[0] || 'Du';
   const initial = firstName.charAt(0).toUpperCase();
 
+  const openSubscriptions = () => {
+    triggerHaptic('light');
+    goHome();
+    if (import.meta.env.DEV) {
+      console.log('[CopilotNav] Prenumerationer → /Subscriptions (not ProTools)');
+    }
+    navigate(createPageUrl('Subscriptions'));
+    onClose?.();
+  };
+
   const openToolView = (view) => {
     if (!TOOL_VIEW_IDS.has(view)) return;
     triggerHaptic('light');
     setActiveView(view);
-    // URL styr rendering — alltid Dashboard + ?view=, aldrig /ProTools
-    navigate(copilotToolHref(view), { replace: false });
+    const href = copilotToolHref(view);
+    if (import.meta.env.DEV) {
+      console.log('[CopilotNav] openToolView', { view, href });
+    }
+    navigate(href, { replace: false });
     onClose?.();
   };
 
@@ -204,7 +217,30 @@ export default function AnchorCopilotSidebar({
           Prenumerationer & mål
         </div>
         {INLINE_TOOLS_NAV.map((item) => {
-          const active = toolViewFromUrl === item.view;
+          const active = item.page
+            ? currentPage === item.page
+            : toolViewFromUrl === item.view;
+
+          if (item.page === 'Subscriptions') {
+            return (
+              <button
+                key={item.label}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  openSubscriptions();
+                }}
+                className={`copilot-nav-item w-full text-left active:scale-[0.98] transition-transform ${active ? 'active' : ''}`}
+              >
+                <span className="copilot-nav-icon">
+                  <NavIcon name={item.icon} size={16} />
+                </span>
+                {item.label}
+              </button>
+            );
+          }
+
           return (
             <button
               key={item.label}

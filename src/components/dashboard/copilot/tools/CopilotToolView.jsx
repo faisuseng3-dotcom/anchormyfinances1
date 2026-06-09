@@ -10,6 +10,10 @@ import AcademyHub from './AcademyHub';
  * subscriptions → SubscriptionListView (abonnemangslista), ALDRIG ProTools.
  */
 export default function CopilotToolView({ view, profile, transactions, updateProfile }) {
+  if (import.meta.env.DEV) {
+    console.log('[CopilotToolView] render', { view });
+  }
+
   if (!isCopilotToolView(view)) return null;
 
   if (view === COPILOT_VIEWS.subscriptions) {

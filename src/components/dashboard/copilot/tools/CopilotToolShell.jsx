@@ -4,7 +4,14 @@ import { motion } from 'framer-motion';
 /**
  * Gemensam layout för verktygsvyer i copilot-main.
  */
-export default function CopilotToolShell({ title, subtitle, action, children, className = '' }) {
+export default function CopilotToolShell({
+  title,
+  subtitle,
+  action,
+  children,
+  className = '',
+  eyebrow = 'Verktyg',
+}) {
   return (
     <div className={`copilot-tool-view px-4 sm:px-6 lg:px-8 py-6 max-w-5xl mx-auto ${className}`}>
       <motion.header
@@ -15,7 +22,7 @@ export default function CopilotToolShell({ title, subtitle, action, children, cl
       >
         <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
-            Verktyg
+            {eyebrow}
           </p>
           <h1 className="text-[26px] sm:text-[28px] font-bold text-white tracking-tight mt-1">
             {title}

@@ -1,3 +1,5 @@
+import { createPageUrl } from '@/utils';
+
 /** SPA-vyer inom Copilot-shell — växlas via sidomenyn utan full sidladdning. */
 export const COPILOT_VIEWS = {
   home: 'home',
@@ -16,10 +18,19 @@ export const TOOL_VIEW_IDS = new Set([
 
 export const COPILOT_VIEW_PARAM = 'view';
 
-/** Kanonisk Dashboard-URL för en verktygsvy i copilot-main. */
+/** Kanonisk URL per verktygsvy. Prenumerationer har egen route — inte ?view= på Dashboard. */
 export function copilotToolHref(view) {
-  if (!TOOL_VIEW_IDS.has(view)) return '/Dashboard';
-  return `/Dashboard?${COPILOT_VIEW_PARAM}=${encodeURIComponent(view)}`;
+  if (view === COPILOT_VIEWS.subscriptions) return createPageUrl('Subscriptions');
+  if (!TOOL_VIEW_IDS.has(view)) return createPageUrl('Dashboard');
+  return `${createPageUrl('Dashboard')}?${COPILOT_VIEW_PARAM}=${encodeURIComponent(view)}`;
+}
+
+/** Vilken copilot-vy som är aktiv utifrån pathname + query. */
+export function resolveCopilotToolView(pathname, search) {
+  const page = pathname.split('/').filter(Boolean).pop() || 'Dashboard';
+  if (page === 'Subscriptions') return COPILOT_VIEWS.subscriptions;
+  if (page === 'Dashboard') return parseCopilotViewFromSearch(search);
+  return null;
 }
 
 export function parseCopilotViewFromSearch(search) {
