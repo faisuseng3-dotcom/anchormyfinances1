@@ -335,13 +335,21 @@
 
   /* Elevated sheet only — not for every dashboard block */
   .anchor-glass-card {
-    border-radius: 20px;
+    border-radius: var(--organic-radius-lg, 24px);
     padding: 1.25rem;
     background: rgba(12, 18, 38, 0.92);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 24px 56px rgba(2, 6, 20, 0.4);
+    border: none;
+    box-shadow: var(--organic-shadow-float, 0 12px 40px rgba(0, 0, 0, 0.18)), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  /* Dashboard bento — legacy glass/border ska inte vinna */
+  .copilot-bento-dashboard .anchor-glass-card,
+  .copilot-bento-dashboard .anchor-zone,
+  .anchor-copilot-shell .copilot-bento-dashboard .anchor-glass-card {
+    border: none !important;
+    border-radius: var(--organic-radius-lg, 24px) !important;
   }
 
   @media (min-width: 640px) {

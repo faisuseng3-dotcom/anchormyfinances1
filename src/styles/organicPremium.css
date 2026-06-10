@@ -148,8 +148,41 @@
 }
 
 .anchor-copilot-shell .copilot-bento .organic-surface,
-.anchor-copilot-shell .copilot-secondary-strip .copilot-card {
+.anchor-copilot-shell .copilot-secondary-strip .copilot-card,
+.copilot-bento-dashboard .organic-surface,
+.copilot-bento-dashboard .copilot-card {
   border-radius: var(--organic-radius-lg) !important;
+}
+
+/* Bento dashboard — organic DNA även utanför nested shell-selectors */
+.copilot-bento-dashboard .copilot-card,
+.copilot-bento-dashboard .copilot-mood-bar,
+.copilot-bento-dashboard .copilot-topbar,
+.copilot-bento-dashboard .copilot-summary-card {
+  border: none !important;
+  box-shadow: var(--organic-shadow-float), var(--organic-shadow-inset);
+}
+
+.copilot-bento-dashboard .copilot-bento {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .copilot-bento-dashboard .copilot-bento {
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+    gap: 24px;
+    align-items: start;
+  }
+}
+
+.copilot-bento-dashboard .copilot-bento-left,
+.copilot-bento-dashboard .copilot-bento-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
 }
 
 .anchor-copilot-shell .copilot-icon-btn,

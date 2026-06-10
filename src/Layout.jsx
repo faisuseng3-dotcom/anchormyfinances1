@@ -48,7 +48,8 @@ export default function Layout({ children, currentPageName }) {
   const [alexActive, setAlexActive] = React.useState(() => isAlexMode());
   const embedded = isEmbeddedApp();
   const hideNav = currentPageName === 'Onboarding' || (!isLoadingAuth && !isAuthenticated) || isBusiness;
-  const useCopilotShell = !hideNav && !isBusiness && !embedded;
+  const copilotHomePages = new Set(['Dashboard', 'Subscriptions']);
+  const useCopilotShell = !hideNav && !isBusiness && (!embedded || copilotHomePages.has(currentPageName));
 
   // Lyssna på Alex Mode-event för att dölja business-element
   React.useEffect(() => {

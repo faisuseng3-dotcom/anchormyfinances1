@@ -10,7 +10,7 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useDashboardPrefetch } from '@/hooks/useDashboardPrefetch';
 import { AnimatePresence } from 'framer-motion';
-import FutureDashboard from '@/components/dashboard/FutureDashboard';
+import CopilotBentoDashboard from '@/components/dashboard/CopilotBentoDashboard';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import TransactionHub from '@/components/transactions/TransactionHub';
 import BadgeUnlock from '@/components/gamification/BadgeUnlock';
@@ -116,7 +116,7 @@ export default function Dashboard() {
   return (
     <>
       <AlexModeHUD active={isAlex} />
-      <FutureDashboard
+      <CopilotBentoDashboard
         profile={profile}
         transactions={txs}
         updateProfile={updateProfile}
