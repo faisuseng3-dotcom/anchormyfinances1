@@ -115,8 +115,53 @@
 
 .anchor-copilot-shell .copilot-nav-item.active {
   color: var(--copilot-text-primary);
-  background: rgba(74, 122, 255, 0.15);
-  box-shadow: inset 0 0 0 1px rgba(74,122,255,0.25);
+  background: rgba(74, 122, 255, 0.12);
+  border-left: 3px solid var(--copilot-accent-blue);
+  padding-left: 17px;
+}
+
+.anchor-copilot-shell .copilot-nav-icon--active {
+  color: var(--copilot-accent-blue);
+}
+
+.anchor-copilot-shell .copilot-account-add {
+  margin-top: 4px;
+  color: var(--copilot-accent-cyan);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.anchor-copilot-shell .copilot-user-settings {
+  margin-left: auto;
+  color: var(--copilot-text-muted);
+  flex-shrink: 0;
+}
+
+.anchor-copilot-shell .app-shell-card {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+.anchor-copilot-shell .business-dashboard-shell {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+.anchor-copilot-shell .app-shell-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--copilot-accent-blue);
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
 
 .anchor-copilot-shell .copilot-nav-item {

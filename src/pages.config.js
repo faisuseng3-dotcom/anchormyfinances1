@@ -15,6 +15,13 @@ import Loans from './pages/Loans';
 import PurchaseSimulator from './pages/PurchaseSimulator';
 import TravelPlanner from './pages/TravelPlanner';
 import SecurityInfo from './pages/SecurityInfo';
+import YearEndClosing from './pages/YearEndClosing';
+import SavingsGoals from './pages/SavingsGoals';
+import Squads from './pages/Squads';
+import AnchorAcademy from './pages/AnchorAcademy';
+import AnchorAnalysis from './pages/AnchorAnalysis';
+import Insights from './pages/Insights';
+import Pricing from './pages/Pricing';
 import __Layout from './Layout.jsx';
 
 export { PAGE_SEO, GLOBAL_PAGE_META, pageSeoFor, sanitizePageTitle } from './lib/pageSeo';
@@ -34,6 +41,13 @@ export const PAGES = {
   PurchaseSimulator,
   TravelPlanner,
   SecurityInfo,
+  SavingsGoals,
+  Squads,
+  AnchorAcademy,
+  AnchorAnalysis,
+  Insights,
+  Pricing,
+  YearEndClosing,
 };
 
 export const pagesConfig = {

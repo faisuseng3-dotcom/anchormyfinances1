@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { COPILOT_VIEWS, copilotToolHref } from '@/lib/copilotViews';
-import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import {
   MOOD_OPTIONS,
   moodToToneMode,
@@ -22,7 +21,6 @@ import AcademyLessonSheet from '@/components/anchorBrain/AcademyLessonSheet';
 import {
   CategoryIcon,
   MoodIcon,
-  NavIcon,
 } from '@/lib/anchorIcons';
 import DreamBuilder from '@/components/goals/DreamBuilder';
 import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
@@ -34,13 +32,12 @@ import PlanGate from '@/components/billing/PlanGate';
 import CopilotDashboardPanel from './copilot/CopilotDashboardPanel';
 import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { calcSavingsStreak } from '@/lib/microWins';
-import { TrendingUp, Flame, Sparkles, ArrowUpRight, ArrowUp } from 'lucide-react';
+import { TrendingUp, Flame, Sparkles, ArrowUp } from 'lucide-react';
 import {
   fmtKr,
   buildSavingsGoals,
   buildFutureScenarios,
   buildReviewQueue,
-  formatTopbarDate,
   getSubscriptionTotal,
   getUpcomingSubscriptions,
 } from './copilot/copilotDashboardUtils';
@@ -60,7 +57,6 @@ export default function CopilotBentoDashboard({
   user,
 }) {
   const navigate = useNavigate();
-  const { openSidebar } = useCopilotNav();
 
   const openSubscriptionsView = () => {
     if (import.meta.env.DEV) {
@@ -78,12 +74,6 @@ export default function CopilotBentoDashboard({
 
   const { briefing, updatedAtLabel } = useDashboardBriefing();
   useProactiveWeekPush(profile);
-
-  const firstName = user?.full_name?.split(' ')[0] || 'du';
-  const health = useMemo(
-    () => calculateWeeklyHealthScore(profile, transactions),
-    [profile, transactions],
-  );
 
   const goals = useMemo(() => buildSavingsGoals(profile), [profile]);
   const scenarios = useMemo(
@@ -106,9 +96,10 @@ export default function CopilotBentoDashboard({
     return getPrimaryContextualLesson(profile, pengometer, subScan);
   }, [profile, transactions]);
 
-  const ringR = 14;
-  const circumference = 2 * Math.PI * ringR;
-  const ringOffset = circumference - (health.score / 100) * circumference;
+  const health = useMemo(
+    () => calculateWeeklyHealthScore(profile, transactions),
+    [profile, transactions],
+  );
 
   useEffect(() => {
     const open = () => setQuickExpenseOpen(true);
@@ -146,7 +137,7 @@ export default function CopilotBentoDashboard({
       setCoachInput('');
       return;
     }
-    window.location.href = `${createPageUrl('ProTools')}?deep=ai_guru`;
+    window.location.href = createPageUrl('AnchorAnalysis');
   };
 
   const handleLessonComplete = (lessonId) => {
@@ -168,66 +159,7 @@ export default function CopilotBentoDashboard({
       className="copilot-bento-dashboard min-h-full flex flex-col flex-1 w-full"
       data-dashboard-layout={DASHBOARD_LAYOUT_ID}
     >
-        <header className="copilot-topbar">
-          <div className="copilot-topbar-left">
-            <button
-              type="button"
-              className="copilot-icon-btn lg:hidden mb-2"
-              aria-label="Öppna meny"
-              onClick={openSidebar}
-            >
-              <NavIcon name="menu" size={18} />
-            </button>
-            <span className="copilot-topbar-date">{formatTopbarDate()}</span>
-            <span className="copilot-topbar-greeting">Hej {firstName}</span>
-          </div>
-          <div className="copilot-topbar-right">
-            <button type="button" className="copilot-health-badge" title={health.hint}>
-              <div className="copilot-health-score-ring">
-                <svg viewBox="0 0 34 34" width="34" height="34">
-                  <circle
-                    cx="17"
-                    cy="17"
-                    r={ringR}
-                    fill="none"
-                    stroke="rgba(255,255,255,0.1)"
-                    strokeWidth="2.5"
-                  />
-                  <circle
-                    cx="17"
-                    cy="17"
-                    r={ringR}
-                    fill="none"
-                    stroke={health.color}
-                    strokeWidth="2.5"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={ringOffset}
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <div className="copilot-health-score-num" style={{ color: health.color }}>
-                  {health.score}
-                </div>
-              </div>
-              <span className="copilot-health-label">{health.label}</span>
-              <ArrowUpRight size={14} className="text-[var(--copilot-text-muted)] ml-0.5" />
-            </button>
-            <button type="button" className="copilot-icon-btn" title="Notiser" aria-label="Notiser">
-              <NavIcon name="bell" size={16} />
-            </button>
-            <button
-              type="button"
-              className="copilot-icon-btn"
-              title="Sök / röst"
-              aria-label="Sök"
-              onClick={() => window.dispatchEvent(new CustomEvent('anchor:open-voice'))}
-            >
-              <NavIcon name="search" size={16} />
-            </button>
-          </div>
-        </header>
-
-        <div className="copilot-content">
+        <div className="copilot-content !pt-0">
           {showMoodBar && (
             <div className="copilot-mood-bar">
               <span className="copilot-mood-label">Innan siffrorna —</span>

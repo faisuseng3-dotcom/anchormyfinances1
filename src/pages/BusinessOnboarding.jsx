@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import { Zap, ArrowRight,
   CheckCircle2, Building2, TrendingUp, Shield, ChevronRight, Loader2,
   User, Palette, Laptop, Scissors, ShoppingCart, GraduationCap, Home, HandMetal, Ban,
 } from 'lucide-react';
 import {
   ensureOnboardingMode,
-  getDashboardPath,
-  getOnboardingPath,
-  isBusinessMode,
-  isBusinessOnboarded,
 } from '@/lib/onboardingRouter';
 
 // ─── Legal entity types ─────────────────────────────────────────────────────────
@@ -634,28 +631,34 @@ function StepHoroscope({ persona, onComplete }) {
 export default function BusinessOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    if (!isBusinessMode()) {
-      navigate(getOnboardingPath('personal'), { replace: true });
-      return;
-    }
-    ensureOnboardingMode('business');
-    if (isBusinessOnboarded()) {
-      navigate(getDashboardPath('business'), { replace: true });
-    }
-  }, [navigate]);
   const [legalEntity, setLegalEntity] = useState(null);
   const [persona, setPersona] = useState(null);
   const [pains, setPains] = useState([]);
   const [integrations, setIntegrations] = useState([]);
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    ensureOnboardingMode('business');
     localStorage.setItem('anchor_biz_onboarded', 'true');
     localStorage.setItem('anchor_biz_legal_entity', legalEntity || 'enskild');
     localStorage.setItem('anchor_biz_persona', persona);
     localStorage.setItem('anchor_biz_pains', JSON.stringify(pains));
     localStorage.setItem('anchor_biz_integrations', JSON.stringify(integrations));
+
+    try {
+      const profiles = await base44.entities.FinancialProfile.list('-updated_date', 1);
+      if (profiles[0]?.id) {
+        await base44.entities.FinancialProfile.update(profiles[0].id, {
+          onboardingCompleted: true,
+          businessPersona: persona,
+          businessLegalEntity: legalEntity,
+          businessPainPoints: pains,
+          businessIntegrations: integrations,
+        });
+      }
+    } catch (err) {
+      console.warn('Kunde inte spara företagsprofil:', err);
+    }
+
     navigate('/BusinessDashboard', { replace: true });
   };
 

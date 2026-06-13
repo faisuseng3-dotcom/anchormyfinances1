@@ -6,10 +6,8 @@ import PageSeo from '@/components/PageSeo'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, useLocation, Navigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { isGuestMode } from '@/components/guestStorage';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import Landing from './pages/Landing';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -19,14 +17,21 @@ import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import Import from './pages/Import';
 import BudgetDashboard from './pages/BudgetDashboard';
-import Social from './pages/Social';
-import Galaxy from './pages/Galaxy';
 import YearEndClosing from './pages/YearEndClosing';
-import Pricing from './pages/Pricing';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import { LEGACY_REDIRECTS } from '@/lib/appStructure';
+import { isPublicPath, loginPathWithReturn } from '@/lib/authRoutes';
+import {
+  RequireAuth,
+  RequireGuestForSignup,
+  RequireGuestForAuth,
+  RequireOnboardingAccess,
+  RequireBusinessOnboardingAccess,
+} from '@/components/auth/AuthRouteGuards';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -36,24 +41,47 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
-const PUBLIC_PATHS = new Set([
-  '/',
-  '/Landing',
-  '/Login',
-  '/SignIn',
-  '/CreateAccount',
-  '/Onboarding',
-  '/BusinessOnboarding',
-  '/PrivacyPolicy',
-  '/TermsOfService',
-  '/Pricing',
-]);
+const AUTH_GUEST_PAGES = new Set(['Login', 'ForgotPassword', 'ResetPassword']);
+const SIGNUP_PAGE = 'CreateAccount';
+const ONBOARDING_PAGE = 'Onboarding';
 
-function isPublicPath(pathname) {
-  return PUBLIC_PATHS.has(pathname);
+function wrapPage(path, Page) {
+  if (AUTH_GUEST_PAGES.has(path)) {
+    return (
+      <RequireGuestForAuth>
+        <Page />
+      </RequireGuestForAuth>
+    );
+  }
+
+  if (path === SIGNUP_PAGE) {
+    return (
+      <RequireGuestForSignup>
+        <Page />
+      </RequireGuestForSignup>
+    );
+  }
+
+  if (path === ONBOARDING_PAGE) {
+    return (
+      <RequireOnboardingAccess>
+        <Page />
+      </RequireOnboardingAccess>
+    );
+  }
+
+  if (path === 'Landing') {
+    return <Page />;
+  }
+
+  return (
+    <RequireAuth>
+      <LayoutWrapper currentPageName={path}>
+        <Page />
+      </LayoutWrapper>
+    </RequireAuth>
+  );
 }
-
-const NO_LAYOUT_PAGES = new Set(['Login', 'CreateAccount']);
 
 const AuthenticatedApp = () => {
   const location = useLocation();
@@ -66,33 +94,31 @@ const AuthenticatedApp = () => {
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required' && !isPublicPath(location.pathname)) {
-      return <Landing />;
+    }
+    if (authError.type === 'auth_required' && !isPublicPath(location.pathname)) {
+      return (
+        <Navigate
+          to={loginPathWithReturn(location.pathname, location.search)}
+          replace
+        />
+      );
     }
   }
 
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/Dashboard" replace />} />
-      <Route path="/Login" element={<Login />} />
+      <Route path="/Login" element={wrapPage('Login', Login)} />
       <Route path="/SignIn" element={<Navigate to="/Login" replace />} />
-      {Object.entries(Pages).filter(([path]) => path !== 'Login').map(([path, Page]) => {
-        const element = NO_LAYOUT_PAGES.has(path)
-          ? <Page />
-          : (
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
-          );
-        return (
-          <Route
-            key={path}
-            path={`/${path}`}
-            element={element}
-          />
-        );
-      })}
-      {/* Gamla bokmärken → kanonisk vy */}
+      <Route path="/ForgotPassword" element={wrapPage('ForgotPassword', ForgotPassword)} />
+      <Route path="/ResetPassword" element={wrapPage('ResetPassword', ResetPassword)} />
+      {Object.entries(Pages).filter(([path]) => path !== 'Login').map(([path, Page]) => (
+        <Route
+          key={path}
+          path={`/${path}`}
+          element={wrapPage(path, Page)}
+        />
+      ))}
       {Object.entries(LEGACY_REDIRECTS).map(([page, to]) => (
         <Route
           key={`legacy-${page}`}
@@ -100,33 +126,41 @@ const AuthenticatedApp = () => {
           element={<Navigate to={to} replace />}
         />
       ))}
-      {/* Djupvyer — inte i bottennav */}
       <Route path="/PrivacyPolicy" element={<PrivacyPolicy />} />
       <Route path="/TermsOfService" element={<TermsOfService />} />
-      <Route path="/Pricing" element={<Pricing />} />
       <Route path="/BusinessDashboard" element={
-        <LayoutWrapper currentPageName="BusinessDashboard">
-          <BusinessDashboard />
-        </LayoutWrapper>
+        <RequireAuth>
+          <LayoutWrapper currentPageName="BusinessDashboard">
+            <BusinessDashboard />
+          </LayoutWrapper>
+        </RequireAuth>
       } />
-      <Route path="/BusinessOnboarding" element={<BusinessOnboarding />} />
-      <Route path="/Import" element={<Import />} />
+      <Route path="/BusinessOnboarding" element={
+        <RequireBusinessOnboardingAccess>
+          <BusinessOnboarding />
+        </RequireBusinessOnboardingAccess>
+      } />
+      <Route path="/Import" element={
+        <RequireAuth>
+          <LayoutWrapper currentPageName="Import">
+            <Import />
+          </LayoutWrapper>
+        </RequireAuth>
+      } />
       <Route path="/Budget" element={
-        <LayoutWrapper currentPageName="BudgetDashboard">
-          <BudgetDashboard />
-        </LayoutWrapper>
+        <RequireAuth>
+          <LayoutWrapper currentPageName="BudgetDashboard">
+            <BudgetDashboard />
+          </LayoutWrapper>
+        </RequireAuth>
       } />
-      <Route path="/Social" element={
-        <LayoutWrapper currentPageName="Social">
-          <Social />
-        </LayoutWrapper>
+      <Route path="/YearEndClosing" element={
+        <RequireAuth>
+          <LayoutWrapper currentPageName="YearEndClosing">
+            <YearEndClosing />
+          </LayoutWrapper>
+        </RequireAuth>
       } />
-      <Route path="/Galaxy" element={
-        <LayoutWrapper currentPageName="Galaxy">
-          <Galaxy />
-        </LayoutWrapper>
-      } />
-      <Route path="/YearEndClosing" element={<YearEndClosing />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

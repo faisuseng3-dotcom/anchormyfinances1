@@ -77,7 +77,7 @@ export default function BusinessDashboard() {
 
   return (
     <PlanGate feature="business_dashboard">
-    <div className="min-h-screen min-h-[100dvh] overflow-x-hidden w-full max-w-lg mx-auto" style={{ background: '#F4F6F8' }}>
+    <div className="min-h-full overflow-x-hidden w-full business-dashboard-shell">
       {/* Modals */}
       <AnimatePresence>
         {showScanner && (

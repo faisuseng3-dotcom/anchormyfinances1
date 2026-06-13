@@ -226,6 +226,83 @@
       "type": "boolean",
       "description": "Om onboarding \u00e4r slutf\u00f6rd"
     },
+    "userType": {
+      "type": "string",
+      "enum": [
+        "privatperson",
+        "frilansare",
+        "foretagare"
+      ],
+      "description": "Anv\u00e4ndartyp fr\u00e5n onboarding"
+    },
+    "economicGoal": {
+      "type": "string",
+      "enum": [
+        "save",
+        "control",
+        "reduce_debt",
+        "plan_future"
+      ],
+      "description": "St\u00f6rsta ekonomiska m\u00e5let"
+    },
+    "economyMood": {
+      "type": "string",
+      "enum": [
+        "calm",
+        "stressed",
+        "motivated"
+      ],
+      "description": "Hur ekonomin k\u00e4nns just nu"
+    },
+    "sessionMood": {
+      "type": "string",
+      "description": "Hum\u00f6r/stressniv\u00e5 f\u00f6r AI-personalisering"
+    },
+    "persona": {
+      "type": "string",
+      "description": "Anv\u00e4ndarpersona (alias f\u00f6r userType)"
+    },
+    "topConcern": {
+      "type": "string",
+      "enum": [
+        "spending",
+        "debt",
+        "save",
+        "plan"
+      ],
+      "description": "Huvudfokus f\u00f6r AI-coach"
+    },
+    "communicationStyle": {
+      "type": "string",
+      "enum": [
+        "balanced",
+        "reassuring",
+        "energetic"
+      ],
+      "description": "Kommunikationston fr\u00e5n onboarding"
+    },
+    "businessPersona": {
+      "type": "string",
+      "description": "F\u00f6retagspersona fr\u00e5n business-onboarding"
+    },
+    "businessLegalEntity": {
+      "type": "string",
+      "enum": [
+        "enskild",
+        "ab"
+      ],
+      "description": "Juridisk form"
+    },
+    "businessPainPoints": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Valda sm\u00e4rtpunkter"
+    },
+    "businessIntegrations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Valda integrationer"
+    },
     "dailyLoginStreak": {
       "type": "integer",
       "default": 0,

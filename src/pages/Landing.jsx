@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { Link, useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { Lock, BarChart2, Smartphone, Shield, User, Building2, ArrowRight, Check } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { getDashboardPath, getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';
 import { dashLabel } from '@/lib/dashboardTheme';
 import { pageEnter, staggerItem } from '@/lib/motionPresets';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
@@ -144,6 +143,7 @@ function ModeCard({ mode, selected, onSelect }) {
 }
 
 export default function Landing() {
+  const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
   const [selectedMode, setSelectedMode] = useState(null);
   const { setPersonal, setBusiness } = useModeContext();
@@ -152,14 +152,10 @@ export default function Landing() {
     if (!agreed || !selectedMode) return;
     if (selectedMode === 'business') {
       setBusiness();
-      const redirectPath = isBusinessOnboarded()
-        ? getDashboardPath('business')
-        : getOnboardingPath('business');
-      base44.auth.redirectToLogin(`${window.location.origin}${redirectPath}`);
     } else {
       setPersonal();
-      base44.auth.redirectToLogin(`${window.location.origin}${getOnboardingPath('personal')}`);
     }
+    navigate(createPageUrl('CreateAccount'));
   };
 
   const isBusiness = selectedMode === 'business';

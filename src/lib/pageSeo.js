@@ -51,6 +51,16 @@ export const PAGE_SEO = {
     description:
       'Skapa ett Anchor-konto och spara din ekonomiprofil. Kom igång med budget, sparmål och personliga insikter på några minuter.',
   },
+  ForgotPassword: {
+    title: 'Glömt lösenord — Anchor',
+    description:
+      'Återställ ditt Anchor-lösenord. Vi skickar en säker länk till din e-post så du kan välja ett nytt lösenord.',
+  },
+  ResetPassword: {
+    title: 'Nytt lösenord — Anchor',
+    description:
+      'Välj ett nytt lösenord för ditt Anchor-konto efter återställningslänken från e-post.',
+  },
   Onboarding: {
     title: 'Kom igång — Anchor',
     description:
@@ -197,9 +207,9 @@ export const PAGE_SEO = {
       'Årsbokslut och verifikat för svenska företag. Gå igenom underlag och stäng året strukturerat.',
   },
   AnchorAnalysis: {
-    title: 'Analys — Anchor',
+    title: 'AI-Coach — Anchor',
     description:
-      'Djupanalys av din ekonomi: scenarier, prognoser och handlingsbara insikter baserade på din profil.',
+      'Din personliga ekonomicoach — råd utifrån marginal, mål och humör på svenska.',
   },
   Insights: {
     title: 'Insikter — Anchor',
