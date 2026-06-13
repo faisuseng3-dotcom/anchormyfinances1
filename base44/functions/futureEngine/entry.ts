@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
+import { canUseFuturePulse } from '../_shared/billingLimits.ts';
 
 const SYSTEM_PROMPT = `Persona: Du är "Framtidssjälv" – Anchors prediktiva AI-motor (Gemini 2.5 Pro-lager). Du är expert på att läsa ekonomiska trender, beteendemönster och förutse finansiella händelser i Sverige 2026.
 
@@ -29,6 +30,16 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+    const profiles = await base44.entities.FinancialProfile.list('-updated_date', 1);
+    const billingProfile = profiles[0];
+    if (billingProfile && !canUseFuturePulse(billingProfile.plan)) {
+      return Response.json({
+        error: 'plan_required',
+        message: 'Din Framtid ingår i Pro och Business.',
+        upgrade_plan: 'pro',
+      }, { status: 402 });
+    }
 
     const { profile, transactions, localBaseline, patterns, context = 'PERSONAL' } = await req.json();
 

@@ -5,6 +5,7 @@ import { copilotPrimaryBtnClass, copilotGhostBtnClass } from '@/lib/copilotTheme
 import { fmtKr } from '../copilotDashboardUtils';
 import { staggerItem } from '@/lib/motionPresets';
 import CopilotToolShell from './CopilotToolShell';
+import PlanGate from '@/components/billing/PlanGate';
 
 const DEMO_SQUADS = [
   {
@@ -106,6 +107,14 @@ function SquadCard({ squad, index }) {
 }
 
 export default function SquadsHub() {
+  return (
+    <PlanGate feature="squads">
+      <SquadsHubContent />
+    </PlanGate>
+  );
+}
+
+function SquadsHubContent() {
   return (
     <CopilotToolShell
       title="Squads"

@@ -8,7 +8,7 @@ import {
   enrichFuturePulseDetail,
 } from '@/lib/futurePulseEngine';
 import { detectSpendingPatterns } from '@/lib/onDeviceMl';
-import { indexFromPatterns } from '@/lib/aiMemory';
+import { canUseFeature, normalizePlan } from '@/lib/billingPlans';
 
 export async function fetchFuturePulse(profile, transactions, { compact = true } = {}) {
   const personalTxs = (transactions || []).filter((t) => t.context !== 'BUSINESS');
@@ -22,16 +22,19 @@ export async function fetchFuturePulse(profile, transactions, { compact = true }
   }
 
   let merged = localRaw;
-  try {
-    const res = await base44.functions.invoke('futureEngine', {
-      ...payload,
-      localBaseline: compactFuturePulse(localRaw),
-      patterns,
-      context: 'PERSONAL',
-    });
-    merged = mergeFuturePulse(localRaw, res.data);
-  } catch {
-    merged = localRaw;
+  const plan = normalizePlan(profile?.plan);
+  if (canUseFeature(plan, 'future_pulse')) {
+    try {
+      const res = await base44.functions.invoke('futureEngine', {
+        ...payload,
+        localBaseline: compactFuturePulse(localRaw),
+        patterns,
+        context: 'PERSONAL',
+      });
+      merged = mergeFuturePulse(localRaw, res.data);
+    } catch {
+      merged = localRaw;
+    }
   }
 
   if (compact) return compactFuturePulse(merged);

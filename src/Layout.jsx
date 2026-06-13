@@ -24,7 +24,7 @@ import { isEmbeddedApp } from '@/lib/embedLayout';
 import { cn } from '@/lib/utils';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import PageTransition from '@/components/ui-premium/PageTransition';
-import CopilotAppLayout from '@/components/layout/CopilotAppLayout';
+import PaymentFailedBanner from '@/components/billing/PaymentFailedBanner';
 
 /** 5 kärnflikar + FAB — Jämför och socialt ligger under Inställningar. */
 const navItems = [
@@ -104,6 +104,7 @@ export default function Layout({ children, currentPageName }) {
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideNav && <GuestBanner />}
+      {!hideNav && <PaymentFailedBanner />}
       {useCopilotShell ? (
         <CopilotAppLayout>
           <div className="overflow-y-auto overflow-x-hidden min-h-screen">

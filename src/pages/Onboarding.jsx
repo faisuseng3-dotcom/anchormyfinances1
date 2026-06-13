@@ -65,7 +65,7 @@ export default function Onboarding() {
     setLoading(true);
 
     const mergedData = applyConcernToProfile(
-      { ...data, mode: data.mode || 'smart', onboardingCompleted: true },
+      { ...data, mode: data.mode || 'basic', plan: data.plan || 'free', onboardingCompleted: true },
       data.topConcern,
     );
     const { pendingImportRows = [], totalLoans, ...profilePayload } = mergedData;

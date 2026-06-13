@@ -76,10 +76,10 @@ export default function ModeGate({ feature, mode, children }) {
           <p className="text-sm text-slate-400 leading-relaxed">{upgradeMsg}</p>
         </div>
         <Link
-          to={createPageUrl('Settings')}
+          to={createPageUrl('Pricing')}
           className="w-full py-3 rounded-xl text-sm font-bold text-white text-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90"
         >
-          Byt läge i Inställningar →
+          Uppgradera →
         </Link>
       </div>
     </div>

@@ -7,12 +7,13 @@ import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
 import { AnchorLogoMark, NavIcon } from '@/lib/anchorIcons';
 import { triggerHaptic } from '@/lib/haptics';
+import { useBilling } from '@/hooks/useBilling';
 
 const OVERVIEW_NAV = [
   { page: 'Dashboard', icon: 'home', label: 'Hem', isHome: true },
   { page: 'Budget', icon: 'budget', label: 'Budget', badge: 'OK', badgeGreen: true },
   { href: planeraTabHref('nu'), icon: 'future', label: 'Din Framtid', match: 'FuturePulse' },
-  { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach', badge: '3' },
+  { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach' },
 ];
 
 /** Interna vyer — Prenumerationer har egen route /Subscriptions (ALDRIG ProTools). */
@@ -58,6 +59,7 @@ export default function AnchorCopilotSidebar({
   const location = useLocation();
   const navigate = useNavigate();
   const { setActiveView, goHome } = useCopilotNav();
+  const { planLabel } = useBilling();
   const currentPage = location.pathname.split('/').pop() || 'Dashboard';
   const accounts = buildAccountItems(profile);
   const firstName = user?.full_name?.split(' ')[0] || 'Du';
@@ -282,7 +284,7 @@ export default function AnchorCopilotSidebar({
             <div className="copilot-user-avatar">{initial}</div>
             <div>
               <div className="copilot-user-name">{firstName}</div>
-              <div className="copilot-user-plan">Pro-plan</div>
+              <div className="copilot-user-plan">{planLabel}</div>
             </div>
             <span style={{ marginLeft: 'auto', color: 'var(--copilot-text-muted)' }}>
               <NavIcon name="settings" size={16} />

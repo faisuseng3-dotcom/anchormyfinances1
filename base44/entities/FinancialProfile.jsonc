@@ -252,6 +252,44 @@
       "items": {
         "type": "string"
       }
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "free",
+        "basic",
+        "pro",
+        "business"
+      ],
+      "default": "free",
+      "description": "Aktiv betalplan (Stripe)"
+    },
+    "stripeCustomerId": {
+      "type": "string",
+      "description": "Stripe customer ID"
+    },
+    "subscriptionId": {
+      "type": "string",
+      "description": "Stripe subscription ID"
+    },
+    "renewalDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "N\u00e4sta f\u00f6rnyelsedatum (ISO)"
+    },
+    "paymentFailed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Senaste fakturabetalning misslyckades"
+    },
+    "aiCoachMonth": {
+      "type": "string",
+      "description": "YYYY-MM f\u00f6r m\u00e5nadsvis AI-coach-r\u00e4knare"
+    },
+    "aiCoachCount": {
+      "type": "integer",
+      "default": 0,
+      "description": "Antal AI-coach-anrop denna m\u00e5nad"
     }
   },
   "required": [

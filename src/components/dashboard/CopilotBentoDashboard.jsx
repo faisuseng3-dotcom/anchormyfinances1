@@ -30,6 +30,7 @@ import CopilotEnvelopeGoal from '@/components/ui-premium/copilot/CopilotEnvelope
 import StreakBadge from '@/components/ui-premium/copilot/StreakBadge';
 import TransactionActiveReview from '@/components/transactions/TransactionActiveReview';
 import CopilotFuturePulseMini from './copilot/CopilotFuturePulseMini';
+import PlanGate from '@/components/billing/PlanGate';
 import CopilotDashboardPanel from './copilot/CopilotDashboardPanel';
 import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { calcSavingsStreak } from '@/lib/microWins';
@@ -296,7 +297,9 @@ export default function CopilotBentoDashboard({
                 )}
               </CopilotDashboardPanel>
 
-              <CopilotFuturePulseMini forecast={scenarios.forecast} />
+              <PlanGate feature="future_pulse" compact>
+                <CopilotFuturePulseMini forecast={scenarios.forecast} />
+              </PlanGate>
             </div>
 
             <div className="copilot-bento-right">

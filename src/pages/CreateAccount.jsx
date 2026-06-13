@@ -26,6 +26,7 @@ export default function CreateAccount() {
       ...savedProfile,
       persona: selectedPersona,
       mode: savedProfile?.mode || 'basic',
+      plan: savedProfile?.plan || 'free',
       onboardingCompleted: true,
     };
 
