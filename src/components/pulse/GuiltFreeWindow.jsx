@@ -21,7 +21,7 @@ export default function GuiltFreeWindow({ amount, nextCriticalName, nextCritical
       className="rounded-2xl p-5 relative overflow-hidden"
       style={{
         background: 'rgba(31,41,55,0.7)',
-        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: 'var(--anchor-shadow-1)',
         boxShadow: `0 0 30px ${config.glow}`,
       }}
     >

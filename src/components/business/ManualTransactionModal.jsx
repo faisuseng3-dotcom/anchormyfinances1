@@ -141,7 +141,7 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
           {parsedAmount > 0 && (
             <div className="flex gap-2">
               <div className="flex-1 p-2.5 rounded-2xl text-center"
-                style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.15)' }}>
+                style={{ background: 'rgba(13,115,119,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-[10px]" style={{ color: '#9AA5B4' }}>Exkl. moms</p>
                 <p className="text-sm font-black" style={{ color: '#0D7377' }}>
                   {(parsedAmount - vatAmt).toFixed(0)} kr
@@ -185,7 +185,7 @@ export default function ManualTransactionModal({ onClose, onAdd }) {
               style={{ color: '#9AA5B4' }}>Underlag / Kvitto</label>
             {receiptUrl ? (
               <div className="flex items-center gap-2 px-3 py-2.5 rounded-2xl"
-                style={{ background: 'rgba(13,115,119,0.06)', border: '1px solid rgba(13,115,119,0.2)' }}>
+                style={{ background: 'rgba(13,115,119,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <CheckCircle2 className="w-4 h-4" style={{ color: '#0D7377' }} />
                 <p className="text-xs font-bold inline-flex items-center gap-1" style={{ color: '#0D7377' }}><Check className="w-3.5 h-3.5" aria-hidden /> Kvitto bifogat</p>
                 <button onClick={() => setReceiptUrl(null)} className="ml-auto text-[10px]" style={{ color: '#9AA5B4' }}>Ta bort</button>

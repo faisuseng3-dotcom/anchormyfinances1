@@ -33,14 +33,14 @@
     --color-success: #6ee7b7;
     --color-danger: #fca5a5;
     --color-warning: #fcd34d;
-    --anchor-radius-sm: 14px;
-    --anchor-radius-md: 18px;
-    --anchor-radius-lg: 22px;
+    --anchor-radius-sm: 16px;
+    --anchor-radius-md: 20px;
+    --anchor-radius-lg: 24px;
     --anchor-radius-xl: 28px;
-    --anchor-shadow-1: 0 2px 8px rgba(0, 0, 0, 0.12);
-    --anchor-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.18);
-    --anchor-shadow-3: 0 16px 40px rgba(0, 0, 0, 0.22);
-    --anchor-shadow-4: 0 24px 56px rgba(0, 0, 0, 0.28);
+    --anchor-shadow-1: 0 4px 24px rgba(0, 0, 0, 0.14), 0 1px 4px rgba(74, 122, 255, 0.06);
+    --anchor-shadow-2: 0 12px 40px rgba(0, 0, 0, 0.18), 0 4px 16px rgba(74, 122, 255, 0.08);
+    --anchor-shadow-3: 0 20px 56px rgba(0, 0, 0, 0.22), 0 8px 24px rgba(109, 74, 255, 0.1);
+    --anchor-shadow-4: 0 28px 72px rgba(0, 0, 0, 0.28), 0 12px 32px rgba(74, 122, 255, 0.12);
     --transition-fast: 150ms cubic-bezier(0.22, 1, 0.36, 1);
     --transition-base: 240ms cubic-bezier(0.22, 1, 0.36, 1);
     --transition-slow: 360ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -75,7 +75,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 1.25rem;
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
@@ -279,7 +279,7 @@
   }
 
   .anchor-divider {
-    @apply h-px bg-white/[0.08];
+    @apply h-0 my-3;
   }
 
   .anchor-list-row {
@@ -335,13 +335,21 @@
 
   /* Elevated sheet only — not for every dashboard block */
   .anchor-glass-card {
-    border-radius: 20px;
+    border-radius: var(--organic-radius-lg, 24px);
     padding: 1.25rem;
     background: rgba(12, 18, 38, 0.92);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 24px 56px rgba(2, 6, 20, 0.4);
+    border: none;
+    box-shadow: var(--organic-shadow-float, 0 12px 40px rgba(0, 0, 0, 0.18)), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  /* Dashboard bento — legacy glass/border ska inte vinna */
+  .copilot-bento-dashboard .anchor-glass-card,
+  .copilot-bento-dashboard .anchor-zone,
+  .anchor-copilot-shell .copilot-bento-dashboard .anchor-glass-card {
+    border: none !important;
+    border-radius: var(--organic-radius-lg, 24px) !important;
   }
 
   @media (min-width: 640px) {
@@ -351,11 +359,13 @@
   }
 
   .anchor-glass-card-sm {
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 1rem;
+    border: none;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--anchor-shadow-1), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .anchor-section-label {
@@ -363,7 +373,7 @@
   }
 
   .anchor-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 h-[52px] px-6 rounded-xl text-[15px] font-semibold transition-colors disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 h-[52px] px-6 rounded-full text-[15px] font-semibold transition-all active:scale-[0.97] disabled:opacity-50;
     color: #0a1628;
     background-color: #fff;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
@@ -374,7 +384,7 @@
   }
 
   .anchor-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 h-[52px] px-6 rounded-xl text-[15px] font-semibold transition-colors disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 h-[52px] px-6 rounded-full text-[15px] font-semibold transition-all active:scale-[0.97] disabled:opacity-50;
     color: rgba(255, 255, 255, 0.9);
     background-color: rgba(255, 255, 255, 0.08);
   }
@@ -394,8 +404,10 @@
   }
 
   .anchor-input {
-    @apply flex w-full h-12 rounded-xl border-0 px-4 text-[15px] text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 disabled:opacity-50;
+    @apply flex w-full h-12 rounded-full px-5 text-[15px] text-white focus-visible:outline-none disabled:opacity-50;
     background-color: rgba(255, 255, 255, 0.08);
+    border: none;
+    box-shadow: var(--anchor-shadow-1), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .anchor-input::placeholder {
@@ -430,9 +442,9 @@
     background: rgba(8, 14, 100, 0.97);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border-top: 1px solid var(--copilot-border);
+    border: none;
     border-radius: var(--anchor-radius-xl) var(--anchor-radius-xl) 0 0;
-    box-shadow: 0 -8px 40px rgba(74, 122, 255, 0.15), var(--anchor-shadow-4);
+    box-shadow: 0 -12px 48px rgba(74, 122, 255, 0.18), var(--anchor-shadow-4);
   }
 
   .copilot-subpage {
@@ -441,12 +453,21 @@
 
   .copilot-surface-card {
     background: var(--copilot-bg-card);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: none;
+    border-radius: var(--anchor-radius-lg);
+    box-shadow: var(--anchor-shadow-2), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition: transform 0.28s cubic-bezier(0.34, 1.45, 0.64, 1), box-shadow 0.28s ease;
   }
 
   .copilot-surface-card:hover {
     background: var(--copilot-bg-card-hover);
+    box-shadow: var(--anchor-shadow-3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .copilot-surface-card:active {
+    transform: scale(0.98);
   }
 
   .copilot-page-zone {

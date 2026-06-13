@@ -33,7 +33,7 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
       initial={{ opacity: 0, y: 16, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8 }}
-      className="rounded-2xl border border-[rgba(74,122,255,0.35)] bg-[rgba(74,122,255,0.1)] p-4"
+      className="rounded-3xl border-[rgba(74,122,255,0.35)] bg-[rgba(74,122,255,0.1)] p-4"
     >
       <div className="flex items-start gap-3">
         <div className="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">

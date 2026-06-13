@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { Link, useNavigate } from 'react-router-dom';
+import { createPageUrl } from '@/utils';
 import { Lock, BarChart2, Smartphone, Shield, User, Building2, ArrowRight, Check } from 'lucide-react';
 import { useModeContext } from '@/components/modes/ModeContext';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { getDashboardPath, getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';
 import { dashLabel } from '@/lib/dashboardTheme';
 import { pageEnter, staggerItem } from '@/lib/motionPresets';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
@@ -144,6 +143,7 @@ function ModeCard({ mode, selected, onSelect }) {
 }
 
 export default function Landing() {
+  const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
   const [selectedMode, setSelectedMode] = useState(null);
   const { setPersonal, setBusiness } = useModeContext();
@@ -152,14 +152,10 @@ export default function Landing() {
     if (!agreed || !selectedMode) return;
     if (selectedMode === 'business') {
       setBusiness();
-      const redirectPath = isBusinessOnboarded()
-        ? getDashboardPath('business')
-        : getOnboardingPath('business');
-      base44.auth.redirectToLogin(`${window.location.origin}${redirectPath}`);
     } else {
       setPersonal();
-      base44.auth.redirectToLogin(`${window.location.origin}${getOnboardingPath('personal')}`);
     }
+    navigate(createPageUrl('CreateAccount'));
   };
 
   const isBusiness = selectedMode === 'business';
@@ -352,7 +348,7 @@ export default function Landing() {
       </section>
 
       <footer
-        className="relative z-10 mt-auto pb-10 pt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs border-t border-white/[0.06] text-[var(--color-text-tertiary)]"
+        className="relative z-10 mt-auto pb-10 pt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs mt-2 pt-2 text-[var(--color-text-tertiary)]"
       >
         {[
           { to: '/Login', label: 'Logga in' },

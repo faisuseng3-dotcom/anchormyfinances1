@@ -95,12 +95,12 @@ export default function PushNotificationManager() {
           className="fixed bottom-24 left-4 right-4 z-50 rounded-2xl p-4 flex items-center gap-3"
           style={{
             background: 'var(--color-card)',
-            border: '1px solid rgba(75,124,243,0.35)',
+            boxShadow: 'var(--anchor-shadow-1)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.35)'
           }}
         >
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(75,124,243,0.15)', border: '1px solid rgba(75,124,243,0.3)' }}>
+            style={{ background: 'rgba(75,124,243,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Bell className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
           </div>
           <div className="flex-1 min-w-0">
@@ -136,7 +136,7 @@ export default function PushNotificationManager() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="fixed bottom-24 left-4 right-4 z-50 rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.08)' }}
+          style={{ background: 'var(--color-card)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <div className="w-5 h-5 rounded-full border-2 animate-spin flex-shrink-0"
             style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />

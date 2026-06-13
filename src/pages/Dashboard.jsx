@@ -3,14 +3,12 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { base44 } from '@/api/base44Client';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import Landing from '@/pages/Landing';
-import { isGuestMode } from '@/components/guestStorage';
 import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useDashboardPrefetch } from '@/hooks/useDashboardPrefetch';
 import { AnimatePresence } from 'framer-motion';
-import FutureDashboard from '@/components/dashboard/FutureDashboard';
+import CopilotBentoDashboard from '@/components/dashboard/CopilotBentoDashboard';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import TransactionHub from '@/components/transactions/TransactionHub';
 import BadgeUnlock from '@/components/gamification/BadgeUnlock';
@@ -19,12 +17,13 @@ import { useGamification, checkAndUnlockBadges } from '@/hooks/useGamification';
 import MagicEntryBox from '@/components/import/MagicEntryBox';
 import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexModeHUD from '@/components/demo/AlexModeHUD';
-import { getDashboardPath, getOnboardingPath, isBusinessMode } from '@/lib/onboardingRouter';
+import { getDashboardPath, getOnboardingPath, isBusinessMode, isBusinessOnboarded } from '@/lib/onboardingRouter';
+import { isBusinessUserType } from '@/lib/onboardingWizard';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, isLoadingAuth } = useAuth();
+  const { isLoadingAuth } = useAuth();
   const [showTransactionHub, setShowTransactionHub] = useState(false);
   const [showMagicEntry, setShowMagicEntry] = useState(false);
   const { isAlexMode: isAlex } = useDemoMode();
@@ -49,12 +48,19 @@ export default function Dashboard() {
   }, [profile?.id]);
 
   useEffect(() => {
-    if (isBusinessMode()) {
-      navigate(getDashboardPath('business'), { replace: true });
+    if (!profile) return;
+
+    if (isBusinessMode() || isBusinessUserType(profile.userType)) {
+      if (!profile.onboardingCompleted || !isBusinessOnboarded()) {
+        navigate('/BusinessOnboarding', { replace: true });
+      } else {
+        navigate(getDashboardPath('business'), { replace: true });
+      }
       return;
     }
-    if (profile && !profile.onboardingCompleted) {
-      navigate(getOnboardingPath('personal'), { replace: true });
+
+    if (!profile.onboardingCompleted) {
+      navigate(getOnboardingPath(), { replace: true });
     }
   }, [profile, navigate]);
 
@@ -93,8 +99,6 @@ export default function Dashboard() {
     navigate(`${createPageUrl('ProTools')}?deep=ai_guru`, { replace: true });
   }, [location.hash, navigate]);
 
-  if (!isLoadingAuth && !isAuthenticated && !isGuestMode()) return <Landing />;
-
   if (isLoadingAuth || isLoading) {
     return <DashboardSkeleton />;
   }
@@ -116,7 +120,7 @@ export default function Dashboard() {
   return (
     <>
       <AlexModeHUD active={isAlex} />
-      <FutureDashboard
+      <CopilotBentoDashboard
         profile={profile}
         transactions={txs}
         updateProfile={updateProfile}

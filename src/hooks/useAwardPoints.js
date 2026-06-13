@@ -25,7 +25,7 @@ export function useAwardPoints() {
           style: {
             background: 'linear-gradient(135deg, #1e1b4b, #1a2233)',
             color: '#a5b4fc',
-            border: '1px solid rgba(99,102,241,0.4)',
+            boxShadow: 'var(--anchor-shadow-1)',
           },
         });
       }

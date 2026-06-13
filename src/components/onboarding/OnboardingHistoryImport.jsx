@@ -122,7 +122,7 @@ export default function OnboardingHistoryImport({ pendingRows = [], onChange }) 
   const reviewCount = pendingRows.filter((r) => r._needsReview).length;
 
   return (
-    <div className="rounded-2xl border border-white/12 overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+    <div className="rounded-3xl border-white/12 overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

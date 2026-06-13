@@ -99,7 +99,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
   return (
     <div className="space-y-8">
       {/* Läget nu — kompakt */}
-      <motion.div {...staggerItem(0)} className="rounded-2xl px-4 py-4 border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)]">
+      <motion.div {...staggerItem(0)} className="rounded-2xl px-4 py-4 organic-surface bg-[var(--copilot-bg-card)]">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2">Läget nu</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-[var(--copilot-text-secondary)]">
           <span><strong className="text-white tabular-nums">{fmt(pulseNow?.remainingWeek)}</strong> kvar den här veckan</span>
@@ -125,7 +125,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
                 'rounded-2xl px-2 py-3 min-h-[4.5rem] text-center border',
                 mode === m.id
                   ? 'bg-[var(--copilot-accent-blue)] text-white border-[rgba(74,122,255,0.4)]'
-                  : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] border-[var(--copilot-border)]',
+                  : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] ',
               )}
             >
               <ScenarioIcon mode={m.id} size={20} className="block mx-auto mb-1" />
@@ -198,11 +198,11 @@ export default function DinFramtidPanel({ profile, transactions }) {
           </div>
 
           <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+            <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
               <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">60 dagar min</p>
               <p className="text-[18px] font-bold text-white tabular-nums mt-1">{fmt(forecast._meta?.minBalance)}</p>
             </div>
-            <div className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]">
+            <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
               <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Snitt/dag</p>
               <p className="text-[18px] font-bold text-white tabular-nums mt-1">{fmt(forecast._meta?.dailySpend)}</p>
             </div>

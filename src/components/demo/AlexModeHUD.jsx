@@ -19,7 +19,7 @@ export default function AlexModeHUD({ active }) {
           className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2 px-4 py-2 rounded-full shadow-lg"
           style={{
             background: 'linear-gradient(135deg, #0D7377, #0a5f63)',
-            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: 'var(--anchor-shadow-1)',
             pointerEvents: 'auto',
           }}
         >

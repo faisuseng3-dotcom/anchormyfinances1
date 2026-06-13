@@ -28,6 +28,7 @@ import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
 import GamificationSection from '@/components/gamification/GamificationSection';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AppStructurePanel from '@/components/settings/AppStructurePanel';
+import BillingPlanSection from '@/components/settings/BillingPlanSection';
 import AnchorAIStackPanel from '@/components/settings/AnchorAIStackPanel';
 import { SettingsRowIcon } from '@/components/settings/SettingsPanel';
 import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
@@ -206,6 +207,10 @@ export default function Settings() {
       </StaggerBlock>
 
       <StaggerBlock index={1}>
+        <BillingPlanSection />
+      </StaggerBlock>
+
+      <StaggerBlock index={2}>
         <GlassSection title="Budget">
           <div className="space-y-4">
             <FieldRow label="Månatlig nettoinkomst" icon={Wallet}>

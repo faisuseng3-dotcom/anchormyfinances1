@@ -92,7 +92,7 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Top Summary Bar */}
       <div className="rounded-2xl p-4 text-center"
-        style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        style={{ background: 'rgba(255,255,255,0.03)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Total månadskostnad</p>
         <p className="text-3xl font-black text-white">{fmt(analysis.totalMonthlyCost)} kr/mån</p>
         <p className="text-xs text-slate-500 mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
@@ -121,7 +121,7 @@ export default function VehicleCFOReport({ analysis }) {
 
         <div className="px-4 pb-4">
           <div className="rounded-xl p-3 text-sm text-slate-300 leading-relaxed"
-            style={{ background: 'rgba(0,0,0,0.3)', border: `1px solid ${analysis.cfo_score >= 7 ? 'rgba(251,191,36,0.4)' : analysis.cfo_score >= 5 ? 'rgba(148,163,184,0.3)' : 'rgba(239,68,68,0.3)'}` }}>
+            style={{ background: 'rgba(0,0,0,0.3)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <span className="text-[10px] font-bold tracking-widest uppercase text-slate-500 block mb-1">
               {analysis.cfo_score >= 7
                 ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-amber-400" aria-hidden /> Gold Verdict</span>
@@ -152,7 +152,7 @@ export default function VehicleCFOReport({ analysis }) {
       {analysis.isUnderwater && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           className="rounded-xl p-4"
-          style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.25)' }}>
+          style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-xs font-bold text-rose-400 mb-1 inline-flex items-center gap-1"><Waves className="w-3.5 h-3.5" aria-hidden /> Under vatten vid halvtid</p>
           <p className="text-xs text-rose-200">
             Vid lånets mitt punkt: skuld <strong>{fmt(analysis.remainingDebt)} kr</strong> vs bilens värde <strong>{fmt(analysis.midResidualValue)} kr</strong>.
@@ -164,7 +164,7 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Liquidity check */}
       {analysis.downPaymentAmount > 0 && analysis.currentBuffer > 0 && (
         <div className="rounded-xl p-4 flex gap-3 items-start"
-          style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+          style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-[11px] font-bold text-indigo-400 mb-0.5">Likviditets-check</p>
@@ -185,17 +185,17 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Monthly bite + numbers */}
       <div className="grid grid-cols-3 gap-3">
         <div className="rounded-2xl p-3 flex flex-col items-center"
-          style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <MonthlyBitePie cost={analysis.totalMonthlyCost} margin={analysis.margin} />
         </div>
         <div className="rounded-2xl p-3 flex flex-col justify-center"
-          style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-[10px] text-slate-500 mb-0.5">Total ränta</p>
           <p className="text-base font-black text-amber-400">{fmt(analysis.totalInterest)}</p>
           <p className="text-[10px] text-slate-600">kr att betala extra</p>
         </div>
         <div className="rounded-2xl p-3 flex flex-col justify-center"
-          style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-[10px] text-slate-500 mb-0.5">Totalpris</p>
           <p className="text-base font-black text-white">{fmt(analysis.totalPaid)}</p>
           <p className="text-[10px] text-slate-600">kr inkl. insats</p>
@@ -206,7 +206,7 @@ export default function VehicleCFOReport({ analysis }) {
       {isLongLoan && (
         <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
           className="rounded-xl p-4"
-          style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
+          style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-xs font-bold text-amber-400 mb-1 inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" aria-hidden /> The {analysis.months}-Month Twist</p>
           <p className="text-xs text-amber-200">
             Priset för bekvämlighet: <strong className="text-white">{fmt(analysis.interestExtra)} kr extra</strong> i ränta jämfört med 36 månader.
@@ -217,7 +217,7 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Depreciation vs Debt */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <div className="flex items-start gap-2 mb-2">
             <TrendingDown className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
             <div>
@@ -228,7 +228,7 @@ export default function VehicleCFOReport({ analysis }) {
           <p className="text-[10px] text-slate-500 leading-relaxed">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
         </div>
 
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <div className="flex items-start gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
             <div>
@@ -241,7 +241,7 @@ export default function VehicleCFOReport({ analysis }) {
       </div>
 
       {/* Trade-off */}
-      <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 inline-flex items-center gap-1"><Utensils className="w-3.5 h-3.5" aria-hidden /> Trade-off kalkylatorn</p>
         <div className="space-y-2 text-xs text-slate-300">
           <div className="flex justify-between items-center">
@@ -255,7 +255,7 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Opportunity investment */}
       {analysis.opportunity_investment && (
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 inline-flex items-center gap-1"><LineChart className="w-3.5 h-3.5" aria-hidden /> Alternativet – Indexfond</p>
           <p className="text-xs text-slate-300">{analysis.opportunity_investment}</p>
           <p className="text-sm font-bold text-emerald-400 mt-2">
@@ -267,7 +267,7 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Better alternative */}
       {analysis.better_alternative && (
         <div className="rounded-xl p-3 flex gap-3 items-start"
-          style={{ background: 'rgba(17,24,39,0.5)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          style={{ background: 'rgba(17,24,39,0.5)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-[11px] font-bold text-cyan-400 mb-0.5">Smartare alternativ</p>

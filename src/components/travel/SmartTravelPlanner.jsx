@@ -197,7 +197,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={`p-5 rounded-2xl border ${
+            className={`p-5 rounded-3xl ${
               marketData.price_trend?.status === 'cheap' 
                 ? 'border-emerald-500/30 bg-emerald-500/10' 
                 : 'border-amber-500/30 bg-amber-500/10'

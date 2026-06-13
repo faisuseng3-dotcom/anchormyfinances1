@@ -18,7 +18,7 @@ export {
 
 /** Organisk panel — inte fyrkantig glass-box */
 export const techInset =
-  'relative overflow-hidden rounded-[26px] ring-1 ring-inset ring-white/[0.1]';
+  'relative overflow-hidden rounded-[26px] shadow-[var(--anchor-shadow-1)]';
 
 export const techInsetBg =
   'absolute inset-0 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-transparent pointer-events-none';

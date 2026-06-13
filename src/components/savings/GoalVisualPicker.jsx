@@ -120,7 +120,7 @@ export default function GoalVisualPicker({
             type="button"
             onClick={pickImage}
             disabled={disabled || uploading}
-            className="w-full py-4 rounded-2xl border border-dashed border-white/15 hover:border-emerald-500/40 bg-white/[0.03] flex flex-col items-center gap-2 transition-colors disabled:opacity-50"
+            className="w-full py-4 rounded-3xl border-dashed border-white/15 hover:border-emerald-500/40 bg-white/[0.03] flex flex-col items-center gap-2 transition-colors disabled:opacity-50"
           >
             {uploading ? (
               <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />

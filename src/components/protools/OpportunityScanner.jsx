@@ -179,7 +179,7 @@ Svara ENDAST med JSON.`,
   return (
     <div className="space-y-5">
       {/* Header + scan */}
-      <div className="rounded-2xl p-5" style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="rounded-2xl p-5" style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Coins className="w-5 h-5 text-amber-400" />
@@ -254,7 +254,7 @@ Svara ENDAST med JSON.`,
             {totalFound > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
                 className="rounded-2xl p-4 text-center"
-                style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.12), rgba(245,158,11,0.06))', border: '1px solid rgba(251,191,36,0.3)' }}>
+                style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.12), rgba(245,158,11,0.06))', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-xs text-amber-400 font-bold uppercase tracking-wider mb-1">Om du agerar på allt</p>
                 <p className="text-3xl font-black text-amber-400">{fmt(totalFound * 12)} kr</p>
                 <p className="text-xs text-slate-400 mt-1">extra per år till "{savingsGoalName}"</p>

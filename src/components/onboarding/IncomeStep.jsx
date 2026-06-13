@@ -35,7 +35,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
               placeholder="25 000"
               value={formatNumber(data.income)}
               onChange={(e) => onChange({ ...data, income: parseNumber(e.target.value) })}
-              className="h-14 text-lg pr-12 rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-14 text-lg pr-12 rounded-2xl-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
           </div>
@@ -52,7 +52,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
               placeholder="8 000"
               value={formatNumber(data.housingCost)}
               onChange={(e) => onChange({ ...data, housingCost: parseNumber(e.target.value) })}
-              className="h-14 text-lg pr-12 rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-14 text-lg pr-12 rounded-2xl-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
           </div>
@@ -69,7 +69,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
               placeholder="15 000"
               value={formatNumber(data.buffer)}
               onChange={(e) => onChange({ ...data, buffer: parseNumber(e.target.value) })}
-              className="h-14 text-lg pr-12 rounded-xl border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
+              className="h-14 text-lg pr-12 rounded-2xl-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
           </div>

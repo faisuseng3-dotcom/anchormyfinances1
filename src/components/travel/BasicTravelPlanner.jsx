@@ -131,7 +131,7 @@ export default function BasicTravelPlanner({ profile }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className={`p-6 rounded-2xl border-2 ${
+        className={`p-6 rounded-3xl-2 ${
           isOverBudget 
             ? 'border-rose-500 bg-rose-500/10' 
             : 'border-emerald-500 bg-emerald-500/10'
@@ -173,7 +173,7 @@ export default function BasicTravelPlanner({ profile }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="glass-effect p-5 rounded-2xl border border-indigo-500/20"
+          className="glass-effect p-5 rounded-3xl border-indigo-500/20"
         >
           <h3 className="font-semibold text-white mb-2 flex items-center gap-2"><Calendar className="w-4 h-4" /> Din sparplan</h3>
           <p className="text-slate-300 text-sm">

@@ -162,7 +162,7 @@ export default function TransactionActiveReview({
         <AnchorPressable
           type="button"
           onClick={() => { triggerHaptic('light'); advance(false); }}
-          className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl bg-white/[0.06] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)] font-semibold text-[13px] active:scale-[0.98]"
+          className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl bg-white/[0.06] organic-surface text-[var(--copilot-text-secondary)] font-semibold text-[13px] active:scale-[0.98]"
         >
           <ChevronLeft className="w-4 h-4" /> Hoppa över
         </AnchorPressable>
@@ -170,7 +170,7 @@ export default function TransactionActiveReview({
           type="button"
           onClick={() => { triggerHaptic('success'); advance(true); }}
           className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl font-semibold text-[13px] text-white active:scale-[0.98]"
-          style={{ background: 'rgba(34,217,122,0.2)', border: '1px solid rgba(34,217,122,0.35)' }}
+          style={{ background: 'rgba(34,217,122,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           Godkänn <Check className="w-4 h-4" />
         </AnchorPressable>

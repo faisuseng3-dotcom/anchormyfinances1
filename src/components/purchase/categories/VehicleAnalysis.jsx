@@ -205,7 +205,7 @@ Svara ENDAST med JSON.`;
       {/* Input Card */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5 space-y-4"
-        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <h3 className="font-semibold text-white flex items-center gap-2">
           <Car className="w-5 h-5 text-blue-400" /> Fordonsinformation
         </h3>
@@ -267,7 +267,7 @@ Svara ENDAST med JSON.`;
             <div>
               <Label className="text-xs text-slate-400">Lånebelopp (beräknat)</Label>
               <div className="mt-1 h-10 rounded-xl flex items-center px-3 text-sm font-semibold text-blue-300"
-                style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
+                style={{ background: 'rgba(59,130,246,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 {fmt(loanAmount)} kr
               </div>
             </div>
@@ -303,7 +303,7 @@ Svara ENDAST med JSON.`;
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
-              style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)' }}>
+              style={{ background: 'rgba(59,130,246,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div>
                 <p className="text-[10px] text-slate-500">Månadskostnad</p>
                 <p className="text-sm font-bold text-blue-400">{fmt(liveCalc.totalMonthlyCost)} kr</p>
@@ -326,7 +326,7 @@ Svara ENDAST med JSON.`;
         {months >= 84 && liveCalc && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)' }}>
+            style={{ background: 'rgba(239,68,68,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
             <p className="text-rose-200">
               <strong>Skuldfälla ({months} mån):</strong> Lånetiden är längre än bilens beräknade värdebehållning. Du riskerar att ha kvar skulden när du säljer bilen.
@@ -337,7 +337,7 @@ Svara ENDAST med JSON.`;
         {months >= 60 && months < 84 && liveCalc && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(245,158,11,0.07)', border: '1px solid rgba(245,158,11,0.25)' }}>
+            style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <span className="text-amber-400 text-base flex-shrink-0">⏳</span>
             <p className="text-amber-200">
               <strong>Lång avbetalning ({months} mån):</strong> Ökar totalkostnaden med{' '}
@@ -350,7 +350,7 @@ Svara ENDAST med JSON.`;
         {liveCalc && liveCalc.downPaymentAmount > 0 && currentBuffer > 0 && liveCalc.downPaymentAmount > currentBuffer * 0.3 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.25)' }}>
+            style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
             <p className="text-indigo-200">
               Kontantinsatsen på <strong>{fmt(liveCalc.downPaymentAmount)} kr</strong> sänker din buffert

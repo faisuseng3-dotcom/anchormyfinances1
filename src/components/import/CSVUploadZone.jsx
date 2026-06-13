@@ -72,7 +72,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
       >
         <div
           className="w-14 h-14 rounded-2xl flex items-center justify-center"
-          style={{ background: 'rgba(74,122,255,0.15)', border: '1px solid rgba(74,122,255,0.25)' }}
+          style={{ background: 'rgba(74,122,255,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <Upload className="w-7 h-7 text-[var(--copilot-accent-blue)]" />
         </div>
@@ -106,7 +106,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
         className={`w-full flex items-center justify-center gap-2 min-h-12 rounded-2xl text-[14px] font-semibold transition-all active:scale-[0.98] ${
           pasteMode
             ? 'bg-[rgba(74,122,255,0.12)] border border-[rgba(74,122,255,0.35)] text-white'
-            : 'bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)]'
+            : 'bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)]'
         }`}
       >
         <ClipboardPaste className="w-4 h-4" />
@@ -130,7 +130,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
                 rows={7}
                 className={`${copilotInputClass} !rounded-none !border-0 !h-auto min-h-[140px] py-4 font-mono text-[12px] resize-none`}
               />
-              <div className="flex gap-2 p-3 border-t border-[var(--copilot-border)]">
+              <div className="flex gap-2 p-3 border-t ">
                 <button
                   type="button"
                   onClick={() => { setPasteMode(false); setPasteValue(''); }}

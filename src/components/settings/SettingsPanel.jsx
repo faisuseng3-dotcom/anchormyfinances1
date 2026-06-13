@@ -27,7 +27,7 @@ export default function SettingsPanel({ icon: Icon, title, subtitle, open, onTog
         />
       </AnchorPressable>
       {open && (
-        <div className="px-4 pb-4 space-y-4 border-t border-white/[0.06]">{children}</div>
+        <div className="px-4 pb-4 space-y-4 mt-2 pt-2">{children}</div>
       )}
     </div>
   );
@@ -38,7 +38,7 @@ export function SettingsRowIcon({ icon: Icon, muted = false }) {
     <div
       className={`w-11 h-11 rounded-[var(--anchor-radius-lg)] flex items-center justify-center anchor-elev-1 ${
         muted
-          ? 'bg-white/[0.05] ring-1 ring-white/[0.08]'
+          ? 'bg-white/[0.05] shadow-[var(--anchor-shadow-1)]'
           : 'bg-[var(--color-accent)]/10 ring-1 ring-[var(--color-accent)]/20'
       }`}
     >

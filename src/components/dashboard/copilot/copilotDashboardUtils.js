@@ -158,6 +158,26 @@ export function buildAccountItems(profile) {
   return items;
 }
 
+/** Transaktioner att granska på dashboard — okategoriserade eller senaste utgifter. */
+export function buildReviewQueue(transactions, limit = 6) {
+  const list = transactions || [];
+  const needsReview = list.filter((tx) => {
+    if (tx.amount >= 0) return false;
+    const cat = tx.category || 'other';
+    return cat === 'other' || !tx.category;
+  });
+  const source = needsReview.length > 0 ? needsReview : list.filter((tx) => tx.amount < 0);
+  return source.slice(0, limit).map((tx, i) => ({
+    ...tx,
+    _description: tx.vendor || tx.label || tx.description || 'Transaktion',
+    _date: tx.created_date || tx.date,
+    _amount: tx.amount,
+    _category: tx.category || 'other',
+    _needsReview: needsReview.length > 0,
+    _key: tx.id || `review-${i}`,
+  }));
+}
+
 export function getRecentTransactions(transactions, limit = 5) {
   return [...(transactions || [])]
     .filter((t) => t.context !== 'BUSINESS')

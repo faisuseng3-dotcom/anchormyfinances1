@@ -25,7 +25,7 @@ export default function AINotificationOverlay({ notification, onAction, onDismis
             background: 'rgba(8, 12, 24, 0.92)',
             backdropFilter: 'blur(30px)',
             WebkitBackdropFilter: 'blur(30px)',
-            border: '1px solid rgba(255,255,255,0.15)',
+            boxShadow: 'var(--anchor-shadow-1)',
             boxShadow: `0 0 60px ${accentColor}30, 0 20px 60px rgba(0,0,0,0.6)`
           }}
         >
@@ -73,7 +73,7 @@ export default function AINotificationOverlay({ notification, onAction, onDismis
                 onClick={onDismiss}
                 variant="ghost"
                 size="sm"
-                className="flex-1 rounded-xl border border-white/10 hover:bg-white/5 text-slate-400 text-xs"
+                className="flex-1 rounded-2xl border-white/10 hover:bg-white/5 text-slate-400 text-xs"
               >
                 Ignorera
               </Button>

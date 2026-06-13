@@ -28,6 +28,25 @@ VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
 
 Run the app: `npm run dev`
 
+**Stripe billing (test mode)**
+
+Set these secrets on your Base44 functions (not in the frontend `.env`):
+
+```
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_BASIC=price_...    # 99 kr/mån SEK
+STRIPE_PRICE_PRO=price_...      # 149 kr/mån SEK
+STRIPE_PRICE_BUSINESS=price_... # 299 kr/mån SEK
+RESEND_API_KEY=re_...           # valfritt — e-post vid misslyckad betalning
+BILLING_EMAIL_FROM=Anchor <billing@dindomän.se>
+```
+
+Webhook endpoint: deploy `stripeWebhook` and register the URL in Stripe Dashboard
+(events: `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`).
+
+**Live mode:** replace `sk_test_` / test price IDs with `sk_live_` and live price IDs in Base44 secrets.
+
 **Publish your changes**
 
 Open [Base44.com](http://Base44.com) and click on Publish.

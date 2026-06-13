@@ -16,14 +16,14 @@ export default function VATMeter() {
 
   return (
     <div className="p-4 rounded-2xl space-y-3"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      style={{ background: 'var(--color-card)', boxShadow: 'var(--anchor-shadow-1)' }}>
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#D4AF37' }}>Moms-klocka</p>
           <p className="text-xs mt-0.5" style={{ color: 'rgba(155,173,184,0.55)' }}>Deklarationsstatus denna period</p>
         </div>
         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
-          style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)' }}>
+          style={{ background: 'rgba(212,175,55,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Clock className="w-3 h-3" style={{ color: '#D4AF37' }} />
           <span className="text-[11px] font-bold" style={{ color: '#D4AF37' }}>{VAT_DATA.daysLeft} dagar kvar</span>
         </div>
@@ -50,7 +50,7 @@ export default function VATMeter() {
       {/* Legend */}
       <div className="grid grid-cols-2 gap-2">
         <div className="flex items-center gap-2 p-2.5 rounded-xl"
-          style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.2)' }}>
+          style={{ background: 'rgba(61,170,122,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#3DAA7A' }} />
           <div>
             <p className="text-[11px] font-bold" style={{ color: '#3DAA7A' }}>Redo att deklarera</p>
@@ -58,7 +58,7 @@ export default function VATMeter() {
           </div>
         </div>
         <div className="flex items-center gap-2 p-2.5 rounded-xl"
-          style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)' }}>
+          style={{ background: 'rgba(212,175,55,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#D4AF37' }} />
           <div>
             <p className="text-[11px] font-bold" style={{ color: '#D4AF37' }}>Saknar underlag</p>

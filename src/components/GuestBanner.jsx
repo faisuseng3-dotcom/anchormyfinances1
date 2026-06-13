@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, X } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
-import { getOnboardingPath } from '@/lib/onboardingRouter';
+import { createPageUrl } from '@/utils';
 
 export default function GuestBanner() {
   const [dismissed, setDismissed] = useState(false);
@@ -10,7 +9,7 @@ export default function GuestBanner() {
   if (dismissed) return null;
 
   const handleSignUp = () => {
-    base44.auth.redirectToLogin(window.location.origin + getOnboardingPath());
+    window.location.href = createPageUrl('CreateAccount');
   };
 
   return (

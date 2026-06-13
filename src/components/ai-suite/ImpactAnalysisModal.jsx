@@ -47,7 +47,7 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
           className="w-full max-w-sm rounded-3xl overflow-hidden"
           style={{
             background: 'rgba(10,14,26,0.98)',
-            border: '1px solid rgba(239,68,68,0.3)',
+            boxShadow: 'var(--anchor-shadow-1)',
             boxShadow: '0 0 60px rgba(239,68,68,0.2), 0 20px 60px rgba(0,0,0,0.6)'
           }}
         >
@@ -71,7 +71,7 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
                 <XAxis dataKey="label" tick={{ fill: 'rgba(148,163,184,0.7)', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(10,14,26,0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 12 }}
+                  contentStyle={{ background: 'rgba(10,14,26,0.95)', boxShadow: 'var(--anchor-shadow-1)', borderRadius: 8, fontSize: 12 }}
                   formatter={(v) => [`${formatNumber(v)} kr`, '']}
                 />
                 <Bar dataKey="value" radius={[6, 6, 0, 0]}>
@@ -109,7 +109,7 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
                   <Undo2 className="w-4 h-4 mr-1.5" />
                   Ångra köp
                 </Button>
-                <Button onClick={onAccept} variant="outline" className="flex-1 rounded-xl border-white/10 hover:bg-white/5 text-slate-300 text-sm">
+                <Button onClick={onAccept} variant="outline" className="flex-1 rounded-2xl-white/10 hover:bg-white/5 text-slate-300 text-sm">
                   Acceptera
                 </Button>
               </div>

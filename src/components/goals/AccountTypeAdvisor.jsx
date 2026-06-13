@@ -45,7 +45,7 @@ export function AccountTypeBadge({ months, isBuffer }) {
   const Icon = t.Icon;
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${t.textColor}`}
-      style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${t.border}` }}>
+      style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
       <Icon className="w-3 h-3" aria-hidden /> {t.label}
     </span>
   );
@@ -89,7 +89,7 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl overflow-hidden"
-      style={{ background: `linear-gradient(135deg, ${type.color.replace('from-', '').replace(' to-', ', ')})`, border: `1px solid ${type.border}` }}
+      style={{ background: `linear-gradient(135deg, ${type.color.replace('from-', '').replace(' to-', ', ')})`, boxShadow: 'var(--anchor-shadow-1)' }}
     >
       {/* Header row */}
       <div className="p-4">
@@ -111,7 +111,7 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
         {!fetched && !loading && (
           <button onClick={fetchAdvice}
             className={`w-full py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${type.textColor}`}
-            style={{ background: 'rgba(255,255,255,0.06)', border: `1px solid ${type.border}` }}>
+            style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Landmark className="w-3.5 h-3.5" />
             Få råd om kontotyp
           </button>

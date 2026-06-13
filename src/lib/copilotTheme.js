@@ -7,6 +7,21 @@ import { getMonthlyMargin } from '@/lib/financialUtils';
 export const COPILOT_GRADIENT =
   'linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%)';
 
+/** Organic premium radii — ui-ux-pro-max / MASTER.md */
+export const ORGANIC_RADIUS = {
+  sm: 16,
+  md: 20,
+  lg: 24,
+  xl: 28,
+  pill: 9999,
+};
+
+export const ORGANIC_SHADOW = {
+  soft: 'var(--organic-shadow-soft)',
+  float: 'var(--organic-shadow-float)',
+  lift: 'var(--organic-shadow-lift)',
+};
+
 export const copilotColors = {
   bgDeep: '#0a0f6b',
   bgMid: '#1228cc',
@@ -46,27 +61,30 @@ export const copilotPageClass =
   'min-h-screen min-h-[100dvh] overflow-x-hidden anchor-page copilot-subpage';
 
 export const copilotCardClass =
-  'copilot-surface-card rounded-2xl border border-[var(--copilot-border)] transition-all duration-150';
+  'copilot-surface-card organic-card organic-surface rounded-[24px] p-5 transition-all duration-300 active:scale-[0.98]';
+
+export const copilotPanelClass =
+  'organic-surface rounded-[24px] p-5 transition-transform active:scale-[0.99]';
 
 export const copilotInputClass =
-  'w-full h-12 rounded-2xl bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] px-4 text-[15px] text-white placeholder:text-[var(--copilot-text-muted)] outline-none focus:border-[rgba(74,122,255,0.5)] transition-colors';
+  'organic-input w-full h-12 rounded-full bg-[var(--copilot-bg-card)] px-5 text-[15px] text-white placeholder:text-[var(--copilot-text-muted)] outline-none focus:shadow-[0_0_0_3px_rgba(74,122,255,0.25)] transition-all active:scale-[0.99]';
 
 export const copilotChipClass = (active) =>
   [
-    'px-4 py-2.5 min-h-11 rounded-full text-[13px] font-medium transition-all duration-150',
+    'organic-pill px-4 py-2.5 min-h-11 rounded-full text-[13px] font-medium transition-all duration-200 active:scale-[0.97]',
     active
-      ? 'bg-[var(--copilot-accent-blue)] text-white border border-[rgba(74,122,255,0.4)]'
-      : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] border border-[var(--copilot-border)] hover:bg-[var(--copilot-bg-card-hover)]',
+      ? 'bg-[var(--copilot-accent-blue)] text-white shadow-[0_4px_20px_rgba(74,122,255,0.35)]'
+      : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] hover:bg-[var(--copilot-bg-card-hover)]',
   ].join(' ');
 
 export const copilotPrimaryBtnClass =
-  'w-full h-12 rounded-full bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white font-semibold text-[15px] disabled:opacity-40 shadow-[0_4px_20px_rgba(74,122,255,0.35)] transition-transform active:scale-[0.98] min-h-12';
+  'w-full h-12 rounded-full bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white font-semibold text-[15px] disabled:opacity-40 shadow-[0_8px_32px_rgba(74,122,255,0.4)] transition-transform active:scale-[0.97] min-h-12';
 
 export const copilotSecondaryBtnClass =
-  'w-full h-12 rounded-full bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)] font-semibold text-[15px] hover:bg-[var(--copilot-bg-card-hover)] hover:text-white transition-all active:scale-[0.98] min-h-12';
+  'w-full h-12 rounded-full bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] font-semibold text-[15px] hover:bg-[var(--copilot-bg-card-hover)] hover:text-white shadow-[var(--anchor-shadow-1)] transition-all active:scale-[0.97] min-h-12';
 
 export const copilotGhostBtnClass =
-  'inline-flex items-center justify-center gap-2 px-4 py-2.5 min-h-12 rounded-2xl text-[13px] font-semibold text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card)] transition-all active:scale-[0.98]';
+  'inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-12 rounded-full text-[13px] font-semibold text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card)] transition-all active:scale-[0.97]';
 
 /** Månadsmarginal minus utgifter denna månad — "dina fria pengar". */
 export function computeFreeMoney(profile, transactions = []) {

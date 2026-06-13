@@ -44,7 +44,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
         </p>
         <Link
           to="/Import"
-          className="inline-flex mt-4 h-10 px-5 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] ring-1 ring-white/[0.08] no-underline items-center"
+          className="inline-flex mt-4 h-10 px-5 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] shadow-[var(--anchor-shadow-1)] no-underline items-center"
         >
           Importera
         </Link>

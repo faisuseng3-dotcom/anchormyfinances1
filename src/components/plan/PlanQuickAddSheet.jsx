@@ -88,7 +88,7 @@ export default function PlanQuickAddSheet({ isOpen, onClose, defaultDate }) {
               className={`px-4 py-2.5 min-h-11 rounded-full text-[12px] font-medium ${
                 category === c.id
                   ? 'bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1'
-                  : 'bg-white/[0.06] text-white/65 ring-1 ring-white/[0.08]'
+                  : 'bg-white/[0.06] text-white/65 shadow-[var(--anchor-shadow-1)]'
               }`}
             >
               {c.label}

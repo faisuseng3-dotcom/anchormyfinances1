@@ -25,12 +25,12 @@ export default function CategoryOverridePrompt({ vendor, newCategory, categoryLa
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 10 }}
-        className="rounded-2xl border border-[var(--copilot-border)] p-4 bg-[var(--copilot-bg-card)]"
+        className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]"
       >
         <div className="flex items-start gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(74,122,255,0.15)', border: '1px solid rgba(74,122,255,0.25)' }}
+            style={{ background: 'rgba(74,122,255,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <ScanLine className="w-4 h-4 text-[var(--copilot-accent-blue)]" />
           </div>

@@ -191,7 +191,7 @@ function ReconcileStep({ onComplete }) {
 
       {result && (
         <div className="rounded-2xl p-4"
-          style={{ background: result.diff === 0 ? 'rgba(13,115,119,0.08)' : 'rgba(229,62,62,0.08)', border: `1px solid ${result.diff === 0 ? 'rgba(13,115,119,0.2)' : 'rgba(229,62,62,0.2)'}` }}>
+          style={{ background: result.diff === 0 ? 'rgba(13,115,119,0.08)' : 'rgba(229,62,62,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-sm font-semibold inline-flex items-center gap-1.5" style={{ color: result.diff === 0 ? '#0D7377' : '#E53E3E' }}>
             {result.diff === 0
               ? <><CheckCircle2 className="w-4 h-4" aria-hidden /> Stämmer!</>
@@ -243,7 +243,7 @@ function CleanupStep({ onComplete }) {
         </div>
       ) : pending.length === 0 ? (
         <div className="rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: 'rgba(13,115,119,0.08)', border: '1px solid rgba(13,115,119,0.2)' }}>
+          style={{ background: 'rgba(13,115,119,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <CheckCircle2 className="w-5 h-5" style={{ color: '#0D7377' }} />
           <p className="text-sm font-semibold" style={{ color: '#0D7377' }}>
             Alla transaktioner är bokförda!
@@ -253,7 +253,7 @@ function CleanupStep({ onComplete }) {
         <div className="space-y-2">
           {pending.slice(0, 5).map((t, i) => (
             <div key={i} className="flex items-center gap-3 rounded-2xl px-4 py-3"
-              style={{ background: 'rgba(229,62,62,0.06)', border: '1px solid rgba(229,62,62,0.15)' }}>
+              style={{ background: 'rgba(229,62,62,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: '#E53E3E' }} />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold truncate" style={{ color: '#1A2332' }}>{t.label || t.vendor}</p>
@@ -264,7 +264,7 @@ function CleanupStep({ onComplete }) {
           {pending.length > 5 && (
             <p className="text-xs text-center" style={{ color: '#9AA5B4' }}>+{pending.length - 5} till</p>
           )}
-          <div className="rounded-2xl p-3" style={{ background: '#FFF7E6', border: '1px solid rgba(214,158,46,0.3)' }}>
+          <div className="rounded-2xl p-3" style={{ background: '#FFF7E6', boxShadow: 'var(--anchor-shadow-1)' }}>
             <p className="text-xs font-semibold flex items-start gap-1.5" style={{ color: '#D69E2E' }}>
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
               Gå till Arkiv → SmartPaste och bokför dessa transaktioner innan du fortsätter.
@@ -352,7 +352,7 @@ function TaxMapStep({ isAB, companyName, onComplete }) {
         </div>
       )}
 
-      <div className="rounded-2xl p-3" style={{ background: '#F0FFF4', border: '1px solid rgba(13,115,119,0.2)' }}>
+      <div className="rounded-2xl p-3" style={{ background: '#F0FFF4', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs flex items-start gap-1.5" style={{ color: '#0D7377' }}>
           <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
           Logga in på <strong>skatteverket.se</strong> och välj {formName}. Kopiera värdena ovan till motsvarande rutor. Anchor sparar ett kalkylblad åt dig.
@@ -511,7 +511,7 @@ function ClosingStep({ isAB, companyName, locked, onLock }) {
           </div>
           {deadline && (
             <div className="rounded-2xl p-3 flex items-center gap-3"
-              style={{ background: 'rgba(229,62,62,0.08)', border: '1px solid rgba(229,62,62,0.2)' }}>
+              style={{ background: 'rgba(229,62,62,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <AlertTriangle className="w-4 h-4 flex-shrink-0" style={{ color: '#E53E3E' }} />
               <div>
                 <p className="text-xs font-bold" style={{ color: '#E53E3E' }}>Deadline: Årsredovisning till Bolagsverket</p>

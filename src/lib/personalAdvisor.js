@@ -9,6 +9,19 @@ import { hasAdvisorProfileData, isLocalAdvisorProfile } from '@/lib/advisorProfi
 import { sanitizeAdvisorResponse } from '@/lib/coachingCopy';
 import { invokeLlmForTask } from '@/lib/aiModelRouter';
 import { recallRelevantMemories, formatMemoryContext, rememberInsight } from '@/lib/aiMemory';
+import { canUseAiCoachClient } from '@/lib/billingPlans';
+
+function checkClientAiCoachLimit(profile) {
+  const access = canUseAiCoachClient(profile);
+  if (access.allowed) return null;
+  return {
+    error: 'ai_coach_limit',
+    headline: 'Månadens gräns nådd',
+    message: `Du har använt alla ${access.limit} AI-coach-frågor den här månaden. Uppgradera till Pro för obegränsad coach.`,
+    upgrade_plan: 'pro',
+    remaining: 0,
+  };
+}
 
 async function invokeLlmWithFallback(prompt, schema, scenario) {
   const { result, model } = await invokeLlmForTask(base44, {
@@ -77,6 +90,9 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
     return getNeedsProfileResponse();
   }
 
+  const limitError = checkClientAiCoachLimit(activeProfile);
+  if (limitError) return sanitizeAdvisorResponse(limitError);
+
   const snapshot = buildAdvisorSnapshot(activeProfile, activeTransactions);
   const schema = ADVISOR_SCHEMAS[scenario] || ADVISOR_SCHEMAS.coach_message;
   const memoryQuery = question || transaction?.name || scenario;
@@ -122,6 +138,11 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
 export async function askPersonalAdvisor(params, options = {}) {
   const { profile, transactions, isDemoMode } = options;
 
+  if (!isDemoMode && hasAdvisorProfileData(profile)) {
+    const limitError = checkClientAiCoachLimit(profile);
+    if (limitError) return sanitizeAdvisorResponse(limitError);
+  }
+
   // Demo/Alex eller profil utan DB-id: använd alltid klienten med visad profil
   if (hasAdvisorProfileData(profile) && isLocalAdvisorProfile(profile, isDemoMode)) {
     return askPersonalAdvisorClient(params, profile, transactions);
@@ -130,6 +151,7 @@ export async function askPersonalAdvisor(params, options = {}) {
   try {
     const res = await base44.functions.invoke('personalAdvisor', params);
     const payload = res?.data ?? res;
+    if (payload?.error === 'ai_coach_limit') return sanitizeAdvisorResponse(payload);
     if (payload?.error) throw new Error(payload.error);
 
     // Server saknar profil men UI har data (t.ex. onboarding sparad lokalt)

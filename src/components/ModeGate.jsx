@@ -67,7 +67,7 @@ export default function ModeGate({ feature, mode, children }) {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center px-6">
       <div className="rounded-2xl p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full"
-        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center">
           <Lock className="w-8 h-8 text-slate-500" />
         </div>
@@ -76,10 +76,10 @@ export default function ModeGate({ feature, mode, children }) {
           <p className="text-sm text-slate-400 leading-relaxed">{upgradeMsg}</p>
         </div>
         <Link
-          to={createPageUrl('Settings')}
+          to={createPageUrl('Pricing')}
           className="w-full py-3 rounded-xl text-sm font-bold text-white text-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90"
         >
-          Byt läge i Inställningar →
+          Uppgradera →
         </Link>
       </div>
     </div>

@@ -187,7 +187,7 @@ export default function GalaxyExplorer({
         title={suggested.length || ownPublished.length ? 'Fler profiler' : `${filtered.length} profiler`}
       >
         {(rest.length ? rest : filtered.filter((p) => !p.isOwn)).length === 0 ? (
-          <div className="py-10 text-center rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] ring-1 ring-white/[0.08]">
+          <div className="py-10 text-center rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] shadow-[var(--anchor-shadow-1)]">
             <Users className="w-8 h-8 mx-auto text-white/25 mb-3" />
             <p className="text-[15px] font-medium text-white">Inga träffar</p>
             <p className={sectionSubtitleClass}>

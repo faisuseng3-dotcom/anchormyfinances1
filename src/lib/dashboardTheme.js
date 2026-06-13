@@ -26,7 +26,7 @@ export const dashRailCardInner =
 export const dashRailCardBorder = `absolute inset-0 rounded-[${radius.lg}] ring-1 ring-inset ring-white/[0.12]`;
 
 export const dashPill =
-  'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] font-medium bg-white/[0.07] text-white/75 ring-1 ring-white/[0.08]';
+  'inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[13px] font-medium bg-white/[0.07] text-white/75 shadow-[var(--anchor-shadow-1)]';
 
 export const dashDockBtn =
   'flex-1 min-w-0 min-h-12 rounded-full flex items-center justify-center gap-1.5 sm:gap-2 text-[13px] sm:text-[14px] font-semibold anchor-pressable';

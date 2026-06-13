@@ -1,40 +1,11 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { planeraTabHref } from '@/lib/planeraTabs';
 import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
-import { AnchorLogoMark, NavIcon } from '@/lib/anchorIcons';
+import { NavIcon } from '@/lib/anchorIcons';
 import { triggerHaptic } from '@/lib/haptics';
-
-const OVERVIEW_NAV = [
-  { page: 'Dashboard', icon: 'home', label: 'Hem' },
-  { page: 'Budget', icon: 'budget', label: 'Budget', badge: 'OK', badgeGreen: true },
-  { href: planeraTabHref('nu'), icon: 'future', label: 'Din Framtid', match: 'FuturePulse' },
-  { href: `${createPageUrl('ProTools')}?deep=ai_guru`, icon: 'coach', label: 'AI-Coach', badge: '3' },
-];
-
-const TOOLS_NAV = [
-  { page: 'ProTools', icon: 'tools', label: 'Verktyg' },
-  { page: 'Dashboard', icon: 'goals', label: 'Sparmål', hash: '#goals' },
-  { page: 'ProTools', icon: 'subscriptions', label: 'Prenumerationer', query: '?deep=subscriptions' },
-  { page: 'Social', icon: 'squads', label: 'Squads' },
-  { page: 'Dashboard', icon: 'academy', label: 'Anchor Academy', hash: '#academy' },
-];
-
-function navHref(item) {
-  if (item.href) return item.href;
-  let url = createPageUrl(item.page);
-  if (item.query) url += item.query;
-  if (item.hash) url += item.hash;
-  return url;
-}
-
-function isNavActive(item, pathname, currentPage) {
-  if (item.match) return currentPage === item.match;
-  if (item.page === 'Dashboard' && !item.hash) return currentPage === 'Dashboard' && !item.query;
-  if (item.page && !item.hash && !item.query) return currentPage === item.page;
-  return false;
-}
+import { useBilling } from '@/hooks/useBilling';
+import { OVERVIEW_NAV, TOOLS_NAV, isNavActive } from '@/lib/appNav';
 
 export default function AnchorCopilotSidebar({
   profile,
@@ -42,13 +13,26 @@ export default function AnchorCopilotSidebar({
   mobileOpen,
   onClose,
   onAccountSelect,
+  onGoHome,
   className = '',
 }) {
   const location = useLocation();
-  const currentPage = location.pathname.split('/').pop() || 'Dashboard';
+  const navigate = useNavigate();
+  const { planLabel } = useBilling();
   const accounts = buildAccountItems(profile);
   const firstName = user?.full_name?.split(' ')[0] || 'Du';
   const initial = firstName.charAt(0).toUpperCase();
+
+  const handleNav = () => {
+    onClose?.();
+  };
+
+  const handleHome = () => {
+    triggerHaptic('light');
+    navigate(createPageUrl('Dashboard'));
+    onGoHome?.();
+    onClose?.();
+  };
 
   return (
     <>
@@ -64,31 +48,41 @@ export default function AnchorCopilotSidebar({
         className={`copilot-sidebar ${mobileOpen ? 'copilot-sidebar--mobile-open' : ''} ${className}`}
       >
         <div className="copilot-sidebar-logo">
-          <div className="copilot-logo-icon">
-            <AnchorLogoMark size={16} className="text-white" />
+          <div className="copilot-logo-icon" aria-hidden>
+            ⚓
           </div>
           <span className="copilot-logo-text">Anchor</span>
         </div>
 
         <div className="copilot-sidebar-section-label">Översikt</div>
         {OVERVIEW_NAV.map((item) => {
-          const active = isNavActive(item, location.pathname, currentPage);
+          const active = isNavActive(item.id, location.pathname);
+          if (item.id === 'Dashboard') {
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={handleHome}
+                className={`copilot-nav-item w-full text-left ${active ? 'active' : ''}`}
+              >
+                <span className={`copilot-nav-icon ${active ? 'copilot-nav-icon--active' : ''}`}>
+                  <NavIcon name={item.icon} size={16} />
+                </span>
+                {item.label}
+              </button>
+            );
+          }
           return (
             <Link
-              key={item.label}
-              to={navHref(item)}
+              key={item.id}
+              to={item.href}
               className={`copilot-nav-item ${active ? 'active' : ''}`}
-              onClick={onClose}
+              onClick={handleNav}
             >
-              <span className="copilot-nav-icon">
+              <span className={`copilot-nav-icon ${active ? 'copilot-nav-icon--active' : ''}`}>
                 <NavIcon name={item.icon} size={16} />
               </span>
               {item.label}
-              {item.badge && (
-                <span className={`copilot-nav-badge ${item.badgeGreen ? 'green' : ''}`}>
-                  {item.badge}
-                </span>
-              )}
             </Link>
           );
         })}
@@ -112,7 +106,7 @@ export default function AnchorCopilotSidebar({
                     onAccountSelect(acc);
                     onClose?.();
                   }}
-                  className="copilot-account-item copilot-account-item--interactive w-full text-left active:scale-[0.97] transition-transform"
+                  className="copilot-account-item copilot-account-item--interactive w-full text-left"
                 >
                   <div className="copilot-account-dot" style={{ background: acc.color }} />
                   {acc.name}
@@ -131,9 +125,8 @@ export default function AnchorCopilotSidebar({
           })}
           <Link
             to={createPageUrl('Settings')}
-            className="copilot-account-item"
-            style={{ marginTop: 4, color: '#4fc3f7', fontSize: 12 }}
-            onClick={onClose}
+            className="copilot-account-item copilot-account-add"
+            onClick={handleNav}
           >
             + Lägg till konto
           </Link>
@@ -142,28 +135,31 @@ export default function AnchorCopilotSidebar({
         <div className="copilot-sidebar-section-label" style={{ marginTop: 8 }}>
           Verktyg
         </div>
-        {TOOLS_NAV.map((item) => (
-          <Link
-            key={item.label}
-            to={navHref(item)}
-            className="copilot-nav-item"
-            onClick={onClose}
-          >
-            <span className="copilot-nav-icon">
-              <NavIcon name={item.icon} size={16} />
-            </span>
-            {item.label}
-          </Link>
-        ))}
+        {TOOLS_NAV.map((item) => {
+          const active = isNavActive(item.id, location.pathname);
+          return (
+            <Link
+              key={item.id}
+              to={item.href}
+              className={`copilot-nav-item ${active ? 'active' : ''}`}
+              onClick={handleNav}
+            >
+              <span className={`copilot-nav-icon ${active ? 'copilot-nav-icon--active' : ''}`}>
+                <NavIcon name={item.icon} size={16} />
+              </span>
+              {item.label}
+            </Link>
+          );
+        })}
 
         <div className="copilot-sidebar-footer">
-          <Link to={createPageUrl('Settings')} className="copilot-user-row" onClick={onClose}>
+          <Link to={createPageUrl('Settings')} className="copilot-user-row" onClick={handleNav}>
             <div className="copilot-user-avatar">{initial}</div>
-            <div>
+            <div className="min-w-0">
               <div className="copilot-user-name">{firstName}</div>
-              <div className="copilot-user-plan">Pro-plan</div>
+              <div className="copilot-user-plan">{planLabel}</div>
             </div>
-            <span style={{ marginLeft: 'auto', color: 'var(--copilot-text-muted)' }}>
+            <span className="copilot-user-settings" aria-hidden>
               <NavIcon name="settings" size={16} />
             </span>
           </Link>

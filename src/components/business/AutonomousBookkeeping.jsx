@@ -16,7 +16,7 @@ function LiveBalance() {
   return (
     <div className="space-y-3">
       <div className="p-4 rounded-2xl"
-        style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)', border: '1px solid rgba(212,175,55,0.25)' }}>
+        style={{ background: 'linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.04) 100%)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#D4AF37' }}>Live-balansräkning</p>
         <p className="text-3xl font-black" style={{ color: '#F0EAD6' }}>
           {(LIVE_BALANCE.balance - LIVE_BALANCE.vatReserved).toLocaleString('sv-SE')}
@@ -33,7 +33,7 @@ function LiveBalance() {
           { label: 'Prel. momsskuld', value: `${LIVE_BALANCE.pendingVat.toLocaleString('sv-SE')} kr`, color: '#D4AF37' },
         ].map(item => (
           <div key={item.label} className="p-3 rounded-xl"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+            style={{ background: 'rgba(255,255,255,0.04)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.6)' }}>{item.label}</p>
             <p className="text-base font-black mt-0.5" style={{ color: item.color }}>{item.value}</p>
           </div>
@@ -64,7 +64,7 @@ function SIEExport() {
   return (
     <div className="space-y-3">
       <div className="p-4 rounded-2xl"
-        style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.2)' }}>
+        style={{ background: 'rgba(75,124,243,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs font-bold uppercase tracking-wider mb-1" style={{ color: '#4B7CF3' }}>SIE-export</p>
         <p className="text-sm leading-relaxed mb-3" style={{ color: 'rgba(155,173,184,0.8)' }}>
           Exportera periodens bokföring som en standardiserad SIE-fil — redo att importera i Fortnox, Visma eller skickas till din revisor.
@@ -72,7 +72,7 @@ function SIEExport() {
         <div className="flex gap-2">
           <button onClick={handleExport}
             className="flex-1 h-11 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
-            style={{ background: 'rgba(75,124,243,0.2)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.4)' }}>
+            style={{ background: 'rgba(75,124,243,0.2)', color: '#4B7CF3', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Download className="w-3.5 h-3.5" /> Ladda ner SIE-fil
           </button>
           <button onClick={() => setSent(true)}
@@ -103,14 +103,14 @@ export default function AutonomousBookkeeping() {
 
   return (
     <div className="rounded-2xl overflow-hidden"
-      style={{ background: 'var(--color-card)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      style={{ background: 'var(--color-card)', boxShadow: 'var(--anchor-shadow-1)' }}>
 
       {/* Header */}
       <div className="px-4 pt-4 pb-3"
         style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.35)' }}>
+            style={{ background: 'rgba(212,175,55,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Receipt className="w-3.5 h-3.5" style={{ color: '#D4AF37' }} />
           </div>
           <div>

@@ -50,7 +50,7 @@ Generera 3 konkreta, proaktiva tips på svenska. Varje tips ska ha: title (kort 
   const ICONS = { coffee: Coffee, trending: TrendingDown, target: Target };
 
   return (
-    <div className="rounded-3xl overflow-hidden" style={{ background: 'var(--color-surface)', border: '1px solid rgba(0,0,0,0.06)', boxShadow: 'var(--shadow-sm)' }}>
+    <div className="rounded-3xl overflow-hidden" style={{ background: 'var(--color-surface)', boxShadow: 'var(--anchor-shadow-1)', boxShadow: 'var(--shadow-sm)' }}>
       <div className="px-5 pt-4 pb-3 flex items-center gap-3" style={{ borderBottom: '1px solid #F0F2F5' }}>
         <div className="w-9 h-9 rounded-2xl flex items-center justify-center" style={{ background: 'rgba(13,115,119,0.1)' }}>
           <LineChart className="w-4 h-4" style={{ color: '#0D7377' }} />

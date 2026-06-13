@@ -67,7 +67,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
           <div className="flex items-center gap-2">
             {entry.synced && (
               <span className="text-[10px] font-bold px-2 py-1 rounded-full"
-                style={{ background: 'rgba(61,170,122,0.15)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.25)' }}>
+                style={{ background: 'rgba(61,170,122,0.15)', color: '#3DAA7A', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <Check className="w-3 h-3 inline mr-0.5" aria-hidden /> Fortnox
               </span>
             )}
@@ -85,7 +85,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
             <p className="text-[11px] font-bold uppercase tracking-wider mb-2" style={{ color: 'rgba(155,173,184,0.5)' }}>
               Dubbel bokföring
             </p>
-            <div className="rounded-xl overflow-hidden" style={{ border: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="rounded-xl overflow-hidden" style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
               {/* Table header */}
               <div className="grid grid-cols-12 px-3 py-2"
                 style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
@@ -172,7 +172,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
             <button
               onClick={() => setSaved(true)}
               className="w-full h-10 rounded-xl text-xs font-bold flex items-center justify-center gap-2"
-              style={{ background: 'rgba(61,170,122,0.15)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.3)' }}>
+              style={{ background: 'rgba(61,170,122,0.15)', color: '#3DAA7A', boxShadow: 'var(--anchor-shadow-1)' }}>
               <Check className="w-3.5 h-3.5" /> Spara ändringar
             </button>
           )}
@@ -188,7 +188,7 @@ export default function LedgerEntryDetail({ entry, onClose }) {
             <div className="p-3 rounded-xl flex items-center gap-3"
               style={{
                 background: entry.hasReceipt ? 'rgba(61,170,122,0.07)' : 'rgba(212,175,55,0.07)',
-                border: `1px solid ${entry.hasReceipt ? 'rgba(61,170,122,0.2)' : 'rgba(212,175,55,0.25)'}`,
+                boxShadow: 'var(--anchor-shadow-1)',
               }}>
               <Image className="w-4 h-4 flex-shrink-0" style={{ color: entry.hasReceipt ? '#3DAA7A' : '#D4AF37' }} />
               <div>

@@ -41,7 +41,7 @@ export default function UITranslate() {
             layout
             exit={{ opacity: 0, height: 0 }}
             className="rounded-2xl p-4"
-            style={{ background: 'rgba(75,124,243,0.08)', border: '1px solid rgba(75,124,243,0.25)' }}
+            style={{ background: 'rgba(75,124,243,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <div className="flex items-start justify-between gap-2 mb-3">
               <div className="flex-1">
@@ -54,7 +54,7 @@ export default function UITranslate() {
             </div>
             <button onClick={() => resolve(e.id)}
               className="w-full h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
-              style={{ background: 'rgba(75,124,243,0.2)', color: '#4B7CF3', border: '1px solid rgba(75,124,243,0.4)' }}>
+              style={{ background: 'rgba(75,124,243,0.2)', color: '#4B7CF3', boxShadow: 'var(--anchor-shadow-1)' }}>
               {e.action} <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </motion.div>

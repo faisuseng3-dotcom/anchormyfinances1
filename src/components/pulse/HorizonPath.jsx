@@ -85,7 +85,7 @@ export default function HorizonPath({ eventsWithBalance, whatIfAmount = 0 }) {
 
   return (
     <div className="rounded-3xl overflow-hidden"
-      style={{ background: 'rgba(6,8,18,0.9)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      style={{ background: 'rgba(6,8,18,0.9)', boxShadow: 'var(--anchor-shadow-1)' }}>
 
       {/* Header */}
       <div className="px-4 pt-4 pb-1 flex items-center justify-between">
@@ -94,7 +94,7 @@ export default function HorizonPath({ eventsWithBalance, whatIfAmount = 0 }) {
         </p>
         {nextPit && (
           <span className="text-[9px] font-black px-2 py-0.5 rounded-full inline-flex items-center gap-1"
-            style={{ background: 'rgba(255,68,102,0.12)', color: '#FF4466', border: '1px solid rgba(255,68,102,0.3)' }}>
+            style={{ background: 'rgba(255,68,102,0.12)', color: '#FF4466', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Zap className="w-3 h-3" aria-hidden /> Hinder om {daysUntil(nextPit.event)}d
           </span>
         )}

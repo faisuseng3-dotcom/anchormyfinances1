@@ -34,7 +34,7 @@ export default function PageShell({
   const backControl = backHref ? (
     <Link to={backHref} className="no-underline">
       <span
-        className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card-hover)] transition-colors"
+        className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card-hover)] transition-colors"
         aria-label="Tillbaka"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -43,7 +43,7 @@ export default function PageShell({
   ) : onBack ? (
     <AnchorPressable
       onClick={onBack}
-      className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)]"
+      className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] organic-surface"
       aria-label="Tillbaka"
     >
       <ArrowLeft className="w-4 h-4" />
@@ -52,7 +52,7 @@ export default function PageShell({
 
   return (
     <div className={`${copilotPageClass} ${className}`}>
-      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl border-b border-[var(--copilot-border)]">
+      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl border-b ">
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
             <button

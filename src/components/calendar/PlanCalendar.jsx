@@ -162,7 +162,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                       className={`px-3 py-2 min-h-10 rounded-full text-[12px] font-medium ${
                         category === c.id
                           ? 'bg-[var(--color-text-primary)] text-[#050d28]'
-                          : 'bg-white/[0.08] text-white/65 ring-1 ring-white/[0.08]'
+                          : 'bg-white/[0.08] text-white/65 shadow-[var(--anchor-shadow-1)]'
                       }`}
                     >
                       {c.label}
@@ -194,7 +194,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                 animate={{ opacity: 1 }}
                 type="button"
                 onClick={() => setAdding(true)}
-                className="mt-4 w-full flex items-center justify-center gap-2 h-12 rounded-xl border border-dashed border-white/15 text-[14px] font-medium text-white/55 hover:text-white/80 hover:border-white/25 transition-colors"
+                className="mt-4 w-full flex items-center justify-center gap-2 h-12 rounded-2xl border-dashed border-white/15 text-[14px] font-medium text-white/55 hover:text-white/80 hover:border-white/25 transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Lägg till händelse
@@ -203,7 +203,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
           </AnimatePresence>
         </div>
 
-        <div className="pt-4 mt-2 border-t border-white/[0.06]">
+        <div className="pt-4 mt-2 mt-2 pt-2">
           <div className="flex flex-wrap items-center gap-4 text-[11px] text-white/35">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: EVENT_COLORS.bill }} />

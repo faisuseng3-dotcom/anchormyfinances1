@@ -170,7 +170,7 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
       {needsReceipt && (
         <button onClick={() => fileInputRef.current?.click()}
           className="mt-3 w-full h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-2"
-          style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.4)' }}>
+          style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', boxShadow: 'var(--anchor-shadow-1)' }}>
           {uploading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Laddar upp...</> : <><Camera className="w-3.5 h-3.5" /> Fota kvitto nu</>}
         </button>
       )}
@@ -178,7 +178,7 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
         <p className="text-xs mt-2 text-center inline-flex items-center justify-center gap-1 w-full" style={{ color: '#3DAA7A' }}><Check className="w-3 h-3" aria-hidden /> Kvitto bifogat — redo att bokföras</p>
       )}
       {ocrData && (
-        <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(61,170,122,0.08)', border: '1px solid rgba(61,170,122,0.25)' }}>
+        <div className="mt-2 p-3 rounded-xl" style={{ background: 'rgba(61,170,122,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-xs font-bold mb-1" style={{ color: '#3DAA7A' }}>Kvittot tolkades automatiskt</p>
           <p className="text-[11px]" style={{ color: 'rgba(155,173,184,0.7)' }}>
             {ocrData.vendor} · {ocrData.total?.toFixed(2)} kr · Moms {ocrData.vatRate}% ({ocrData.vatAmount?.toFixed(2)} kr)
@@ -193,12 +193,12 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
         <div className="flex gap-2 mt-3">
           <button onClick={() => onReject(tx.id)}
             className="flex-1 h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5"
-            style={{ background: 'rgba(217,95,95,0.1)', color: '#D95F5F', border: '1px solid rgba(217,95,95,0.25)' }}>
+            style={{ background: 'rgba(217,95,95,0.1)', color: '#D95F5F', boxShadow: 'var(--anchor-shadow-1)' }}>
             <X className="w-3.5 h-3.5" /> Ändra
           </button>
           <button onClick={() => onApprove(tx.id, selectedAccount, receiptUrl)}
             className="flex-1 h-10 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5"
-            style={{ background: 'rgba(61,170,122,0.2)', color: '#3DAA7A', border: '1px solid rgba(61,170,122,0.35)' }}>
+            style={{ background: 'rgba(61,170,122,0.2)', color: '#3DAA7A', boxShadow: 'var(--anchor-shadow-1)' }}>
             <CheckCircle2 className="w-3.5 h-3.5" /> Godkänn
           </button>
         </div>
@@ -251,7 +251,7 @@ export default function LedgerSwipeFeed() {
         {lastApproved && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl"
-            style={{ background: 'rgba(61,170,122,0.15)', border: '1px solid rgba(61,170,122,0.3)' }}>
+            style={{ background: 'rgba(61,170,122,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Rocket className="w-4 h-4" style={{ color: '#3DAA7A' }} />
             <p className="text-xs font-bold" style={{ color: '#3DAA7A' }}>
               Bokfört & Klart! {lastApproved.vendor} → Konto {lastApproved.account}

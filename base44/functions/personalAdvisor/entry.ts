@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
+import { canUseAiCoach, incrementAiCoachUsage } from '../_shared/billingLimits.ts';
 
 const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach — som en varm, klok vän som kan räkna.
 
@@ -331,6 +332,17 @@ Deno.serve(async (req) => {
       });
     }
 
+    const coachAccess = canUseAiCoach(profile);
+    if (!coachAccess.allowed) {
+      return Response.json({
+        error: 'ai_coach_limit',
+        headline: 'Månadens gräns nådd',
+        message: `Du har använt alla ${coachAccess.limit} AI-coach-frågor den här månaden. Uppgradera till Pro för obegränsad coach.`,
+        upgrade_plan: 'pro',
+        remaining: 0,
+      }, { status: 402 });
+    }
+
     let transactions = [];
     try {
       transactions = await base44.entities.Transaction.list('-created_date', 500);
@@ -361,6 +373,8 @@ Deno.serve(async (req) => {
       response_json_schema: schema,
       scenario,
     });
+
+    await incrementAiCoachUsage(base44, profile);
 
     if (scenario === 'question') {
       return Response.json({ ...result, model, snapshot_summary: { margin: snapshot.monthly_margin_kr } });

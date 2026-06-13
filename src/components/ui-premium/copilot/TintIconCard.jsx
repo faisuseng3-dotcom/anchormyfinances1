@@ -5,7 +5,7 @@ import { CategoryIcon } from '@/lib/anchorIcons';
 import { cn } from '@/lib/utils';
 
 const cardClass =
-  'w-full flex items-center gap-3 p-3.5 rounded-2xl text-left bg-[var(--copilot-bg-card)] border border-[var(--copilot-border)] transition-colors duration-150';
+  'organic-surface organic-surface--sm w-full flex items-center gap-3 p-4 rounded-3xl text-left bg-[var(--copilot-bg-card)] transition-all duration-300 active:scale-[0.98]';
 
 /**
  * Asymmetric card row with tinted icon background — replaces plain list rows.
@@ -26,7 +26,7 @@ export default function TintIconCard({
   const inner = (
     <>
       <div
-        className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+        className="w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0"
         style={{ background: tint.bg }}
       >
         {icon || <CategoryIcon category={category} size={18} color={tint.accent} />}
@@ -56,8 +56,8 @@ export default function TintIconCard({
       <motion.button
         type="button"
         onClick={onClick}
-        whileTap={{ scale: 0.98, opacity: 0.85 }}
-        transition={{ duration: 0.12 }}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
         className={cn(cardClass, 'hover:bg-[var(--copilot-bg-card-hover)] cursor-pointer', className)}
       >
         {inner}

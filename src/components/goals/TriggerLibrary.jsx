@@ -114,7 +114,7 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
       className="rounded-2xl overflow-hidden"
-      style={{ background: 'rgba(15,23,42,0.95)', border: '1px solid rgba(255,255,255,0.1)' }}
+      style={{ background: 'rgba(15,23,42,0.95)', boxShadow: 'var(--anchor-shadow-1)' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
@@ -147,7 +147,7 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
               return (
                 <button key={t.id} onClick={() => onSelect(t)}
                   className={`w-full p-3 rounded-xl text-left transition-all flex items-start gap-3 ${isActive ? 'ring-2 ring-purple-500' : 'hover:bg-white/5'}`}
-                  style={{ background: isActive ? cat.bg : 'rgba(255,255,255,0.03)', border: `1px solid ${isActive ? cat.border : 'transparent'}` }}>
+                  style={{ background: isActive ? cat.bg : 'rgba(255,255,255,0.03)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <TriggerIcon iconKey={t.iconKey} className="w-4 h-4 text-purple-300 flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-white">{t.label}</p>

@@ -56,14 +56,14 @@ export default function MagicImport({ onClose, onComplete }) {
         animate={{ y: 0 }}
         exit={{ y: 80 }}
         className="w-full max-w-md rounded-t-2xl overflow-hidden"
-        style={{ background: '#0F1724', border: '1px solid rgba(212,175,55,0.2)', maxHeight: '92vh', overflowY: 'auto' }}
+        style={{ background: '#0F1724', boxShadow: 'var(--anchor-shadow-1)', maxHeight: '92vh', overflowY: 'auto' }}
       >
         {/* Header */}
         <div className="px-5 pt-5 pb-4 flex items-center justify-between"
           style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
-              style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)' }}>
+              style={{ background: 'rgba(212,175,55,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <ScanLine className="w-4 h-4" style={{ color: '#D4AF37' }} />
             </div>
             <div>
@@ -102,7 +102,7 @@ export default function MagicImport({ onClose, onComplete }) {
                   }}>
                   <input ref={inputRef} type="file" accept=".pdf,.csv,.xlsx" className="hidden" onChange={startProcessing} />
                   <div className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                    style={{ background: 'rgba(212,175,55,0.15)', border: '1px solid rgba(212,175,55,0.35)' }}>
+                    style={{ background: 'rgba(212,175,55,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}>
                     <Upload className="w-6 h-6" style={{ color: '#D4AF37' }} />
                   </div>
                   <div className="text-center">
@@ -121,7 +121,7 @@ export default function MagicImport({ onClose, onComplete }) {
                     {DEMO_FILES.map(f => (
                       <button key={f.name} onClick={startProcessing}
                         className="w-full flex items-center gap-3 p-3 rounded-xl text-left"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                        style={{ background: 'rgba(255,255,255,0.04)', boxShadow: 'var(--anchor-shadow-1)' }}>
                         <f.Icon className="w-5 h-5" style={{ color: '#D4AF37' }} aria-hidden />
                         <div>
                           <p className="text-xs font-bold" style={{ color: '#F0EAD6' }}>{f.name}</p>
@@ -129,7 +129,7 @@ export default function MagicImport({ onClose, onComplete }) {
                         </div>
                         <div className="ml-auto">
                           <div className="px-3 py-1.5 rounded-full text-[11px] font-bold"
-                            style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', border: '1px solid rgba(212,175,55,0.3)' }}>
+                            style={{ background: 'rgba(212,175,55,0.15)', color: '#D4AF37', boxShadow: 'var(--anchor-shadow-1)' }}>
                             Använd →
                           </div>
                         </div>
@@ -175,7 +175,7 @@ export default function MagicImport({ onClose, onComplete }) {
                         <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
                           style={{
                             background: done || step.done ? 'rgba(61,170,122,0.2)' : active ? 'rgba(212,175,55,0.2)' : 'transparent',
-                            border: `1px solid ${done || step.done ? 'rgba(61,170,122,0.4)' : active ? 'rgba(212,175,55,0.5)' : 'rgba(255,255,255,0.1)'}`,
+                            boxShadow: 'var(--anchor-shadow-1)',
                           }}>
                           {(done || (step.done && active)) ? (
                             <CheckCircle2 className="w-3 h-3" style={{ color: '#3DAA7A' }} />
@@ -220,7 +220,7 @@ export default function MagicImport({ onClose, onComplete }) {
                     { label: 'Skatteavdrag', value: '4 200 kr', color: '#4B7CF3' },
                   ].map(stat => (
                     <div key={stat.label} className="p-3 rounded-xl"
-                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                      style={{ background: 'rgba(255,255,255,0.04)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <p className="text-base font-black" style={{ color: stat.color }}>{stat.value}</p>
                       <p className="text-[10px] mt-0.5" style={{ color: 'rgba(155,173,184,0.5)' }}>{stat.label}</p>
                     </div>

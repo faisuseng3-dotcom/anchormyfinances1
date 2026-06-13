@@ -35,7 +35,7 @@ export default function NegotiationHubModal({ isOpen, onClose }) {
           className="w-full max-w-sm rounded-3xl overflow-hidden"
           style={{
             background: 'rgba(10,14,26,0.98)',
-            border: '1px solid rgba(34,197,94,0.3)',
+            boxShadow: 'var(--anchor-shadow-1)',
             boxShadow: '0 0 60px rgba(34,197,94,0.2), 0 20px 60px rgba(0,0,0,0.6)'
           }}
         >
@@ -89,7 +89,7 @@ export default function NegotiationHubModal({ isOpen, onClose }) {
               <p className="text-xs text-slate-500 mb-2 tracking-wide">Förhandlingsmanus</p>
               <div
                 className="p-3 rounded-xl text-xs text-slate-300 leading-relaxed"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                style={{ background: 'rgba(255,255,255,0.04)', boxShadow: 'var(--anchor-shadow-1)' }}
               >
                 {SCRIPT}
               </div>
@@ -101,7 +101,7 @@ export default function NegotiationHubModal({ isOpen, onClose }) {
                 {copied ? <CheckCircle className="w-4 h-4 mr-1.5" /> : <Copy className="w-4 h-4 mr-1.5" />}
                 {copied ? 'Kopierat!' : 'Kopiera manus'}
               </Button>
-              <Button onClick={onClose} variant="outline" className="flex-1 rounded-xl border-white/10 hover:bg-white/5 text-slate-300 text-sm">
+              <Button onClick={onClose} variant="outline" className="flex-1 rounded-2xl-white/10 hover:bg-white/5 text-slate-300 text-sm">
                 Stäng
               </Button>
             </div>

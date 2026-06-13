@@ -125,7 +125,7 @@ export default function EconomicSelf() {
                   key={i}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => handleAnswer(i)}
-                  className="w-full text-left p-4 rounded-xl border border-white/10 text-sm text-slate-200 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
+                  className="w-full text-left p-4 rounded-2xl border-white/10 text-sm text-slate-200 hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
                 >
                   {opt}
                 </motion.button>
@@ -148,7 +148,7 @@ export default function EconomicSelf() {
               <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dina 3 åtgärder</p>
               {profile.tips.map((tip, i) => (
                 <motion.div key={i} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.15 }}
-                  className="flex gap-3 p-3 rounded-xl border border-white/8" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                  className="flex gap-3 p-3 rounded-2xl border-white/8" style={{ background: 'rgba(255,255,255,0.03)' }}>
                   <span className="text-sm font-bold" style={{ color: profile.color }}>{i + 1}</span>
                   <p className="text-xs text-slate-300 leading-relaxed">{tip}</p>
                 </motion.div>

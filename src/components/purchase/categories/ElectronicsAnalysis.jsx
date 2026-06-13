@@ -129,7 +129,7 @@ Svara ENDAST med JSON.`,
     <div className="space-y-5">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl p-5 space-y-4"
-        style={{ background: 'rgba(17,24,39,0.7)', border: '1px solid rgba(255,255,255,0.08)' }}>
+        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <h3 className="font-semibold text-white flex items-center gap-2">
           <Laptop className="w-5 h-5 text-purple-400" /> Elektronikköp
         </h3>
@@ -178,7 +178,7 @@ Svara ENDAST med JSON.`,
           {liveCalc && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
               className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
-              style={{ background: 'rgba(139,92,246,0.06)', border: '1px solid rgba(139,92,246,0.15)' }}>
+              style={{ background: 'rgba(139,92,246,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div>
                 <p className="text-[10px] text-slate-500">Kostnad/dag</p>
                 <p className="text-sm font-bold text-purple-400">{fmt(liveCalc.costPerDay)} kr</p>
@@ -230,7 +230,7 @@ Svara ENDAST med JSON.`,
                   </div>
 
                   {/* Cost per use story */}
-                  <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)' }}>
+                  <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(139,92,246,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                     <p className="text-xs text-slate-500 mb-1">Kostnad per användning ({analysis.device.usageYears} år = {analysis.days} dagar)</p>
                     <p className="text-3xl font-black text-purple-400">{fmt(analysis.costPerDay)} kr/dag</p>
                     <p className="text-xs text-slate-400 mt-1 italic">{analysis.cost_per_use_story}</p>
@@ -238,7 +238,7 @@ Svara ENDAST med JSON.`,
 
                   {/* Depreciation */}
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)' }}>
+                    <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <div className="flex items-start gap-2">
                         <TrendingDown className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
                         <div>
@@ -248,7 +248,7 @@ Svara ENDAST med JSON.`,
                         </div>
                       </div>
                     </div>
-                    <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.2)' }}>
+                    <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <div>
                         <p className="text-[10px] text-indigo-400 uppercase tracking-wider font-bold">Upgrade-cykeln</p>
                         <p className="text-xl font-black text-white mt-0.5">{analysis.upgrade_cycle || 24} mån</p>
@@ -259,7 +259,7 @@ Svara ENDAST med JSON.`,
 
                   {/* Need analysis */}
                   {analysis.need_analysis && (
-                    <div className="rounded-xl p-4" style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div className="rounded-xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5"><Brain className="w-3.5 h-3.5" aria-hidden /> Behovs-analys</p>
                       <p className="text-sm text-slate-300 leading-relaxed">{analysis.need_analysis}</p>
                     </div>
@@ -267,7 +267,7 @@ Svara ENDAST med JSON.`,
 
                   {/* Goal tradeoff */}
                   {analysis.goal_trade_off && (
-                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.2)' }}>
+                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <TrendingUp className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.goal_trade_off}</p>
                     </div>
@@ -275,7 +275,7 @@ Svara ENDAST med JSON.`,
 
                   {/* Alternative */}
                   {analysis.alternative && (
-                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(17,24,39,0.5)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(17,24,39,0.5)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-[11px] font-bold text-cyan-400 mb-0.5">Smartare alternativ</p>
@@ -286,7 +286,7 @@ Svara ENDAST med JSON.`,
 
                   {/* Best time to buy */}
                   {analysis.best_time_to_buy && (
-                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
+                    <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(245,158,11,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <Clock className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-[11px] font-bold text-amber-400 mb-0.5">Bästa köptidpunkt</p>

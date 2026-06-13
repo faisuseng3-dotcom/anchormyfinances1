@@ -46,7 +46,7 @@ export default function BudgetHero({ totalSpent, totalBudgeted, monthName }) {
           Tryck på en kategori nedan för att sätta din första gräns.
         </p>
       )}
-      <div className="absolute top-5 right-5 w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center ring-1 ring-white/[0.08]">
+      <div className="absolute top-5 right-5 w-10 h-10 rounded-2xl bg-white/[0.06] flex items-center justify-center shadow-[var(--anchor-shadow-1)]">
         <PieChart className="w-5 h-5 text-violet-300/80" />
       </div>
     </TechHero>

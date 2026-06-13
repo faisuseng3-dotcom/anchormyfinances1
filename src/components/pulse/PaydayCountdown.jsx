@@ -35,7 +35,7 @@ export default function PaydayCountdown({ incomeDay }) {
 
   return (
     <div className="rounded-3xl p-5"
-      style={{ background: 'rgba(6,8,18,0.95)', border: '1px solid rgba(255,255,255,0.07)' }}>
+      style={{ background: 'rgba(6,8,18,0.95)', boxShadow: 'var(--anchor-shadow-1)' }}>
 
       <p className="text-[9px] font-black tracking-widest mb-4 inline-flex items-center gap-1.5" style={{ color: 'rgba(255,255,255,0.22)' }}>
         <Calendar className="w-3 h-3" aria-hidden /> DAGAR TILL LÖN

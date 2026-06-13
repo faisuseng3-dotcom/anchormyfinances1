@@ -1,13 +1,24 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
+import { createPageUrl } from '@/utils';
 import { useAuth } from '@/lib/AuthContext';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { useDemoMode } from '@/components/demo/DemoMode';
+import {
+  COPILOT_VIEWS,
+  copilotToolHref,
+  parseCopilotViewFromSearch,
+  resolveCopilotToolView,
+} from '@/lib/copilotViews';
+import { crossFade } from '@/lib/motionPresets';
 import AnchorCopilotSidebar from '@/components/dashboard/copilot/AnchorCopilotSidebar';
 import AccountDetailDrawer from '@/components/dashboard/copilot/AccountDetailDrawer';
+import CopilotToolView from '@/components/dashboard/copilot/tools/CopilotToolView';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import TheSwipe from '@/components/transactions/TheSwipe';
 import { CopilotNavProvider, useCopilotNav } from './CopilotNavContext';
@@ -16,9 +27,11 @@ import '@/components/dashboard/copilot/anchorCopilot.css';
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 function CopilotShell({ children }) {
-  const { sidebarOpen, closeSidebar } = useCopilotNav();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { sidebarOpen, closeSidebar, setActiveView } = useCopilotNav();
   const { user } = useAuth();
-  const { profile } = useFinancialProfile();
+  const { profile, updateProfile } = useFinancialProfile();
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 500 });
   const { isAlexMode: isAlex } = useDemoMode();
   const queryClient = useQueryClient();
@@ -28,6 +41,61 @@ function CopilotShell({ children }) {
   const [swipeOpen, setSwipeOpen] = useState(false);
 
   const displayUser = isAlex ? { full_name: 'Alex Lindqvist' } : user;
+  const currentPage = location.pathname.split('/').filter(Boolean).pop() || 'Dashboard';
+  const onDashboard = currentPage === 'Dashboard';
+  const onSubscriptionsPage = currentPage === 'Subscriptions';
+
+  // Prenumerationer → /Subscriptions (egen route). Övriga inline-vyer → Dashboard?view=
+  const toolViewFromUrl = resolveCopilotToolView(location.pathname, location.search);
+  const dashboardInlineView = onDashboard ? parseCopilotViewFromSearch(location.search) : null;
+  const showToolView = Boolean(
+    dashboardInlineView && dashboardInlineView !== COPILOT_VIEWS.subscriptions,
+  );
+
+  // Legacy ?view=subscriptions på Dashboard → kanonisk /Subscriptions
+  useEffect(() => {
+    if (!onDashboard) return;
+    const fromSearch = parseCopilotViewFromSearch(location.search);
+    if (fromSearch === COPILOT_VIEWS.subscriptions) {
+      navigate(createPageUrl('Subscriptions'), { replace: true });
+    }
+  }, [onDashboard, location.search, navigate]);
+
+  // Övriga inline-vyer ska alltid ligga på Dashboard, aldrig kvar på /ProTools
+  useEffect(() => {
+    if (!dashboardInlineView || dashboardInlineView === COPILOT_VIEWS.subscriptions) return;
+    const target = copilotToolHref(dashboardInlineView);
+    const current = `${location.pathname}${location.search}`;
+    if (current !== target) {
+      navigate(target, { replace: true });
+    }
+  }, [dashboardInlineView, location.pathname, location.search, navigate]);
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    console.log('[CopilotRoute]', {
+      pathname: location.pathname,
+      search: location.search,
+      currentPage,
+      toolViewFromUrl,
+      dashboardInlineView,
+      showToolView,
+      onSubscriptionsPage,
+      rendering: onSubscriptionsPage
+        ? 'SubscriptionsPage/SubscriptionListView'
+        : showToolView
+          ? `CopilotToolView(${dashboardInlineView})`
+          : `children(${currentPage})`,
+    });
+  }, [
+    location.pathname,
+    location.search,
+    currentPage,
+    toolViewFromUrl,
+    dashboardInlineView,
+    showToolView,
+    onSubscriptionsPage,
+  ]);
 
   const getFreshProfile = useCallback(async () => {
     const profiles = await base44.entities.FinancialProfile.list();
@@ -65,6 +133,11 @@ function CopilotShell({ children }) {
       .catch(() => {});
   }, [createTransaction, getFreshProfile, queryClient]);
 
+  const handleGoHome = useCallback(() => {
+    setActiveView(COPILOT_VIEWS.home);
+    navigate(createPageUrl('Dashboard'));
+  }, [navigate, setActiveView]);
+
   return (
     <div className="anchor-copilot-shell">
       <AnchorCopilotSidebar
@@ -73,8 +146,27 @@ function CopilotShell({ children }) {
         mobileOpen={sidebarOpen}
         onClose={closeSidebar}
         onAccountSelect={setSelectedAccount}
+        onGoHome={handleGoHome}
+        toolViewFromUrl={toolViewFromUrl}
       />
-      <main className="copilot-main">{children}</main>
+      <main className="copilot-main">
+        <AnimatePresence mode="wait">
+          {showToolView ? (
+            <motion.div key={dashboardInlineView} {...crossFade} className="min-h-full">
+              <CopilotToolView
+                view={dashboardInlineView}
+                profile={profile}
+                transactions={transactions}
+                updateProfile={updateProfile}
+              />
+            </motion.div>
+          ) : (
+            <motion.div key={`page-${location.pathname}`} {...crossFade} className="min-h-full">
+              {children}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </main>
 
       <AccountDetailDrawer
         account={selectedAccount}

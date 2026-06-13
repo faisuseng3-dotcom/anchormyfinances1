@@ -17,6 +17,7 @@ import ArkivTab from '@/components/business/tabs/ArkivTab';
 import ProfilTab from '@/components/business/tabs/ProfilTab';
 import { SkeletonCard, SkeletonHero } from '@/components/business/SkeletonCard';
 import { getOnboardingPath, isBusinessOnboarded } from '@/lib/onboardingRouter';
+import PlanGate from '@/components/billing/PlanGate';
 
 const TAB_TITLES = {
   home: null, // uses company name
@@ -75,7 +76,8 @@ export default function BusinessDashboard() {
   const allTransactions = isReset ? manualTransactions : [...manualTransactions, ...biz.recentTransactions];
 
   return (
-    <div className="min-h-screen min-h-[100dvh] overflow-x-hidden w-full max-w-lg mx-auto" style={{ background: '#F4F6F8' }}>
+    <PlanGate feature="business_dashboard">
+    <div className="min-h-full overflow-x-hidden w-full business-dashboard-shell">
       {/* Modals */}
       <AnimatePresence>
         {showScanner && (
@@ -202,6 +204,7 @@ export default function BusinessDashboard() {
       {/* Bottom tab bar */}
       <BusinessTabBar activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
+    </PlanGate>
   );
 }
 

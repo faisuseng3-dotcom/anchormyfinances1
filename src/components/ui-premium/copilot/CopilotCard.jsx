@@ -13,14 +13,21 @@ export default function CopilotCard({
   ...props
 }) {
   const base = cn(
-    'copilot-surface-card rounded-2xl border border-[var(--copilot-border)] p-5 text-left w-full',
-    onClick && 'cursor-pointer hover:bg-[var(--copilot-bg-card-hover)] active:scale-[0.99] transition-all duration-150',
+    'copilot-surface-card organic-card rounded-3xl p-5 text-left w-full',
+    onClick && 'cursor-pointer hover:bg-[var(--copilot-bg-card-hover)] active:scale-[0.97] transition-all duration-300',
     className,
   );
 
   if (onClick) {
     return (
-      <Component type="button" className={base} onClick={onClick} whileTap={{ scale: 0.98 }} {...props}>
+      <Component
+        type="button"
+        className={base}
+        onClick={onClick}
+        whileTap={{ scale: 0.97 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+        {...props}
+      >
         {children}
       </Component>
     );

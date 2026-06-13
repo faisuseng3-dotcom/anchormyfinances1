@@ -279,7 +279,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
 
         {/* Preview */}
         {data.income > 0 && (
-          <div className="mt-2 p-4 rounded-2xl border border-[#6B9FFF]/25 bg-[#6B9FFF]/10">
+          <div className="mt-2 p-4 rounded-3xl border-[#6B9FFF]/25 bg-[#6B9FFF]/10">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-[13px] text-white/50">Ungefär kvar per månad</p>

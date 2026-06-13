@@ -79,7 +79,7 @@ export default function SignupConfirmation({ profile, persona, onContinue }) {
             <div
               key={i}
               className="rounded-2xl p-3 text-center"
-              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+              style={{ background: 'rgba(255,255,255,0.04)', boxShadow: 'var(--anchor-shadow-1)' }}
             >
               <p className="text-xl font-bold text-white">{stat.value}</p>
               <p className="text-[10px] text-slate-500 mt-0.5 leading-tight">{stat.sub}</p>

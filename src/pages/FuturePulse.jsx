@@ -9,7 +9,7 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { usePlannedEvents } from '@/hooks/usePlannedEvents';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useModeContext } from '@/components/modes/ModeContext';
-import { getBufferRunwayMonths } from '@/lib/economicHealth';
+import PlanGate from '@/components/billing/PlanGate';
 
 export default function FuturePulse() {
   const navigate = useNavigate();
@@ -37,17 +37,19 @@ export default function FuturePulse() {
         subtitle="Planerade händelser"
         backHref={createPageUrl('FuturePulse')}
       >
-        {runwayMonths != null && runwayMonths > 0 && (
-          <p className="mb-4 rounded-2xl px-4 py-3 border border-[var(--copilot-border)] bg-[var(--copilot-bg-card)] text-[14px] text-[var(--copilot-text-secondary)]">
-            Din buffert ger{' '}
-            <span className="text-[var(--copilot-accent-green)] font-semibold tabular-nums">{runwayMonths}</span>
-            {' '}månad{runwayMonths === 1 ? '' : 'er'} handlingsutrymme framåt.
-          </p>
-        )}
-        <PlanCalendar
-          profile={profileWithEvents || profile}
-          onSavePlannedEvents={savePlannedEvents}
-        />
+        <PlanGate feature="future_pulse">
+          {runwayMonths != null && runwayMonths > 0 && (
+            <p className="mb-4 rounded-2xl px-4 py-3 organic-surface bg-[var(--copilot-bg-card)] text-[14px] text-[var(--copilot-text-secondary)]">
+              Din buffert ger{' '}
+              <span className="text-[var(--copilot-accent-green)] font-semibold tabular-nums">{runwayMonths}</span>
+              {' '}månad{runwayMonths === 1 ? '' : 'er'} handlingsutrymme framåt.
+            </p>
+          )}
+          <PlanCalendar
+            profile={profileWithEvents || profile}
+            onSavePlannedEvents={savePlannedEvents}
+          />
+        </PlanGate>
       </PageShell>
     );
   }
@@ -58,7 +60,9 @@ export default function FuturePulse() {
       subtitle="Se vad som väntar — justera och planera framåt"
       backHref={createPageUrl('Dashboard')}
     >
-      <DinFramtidPanel profile={profile} transactions={transactions} />
+      <PlanGate feature="future_pulse">
+        <DinFramtidPanel profile={profile} transactions={transactions} />
+      </PlanGate>
     </PageShell>
   );
 }

@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import { base44 } from '@/api/base44Client';
 import { Zap, ArrowRight,
   CheckCircle2, Building2, TrendingUp, Shield, ChevronRight, Loader2,
   User, Palette, Laptop, Scissors, ShoppingCart, GraduationCap, Home, HandMetal, Ban,
 } from 'lucide-react';
 import {
   ensureOnboardingMode,
-  getDashboardPath,
-  getOnboardingPath,
-  isBusinessMode,
-  isBusinessOnboarded,
 } from '@/lib/onboardingRouter';
 
 // ─── Legal entity types ─────────────────────────────────────────────────────────
@@ -234,7 +231,7 @@ function StepLegalEntity({ onNext }) {
               }}
             >
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
-                style={{ background: sel ? e.bg : 'rgba(255,255,255,0.06)', border: `1px solid ${e.border}` }}>
+                style={{ background: sel ? e.bg : 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <e.Icon className="w-7 h-7" style={{ color: e.color }} />
               </div>
               <div className="flex-1">
@@ -351,7 +348,7 @@ function StepPersona({ onNext }) {
               }}
             >
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
-                style={{ background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)', border: `1px solid ${p.borderAccent}` }}>
+                style={{ background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p.Icon className="w-5 h-5" style={{ color: p.color }} />
               </div>
               <div className="flex-1 min-w-0">
@@ -362,7 +359,7 @@ function StepPersona({ onNext }) {
                 style={{
                   background: sel ? p.bgAccent : 'rgba(255,255,255,0.06)',
                   color: sel ? p.color : 'rgba(155,173,184,0.5)',
-                  border: `1px solid ${sel ? p.borderAccent : 'transparent'}`,
+                  boxShadow: 'var(--anchor-shadow-1)',
                 }}>
                 {p.keyMetric}
               </span>
@@ -431,7 +428,7 @@ function StepPainPoints({ persona, onNext }) {
               }}
             >
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ background: sel ? pt.bg : 'rgba(255,255,255,0.06)', border: `1px solid ${pt.border}` }}>
+                style={{ background: sel ? pt.bg : 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <Icon className="w-6 h-6" style={{ color: sel ? pt.color : 'rgba(155,173,184,0.5)' }} />
               </div>
               <div className="flex-1">
@@ -604,7 +601,7 @@ function StepHoroscope({ persona, onComplete }) {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ type: 'spring', stiffness: 200 }}
                 className="flex items-start gap-3 p-3 rounded-xl"
-                style={{ background: 'rgba(61,170,122,0.1)', border: '1px solid rgba(61,170,122,0.25)' }}
+                style={{ background: 'rgba(61,170,122,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}
               >
                 <CheckCircle2 className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#3DAA7A' }} />
                 <p className="text-xs font-medium" style={{ color: '#F0EAD6' }}>{action}</p>
@@ -634,28 +631,34 @@ function StepHoroscope({ persona, onComplete }) {
 export default function BusinessOnboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-
-  useEffect(() => {
-    if (!isBusinessMode()) {
-      navigate(getOnboardingPath('personal'), { replace: true });
-      return;
-    }
-    ensureOnboardingMode('business');
-    if (isBusinessOnboarded()) {
-      navigate(getDashboardPath('business'), { replace: true });
-    }
-  }, [navigate]);
   const [legalEntity, setLegalEntity] = useState(null);
   const [persona, setPersona] = useState(null);
   const [pains, setPains] = useState([]);
   const [integrations, setIntegrations] = useState([]);
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
+    ensureOnboardingMode('business');
     localStorage.setItem('anchor_biz_onboarded', 'true');
     localStorage.setItem('anchor_biz_legal_entity', legalEntity || 'enskild');
     localStorage.setItem('anchor_biz_persona', persona);
     localStorage.setItem('anchor_biz_pains', JSON.stringify(pains));
     localStorage.setItem('anchor_biz_integrations', JSON.stringify(integrations));
+
+    try {
+      const profiles = await base44.entities.FinancialProfile.list('-updated_date', 1);
+      if (profiles[0]?.id) {
+        await base44.entities.FinancialProfile.update(profiles[0].id, {
+          onboardingCompleted: true,
+          businessPersona: persona,
+          businessLegalEntity: legalEntity,
+          businessPainPoints: pains,
+          businessIntegrations: integrations,
+        });
+      }
+    } catch (err) {
+      console.warn('Kunde inte spara företagsprofil:', err);
+    }
+
     navigate('/BusinessDashboard', { replace: true });
   };
 
@@ -689,7 +692,7 @@ export default function BusinessOnboarding() {
       {/* Logo */}
       <div className="flex items-center gap-2 mb-8">
         <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.4)' }}>
+          style={{ background: 'rgba(212,175,55,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Building2 className="w-4 h-4" style={{ color: '#D4AF37' }} />
         </div>
         <span className="text-xs font-bold tracking-widest uppercase" style={{ color: 'rgba(212,175,55,0.7)' }}>Anchor Business</span>

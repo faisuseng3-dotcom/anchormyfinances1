@@ -14,7 +14,7 @@ export default function DemoToggle() {
       style={{
         background: isDemoMode ? 'rgba(234,88,12,0.12)' : 'rgba(13,115,119,0.1)',
         color: isDemoMode ? '#ea580c' : '#0D7377',
-        border: `1px solid ${isDemoMode ? 'rgba(234,88,12,0.25)' : 'rgba(13,115,119,0.2)'}`,
+        boxShadow: 'var(--anchor-shadow-1)',
       }}
     >
       {isDemoMode ? <X className="w-3 h-3" /> : <FlaskConical className="w-3 h-3" />}

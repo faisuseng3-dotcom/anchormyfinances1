@@ -81,7 +81,7 @@ export default function SecurityInfo() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             className="rounded-2xl p-5"
-            style={{ background: 'rgba(17,24,39,0.6)', border: '1px solid rgba(255,255,255,0.08)' }}
+            style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <div className="flex items-center gap-3 mb-4">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
@@ -105,7 +105,7 @@ export default function SecurityInfo() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="rounded-2xl p-5 text-center"
-          style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}
+          style={{ background: 'rgba(16,185,129,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <Database className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
           <p className="text-sm font-semibold text-white mb-1">Frågor om din data?</p>
