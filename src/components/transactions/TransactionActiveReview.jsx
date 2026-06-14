@@ -4,7 +4,6 @@ import { Check, ChevronLeft, AlertCircle } from 'lucide-react';
 import { CategoryIcon } from '@/lib/anchorIcons';
 import { getCategoryTint } from '@/lib/copilotTheme';
 import { VALID_CATEGORIES } from '@/lib/categoryRouter';
-import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import { copilotPrimaryBtnClass, copilotSecondaryBtnClass } from '@/lib/copilotTheme';
 import { triggerHaptic } from '@/lib/haptics';
@@ -112,7 +111,7 @@ export default function TransactionActiveReview({
             transition={{ duration: 0.22 }}
             className="w-full max-w-sm cursor-grab active:cursor-grabbing"
           >
-            <CopilotCard className="!p-5 touch-pan-y">
+            <div className="rounded-3xl p-5 touch-pan-y" style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--organic-shadow-soft)' }}>
               <div className="flex items-start gap-3">
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
@@ -133,7 +132,7 @@ export default function TransactionActiveReview({
 
               {onCategoryChange && (
                 <div className="mt-4">
-                  <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2">Kategori</p>
+                  <p className="anchor-type-label mb-2">Kategori</p>
                   <div className="flex flex-wrap gap-2">
                     {VALID_CATEGORIES.slice(0, 6).map((c) => (
                       <AnchorPressable
@@ -153,7 +152,7 @@ export default function TransactionActiveReview({
                   </div>
                 </div>
               )}
-            </CopilotCard>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
