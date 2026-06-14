@@ -532,38 +532,54 @@ Svara med JSON där ALL data är anpassad efter användarens faktiska önskemål
 
 KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska destinationen. Beräkna alla kostnader (accommodationCost, activitiesCost, etc.) baserat på realistiska priser. Bygg bookingUrl med faktisk destination på engelska och faktiska datum.`;
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          analysis: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'string' }, nights: { type: 'number' }, totalBudget: { type: 'number' }, activityBudget: { type: 'number' }, summary: { type: 'string' } } },
-          timeline: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, event: { type: 'string' }, highlight: { type: 'boolean' } } } } } },
-          packages: { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, tag: { type: 'string' }, accommodation: { type: 'string' }, accommodationCost: { type: 'number' }, activities: { type: 'string' }, activitiesCost: { type: 'number' }, otherCosts: { type: 'number' }, totalCost: { type: 'number' }, margin: { type: 'number' }, aiComment: { type: 'string' }, bookingUrl: { type: 'string' }, provider: { type: 'string' } } } },
-          budgetCheck: { type: 'object', properties: { breakdown: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, amount: { type: 'number' } } } }, marginPerDay: { type: 'number' }, verdict: { type: 'string' } } },
-          goalName: { type: 'string' },
-          goalEndDate: { type: 'string' }
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            analysis: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'string' }, nights: { type: 'number' }, totalBudget: { type: 'number' }, activityBudget: { type: 'number' }, summary: { type: 'string' } } },
+            timeline: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, event: { type: 'string' }, highlight: { type: 'boolean' } } } } } },
+            packages: { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, tag: { type: 'string' }, accommodation: { type: 'string' }, accommodationCost: { type: 'number' }, activities: { type: 'string' }, activitiesCost: { type: 'number' }, otherCosts: { type: 'number' }, totalCost: { type: 'number' }, margin: { type: 'number' }, aiComment: { type: 'string' }, bookingUrl: { type: 'string' }, provider: { type: 'string' } } } },
+            budgetCheck: { type: 'object', properties: { breakdown: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, amount: { type: 'number' } } } }, marginPerDay: { type: 'number' }, verdict: { type: 'string' } } },
+            goalName: { type: 'string' },
+            goalEndDate: { type: 'string' }
+          }
         }
+      });
+
+      const hasValidPackages = Array.isArray(result?.packages) &&
+        result.packages.length > 0 &&
+        result.packages.some(p => p.totalCost > 0);
+
+      if (!result || !hasValidPackages) {
+        throw new Error('Ofullständigt svar från AI');
       }
-    });
 
-    setLatestBudgetCheck(result.budgetCheck);
-    setLatestDestination(result.analysis?.destination || '');
+      setLatestBudgetCheck(result.budgetCheck);
+      setLatestDestination(result.analysis?.destination || '');
 
-    const newMsgs = [
-      { role: 'assistant', type: 'analysis', content: result.analysis?.summary || '', analysis: result.analysis },
-      { role: 'assistant', type: 'timeline', timeline: result.timeline },
-      { role: 'assistant', type: 'packages', packages: result.packages, goalName: result.goalName, goalEndDate: result.goalEndDate, destination: result.analysis?.destination },
-      { role: 'assistant', type: 'budgetcheck', budgetCheck: result.budgetCheck }
-    ];
-    setMessages(prev => {
-      const updated = [...prev, ...newMsgs];
-      saveToCache({ messages: updated });
-      return updated;
-    });
-
-    setLoading(false);
+      const newMsgs = [
+        { role: 'assistant', type: 'analysis', content: result.analysis?.summary || '', analysis: result.analysis },
+        { role: 'assistant', type: 'timeline', timeline: result.timeline },
+        { role: 'assistant', type: 'packages', packages: result.packages, goalName: result.goalName, goalEndDate: result.goalEndDate, destination: result.analysis?.destination },
+        { role: 'assistant', type: 'budgetcheck', budgetCheck: result.budgetCheck }
+      ];
+      setMessages(prev => {
+        const updated = [...prev, ...newMsgs];
+        saveToCache({ messages: updated });
+        return updated;
+      });
+    } catch {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        type: 'text',
+        content: 'Det gick inte att hämta resförslag just nu. Försök igen om en stund eller beskriv resan på ett annat sätt.'
+      }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSaveGoal = async () => {

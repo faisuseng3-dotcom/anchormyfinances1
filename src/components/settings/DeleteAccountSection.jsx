@@ -7,24 +7,29 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 export default function DeleteAccountSection({ profile }) {
   const [step, setStep] = useState('idle');
 
+  const deleteAllOf = async (entity) => {
+    // Fetch and delete in batches until no records remain
+    while (true) {
+      const batch = await entity.list('-created_date', 500);
+      if (!batch || batch.length === 0) break;
+      for (const item of batch) {
+        await entity.delete(item.id);
+      }
+    }
+  };
+
   const handleDelete = async () => {
     setStep('deleting');
     try {
+      await deleteAllOf(base44.entities.Transaction);
+      await deleteAllOf(base44.entities.SavingsDeposit);
       if (profile?.id) {
         await base44.entities.FinancialProfile.delete(profile.id);
-      }
-      const txs = await base44.entities.Transaction.list('-created_date', 500);
-      for (const tx of txs) {
-        await base44.entities.Transaction.delete(tx.id);
-      }
-      const deposits = await base44.entities.SavingsDeposit.list('-created_date', 200);
-      for (const d of deposits) {
-        await base44.entities.SavingsDeposit.delete(d.id);
       }
       setStep('done');
       setTimeout(() => base44.auth.logout(), 2000);
     } catch {
-      setStep('confirm');
+      setStep('error');
     }
   };
 
@@ -32,6 +37,28 @@ export default function DeleteAccountSection({ profile }) {
     return (
       <div className="p-4 rounded-[var(--anchor-radius-lg)] text-center text-sm text-emerald-300 ring-1 ring-emerald-400/30 bg-emerald-500/10 anchor-elev-1">
         Ditt konto och all data har raderats. Du loggas ut…
+      </div>
+    );
+  }
+
+  if (step === 'error') {
+    return (
+      <div className="p-4 rounded-[var(--anchor-radius-lg)] ring-1 ring-rose-400/30 bg-rose-500/10 space-y-3 anchor-elev-1">
+        <div className="flex items-center gap-2 text-rose-300">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <p className="text-sm font-semibold">Radering misslyckades</p>
+        </div>
+        <p className="text-xs text-white/45 leading-relaxed">
+          Något gick fel. Försök igen eller kontakta oss på hello@anchormyfinances.com så hjälper vi dig att radera ditt konto.
+        </p>
+        <AnchorPressable
+          type="button"
+          minTouch={false}
+          onClick={() => setStep('idle')}
+          className="w-full h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]"
+        >
+          Stäng
+        </AnchorPressable>
       </div>
     );
   }
