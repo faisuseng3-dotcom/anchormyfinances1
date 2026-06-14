@@ -52,7 +52,7 @@ export default function PageShell({
 
   return (
     <div className={`${copilotPageClass} ${className}`}>
-      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl border-b ">
+      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl" style={{boxShadow:'0 1px 0 rgba(255,255,255,0.04)'}}>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
             <button
@@ -66,7 +66,7 @@ export default function PageShell({
             {backControl}
             <div className="min-w-0 pt-0.5">
               {subtitle && (
-                <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
+                <p className="anchor-type-caption">
                   {subtitle}
                 </p>
               )}

@@ -66,7 +66,7 @@ export default function BudgetDashboard() {
 
   return (
     <PageShell title="Budget" subtitle={`${monthName} · plan mot utfall`} backHref={createPageUrl('Dashboard')}>
-      <div className="flex flex-wrap gap-2 mb-2">
+      <div className="flex gap-2 mb-2 overflow-x-auto scrollbar-none">
         <StreakBadge count={underBudgetStreak} label="dagar under budget" variant="budget" />
         <StreakBadge count={savingsStreak} label="dagars sparande" variant="save" />
       </div>
@@ -83,19 +83,19 @@ export default function BudgetDashboard() {
         />
         <div className="grid grid-cols-3 gap-6 mt-6 w-full max-w-sm text-center">
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Budget</p>
+            <p className="anchor-type-caption">Budget</p>
             <p className="text-[16px] font-bold text-white tabular-nums mt-1">
               {totalBudgeted.toLocaleString('sv-SE')}
             </p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Spenderat</p>
+            <p className="anchor-type-caption">Spenderat</p>
             <p className="text-[16px] font-bold text-[#f87171] tabular-nums mt-1">
               {totalSpent.toLocaleString('sv-SE')}
             </p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Kvar</p>
+            <p className="anchor-type-caption">Kvar</p>
             <p className="text-[16px] font-bold text-[var(--copilot-accent-green)] tabular-nums mt-1">
               {remaining.toLocaleString('sv-SE')}
             </p>
@@ -104,7 +104,7 @@ export default function BudgetDashboard() {
       </CopilotCard>
 
       <div>
-        <p className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-secondary)] mb-3 px-1">
+        <p className="anchor-type-label mb-3 px-1">
           Kategorier — svep för att se alla
         </p>
         <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 -mx-1 px-1 scrollbar-none">

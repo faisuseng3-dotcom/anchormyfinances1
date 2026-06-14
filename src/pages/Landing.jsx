@@ -100,9 +100,9 @@ function ModeCard({ mode, selected, onSelect }) {
         background: isSelected
           ? `color-mix(in srgb, ${mode.accent} 16%, var(--color-surface-raised))`
           : 'var(--color-surface-raised)',
-        border: isSelected
-          ? `2px solid color-mix(in srgb, ${mode.accent} 65%, transparent)`
-          : '1.5px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: isSelected
+          ? `0 0 0 2px ${mode.accent}, var(--anchor-shadow-2)`
+          : 'var(--anchor-shadow-1)',
       }}
     >
       <div
@@ -177,15 +177,13 @@ export default function Landing() {
       </div>
 
       <section className="relative z-10 flex flex-col items-center px-6 pt-6 pb-6 text-center max-w-sm mx-auto w-full">
-        <motion.div {...staggerItem(0)} className="w-full anchor-premium-hero mb-6">
-          <div className="relative z-10">
-            <p className={dashLabel}>Välkommen</p>
-            <h1 className="anchor-type-display mt-1">Välj din instans</h1>
-            <p className="anchor-type-body-sm mt-3 text-left">
-              Personal och Business är separata miljöer. Välj instans här vid inloggning — för att byta
-              måste du logga ut och välja igen.
-            </p>
-          </div>
+        <motion.div {...staggerItem(0)} className="w-full mb-8 text-left">
+          <p className={dashLabel}>Välkommen</p>
+          <h1 className="anchor-type-display mt-1">Välj din instans</h1>
+          <p className="anchor-type-body-sm mt-3">
+            Personal och Business är separata miljöer. Välj instans här vid inloggning — för att byta
+            måste du logga ut och välja igen.
+          </p>
         </motion.div>
 
         <motion.div {...staggerItem(1)} className="w-full space-y-3 mb-6">

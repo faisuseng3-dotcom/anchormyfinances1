@@ -7,19 +7,19 @@
 @layer base {
   :root {
     /* ── Anchor Premium tokens (ui-ux-pro-max) ── */
-    --anchor-page-gradient: linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%);
-    /* Copilot DNA — shared with Dashboard */
-    --copilot-bg-deep: #0a0f6b;
-    --copilot-bg-mid: #1228cc;
-    --copilot-bg-card: rgba(255, 255, 255, 0.07);
+    --anchor-page-gradient: linear-gradient(145deg, #0e1fa8 0%, #050d28 100%);
+    /* Copilot aliases → anchor tokens */
+    --copilot-bg-deep: var(--color-background-primary);
+    --copilot-bg-mid: var(--color-accent);
+    --copilot-bg-card: var(--color-surface);
     --copilot-bg-card-hover: rgba(255, 255, 255, 0.11);
-    --copilot-accent-green: #22d97a;
+    --copilot-accent-green: var(--color-success);
     --copilot-accent-cyan: #4fc3f7;
-    --copilot-accent-blue: #4a7aff;
-    --copilot-text-primary: #ffffff;
-    --copilot-text-secondary: #8fa8d8;
-    --copilot-text-muted: #5a78c0;
-    --copilot-border: rgba(255, 255, 255, 0.08);
+    --copilot-accent-blue: var(--color-accent);
+    --copilot-text-primary: var(--color-text-primary);
+    --copilot-text-secondary: var(--color-text-secondary);
+    --copilot-text-muted: var(--color-text-muted);
+    --copilot-border: transparent;
     --color-background-primary: #040814;
     --color-background-secondary: rgba(8, 14, 30, 0.88);
     --color-surface: rgba(255, 255, 255, 0.07);
@@ -241,14 +241,7 @@
 /* Anchor — Revolut / Monzo / Apple Wallet canvas */
 @layer components {
   .anchor-page {
-    background: linear-gradient(
-      165deg,
-      #1a3dff 0%,
-      #0f2a9e 28%,
-      #081858 55%,
-      #050d28 82%,
-      #030610 100%
-    );
+    background: linear-gradient(145deg, #0e1fa8 0%, #050d28 100%);
     color: rgba(255, 255, 255, 0.94);
   }
 
@@ -258,7 +251,7 @@
     inset: 0;
     pointer-events: none;
     z-index: 0;
-    opacity: 0.035;
+    opacity: 0.065;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
@@ -498,6 +491,35 @@
     color: var(--color-text-secondary);
   }
 
+  .anchor-type-title {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+  }
+
+  .anchor-type-body {
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+  }
+
+  .anchor-type-caption {
+    font-size: 0.6875rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-text-muted);
+  }
+
+  .anchor-type-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+  }
+
   /* Asymmetric dashboard hero */
   .anchor-hero-asymmetric {
     display: grid;
@@ -576,14 +598,12 @@
     );
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: var(--anchor-radius-lg);
     box-shadow: var(--anchor-shadow-3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    transition: box-shadow var(--transition-base);
   }
 
   .dark-card:hover {
-    border-color: rgba(255, 255, 255, 0.2);
     box-shadow: var(--anchor-shadow-4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
