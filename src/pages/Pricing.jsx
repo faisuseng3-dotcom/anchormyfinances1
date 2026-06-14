@@ -176,7 +176,7 @@ export default function Pricing() {
           className="text-[13px] text-[var(--color-text-tertiary)] text-center mt-10 leading-relaxed"
           {...staggerItem(PRICING_PLANS.length)}
         >
-          Alla priser i SEK. Stripe testläge — byt till live-nycklar i Base44 vid lansering.{' '}
+          Alla priser i SEK inkl. moms.{' '}
           <Link to="/TermsOfService" className="underline text-[var(--color-text-secondary)]">
             Villkor
           </Link>

@@ -4,5 +4,3 @@ export function isFoundationTestMode(searchParams) {
   const v = searchParams.get('testFoundations');
   return v === '1' || v === 'true';
 }
-
-export const FOUNDATION_TEST_URL = '/Onboarding?testFoundations=1';

@@ -104,7 +104,7 @@ export default function PrivacyPolicy() {
             6. Cookies och lokal lagring
           </h2>
           <p>
-            Tjänsten använder webbläsarens localStorage enbart för sessionshantering och lokalt sparade inställningar. Inga spårningscookies, reklamcookies eller tredjeparts-skript för analys används.
+            Tjänsten använder webbläsarens localStorage enbart för sessionshantering och lokalt sparade inställningar. Inga spårningscookies eller reklamcookies används. Tjänsten använder plattformsleverantörens (Base44) inbyggda anonyma händelseanalys för att förbättra tjänsten — inga personuppgifter delas med tredje part i detta syfte.
           </p>
         </section>
 
