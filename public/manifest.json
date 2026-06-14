@@ -1,0 +1,21 @@
+{
+  "name": "Anchor — personlig ekonomicoach",
+  "short_name": "Anchor",
+  "description": "Koll på inkomst, utgifter och vad du har kvar varje månad.",
+  "start_url": "/Dashboard",
+  "display": "standalone",
+  "background_color": "#050d28",
+  "theme_color": "#050d28",
+  "lang": "sv",
+  "dir": "ltr",
+  "orientation": "portrait",
+  "categories": ["finance", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
