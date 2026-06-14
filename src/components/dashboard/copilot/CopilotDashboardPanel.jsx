@@ -23,7 +23,7 @@ export default function CopilotDashboardPanel({
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="min-w-0">
             {title && (
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
+              <h2 className="anchor-type-label">
                 {title}
               </h2>
             )}
