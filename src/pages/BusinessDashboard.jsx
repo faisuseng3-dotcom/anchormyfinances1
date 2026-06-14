@@ -6,6 +6,7 @@ import { Building2, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { SIMULATED_BUSINESS, calcMonthlyBurn } from '@/components/business/BusinessData';
+import { useDemoMode } from '@/components/demo/DemoMode';
 import BusinessTabBar from '@/components/business/BusinessTabBar';
 import ReceiptScanner from '@/components/business/ReceiptScanner';
 import ManualTransactionModal from '@/components/business/ManualTransactionModal';
@@ -27,21 +28,30 @@ const TAB_TITLES = {
   profil: 'Profil',
 };
 
-// Tax calc delegated to businessTaxEngine
-const biz = SIMULATED_BUSINESS;
-const monthlyBurn = calcMonthlyBurn(biz);
+const EMPTY_BIZ = {
+  companyName: 'Mitt företag',
+  orgNr: '',
+  vatRate: 0.25,
+  bankBalance: 0,
+  vatReserved: 0,
+  runwayMonths: 0,
+  monthlyFixedCosts: [],
+  unpaidInvoices: [],
+  vatDeadlines: [],
+  runwayData: [],
+  recentTransactions: [],
+};
 
 export default function BusinessDashboard() {
+  const { isDemoMode } = useDemoMode();
   const [activeTab, setActiveTab] = useState('home');
   const [showScanner, setShowScanner] = useState(false);
   const [showManual, setShowManual] = useState(false);
   const [manualTransactions, setManualTransactions] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [isReset, setIsReset] = useState(() => localStorage.getItem('anchor_biz_reset') === 'true');
   const [unprocessedCount, setUnprocessedCount] = useState(0);
 
-  // Persist business mode on refresh
   useEffect(() => {
     localStorage.setItem('anchor_mode', 'business');
     document.documentElement.setAttribute('data-mode', 'business');
@@ -53,27 +63,20 @@ export default function BusinessDashboard() {
     return () => clearTimeout(t);
   }, []);
 
-  // Listen for reset events (both same-tab custom event and cross-tab storage event)
+  // Listen for data-reset events so manual transactions are cleared
   useEffect(() => {
-    const checkReset = () => {
-      const flag = localStorage.getItem('anchor_biz_reset') === 'true';
-      setIsReset(flag);
-      if (flag) { setManualTransactions([]); setUnprocessedCount(0); }
-    };
-    window.addEventListener('storage', checkReset);
-    window.addEventListener('anchor:biz_reset', checkReset);
-    return () => {
-      window.removeEventListener('storage', checkReset);
-      window.removeEventListener('anchor:biz_reset', checkReset);
-    };
+    const handleReset = () => { setManualTransactions([]); setUnprocessedCount(0); };
+    window.addEventListener('anchor:biz_reset', handleReset);
+    return () => window.removeEventListener('anchor:biz_reset', handleReset);
   }, []);
 
   const legalEntity = localStorage.getItem('anchor_biz_legal_entity') || 'enskild';
   const legalLabel = legalEntity === 'ab' ? 'Aktiebolag (AB)' : 'Enskild firma';
 
-  // After reset: show empty data instead of simulated demo data
-  const activeBiz = isReset ? { ...biz, bankBalance: 0, vatReserved: 0, recentTransactions: [], unpaidInvoices: [], runwayMonths: 0, runwayData: [] } : biz;
-  const allTransactions = isReset ? manualTransactions : [...manualTransactions, ...biz.recentTransactions];
+  const activeBiz = isDemoMode ? SIMULATED_BUSINESS : EMPTY_BIZ;
+  const allTransactions = isDemoMode
+    ? [...manualTransactions, ...SIMULATED_BUSINESS.recentTransactions]
+    : manualTransactions;
 
   return (
     <PlanGate feature="business_dashboard">
@@ -110,7 +113,7 @@ export default function BusinessDashboard() {
           <div>
             <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
             <h1 className="text-base font-black text-white tracking-tight">
-              {TAB_TITLES[activeTab] || biz.companyName}
+              {TAB_TITLES[activeTab] || activeBiz.companyName}
             </h1>
           </div>
         </div>
@@ -137,7 +140,7 @@ export default function BusinessDashboard() {
                 grossBalance={activeBiz.bankBalance}
                 vatReserved={activeBiz.vatReserved}
                 entityType={legalEntity}
-                isReset={isReset}
+                isReset={!isDemoMode}
                 onScannerOpen={() => setShowScanner(true)}
                 onViewAll={() => setActiveTab('arkiv')}
                 recentTransactions={allTransactions}
@@ -151,7 +154,7 @@ export default function BusinessDashboard() {
                 vatDeadlines={activeBiz.vatDeadlines}
                 entityType={legalEntity}
                 totalBalance={activeBiz.bankBalance}
-                isReset={isReset}
+                isReset={!isDemoMode}
                 transactions={allTransactions}
               />
             </motion.div>
@@ -161,10 +164,10 @@ export default function BusinessDashboard() {
               <RapporterTab
                 runwayMonths={activeBiz.runwayMonths}
                 runwayData={activeBiz.runwayData}
-                monthlyBurn={monthlyBurn}
+                monthlyBurn={calcMonthlyBurn(activeBiz)}
                 invoices={activeBiz.unpaidInvoices}
                 transactions={allTransactions}
-                isReset={isReset}
+                isReset={!isDemoMode}
                 unprocessedCount={unprocessedCount}
                 onReviewUnprocessed={() => setActiveTab('arkiv')}
               />
@@ -195,7 +198,7 @@ export default function BusinessDashboard() {
           )}
           {!loading && activeTab === 'profil' && (
             <motion.div key="profil" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} transition={{ duration: 0.18 }}>
-              <ProfilTab companyName={biz.companyName} orgNr={biz.orgNr} legalLabel={legalLabel} monthlyBurn={monthlyBurn} />
+              <ProfilTab companyName={activeBiz.companyName} orgNr={activeBiz.orgNr} legalLabel={legalLabel} monthlyBurn={calcMonthlyBurn(activeBiz)} />
             </motion.div>
           )}
         </AnimatePresence>
