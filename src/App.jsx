@@ -17,7 +17,6 @@ import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessOnboarding from './pages/BusinessOnboarding';
 import Import from './pages/Import';
 import BudgetDashboard from './pages/BudgetDashboard';
-import YearEndClosing from './pages/YearEndClosing';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -151,13 +150,6 @@ const AuthenticatedApp = () => {
         <RequireAuth>
           <LayoutWrapper currentPageName="BudgetDashboard">
             <BudgetDashboard />
-          </LayoutWrapper>
-        </RequireAuth>
-      } />
-      <Route path="/YearEndClosing" element={
-        <RequireAuth>
-          <LayoutWrapper currentPageName="YearEndClosing">
-            <YearEndClosing />
           </LayoutWrapper>
         </RequireAuth>
       } />

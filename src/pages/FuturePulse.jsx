@@ -19,7 +19,7 @@ export default function FuturePulse() {
   const { profile } = useFinancialProfile();
   const { profileWithEvents, savePlannedEvents, syncFromLocalIfEmpty } = usePlannedEvents();
   const { transactions } = useTransactions({ limit: 1000 });
-  const runwayMonths = getBufferRunwayMonths(profile);
+  const runwayMonths = profile?.buffer && profile?.income ? Math.floor(profile.buffer / (profile.income / 12)) : null;
   const showCalendar = view === 'kalender';
 
   useEffect(() => {

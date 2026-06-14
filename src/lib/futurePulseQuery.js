@@ -17,9 +17,7 @@ export async function fetchFuturePulse(profile, transactions, { compact = true }
   const payload = summarizeForFutureEngine(profile, personalTxs);
   const patterns = extractPatterns(profile, personalTxs);
   const onDevicePatterns = detectSpendingPatterns(personalTxs);
-  if (onDevicePatterns.patterns?.length) {
-    indexFromPatterns(onDevicePatterns.patterns);
-  }
+
 
   let merged = localRaw;
   const plan = normalizePlan(profile?.plan);
