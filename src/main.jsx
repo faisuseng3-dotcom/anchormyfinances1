@@ -20,7 +20,7 @@ function Root() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setShowSplash(false), 2200);
+    const t = setTimeout(() => setShowSplash(false), 2000);
     return () => clearTimeout(t);
   }, []);
 
