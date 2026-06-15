@@ -3,7 +3,7 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Zap, ArrowRight,
+import { Zap, ArrowRight, ArrowLeft,
   CheckCircle2, Building2, TrendingUp, Shield, ChevronRight, Loader2,
   User, Palette, Laptop, Scissors, ShoppingCart, GraduationCap, Home, HandMetal, Ban,
 } from 'lucide-react';
@@ -674,6 +674,18 @@ export default function BusinessOnboarding() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6 py-12"
       style={{ background: 'linear-gradient(160deg, #0D1B2A 0%, #080f18 100%)' }}>
+
+      {/* Back button */}
+      <div className="fixed top-5 left-5 z-10">
+        <button
+          type="button"
+          onClick={() => step === 0 ? navigate('/Landing') : setStep(step - 1)}
+          className="flex items-center gap-1.5 text-white/50 hover:text-white/80 transition-colors touch-manipulation"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm">Tillbaka</span>
+        </button>
+      </div>
 
       {/* Progress dots */}
       {step > 0 && step < 6 && (
