@@ -282,12 +282,14 @@ export default function TransactionHistory() {
   }, [isBusiness, searchParams, setSearchParams]);
 
   useEffect(() => {
-    if (activeTab !== 'insights' || window.location.hash !== '#leakage-detector') return;
+    if (activeTab !== 'insights') return;
+    const scroll = searchParams.get('scroll');
+    if (scroll !== 'leakage-detector') return;
     const t = setTimeout(() => {
       document.getElementById('leakage-detector')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 350);
     return () => clearTimeout(t);
-  }, [activeTab]);
+  }, [activeTab, searchParams]);
 
   const switchTab = (tab) => {
     const next = normalizeHistoryTab(tab, { includeLedger: isBusiness });

@@ -9,6 +9,7 @@ import ProTravelPlanner from '@/components/travel/ProTravelPlanner';
 import TravelAgentChat from '@/components/travel/TravelAgentChat';
 import { anchorSecondaryButtonClass } from '@/lib/anchorTheme';
 import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
+import PlanGate from '@/components/billing/PlanGate';
 
 export default function TravelPlanner() {
   const [activeTab, setActiveTab] = useState('agent');
@@ -49,7 +50,11 @@ export default function TravelPlanner() {
         </div>
       }
     >
-      {activeTab === 'agent' && <TravelAgentChat profile={profile} />}
+      {activeTab === 'agent' && (
+        <PlanGate feature="future_pulse">
+          <TravelAgentChat profile={profile} />
+        </PlanGate>
+      )}
       {activeTab === 'analyze' && (
         <>
           {currentMode === 'basic' && <BasicTravelPlanner profile={profile} />}

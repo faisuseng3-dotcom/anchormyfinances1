@@ -124,9 +124,15 @@ export default function BudgetDashboard() {
             />
           ))}
         </div>
-        <p className="text-[12px] text-[var(--copilot-text-muted)] text-center mt-3">
-          Tryck på ett kort för att sätta eller ändra gräns
-        </p>
+        {totalBudgeted === 0 ? (
+          <p className="text-[13px] text-[var(--color-accent)] text-center mt-3 font-medium">
+            👆 Tryck på ett kort för att sätta din första budgetgräns
+          </p>
+        ) : (
+          <p className="text-[12px] text-[var(--copilot-text-muted)] text-center mt-3">
+            Tryck på ett kort för att sätta eller ändra gräns
+          </p>
+        )}
       </div>
 
       {editCategory && (

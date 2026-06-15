@@ -22,7 +22,7 @@ export default function GalaxyExplorer({
   const [activeTags, setActiveTags] = useState([]);
   const [selectedProfile, setSelectedProfile] = useState(null);
 
-  const { data: publishedSocial = [] } = useQuery({
+  const { data: publishedSocial = [], isError } = useQuery({
     queryKey: ['galaxyProfiles'],
     queryFn: async () => {
       const all = await base44.entities.SocialProfile.list();
@@ -99,6 +99,14 @@ export default function GalaxyExplorer({
         />
       </React.Fragment>
     ));
+
+  if (isError) {
+    return (
+      <div className="text-center py-10 text-sm text-white/45">
+        Kunde inte ladda Galaxy just nu. Kontrollera din anslutning och ladda om sidan.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

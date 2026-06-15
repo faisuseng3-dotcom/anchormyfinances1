@@ -129,6 +129,8 @@ export default function Social() {
         username: searchQuery.trim().replace('@', ''),
       });
       setSearchResult(results[0] || 'not_found');
+    } catch {
+      toast.error('Sökningen misslyckades. Kontrollera din anslutning och försök igen.');
     } finally {
       setSearching(false);
     }
@@ -287,6 +289,8 @@ export default function Social() {
                     <span className={sectionMetaClass}>Ålder</span>
                     <input
                       type="number"
+                      min="0"
+                      max="120"
                       value={form.age}
                       onChange={(e) => setForm((f) => ({ ...f, age: e.target.value }))}
                       placeholder="25"

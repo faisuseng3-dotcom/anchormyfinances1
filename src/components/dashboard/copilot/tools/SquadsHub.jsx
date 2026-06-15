@@ -119,7 +119,7 @@ function SquadsHubContent() {
   return (
     <CopilotToolShell
       title="Squads"
-      subtitle="Spara tillsammans — gemensamma pottar med tydlig grupprogress."
+      subtitle="Spara tillsammans — gemensamma pottar med tydlig grupprogress. (Exempeldata — din Squad visas här när du skapar en)"
       action={(
         <button
           type="button"
