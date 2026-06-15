@@ -137,7 +137,7 @@ export default function CopilotBentoDashboard({
       setCoachInput('');
       return;
     }
-    window.location.href = createPageUrl('AnchorAnalysis');
+    navigate(createPageUrl('AnchorAnalysis'));
   };
 
   const handleLessonComplete = (lessonId) => {

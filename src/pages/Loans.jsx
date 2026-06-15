@@ -16,6 +16,7 @@ import { staggerItem } from '@/lib/motionPresets';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import { triggerHaptic } from '@/lib/haptics';
+import { toast } from 'sonner';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -63,36 +64,46 @@ export default function Loans() {
     if (!(loan.monthlyPayment > 0)) return;
     setLoadingEraser(idx);
     const isZero = (loan.interestRate || 0) === 0;
-    const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Du är en CFO. Lån: ${loan.name}, skuld ${loan.totalAmount} kr, ränta ${loan.interestRate}%, ${loan.monthlyPayment} kr/mån. Extra: ${extraPayment} kr/mån.
+    try {
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt: `Du är en CFO. Lån: ${loan.name}, skuld ${loan.totalAmount} kr, ränta ${loan.interestRate}%, ${loan.monthlyPayment} kr/mån. Extra: ${extraPayment} kr/mån.
 ${isZero
   ? `Ränta 0%. Fokus på tid och kassaflöde. interestSaved=0.`
   : `Beräkna månader nu, med extra, månader snabbare, räntebesparing.`}
 Kort svar svenska, max 3 meningar.`,
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          monthsNow: { type: 'number' },
-          monthsWithExtra: { type: 'number' },
-          monthsFaster: { type: 'number' },
-          interestSaved: { type: 'number' },
-          message: { type: 'string' },
+        response_json_schema: {
+          type: 'object',
+          properties: {
+            monthsNow: { type: 'number' },
+            monthsWithExtra: { type: 'number' },
+            monthsFaster: { type: 'number' },
+            interestSaved: { type: 'number' },
+            message: { type: 'string' },
+          },
         },
-      },
-    });
-    setDebtEraserResult({ ...res, loanName: loan.name, extra: extraPayment, idx });
-    triggerHaptic('success');
-    setLoadingEraser(null);
+      });
+      setDebtEraserResult({ ...res, loanName: loan.name, extra: extraPayment, idx });
+      triggerHaptic('success');
+    } catch {
+      toast.error('Kunde inte hämta analys just nu. Försök igen.');
+    } finally {
+      setLoadingEraser(null);
+    }
   };
 
   const runNegotiation = async (loan, idx) => {
     setLoadingNegotiate(idx);
-    const res = await base44.integrations.Core.InvokeLLM({
-      prompt: `Förhandlingsmanus svenska för att sänka ränta. Lån: ${loan.name}, ${loan.interestRate}%, ${loan.totalAmount} kr. 3-4 meningar.`,
-      response_json_schema: { type: 'object', properties: { script: { type: 'string' } } },
-    });
-    setNegotiationScript({ script: res.script, loanName: loan.name, idx });
-    setLoadingNegotiate(null);
+    try {
+      const res = await base44.integrations.Core.InvokeLLM({
+        prompt: `Förhandlingsmanus svenska för att sänka ränta. Lån: ${loan.name}, ${loan.interestRate}%, ${loan.totalAmount} kr. 3-4 meningar.`,
+        response_json_schema: { type: 'object', properties: { script: { type: 'string' } } },
+      });
+      setNegotiationScript({ script: res.script, loanName: loan.name, idx });
+    } catch {
+      toast.error('Kunde inte generera förhandlingsmanus. Försök igen.');
+    } finally {
+      setLoadingNegotiate(null);
+    }
   };
 
   const highestInterestLoan = sortedLoans.find((l) => (l.interestRate || 0) > 0);

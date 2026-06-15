@@ -1,12 +1,13 @@
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { useBilling } from '@/hooks/useBilling';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 export default function PaymentFailedBanner() {
   const { paymentFailed, dismissPaymentFailed, openBillingPortal, subscriptionId } = useBilling();
+  const navigate = useNavigate();
 
   if (!paymentFailed) return null;
 
@@ -15,10 +16,10 @@ export default function PaymentFailedBanner() {
       try {
         await openBillingPortal();
       } catch {
-        window.location.href = createPageUrl('Settings');
+        navigate(createPageUrl('Settings'));
       }
     } else {
-      window.location.href = createPageUrl('Pricing');
+      navigate(createPageUrl('Pricing'));
     }
   };
 

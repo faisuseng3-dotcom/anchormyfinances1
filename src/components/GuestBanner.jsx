@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function GuestBanner() {
   const [dismissed, setDismissed] = useState(false);
+  const navigate = useNavigate();
 
   if (dismissed) return null;
 
   const handleSignUp = () => {
-    window.location.href = createPageUrl('CreateAccount');
+    navigate(createPageUrl('CreateAccount'));
   };
 
   return (

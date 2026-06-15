@@ -6,6 +6,7 @@ import { fmtKr } from '../copilotDashboardUtils';
 import { staggerItem } from '@/lib/motionPresets';
 import CopilotToolShell from './CopilotToolShell';
 import PlanGate from '@/components/billing/PlanGate';
+import { toast } from 'sonner';
 
 const DEMO_SQUADS = [
   {
@@ -120,7 +121,11 @@ function SquadsHubContent() {
       title="Squads"
       subtitle="Spara tillsammans — gemensamma pottar med tydlig grupprogress."
       action={(
-        <button type="button" className={`${copilotPrimaryBtnClass} !w-auto !px-5 !h-11 !text-[13px] shrink-0`}>
+        <button
+          type="button"
+          onClick={() => toast.info('Squads lanseras snart — håll utkik!')}
+          className={`${copilotPrimaryBtnClass} !w-auto !px-5 !h-11 !text-[13px] shrink-0`}
+        >
           <Plus className="w-4 h-4 inline mr-1.5" />
           Skapa Squad
         </button>
@@ -131,7 +136,11 @@ function SquadsHubContent() {
           <SquadCard key={squad.id} squad={squad} index={i} />
         ))}
       </div>
-      <button type="button" className={`${copilotGhostBtnClass} w-full`}>
+      <button
+        type="button"
+        onClick={() => toast.info('Squads lanseras snart — håll utkik!')}
+        className={`${copilotGhostBtnClass} w-full`}
+      >
         Bjud in vänner till en ny spargrupp
       </button>
     </CopilotToolShell>

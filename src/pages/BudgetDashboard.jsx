@@ -14,6 +14,7 @@ import CopilotCard from '@/components/ui-premium/copilot/CopilotCard';
 import StreakBadge from '@/components/ui-premium/copilot/StreakBadge';
 import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { calcSavingsStreak } from '@/lib/microWins';
+import { toast } from 'sonner';
 
 function getMonthRange() {
   const now = new Date();
@@ -56,9 +57,13 @@ export default function BudgetDashboard() {
   const handleSaveBudget = async (category, amount) => {
     if (!profile) return;
     const updated = { ...(profile.budgetLimits || {}), [category]: amount };
-    await base44.entities.FinancialProfile.update(profile.id, { budgetLimits: updated });
-    queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
-    setEditCategory(null);
+    try {
+      await base44.entities.FinancialProfile.update(profile.id, { budgetLimits: updated });
+      queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
+      setEditCategory(null);
+    } catch {
+      toast.error('Kunde inte spara budget. Försök igen.');
+    }
   };
 
   const now = new Date();

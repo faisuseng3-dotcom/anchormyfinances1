@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { useBilling } from '@/hooks/useBilling';
@@ -13,13 +13,14 @@ export default function UpgradeButton({
   onBeforeCheckout,
 }) {
   const { startCheckout, isAuthenticated } = useBilling();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleClick = async (e) => {
     e.preventDefault();
     if (onBeforeCheckout?.() === false) return;
     if (!isAuthenticated) {
-      window.location.href = createPageUrl('Login');
+      navigate(createPageUrl('Login'));
       return;
     }
     setLoading(true);

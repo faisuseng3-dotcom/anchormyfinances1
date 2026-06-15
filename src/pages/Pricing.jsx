@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Check, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { pageSeoFor } from '@/lib/pageSeo';
@@ -21,6 +21,7 @@ const linkTap = {
 
 export default function Pricing() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { plan: currentPlan, startCheckout } = useBilling();
   const [loadingPlan, setLoadingPlan] = useState(null);
@@ -38,11 +39,11 @@ export default function Pricing() {
 
   const handlePlanClick = async (planId) => {
     if (planId === 'free') {
-      window.location.href = isAuthenticated ? createPageUrl('Dashboard') : createPageUrl('CreateAccount');
+      navigate(isAuthenticated ? createPageUrl('Dashboard') : createPageUrl('CreateAccount'));
       return;
     }
     if (!isAuthenticated) {
-      window.location.href = createPageUrl('Login');
+      navigate(createPageUrl('Login'));
       return;
     }
     if (planId === currentPlan) {
