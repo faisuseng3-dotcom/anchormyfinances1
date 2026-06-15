@@ -133,6 +133,8 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior: none;
+    background: #040814;
   }
 
   body {
@@ -142,6 +144,7 @@
     min-height: 100dvh;
     background: var(--anchor-page-gradient);
     color: var(--color-text-primary);
+    overscroll-behavior: none;
   }
 
   html,
