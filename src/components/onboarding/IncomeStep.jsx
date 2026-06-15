@@ -32,6 +32,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
           <div className="relative">
             <Input
               type="text"
+              inputMode="numeric"
               placeholder="25 000"
               value={formatNumber(data.income)}
               onChange={(e) => onChange({ ...data, income: parseNumber(e.target.value) })}
@@ -49,6 +50,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
           <div className="relative">
             <Input
               type="text"
+              inputMode="numeric"
               placeholder="8 000"
               value={formatNumber(data.housingCost)}
               onChange={(e) => onChange({ ...data, housingCost: parseNumber(e.target.value) })}
@@ -66,6 +68,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
           <div className="relative">
             <Input
               type="text"
+              inputMode="numeric"
               placeholder="15 000"
               value={formatNumber(data.buffer)}
               onChange={(e) => onChange({ ...data, buffer: parseNumber(e.target.value) })}

@@ -5,8 +5,11 @@ import { useTransactions } from '@/hooks/useTransactions';
 import AcademyHub from '@/components/dashboard/copilot/tools/AcademyHub';
 
 export default function AnchorAcademy() {
-  const { profile, updateProfile } = useFinancialProfile();
+  const { profile, isLoading, updateProfile } = useFinancialProfile();
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 500 });
+
+  if (isLoading) return null;
+
   return (
     <AcademyHub
       profile={profile}

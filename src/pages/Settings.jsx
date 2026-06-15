@@ -137,11 +137,13 @@ export default function Settings() {
 
   const addSubscription = () => {
     if (!newSub.name || !newSub.amount) return;
+    const amount = parseInt(newSub.amount, 10);
+    if (isNaN(amount) || amount <= 0) { toast.error('Ange ett giltigt belopp (> 0 kr).'); return; }
     setFormData((prev) => ({
       ...prev,
       subscriptions: [...(prev.subscriptions || []), {
         name: newSub.name,
-        amount: parseInt(newSub.amount, 10),
+        amount,
         category: newSub.category,
         billingDay: parseInt(newSub.billingDay, 10) || null,
         frequency: newSub.frequency,
@@ -156,6 +158,8 @@ export default function Settings() {
 
   const addLoan = async () => {
     if (!newLoan.name || !newLoan.totalAmount) return;
+    if (parseNumber(newLoan.totalAmount) <= 0) { toast.error('Ange ett giltigt lånebelopp (> 0 kr).'); return; }
+    if (newLoan.monthlyPayment && parseNumber(newLoan.monthlyPayment) <= 0) { toast.error('Månadsbetalning måste vara > 0 kr.'); return; }
     const updatedLoans = [...(formData.loans || []), {
       name: newLoan.name,
       totalAmount: parseNumber(newLoan.totalAmount),
@@ -217,6 +221,7 @@ export default function Settings() {
               <div className="relative">
                 <Input
                   type="text"
+                  inputMode="numeric"
                   value={formatNumber(formData.income)}
                   onChange={(e) => setFormData({ ...formData, income: parseNumber(e.target.value) })}
                   className={`${copilotInputClass} pr-10`}
@@ -228,6 +233,7 @@ export default function Settings() {
               <div className="relative">
                 <Input
                   type="text"
+                  inputMode="numeric"
                   value={formatNumber(formData.housingCost)}
                   onChange={(e) => setFormData({ ...formData, housingCost: parseNumber(e.target.value) })}
                   className={`${copilotInputClass} pr-10`}
@@ -239,6 +245,7 @@ export default function Settings() {
               <div className="relative">
                 <Input
                   type="text"
+                  inputMode="numeric"
                   value={formatNumber(formData.buffer)}
                   onChange={(e) => setFormData({ ...formData, buffer: parseNumber(e.target.value) })}
                   className={`${copilotInputClass} pr-10`}
@@ -259,6 +266,7 @@ export default function Settings() {
                 <div className="relative">
                   <Input
                     type="text"
+                    inputMode="numeric"
                     value={formatNumber(formData.savingsGoal)}
                     onChange={(e) => setFormData({ ...formData, savingsGoal: parseNumber(e.target.value) })}
                     className={`${copilotInputClass} pr-10`}

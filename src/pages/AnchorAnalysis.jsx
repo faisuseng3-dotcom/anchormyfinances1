@@ -5,7 +5,7 @@ import AIGuru from '@/components/protools/mastery/AIGuru';
 import VoiceAssistant from '@/components/layout/VoiceAssistant';
 
 export default function AnchorAnalysis() {
-  const { profile } = useFinancialProfile();
+  const { profile, isLoading } = useFinancialProfile();
   const [voiceOpen, setVoiceOpen] = React.useState(false);
 
   React.useEffect(() => {
@@ -13,6 +13,8 @@ export default function AnchorAnalysis() {
     window.addEventListener('anchor:open-voice', open);
     return () => window.removeEventListener('anchor:open-voice', open);
   }, []);
+
+  if (isLoading) return null;
 
   return (
     <div className="space-y-6 max-w-2xl">
