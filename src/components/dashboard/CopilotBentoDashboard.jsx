@@ -1,11 +1,9 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { COPILOT_VIEWS, copilotToolHref } from '@/lib/copilotViews';
 import {
-  MOOD_OPTIONS,
   moodToToneMode,
-  needsMoodCheckIn,
   calculatePengometer,
   scanSubscriptions,
 } from '@/lib/anchorBrain';
@@ -14,27 +12,15 @@ import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { getPrimaryContextualLesson } from '@/lib/contextualLessons';
 import { useDashboardBriefing } from '@/hooks/useDashboardBriefing';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
-import { historyTabHref } from '@/lib/historyTabs';
 import KalkylatornSheet from '@/components/dashboard/KalkylatornSheet';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import AcademyLessonSheet from '@/components/anchorBrain/AcademyLessonSheet';
-import {
-  CategoryIcon,
-  MoodIcon,
-} from '@/lib/anchorIcons';
+import { CategoryIcon } from '@/lib/anchorIcons';
 import DreamBuilder from '@/components/goals/DreamBuilder';
-import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
-import CopilotEnvelopeGoal from '@/components/ui-premium/copilot/CopilotEnvelopeGoal';
-import StreakBadge from '@/components/ui-premium/copilot/StreakBadge';
-import TransactionActiveReview from '@/components/transactions/TransactionActiveReview';
-import CopilotFuturePulseMini from './copilot/CopilotFuturePulseMini';
-import PlanGate from '@/components/billing/PlanGate';
-import CopilotDashboardPanel from './copilot/CopilotDashboardPanel';
 import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { calcSavingsStreak } from '@/lib/microWins';
 import { TrendingUp, Flame, Sparkles, ArrowUp } from 'lucide-react';
 import {
-  fmtKr,
   buildSavingsGoals,
   buildFutureScenarios,
   buildReviewQueue,
@@ -154,311 +140,249 @@ export default function CopilotBentoDashboard({
     }
   }, []);
 
+  const pengometer = useMemo(
+    () => calculatePengometer(profile, transactions),
+    [profile, transactions],
+  );
+  const monthlyMargin = profile?.income
+    ? (profile.income || 0)
+      - (profile.housingCost || 0)
+      - subTotal
+      - (profile.loans || []).reduce((s, l) => s + (l.monthlyPayment || 0), 0)
+    : null;
+
+  const firstName = user?.full_name?.split(' ')[0] || null;
+  const userInitial = (user?.full_name || user?.email || '?').charAt(0).toUpperCase();
+
+  const recentTx = useMemo(
+    () => (transactions || []).slice(0, 6),
+    [transactions],
+  );
+
+  const fmtBalance = (n) => {
+    if (n == null) return '— kr';
+    return n.toLocaleString('sv-SE') + ' kr';
+  };
+
+  const getCategoryColor = (type) => {
+    if (type === 'income') return '#4FFFB0';
+    return 'rgba(255,255,255,0.15)';
+  };
+
   return (
     <div
-      className="copilot-bento-dashboard min-h-full flex flex-col flex-1 w-full"
+      className="min-h-full flex flex-col w-full"
+      style={{ background: 'linear-gradient(180deg, #071d38 0%, #040814 55%)' }}
       data-dashboard-layout={DASHBOARD_LAYOUT_ID}
     >
-        <div className="copilot-content !pt-0">
-          {showMoodBar && (
-            <div className="copilot-mood-bar">
-              <span className="copilot-mood-label">Innan siffrorna —</span>
-              <div className="copilot-mood-divider" />
-              <span style={{ fontSize: 12, color: 'var(--copilot-text-secondary)', marginRight: 4 }}>
-                Hur känns ekonomin idag?
-              </span>
-              {MOOD_OPTIONS.map((m) => (
-                <button
-                  key={m.id}
-                  type="button"
-                  className={`copilot-mood-btn ${activeMood === m.id ? 'active' : ''}`}
-                  onClick={() => handleMood(m.id)}
-                >
-                  <MoodIcon mood={m.id} size={14} className="inline mr-1.5 -mt-0.5" />
-                  {m.label}
-                </button>
-              ))}
-              <span className="copilot-mood-sub hidden xl:inline">
-                Vi anpassar vad som visas — ingen skuldbeläggning
-              </span>
-            </div>
-          )}
+        <div className="flex flex-col flex-1">
 
-          {needsMoodCheckIn(profile) && showMoodBar && (
-            <p style={{ fontSize: 12, color: 'var(--copilot-text-muted)', marginBottom: 16 }}>
-              Välj humör ovan för att anpassa dashboarden.
-            </p>
-          )}
-
-          <CopilotFreeMoneyHero className="mb-6" />
-
-          <div className="copilot-bento">
-            <div className="copilot-bento-left">
-              <CopilotDashboardPanel
-                index={0}
-                title="Städa transaktioner"
-                subtitle="Swajpa för att godkänna — som i Excel, men snyggare."
-                action={(
-                  <Link to={historyTabHref('list')} className="copilot-card-action active:scale-[0.98] transition-transform">
-                    Historik →
-                  </Link>
-                )}
-              >
-                {reviewQueue.length > 0 ? (
-                  <TransactionActiveReview
-                    rows={reviewQueue}
-                    getRowKey={(row) => row._key || row.id}
-                    onCategoryChange={() => {}}
-                    onConfirm={() => navigate(historyTabHref('list'))}
-                    onCancel={() => navigate(historyTabHref('list'))}
-                  />
-                ) : (
-                  <div className="text-center py-8">
-                    <p className="text-[14px] text-[var(--copilot-text-secondary)] mb-4">
-                      Inga transaktioner att granska just nu.
-                    </p>
-                    <button
-                      type="button"
-                      className="organic-pill px-5 py-3 min-h-12 text-[13px] font-semibold text-white active:scale-[0.98] transition-transform"
-                      style={{ background: 'rgba(74,122,255,0.25)', boxShadow: 'var(--organic-shadow-soft)' }}
-                      onClick={() => setQuickExpenseOpen(true)}
-                    >
-                      Lägg till utgift
-                    </button>
-                  </div>
-                )}
-              </CopilotDashboardPanel>
-
-              <PlanGate feature="future_pulse" compact>
-                <CopilotFuturePulseMini forecast={scenarios.forecast} />
-              </PlanGate>
-            </div>
-
-            <div className="copilot-bento-right">
-              <CopilotDashboardPanel
-                index={1}
-                title="Sparmål"
-                action={(
-                  <button
-                    type="button"
-                    className="copilot-card-action active:scale-[0.98] transition-transform"
-                    onClick={() => setDreamBuilderOpen(true)}
-                  >
-                    + Nytt
-                  </button>
-                )}
-              >
-                {goals.length === 0 ? (
-                  <div className="py-4">
-                    <p className="text-[13px] text-[var(--copilot-text-muted)] mb-4 leading-relaxed">
-                      Sätt ett visuellt kuvertmål — se framsteg med progress ring.
-                    </p>
-                    <button
-                      type="button"
-                      className="w-full min-h-12 rounded-full text-[13px] font-semibold text-white active:scale-[0.98] transition-transform"
-                      style={{ background: 'linear-gradient(135deg, #4a7aff, #6d4aff)', boxShadow: 'var(--organic-shadow-soft)' }}
-                      onClick={() => setDreamBuilderOpen(true)}
-                    >
-                      Skapa sparmål
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {goals.map((goal, i) => (
-                      <CopilotEnvelopeGoal
-                        key={`${goal.name}-${i}`}
-                        name={goal.name}
-                        current={goal.current}
-                        target={goal.target}
-                        imageUrl={goal.isPrimary && goal.visualType === 'image' ? goal.imageUrl : null}
-                        iconId={goal.goalType || 'default'}
-                        visualType={goal.visualType}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CopilotDashboardPanel>
-
-              <CopilotDashboardPanel index={2} title="Streaks" subtitle="Små vanor som bygger trygghet.">
-                <div className="copilot-streak-stack">
-                  <StreakBadge count={underBudgetStreak} label="dagar inom budget" variant="budget" forceShow />
-                  <StreakBadge count={savingsStreak} label="dagar sparande i rad" variant="save" forceShow />
-                  <StreakBadge count={loginStreak} label="dagar med Anchor" variant="fire" forceShow />
-                </div>
-              </CopilotDashboardPanel>
-            </div>
+          {/* ── Top bar ───────────────────────────────────────────── */}
+          <div className="flex items-center gap-3 px-5 pt-5 pb-2">
+            <button
+              type="button"
+              onClick={() => navigate(createPageUrl('Settings'))}
+              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-white touch-manipulation"
+              style={{ background: 'linear-gradient(135deg, #6B9FFF, #4FFFB0)' }}
+            >
+              {userInitial}
+            </button>
+            <button
+              type="button"
+              className="flex-1 flex items-center gap-2 h-10 rounded-full px-4 text-sm text-white/40 touch-manipulation"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onClick={() => navigate(createPageUrl('TransactionHistory'))}
+            >
+              <TrendingUp size={15} className="text-white/30" />
+              Sök
+            </button>
+            <button
+              type="button"
+              className="w-10 h-10 rounded-full flex items-center justify-center touch-manipulation"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onClick={() => navigate(createPageUrl('AnchorAnalysis'))}
+            >
+              <Sparkles size={16} className="text-white/60" />
+            </button>
+            <button
+              type="button"
+              className="w-10 h-10 rounded-full flex items-center justify-center touch-manipulation"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onClick={() => navigate(createPageUrl('Subscriptions'))}
+            >
+              <ArrowUp size={16} className="text-white/60" />
+            </button>
           </div>
 
-          <div className="copilot-secondary-strip">
-            <div className="copilot-card active:scale-[0.995] transition-transform">
-              <div className="copilot-card-header">
-                <span className="copilot-card-title">AI-Coach</span>
-                <span className="copilot-online-badge">ONLINE</span>
+          {/* ── Hero balance ───────────────────────────────────────── */}
+          <div className="flex flex-col items-center text-center px-5 pt-8 pb-6">
+            <p className="text-[13px] text-white/45 mb-2">
+              Månadsmarginal · SEK
+            </p>
+            <h1 className="text-[52px] font-black text-white tracking-tight leading-none mb-5">
+              {monthlyMargin != null
+                ? monthlyMargin.toLocaleString('sv-SE')
+                : '—'}
+              <span className="text-[28px] font-semibold ml-1 text-white/60"> kr</span>
+            </h1>
+            <button
+              type="button"
+              onClick={onOpenTransactionHub}
+              className="px-6 py-2.5 rounded-full text-sm font-semibold touch-manipulation"
+              style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)', color: 'white' }}
+            >
+              Transaktioner
+            </button>
+          </div>
+
+          {/* ── Quick actions ──────────────────────────────────────── */}
+          <div className="flex justify-around px-6 pb-6">
+            {[
+              { label: 'Lägg till', icon: <span className="text-xl font-light">+</span>, action: () => setQuickExpenseOpen(true) },
+              { label: 'Sparmål', icon: <span className="text-lg">🎯</span>, action: () => setDreamBuilderOpen(true) },
+              { label: 'Budget', icon: <span className="text-lg">📊</span>, action: () => navigate(createPageUrl('BudgetDashboard')) },
+              { label: 'Mer', icon: <span className="text-lg">···</span>, action: () => setKalkylatornOpen(true) },
+            ].map(({ label, icon, action }) => (
+              <button
+                key={label}
+                type="button"
+                onClick={action}
+                className="flex flex-col items-center gap-2 touch-manipulation"
+              >
+                <div
+                  className="w-14 h-14 rounded-full flex items-center justify-center"
+                  style={{ background: 'rgba(255,255,255,0.10)', border: '1px solid rgba(255,255,255,0.12)' }}
+                >
+                  <span className="text-white">{icon}</span>
+                </div>
+                <span className="text-[12px] text-white/55 font-medium">{label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* ── AI Coach card ──────────────────────────────────────── */}
+          <div className="px-4 mb-3">
+            <div
+              className="rounded-[20px] p-4"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles size={13} className="text-[var(--color-accent)]" />
+                <span className="text-[12px] font-semibold text-white/50 uppercase tracking-wide">AI-Coach</span>
+                <span className="ml-auto text-[10px] font-semibold text-[#4FFFB0] uppercase tracking-wider">ONLINE</span>
               </div>
-              <div className="copilot-coach-bubble flex gap-2 rounded-[16px]">
-                <Sparkles size={14} className="text-[var(--copilot-accent-blue)] shrink-0 mt-0.5" />
-                <span>
-                  {coachLine ||
-                    briefing?.message ||
-                    scenarios.forecast?.coach_meddelande ||
-                    'Fråga mig om budget, sparande eller din ekonomiska framtid.'}
-                </span>
-              </div>
-              <div className="copilot-coach-input mt-3">
+              <p className="text-[14px] text-white/70 leading-relaxed mb-3">
+                {coachLine || briefing?.message || 'Fråga mig om budget, sparande eller din ekonomiska framtid.'}
+              </p>
+              <div className="flex gap-2">
                 <input
-                  className="copilot-coach-field organic-input"
+                  className="flex-1 h-9 rounded-full px-4 text-[13px] text-white bg-white/[0.07] border border-white/[0.1] outline-none placeholder-white/25"
                   placeholder="Fråga vad som helst…"
                   value={coachInput}
                   onChange={(e) => setCoachInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleCoachSend()}
                 />
-                <button type="button" className="copilot-coach-send active:scale-[0.97] transition-transform" onClick={handleCoachSend} aria-label="Skicka">
-                  <ArrowUp size={16} />
+                <button
+                  type="button"
+                  onClick={handleCoachSend}
+                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                  style={{ background: 'var(--color-accent)' }}
+                >
+                  <ArrowUp size={15} className="text-[#040814]" />
                 </button>
               </div>
             </div>
+          </div>
 
-            <div className="copilot-card active:scale-[0.995] transition-transform">
-              <div className="copilot-card-header">
-                <span className="copilot-card-title">Prenumerationer</span>
+          {/* ── Streak card ────────────────────────────────────────── */}
+          {(underBudgetStreak > 0 || savingsStreak > 0 || loginStreak > 0) && (
+            <div className="px-4 mb-3">
+              <div
+                className="rounded-[20px] p-4 flex items-center gap-4"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <div className="flex gap-3 flex-1 flex-wrap">
+                  {loginStreak > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <Flame size={14} className="text-orange-400" />
+                      <span className="text-[13px] text-white/70"><strong className="text-white">{loginStreak}</strong> dagar</span>
+                    </div>
+                  )}
+                  {underBudgetStreak > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <TrendingUp size={14} className="text-green-400" />
+                      <span className="text-[13px] text-white/70"><strong className="text-white">{underBudgetStreak}</strong> under budget</span>
+                    </div>
+                  )}
+                  {health.score > 0 && (
+                    <div className="flex items-center gap-1.5">
+                      <Sparkles size={14} className="text-[var(--color-accent)]" />
+                      <span className="text-[13px] text-white/70">Score <strong className="text-white">{health.score}</strong></span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Recent transactions ────────────────────────────────── */}
+          <div className="px-4 mb-6">
+            <div
+              className="rounded-[20px] overflow-hidden"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+            >
+              <div className="flex items-center justify-between px-4 pt-4 pb-2">
+                <span className="text-[13px] font-semibold text-white/50 uppercase tracking-wide">Senaste</span>
                 <button
                   type="button"
-                  className="copilot-card-action active:scale-[0.98] transition-transform"
-                  onClick={openSubscriptionsView}
+                  onClick={() => navigate(createPageUrl('TransactionHistory'))}
+                  className="text-[12px] text-[var(--color-accent)] font-semibold touch-manipulation"
                 >
-                  Hantera →
+                  Visa alla →
                 </button>
               </div>
-              <div style={{ fontSize: 12, color: 'var(--copilot-text-muted)', marginBottom: 12 }}>
-                Totalt <strong style={{ color: '#f87171' }}>{fmtKr(subTotal)}/mån</strong>
-                {subscriptions.length > 0 && ` · ${subscriptions.length} aktiva`}
-              </div>
-              {subscriptions.length === 0 ? (
-                <p style={{ fontSize: 13, color: 'var(--copilot-text-muted)' }}>Inga prenumerationer registrerade.</p>
+              {recentTx.length === 0 ? (
+                <div className="px-4 py-6 text-center">
+                  <p className="text-[13px] text-white/30">Inga transaktioner ännu.</p>
+                  <button
+                    type="button"
+                    onClick={() => setQuickExpenseOpen(true)}
+                    className="mt-3 text-[13px] font-semibold text-[var(--color-accent)] touch-manipulation"
+                  >
+                    + Lägg till din första
+                  </button>
+                </div>
               ) : (
-                subscriptions.map((sub) => (
-                  <div key={sub.name || sub.id} className="copilot-sub-row">
+                recentTx.map((tx, i) => (
+                  <div
+                    key={tx.id || i}
+                    className="flex items-center gap-3 px-4 py-3"
+                    style={{ borderTop: i === 0 ? 'none' : '1px solid rgba(255,255,255,0.05)' }}
+                  >
                     <div
-                      className="copilot-sub-icon"
-                      style={{ background: 'rgba(74,122,255,0.12)' }}
+                      className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
+                      style={{ background: getCategoryColor(tx.type) + '22' }}
                     >
-                      <CategoryIcon category="subscription" size={16} color="var(--copilot-accent-blue)" />
+                      <CategoryIcon category={tx.category || 'other'} size={18} color={tx.type === 'income' ? '#4FFFB0' : 'rgba(255,255,255,0.5)'} />
                     </div>
-                    <span className="copilot-sub-name">{sub.name}</span>
-                    <span className="copilot-sub-date">
-                      {sub.nextDate.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-medium text-white truncate">{tx.description || tx.vendor || 'Transaktion'}</p>
+                      <p className="text-[12px] text-white/35">
+                        {tx.date ? new Date(tx.date).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : ''}
+                      </p>
+                    </div>
+                    <span
+                      className="text-[15px] font-semibold tabular-nums shrink-0"
+                      style={{ color: tx.type === 'income' ? '#4FFFB0' : 'white' }}
+                    >
+                      {tx.type === 'income' ? '+' : '−'}{Math.abs(tx.amount || 0).toLocaleString('sv-SE')} kr
                     </span>
-                    <span className="copilot-sub-price">{fmtKr(sub.amount)}</span>
                   </div>
                 ))
               )}
             </div>
-
-            <div className="copilot-card">
-              <div className="copilot-card-header">
-                <span className="copilot-card-title">Veckobrev</span>
-                {updatedAtLabel && (
-                  <span style={{ fontSize: 11, color: 'var(--copilot-text-muted)' }}>
-                    Senast {updatedAtLabel}
-                  </span>
-                )}
-              </div>
-              <div style={{ fontSize: 13.5, lineHeight: 1.7, color: 'var(--copilot-text-secondary)' }}>
-                {briefing?.headline && (
-                  <p style={{ marginBottom: 10, color: 'var(--copilot-text-primary)', fontWeight: 500 }}>
-                    {briefing.headline}
-                  </p>
-                )}
-                <p style={{ marginBottom: 8 }}>
-                  {briefing?.message || 'Ditt personliga veckobrev genereras baserat på din ekonomi.'}
-                </p>
-              </div>
-              <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <span className="copilot-tag inline-flex items-center gap-1">
-                  <Flame size={12} /> Veckans fokus
-                </span>
-                <span className="copilot-tag blue inline-flex items-center gap-1">
-                  <TrendingUp size={12} /> Hälsoscore {health.score}
-                </span>
-              </div>
-            </div>
-
-            <div className="copilot-card" id="academy">
-              <div className="copilot-card-header">
-                <span className="copilot-card-title anchor-wordmark">Anchor Academy</span>
-                <button
-                  type="button"
-                  className="copilot-card-action"
-                  onClick={() => lessonData?.lesson && setLessonOpen(true)}
-                >
-                  Alla lektioner →
-                </button>
-              </div>
-              <div style={{ fontSize: 12, color: 'var(--copilot-text-muted)', marginBottom: 12 }}>
-                Baserat på din ekonomi just nu
-              </div>
-              {lessonData?.lesson ? (
-                <>
-                  <button
-                    type="button"
-                    className="copilot-lesson-card"
-                    onClick={() => setLessonOpen(true)}
-                  >
-                    <div
-                      style={{
-                        fontSize: 10,
-                        color: 'var(--copilot-accent-blue)',
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.06em',
-                        marginBottom: 4,
-                      }}
-                    >
-                      Dagens lektion · {lessonData.lesson.durationSec || 60} sek
-                    </div>
-                    <div style={{ fontSize: 13.5, fontWeight: 500, marginBottom: 4 }}>
-                      {lessonData.lesson.title}
-                    </div>
-                    <div style={{ fontSize: 12, color: 'var(--copilot-text-muted)' }}>
-                      {lessonData.invite}
-                    </div>
-                  </button>
-                  <div className="copilot-lesson-card secondary">
-                    <div
-                      style={{
-                        fontSize: 10,
-                        color: 'var(--copilot-text-muted)',
-                        fontWeight: 600,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.06em',
-                        marginBottom: 4,
-                      }}
-                    >
-                      Kommande
-                    </div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--copilot-text-secondary)' }}>
-                      F-skatt & moms — frilansarguide 2026
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <p style={{ fontSize: 13, color: 'var(--copilot-text-muted)' }}>
-                  Inga nya lektioner just nu — bra jobbat!
-                </p>
-              )}
-            </div>
           </div>
         </div>
-
-      <button
-        type="button"
-        className="copilot-fab"
-        title="Lägg till transaktion"
-        aria-label="Lägg till transaktion"
-        onClick={() => setQuickExpenseOpen(true)}
-      >
-        +
-      </button>
 
       <KalkylatornSheet
         isOpen={kalkylatornOpen}
