@@ -19,6 +19,6 @@
     "noImplicitAny": false,
     "maxNodeModuleJsDepth": 0
   },
-  "include": ["src/components/**/*.js", "src/pages/**/*.jsx", "src/Layout.jsx", "src/types/**/*.d.ts"],
+  "include": ["src/components/**/*.js", "src/pages/**/*.jsx", "src/Layout.jsx", "src/*.d.ts"],
   "exclude": ["node_modules", "dist", "src/vite-plugins", "src/components/ui", "src/api", "src/lib"]
 } 

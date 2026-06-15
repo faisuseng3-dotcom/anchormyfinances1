@@ -25,7 +25,7 @@ import { staggerItem } from '@/lib/motionPresets';
 import { useModeContext } from '@/components/modes/ModeContext';
 import InviteUserSection from '@/components/settings/InviteUserSection';
 import DeleteAccountSection from '@/components/settings/DeleteAccountSection';
-import GamificationSection from '@/components/gamification/GamificationSection';
+import GamificationSection from '@/components/goals/GamificationSection';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AppStructurePanel from '@/components/settings/AppStructurePanel';
 import BillingPlanSection from '@/components/settings/BillingPlanSection';
@@ -37,7 +37,7 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import GoalVisualPicker from '@/components/savings/GoalVisualPicker';
+import GoalVisualPicker from '@/components/goals/GoalVisualPicker';
 import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 import { toast } from 'sonner';
 

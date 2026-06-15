@@ -6,7 +6,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
-import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
+import VisualSavingsGoalRing from '@/components/goals/VisualSavingsGoalRing';
 import { copilotChipClass, copilotPrimaryBtnClass, copilotInputClass } from '@/lib/copilotTheme';
 import TheSwipe from './TheSwipe';
 

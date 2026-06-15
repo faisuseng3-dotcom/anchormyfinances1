@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import TriggerLibrary from './TriggerLibrary';
 import AccountTypeAdvisor from './AccountTypeAdvisor';
-import GoalVisualPicker from '@/components/savings/GoalVisualPicker';
-import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
+import GoalVisualPicker from '@/components/goals/GoalVisualPicker';
+import VisualSavingsGoalRing from '@/components/goals/VisualSavingsGoalRing';
 import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 
 const STRATEGIES = [

@@ -6,8 +6,8 @@ import TransactionForm from '@/components/transactions/TransactionForm';
 import TransactionInsightsPanel from '@/components/transactions/TransactionInsightsPanel';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useModeContext } from '@/components/modes/ModeContext';
-import FinancialTrendsPanel from '@/components/history/FinancialTrendsPanel';
-import LedgerVaultPanel from '@/components/history/LedgerVaultPanel';
+import FinancialTrendsPanel from '@/components/insights/FinancialTrendsPanel';
+import LedgerVaultPanel from '@/components/insights/LedgerVaultPanel';
 import {
   DEFAULT_HISTORY_TAB,
   HISTORY_LEDGER_TAB,

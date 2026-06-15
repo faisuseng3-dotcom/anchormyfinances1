@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Target, PiggyBank } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
-import GoalVisualPicker from '@/components/savings/GoalVisualPicker';
+import GoalVisualPicker from '@/components/goals/GoalVisualPicker';
 import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 
 const suggestions = [

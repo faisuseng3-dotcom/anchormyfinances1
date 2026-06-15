@@ -11,7 +11,7 @@ import { AnimatePresence } from 'framer-motion';
 import CopilotBentoDashboard from '@/components/dashboard/CopilotBentoDashboard';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import TransactionHub from '@/components/transactions/TransactionHub';
-import BadgeUnlock from '@/components/gamification/BadgeUnlock';
+import BadgeUnlock from '@/components/goals/BadgeUnlock';
 import WelcomeAnalysis from '@/components/dashboard/WelcomeAnalysis';
 import { useGamification, checkAndUnlockBadges } from '@/hooks/useGamification';
 import MagicEntryBox from '@/components/import/MagicEntryBox';

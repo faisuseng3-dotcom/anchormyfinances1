@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { AlertTriangle, Lightbulb, Wallet, TrendingUp } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { useQueryClient } from '@tanstack/react-query';
-import AINotificationOverlay from './ai-suite/AINotificationOverlay';
-import ImpactAnalysisModal from './ai-suite/ImpactAnalysisModal';
-import NegotiationHubModal from './ai-suite/NegotiationHubModal';
-import WealthOptimizerModal from './ai-suite/WealthOptimizerModal';
+import AINotificationOverlay from './anchorBrain/AINotificationOverlay';
+import ImpactAnalysisModal from './anchorBrain/ImpactAnalysisModal';
+import NegotiationHubModal from './anchorBrain/NegotiationHubModal';
+import WealthOptimizerModal from './anchorBrain/WealthOptimizerModal';
 
 // Notification configs per trigger
 function getImpulseNotif(personaName) {

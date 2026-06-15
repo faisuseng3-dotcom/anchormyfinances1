@@ -2,7 +2,7 @@ import React from 'react';
 import { pageSeoFor } from '@/lib/pageSeo';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import AIGuru from '@/components/protools/mastery/AIGuru';
-import VoiceAssistant from '@/components/voice/VoiceAssistant';
+import VoiceAssistant from '@/components/layout/VoiceAssistant';
 
 export default function AnchorAnalysis() {
   const { profile } = useFinancialProfile();

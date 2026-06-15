@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import VisualSavingsGoalRing from '@/components/savings/VisualSavingsGoalRing';
+import VisualSavingsGoalRing from '@/components/goals/VisualSavingsGoalRing';
 import { triggerHaptic } from '@/lib/haptics';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');

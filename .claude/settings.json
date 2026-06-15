@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(src/**)",
+      "Read(public/**)",
+      "Read(index.html)",
+      "Read(.claude/**)",
+      "Read(package.json)",
+      "Read(vite.config.js)",
+      "Read(jsconfig.json)",
+      "Read(tailwind.config.js)",
+      "Bash(npm run lint *)",
+      "Bash(npm run build *)"
+    ]
+  }
+}
