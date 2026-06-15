@@ -40,6 +40,8 @@
   bottom: 0;
   backdrop-filter: blur(20px);
   z-index: 100;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 1024px) {
