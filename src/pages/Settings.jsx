@@ -193,7 +193,6 @@ export default function Settings() {
     <PageShell
       title="Inställningar"
       subtitle="Konto"
-      backHref={createPageUrl('Dashboard')}
       action={
         <AnchorPressable
           type="button"

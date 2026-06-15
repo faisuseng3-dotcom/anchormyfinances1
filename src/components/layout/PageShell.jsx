@@ -55,15 +55,16 @@ export default function PageShell({
       <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(10,15,107,0.55)] backdrop-blur-xl" style={{boxShadow:'0 1px 0 rgba(255,255,255,0.04)'}}>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
-            <button
-              type="button"
-              className="copilot-icon-btn lg:hidden shrink-0"
-              aria-label="Öppna meny"
-              onClick={openSidebar}
-            >
-              <NavIcon name="menu" size={18} />
-            </button>
-            {backControl}
+            {backControl ? backControl : (
+              <button
+                type="button"
+                className="copilot-icon-btn lg:hidden shrink-0"
+                aria-label="Öppna meny"
+                onClick={openSidebar}
+              >
+                <NavIcon name="menu" size={18} />
+              </button>
+            )}
             <div className="min-w-0 pt-0.5">
               {subtitle && (
                 <p className="anchor-type-caption">
