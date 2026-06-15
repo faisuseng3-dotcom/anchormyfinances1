@@ -80,8 +80,9 @@
 
 .anchor-copilot-shell .copilot-logo-text {
   font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--copilot-text-primary);
 }
 

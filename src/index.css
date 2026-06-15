@@ -160,6 +160,13 @@
     min-height: 100dvh;
   }
 
+  /* ── Anchor brand wordmark — används överallt där "Anchor" visas som namn ── */
+  .anchor-wordmark {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
   img,
   video,
   svg,

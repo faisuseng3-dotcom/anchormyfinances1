@@ -59,7 +59,7 @@ export default function YearEndClosing() {
           </button>
         </Link>
         <div className="flex-1">
-          <p className="text-xs font-medium" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
+          <p className="anchor-wordmark text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
           <h1 className="text-base font-black text-white tracking-tight">Compliance Pilot — Årsavslut</h1>
         </div>
         <div className="text-right">

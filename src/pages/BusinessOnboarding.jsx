@@ -293,7 +293,7 @@ function StepHandshake({ onNext }) {
       </motion.div>
 
       <div className="space-y-3 max-w-xs">
-        <p className="text-xs font-bold uppercase tracking-widest" style={{ color: '#D4AF37' }}>Anchor Business</p>
+        <p className="anchor-wordmark text-xs uppercase" style={{ color: '#D4AF37' }}>Anchor Business</p>
         <div className="min-h-[80px] flex items-center justify-center">
           <h1 className="text-xl font-bold leading-snug" style={{ color: '#F0EAD6' }}>
             {typing}
@@ -707,7 +707,7 @@ export default function BusinessOnboarding() {
           style={{ background: 'rgba(212,175,55,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Building2 className="w-4 h-4" style={{ color: '#D4AF37' }} />
         </div>
-        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: 'rgba(212,175,55,0.7)' }}>Anchor Business</span>
+        <span className="anchor-wordmark text-xs uppercase" style={{ color: 'rgba(212,175,55,0.7)' }}>Anchor Business</span>
       </div>
 
       {/* Step content */}

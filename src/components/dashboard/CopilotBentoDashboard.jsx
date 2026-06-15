@@ -385,7 +385,7 @@ export default function CopilotBentoDashboard({
 
             <div className="copilot-card" id="academy">
               <div className="copilot-card-header">
-                <span className="copilot-card-title">Anchor Academy</span>
+                <span className="copilot-card-title anchor-wordmark">Anchor Academy</span>
                 <button
                   type="button"
                   className="copilot-card-action"

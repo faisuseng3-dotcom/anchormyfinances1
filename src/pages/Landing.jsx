@@ -121,7 +121,7 @@ function ModeCard({ mode, selected, onSelect }) {
       </div>
       <div className="flex-1 min-w-0">
         <p
-          className="font-semibold text-base"
+          className="anchor-wordmark text-base"
           style={{ color: isSelected ? 'var(--color-text-primary)' : 'var(--color-text-secondary)' }}
         >
           {mode.title}
