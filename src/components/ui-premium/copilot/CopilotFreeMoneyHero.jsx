@@ -43,13 +43,13 @@ export default function CopilotFreeMoneyHero({
         boxShadow: 'var(--organic-shadow-lift), var(--organic-shadow-inset)',
       }}
     >
-      <div className="p-6 sm:p-7">
+      <div className="px-6 py-10 sm:py-12 text-center">
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--copilot-text-muted)]">
           Säkert att spendera
         </p>
-        <p className="text-[40px] sm:text-[48px] font-bold text-white tabular-nums leading-none mt-2 tracking-tight">
+        <p className="text-[64px] sm:text-[76px] font-bold text-white tabular-nums leading-none mt-3 tracking-tight">
           {fmt(free)}
-          <span className="text-[20px] sm:text-[22px] font-medium text-[var(--copilot-text-secondary)] ml-2">kr</span>
+          <span className="text-[28px] sm:text-[32px] font-medium text-[var(--copilot-text-secondary)] ml-2">kr</span>
         </p>
         <motion.span
           initial={{ opacity: 0, y: 6 }}
