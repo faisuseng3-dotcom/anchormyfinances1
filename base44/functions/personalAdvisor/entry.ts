@@ -1,6 +1,36 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
-import { canUseAiCoach, incrementAiCoachUsage } from '../_shared/billingLimits.ts';
+
+// ── inlined from _shared/aiModelRouter.ts + _shared/billingLimits.ts ───────
+const AI_TASKS = { categorize: { primary: 'gpt_5_mini', fallback: 'gpt_5_5' }, coaching: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' }, pattern_forecast: { primary: 'gemini_2_5_pro', fallback: 'claude_sonnet_4_6' }, voice_fast: { primary: 'gpt_5_5', fallback: 'gpt_5_mini' }, precision_parse: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' } } as const;
+type TaskKey = keyof typeof AI_TASKS;
+const SCENARIO_TASK: Record<string, TaskKey> = { voice_expense_parse: 'voice_fast', voice_quick_answer: 'voice_fast' };
+async function invokeLlmForTask(base44: any, opts: { prompt: string; response_json_schema?: any; task?: TaskKey; scenario?: string }) {
+  const taskKey: TaskKey = opts.task || SCENARIO_TASK[opts.scenario || ''] || 'coaching';
+  const { primary, fallback } = AI_TASKS[taskKey];
+  const callOpts: any = { prompt: opts.prompt, model: primary };
+  if (opts.response_json_schema) callOpts.response_json_schema = opts.response_json_schema;
+  try { return { result: await base44.asServiceRole.integrations.Core.InvokeLLM(callOpts), model: primary }; }
+  catch { return { result: await base44.asServiceRole.integrations.Core.InvokeLLM({ ...callOpts, model: fallback }), model: `${fallback}_fallback` }; }
+}
+const PLAN_ORDER = ['free', 'basic', 'pro', 'business'];
+const PLAN_RANK = Object.fromEntries(PLAN_ORDER.map((id, i) => [id, i]));
+const AI_LIMITS: Record<string, number | null> = { free: 5, basic: 20, pro: null, business: null };
+function normalizePlan(plan?: string) { return PLAN_ORDER.includes(plan || '') ? plan! : 'free'; }
+function canUseAiCoach(profile: any) {
+  const plan = normalizePlan(profile?.plan);
+  const limit = AI_LIMITS[plan];
+  if (limit === null) return { allowed: true, remaining: null, limit: null };
+  const now = new Date(); const month = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const count = profile?.aiCoachMonth === month ? (profile.aiCoachCount || 0) : 0;
+  return { allowed: count < limit, remaining: Math.max(0, limit - count), limit };
+}
+async function incrementAiCoachUsage(base44: any, profile: any) {
+  const now = new Date(); const month = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const count = profile.aiCoachMonth === month ? (profile.aiCoachCount || 0) + 1 : 1;
+  await base44.entities.FinancialProfile.update(profile.id, { aiCoachMonth: month, aiCoachCount: count });
+  return count;
+}
+// ───────────────────────────────────────────────────────────────────────────
 
 const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach — som en varm, klok vän som kan räkna.
 

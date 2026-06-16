@@ -1,5 +1,12 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import { getPriceIdForPlan, getStripe, type PlanId } from '../_shared/stripeConfig.ts';
+import Stripe from 'npm:stripe@17.7.0';
+
+// ── inlined from _shared/stripeConfig.ts ───────────────────────────────────
+type PlanId = 'free' | 'basic' | 'pro' | 'business';
+const PLAN_TO_PRICE_ENV: Record<string, string> = { basic: 'STRIPE_PRICE_BASIC', pro: 'STRIPE_PRICE_PRO', business: 'STRIPE_PRICE_BUSINESS' };
+function getStripe() { const k = Deno.env.get('STRIPE_SECRET_KEY'); if (!k) throw new Error('STRIPE_SECRET_KEY saknas'); return new Stripe(k, { apiVersion: '2024-11-20.acacia' }); }
+function getPriceIdForPlan(plan: PlanId) { if (plan === 'free') throw new Error('Gratisplan har inget pris'); const id = Deno.env.get(PLAN_TO_PRICE_ENV[plan]); if (!id) throw new Error(`${PLAN_TO_PRICE_ENV[plan]} saknas`); return id; }
+// ───────────────────────────────────────────────────────────────────────────
 
 Deno.serve(async (req) => {
   try {

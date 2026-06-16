@@ -1,5 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import { getStripe } from '../_shared/stripeConfig.ts';
+import Stripe from 'npm:stripe@17.7.0';
+
+// ── inlined from _shared/stripeConfig.ts ───────────────────────────────────
+function getStripe() { const k = Deno.env.get('STRIPE_SECRET_KEY'); if (!k) throw new Error('STRIPE_SECRET_KEY saknas'); return new Stripe(k, { apiVersion: '2024-11-20.acacia' }); }
+// ───────────────────────────────────────────────────────────────────────────
 
 Deno.serve(async (req) => {
   try {

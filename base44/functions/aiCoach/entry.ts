@@ -1,5 +1,28 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
-import { invokeLlmForTask } from '../_shared/aiModelRouter.ts';
+
+// ── inlined from _shared/aiModelRouter.ts ──────────────────────────────────
+const AI_TASKS = {
+  coaching:         { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' },
+  pattern_forecast: { primary: 'gemini_2_5_pro',   fallback: 'claude_sonnet_4_6' },
+  voice_fast:       { primary: 'gpt_5_5',          fallback: 'gpt_5_mini' },
+  categorize:       { primary: 'gpt_5_mini',        fallback: 'gpt_5_5' },
+  precision_parse:  { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' },
+} as const;
+type TaskKey = keyof typeof AI_TASKS;
+async function invokeLlmForTask(base44: any, opts: { prompt: string; response_json_schema?: any; task?: TaskKey; scenario?: string }) {
+  const taskKey: TaskKey = opts.task || ('coaching' as TaskKey);
+  const { primary, fallback } = AI_TASKS[taskKey];
+  const callOpts: any = { prompt: opts.prompt, model: primary };
+  if (opts.response_json_schema) callOpts.response_json_schema = opts.response_json_schema;
+  try {
+    const result = await base44.asServiceRole.integrations.Core.InvokeLLM(callOpts);
+    return { result, model: primary };
+  } catch {
+    const result = await base44.asServiceRole.integrations.Core.InvokeLLM({ ...callOpts, model: fallback });
+    return { result, model: `${fallback}_fallback` };
+  }
+}
+// ───────────────────────────────────────────────────────────────────────────
 
 const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach. Svara på SVENSKA, kort, varmt och empatiskt.
 Referera alltid användarens egna siffror — generiska råd är förbjudna.

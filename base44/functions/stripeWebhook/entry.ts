@@ -1,13 +1,20 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
-import {
-  findProfileByEmail,
-  findProfileByStripeCustomer,
-  getStripe,
-  planFromPriceId,
-  planToMode,
-  sendPaymentFailedEmail,
-  type PlanId,
-} from '../_shared/stripeConfig.ts';
+import Stripe from 'npm:stripe@17.7.0';
+
+// ── inlined from _shared/stripeConfig.ts ───────────────────────────────────
+type PlanId = 'free' | 'basic' | 'pro' | 'business';
+function getStripe() { const k = Deno.env.get('STRIPE_SECRET_KEY'); if (!k) throw new Error('STRIPE_SECRET_KEY saknas'); return new Stripe(k, { apiVersion: '2024-11-20.acacia' }); }
+function planFromPriceId(priceId: string): PlanId | null { const e: [PlanId, string][] = [['basic', Deno.env.get('STRIPE_PRICE_BASIC')||''],['pro', Deno.env.get('STRIPE_PRICE_PRO')||''],['business', Deno.env.get('STRIPE_PRICE_BUSINESS')||'']]; const h = e.find(([, id]) => id && id === priceId); return h ? h[0] : null; }
+function planToMode(plan: PlanId) { return (plan === 'pro' || plan === 'business') ? 'pro' : plan === 'basic' ? 'smart' : 'basic'; }
+async function findProfileByEmail(base44: any, email: string) { const p = await base44.asServiceRole.entities.FinancialProfile.filter({ created_by: email }); return p[0] || null; }
+async function findProfileByStripeCustomer(base44: any, customerId: string) { const p = await base44.asServiceRole.entities.FinancialProfile.filter({ stripeCustomerId: customerId }); return p[0] || null; }
+async function sendPaymentFailedEmail(to: string, plan: string) {
+  const apiKey = Deno.env.get('RESEND_API_KEY'); const from = Deno.env.get('BILLING_EMAIL_FROM') || 'Anchor <billing@anchor.app>';
+  if (!apiKey) { console.warn('[stripeWebhook] RESEND_API_KEY saknas'); return { sent: false }; }
+  const res = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from, to: [to], subject: 'Betalningen misslyckades — uppdatera ditt kort', html: `<p>Vi kunde inte dra din Anchor ${plan}-prenumeration. <a href="https://anchor.app/Settings">Gå till Inställningar</a></p>` }) });
+  if (!res.ok) return { sent: false }; return { sent: true };
+}
+// ───────────────────────────────────────────────────────────────────────────
 
 function renewalFromSubscription(sub: { current_period_end?: number }) {
   if (!sub?.current_period_end) return null;
