@@ -122,16 +122,18 @@ export default function BudgetDashboard() {
       >
         {hasAnyBudget ? (
           <>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/40 mb-1">
+            <div className="flex flex-col items-center text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/40 mb-2">
               Kvar att spendera
             </p>
-            <p className="text-[52px] font-black text-white tabular-nums leading-none tracking-tight">
+            <p className="text-[64px] sm:text-[76px] font-black text-white tabular-nums leading-none tracking-tight">
               {fmt(totalLeft)}
-              <span className="text-[24px] font-semibold text-white/40 ml-1">kr</span>
+              <span className="text-[28px] sm:text-[32px] font-semibold text-white/40 ml-1">kr</span>
             </p>
-            <p className="text-[13px] text-white/40 mt-1">
+            <p className="text-[13px] text-white/40 mt-2">
               av {fmt(totalBudgeted)} kr · {fmt(dailyLeft)} kr/dag
             </p>
+            </div>
 
             {/* Wide progress bar */}
             <div className="mt-5 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
