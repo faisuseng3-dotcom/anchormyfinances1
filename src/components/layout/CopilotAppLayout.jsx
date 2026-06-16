@@ -22,6 +22,7 @@ import CopilotToolView from '@/components/dashboard/copilot/tools/CopilotToolVie
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import TheSwipe from '@/components/transactions/TheSwipe';
 import { CopilotNavProvider, useCopilotNav } from './CopilotNavContext';
+import BottomTabBar from './BottomTabBar';
 import '@/components/dashboard/copilot/anchorCopilot.css';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
@@ -149,7 +150,7 @@ function CopilotShell({ children }) {
         onGoHome={handleGoHome}
         toolViewFromUrl={toolViewFromUrl}
       />
-      <main className="copilot-main">
+      <main className="copilot-main" style={{ paddingBottom: 'calc(60px + env(safe-area-inset-bottom, 0px))' }} >
         <AnimatePresence mode="wait">
           {showToolView ? (
             <motion.div key={dashboardInlineView} {...crossFade} className="min-h-full">
@@ -167,6 +168,7 @@ function CopilotShell({ children }) {
           )}
         </AnimatePresence>
       </main>
+      <BottomTabBar />
 
       <AccountDetailDrawer
         account={selectedAccount}
