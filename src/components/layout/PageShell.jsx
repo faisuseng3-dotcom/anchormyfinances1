@@ -52,7 +52,7 @@ export default function PageShell({
 
   return (
     <div className={`${copilotPageClass} ${className}`}>
-      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 bg-[rgba(4,8,20,0.75)] backdrop-blur-xl" style={{boxShadow:'0 1px 0 rgba(255,255,255,0.04)'}}>
+      <header className="copilot-page-zone pt-[max(2rem,env(safe-area-inset-top,0px))] sm:pt-10 pb-5 sticky top-0 z-20 backdrop-blur-xl" style={{boxShadow:'0 1px 0 rgba(255,255,255,0.04)'}}>
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3 min-w-0">
             {backControl ? backControl : (
