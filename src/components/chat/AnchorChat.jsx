@@ -133,7 +133,7 @@ export default function AnchorChat() {
     <div className="flex flex-col" style={{ height: '100%' }}>
 
       {/* Meddelanden */}
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ overscrollBehavior: 'contain' }}>
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
             <motion.div
