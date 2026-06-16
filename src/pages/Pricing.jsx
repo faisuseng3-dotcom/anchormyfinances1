@@ -54,7 +54,9 @@ export default function Pricing() {
     try {
       await startCheckout(planId);
     } catch (err) {
-      toast.error(err.message || 'Kunde inte starta betalning');
+      const msg = err.message || 'Kunde inte starta betalning';
+      console.error('[Pricing] checkout error:', msg, err);
+      toast.error(msg, { duration: 6000 });
       setLoadingPlan(null);
     }
   };
