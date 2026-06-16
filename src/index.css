@@ -276,7 +276,7 @@
 /* Anchor — Revolut / Monzo / Apple Wallet canvas */
 @layer components {
   .anchor-page {
-    background: linear-gradient(145deg, #0e1fa8 0%, #050d28 100%);
+    background: transparent;
     color: rgba(255, 255, 255, 0.94);
   }
 
