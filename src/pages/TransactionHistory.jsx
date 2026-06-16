@@ -20,6 +20,8 @@ import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import { TransactionListSkeleton } from '@/components/loading/SkeletonBlocks';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import PullToRefreshIndicator from '@/components/ui/PullToRefreshIndicator';
 import SegmentTabs from '@/components/ui/SegmentTabs';
 import { DashboardStatStrip } from '@/components/dashboard/DashboardChrome';
 import { sectionSubtitleClass } from '@/lib/anchorTheme';
@@ -257,7 +259,8 @@ export default function TransactionHistory() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { isBusiness } = useModeContext();
   const { profile } = useFinancialProfile();
-  const { transactions, isLoading } = useTransactions({ personalOnly: true, limit: 1000 });
+  const { transactions, isLoading, refetch } = useTransactions({ personalOnly: true, limit: 1000 });
+  const { containerRef, pullDistance, isRefreshing } = usePullToRefresh(refetch);
   const [showForm, setShowForm] = useState(false);
   const [editingTx, setEditingTx] = useState(null);
   const [search, setSearch] = useState('');
@@ -352,6 +355,8 @@ export default function TransactionHistory() {
   ) : null;
 
   return (
+    <div ref={containerRef} style={{ position: 'relative', height: '100%', overflowY: 'auto' }}>
+    <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
     <PageShell
       title="Historik"
       subtitle={
@@ -571,6 +576,7 @@ export default function TransactionHistory() {
         onClose={() => { setShowForm(false); setEditingTx(null); }}
       />
     </PageShell>
+    </div>
   );
 
 }

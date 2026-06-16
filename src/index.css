@@ -175,6 +175,31 @@
     height: auto;
   }
 
+  /* Disable iOS long-press callout and accidental text selection on UI elements */
+  * {
+    -webkit-touch-callout: none;
+  }
+
+  body,
+  button,
+  a,
+  label,
+  nav,
+  header,
+  footer,
+  [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Always allow selection inside text inputs */
+  input,
+  textarea,
+  [contenteditable] {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
   button,
   a,
   input,

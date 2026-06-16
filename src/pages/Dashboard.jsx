@@ -19,6 +19,8 @@ import { useDemoMode } from '@/components/demo/DemoMode';
 import AlexModeHUD from '@/components/demo/AlexModeHUD';
 import { getDashboardPath, getOnboardingPath, isBusinessMode, isBusinessOnboarded } from '@/lib/onboardingRouter';
 import { isBusinessUserType } from '@/lib/onboardingWizard';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import PullToRefreshIndicator from '@/components/ui/PullToRefreshIndicator';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -99,6 +101,8 @@ export default function Dashboard() {
     navigate(`${createPageUrl('ProTools')}?deep=ai_guru`, { replace: true });
   }, [location.hash, navigate]);
 
+  const { containerRef, pullDistance, isRefreshing } = usePullToRefresh(invalidate);
+
   if (isLoadingAuth || isLoading) {
     return <DashboardSkeleton />;
   }
@@ -118,7 +122,8 @@ export default function Dashboard() {
   }
 
   return (
-    <>
+    <div ref={containerRef} style={{ position: 'relative', height: '100%', overflowY: 'auto' }}>
+      <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
       <AlexModeHUD active={isAlex} />
       <CopilotBentoDashboard
         profile={profile}
@@ -152,7 +157,7 @@ export default function Dashboard() {
         isOpen={showMagicEntry}
         onClose={() => setShowMagicEntry(false)}
         onSaved={() => invalidate()} />
-    </>
+    </div>
   );
 
 }
