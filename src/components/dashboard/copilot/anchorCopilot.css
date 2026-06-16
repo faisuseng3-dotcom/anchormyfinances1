@@ -294,6 +294,17 @@
   width: 100%;
 }
 
+/* Sub-pages (Budget, FuturePulse etc) rendered inside the copilot shell
+   must NOT paint their own background — let the shell's dark bg show through. */
+.anchor-copilot-shell .anchor-page {
+  background: transparent;
+}
+
+/* The sticky header blur still needs the same dark base as the shell */
+.anchor-copilot-shell .copilot-page-zone.sticky {
+  background: rgba(4, 8, 20, 0.75);
+}
+
 @media (min-width: 1024px) {
   .anchor-copilot-shell .copilot-main {
     margin-left: var(--copilot-sidebar-w);
