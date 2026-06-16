@@ -44,6 +44,7 @@ export default function EventAnalysis({ mode, profile }) {
     if (!urlInput) return;
     setUrlLoading(true);
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Läs av denna event-URL (Ticketmaster, Airbnb, booking etc.) och extrahera data: ${urlInput}. Returnera JSON med: name (eventnamn/plats), ticket_cost (pris i kr), city (stad), date (datum som sträng).`,
       add_context_from_internet: true,
       response_json_schema: {
@@ -70,6 +71,7 @@ export default function EventAnalysis({ mode, profile }) {
     setLoading(true);
 
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en upplevelsecoach och finansrådgivare för en privatperson.
 
 Event: ${event.name}

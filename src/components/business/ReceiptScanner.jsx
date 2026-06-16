@@ -48,6 +48,7 @@ export default function ReceiptScanner({ onClose, onSave }) {
 
     // AI OCR
     const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en OCR-expert på svenska kvitton och fakturor. Analysera bilden och extrahera:
 - vendor: Leverantörens/butikens namn
 - total: Totalt belopp i SEK (med moms, numeriskt)

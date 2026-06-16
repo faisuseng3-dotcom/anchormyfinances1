@@ -3,7 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.21';
 // ── inlined from _shared/aiModelRouter.ts ──────────────────────────────────
 const AI_TASKS = {
   coaching:         { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' },
-  pattern_forecast: { primary: 'gemini_2_5_pro',   fallback: 'claude_sonnet_4_6' },
+  pattern_forecast: { primary: 'gemini_3_1_pro',   fallback: 'claude_sonnet_4_6' },
   voice_fast:       { primary: 'gpt_5_5',          fallback: 'gpt_5_mini' },
   categorize:       { primary: 'gpt_5_mini',        fallback: 'gpt_5_5' },
   precision_parse:  { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' },

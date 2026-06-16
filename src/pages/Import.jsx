@@ -39,6 +39,7 @@ export default function Import() {
     setAnalyzeLabel('Läser PDF…');
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: 'Bank-PDF. Extrahera transaktioner: date, description, amount (negativ=utgift).',
       file_urls: [file_url],
       response_json_schema: {
@@ -69,6 +70,7 @@ export default function Import() {
     setStep('analyzing');
     setAnalyzeLabel('Tolkar inklistrad text…');
     const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Extrahera transaktioner från banktext:\n${text.slice(0, 8000)}`,
       response_json_schema: {
         type: 'object',

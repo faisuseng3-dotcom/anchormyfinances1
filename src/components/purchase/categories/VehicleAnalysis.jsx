@@ -109,6 +109,7 @@ export default function VehicleAnalysis({ mode, profile }) {
     if (!urlInput) return;
     setUrlLoading(true);
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Läs av denna bilannons-URL och extrahera fordonsdata: ${urlInput}. Returnera JSON med: model (string), price (number i kr), mileage (number), fuel (string).`,
       add_context_from_internet: true,
       response_json_schema: {
@@ -163,6 +164,7 @@ Ge:
 Svara ENDAST med JSON.`;
 
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: aiPrompt,
       response_json_schema: {
         type: 'object',

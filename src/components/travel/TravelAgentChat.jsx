@@ -534,6 +534,7 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
 
     try {
       const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt,
         add_context_from_internet: true,
         response_json_schema: {

@@ -107,6 +107,7 @@ export default function AnchorChat() {
 
       const result = await base44.integrations.Core.InvokeLLM({
         prompt: `${systemPrompt}\n\nSAMTALSHISTORIK:\n${history}\n\nAnchor:`,
+        model: 'claude_sonnet_4_6',
       });
 
       const reply = typeof result === 'string'

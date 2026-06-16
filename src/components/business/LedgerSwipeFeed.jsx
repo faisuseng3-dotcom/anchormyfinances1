@@ -55,6 +55,7 @@ function SwipeCard({ tx, onApprove, onReject, isTop }) {
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     // AI-driven OCR — extract amount, vendor, VAT from receipt image
     const ocrResult = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Analysera detta kvitto och extrahera: leverantör, totalt belopp inkl moms, momssats (6/12/25%), momsbelopp. Returnera på svenska.`,
       file_urls: [file_url],
       response_json_schema: {

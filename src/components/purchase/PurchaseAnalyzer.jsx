@@ -101,6 +101,7 @@ export default function PurchaseAnalyzer({ profile }) {
     } catch (err) {
       console.warn('purchaseAdvisor unavailable, fallback to direct InvokeLLM', err);
       const fallback = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt: `Analysera köpet kort på svenska och returnera ENDAST JSON med fält:
 productName, price, category, priceAssessment, verdict, verdictReason, budgetImpact, daysDelayedGoal, opportunityCost, aiInsight, maintenanceCost, maintenanceNote.
 Källa: ${url ? `URL ${url}` : 'uppladdad bild'}.

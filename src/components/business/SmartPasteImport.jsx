@@ -67,6 +67,7 @@ export default function SmartPasteImport({ onBooked }) {
       const taxSaving = Math.round(totalDeductible * 0.20);
 
       const insightResult = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt: `Du är en svensk bokföringsrådgivare. Sammanfatta dessa ${parsed.length} nyligen bokförda transaktioner och ge ett specifikt råd: ${JSON.stringify(parsed.map(t => ({ description: t.description, amount: t.amount, account: t.accountCode, vat: t.vatRate })))}. Skriv 2 meningar max, konkret och direkt. Nämn gärna skattebesparingen om avdragsgilla utgifter bokförs korrekt.`,
       });
       setAiInsight(insightResult || `Jag bokförde ${parsed.length} transaktioner. ${taxSaving > 0 ? `Genom korrekt bokföring kan du minska din skattebas med ${taxSaving.toLocaleString('sv-SE')} kr.` : ''}`);

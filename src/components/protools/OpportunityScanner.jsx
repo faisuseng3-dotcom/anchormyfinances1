@@ -100,6 +100,7 @@ export default function OpportunityScanner({ profile }) {
   const handleDeepScan = async () => {
     setScanning(true);
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en ekonomisk skattjägare för en privatperson i Sverige 2026. Hitta "gratispengar".
 
 Abonnemang: ${subs.map(s => `${s.name}: ${s.amount} kr/mån (${s.category})`).join(', ') || 'inga'}

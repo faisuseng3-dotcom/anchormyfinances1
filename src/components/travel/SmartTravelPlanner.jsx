@@ -47,6 +47,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
 
     try {
       const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt,
         add_context_from_internet: true,
         response_json_schema: {

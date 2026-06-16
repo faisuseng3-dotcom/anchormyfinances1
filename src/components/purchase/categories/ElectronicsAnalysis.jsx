@@ -50,6 +50,7 @@ export default function ElectronicsAnalysis({ mode, profile }) {
     if (!urlInput) return;
     setUrlLoading(true);
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Läs av denna elektronik-URL (Webhallen, Elgiganten, Amazon, etc.) och extrahera produktdata: ${urlInput}. Returnera JSON med: name (produktnamn + modell), price (pris i kr), specs (kort specifikationssummering som sträng).`,
       add_context_from_internet: true,
       response_json_schema: {
@@ -73,6 +74,7 @@ export default function ElectronicsAnalysis({ mode, profile }) {
     setLoading(true);
 
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en elektronik-CFO och anti-impulsköps-coach för en privatperson.
 
 Produkt: ${device.name}

@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 // ── inlined from _shared/aiModelRouter.ts ──────────────────────────────────
-const AI_TASKS = { categorize: { primary: 'gpt_5_mini', fallback: 'gpt_5_5' }, coaching: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' }, pattern_forecast: { primary: 'gemini_2_5_pro', fallback: 'claude_sonnet_4_6' }, voice_fast: { primary: 'gpt_5_5', fallback: 'gpt_5_mini' }, precision_parse: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' } } as const;
+const AI_TASKS = { categorize: { primary: 'gpt_5_mini', fallback: 'gpt_5_5' }, coaching: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' }, pattern_forecast: { primary: 'gemini_3_1_pro', fallback: 'claude_sonnet_4_6' }, voice_fast: { primary: 'gpt_5_5', fallback: 'gpt_5_mini' }, precision_parse: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' } } as const;
 type TaskKey = keyof typeof AI_TASKS;
 async function invokeLlmForTask(base44: any, opts: { prompt: string; response_json_schema?: any; task?: TaskKey }) {
   const { primary, fallback } = AI_TASKS[opts.task || 'categorize'];

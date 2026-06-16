@@ -66,6 +66,7 @@ export default function Loans() {
     const isZero = (loan.interestRate || 0) === 0;
     try {
       const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt: `Du är en CFO. Lån: ${loan.name}, skuld ${loan.totalAmount} kr, ränta ${loan.interestRate}%, ${loan.monthlyPayment} kr/mån. Extra: ${extraPayment} kr/mån.
 ${isZero
   ? `Ränta 0%. Fokus på tid och kassaflöde. interestSaved=0.`
@@ -95,6 +96,7 @@ Kort svar svenska, max 3 meningar.`,
     setLoadingNegotiate(idx);
     try {
       const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt: `Förhandlingsmanus svenska för att sänka ränta. Lån: ${loan.name}, ${loan.interestRate}%, ${loan.totalAmount} kr. 3-4 meningar.`,
         response_json_schema: { type: 'object', properties: { script: { type: 'string' } } },
       });

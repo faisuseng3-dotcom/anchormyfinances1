@@ -17,6 +17,7 @@ export default function InsightCards({ profile, transactions }) {
     ).join('\n');
 
     const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en ekonomicoach för en svensk användare med följande profil:
 - Månadsinkomst: ${profile.income || 0} kr
 - Sparmål: ${profile.savingsGoalName || 'Okänt'} (${profile.savingsGoal || 0} kr)

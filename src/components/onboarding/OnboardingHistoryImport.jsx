@@ -19,6 +19,7 @@ export default function OnboardingHistoryImport({ pendingRows = [], onChange }) 
 
     try {
       const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt: `Extrahera transaktioner från svensk banktext:\n${paste.slice(0, 8000)}`,
         response_json_schema: {
           type: 'object',

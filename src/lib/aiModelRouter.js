@@ -16,9 +16,9 @@ export const AI_MODELS = {
     tagline: 'Empati, coaching, låg hallucinationsrisk',
     contextTokens: '200K',
   },
-  gemini_2_5_pro: {
-    id: 'gemini_2_5_pro',
-    label: 'Gemini 2.5 Pro',
+  gemini_3_1_pro: {
+    id: 'gemini_3_1_pro',
+    label: 'Gemini Pro',
     role: 'specialist',
     tagline: 'Mönster, prognos, långa dataserier',
     contextTokens: '2M',
@@ -65,7 +65,7 @@ export const AI_TASKS = {
   pattern_forecast: {
     id: 'pattern_forecast',
     label: 'Mönster & prognos',
-    primary: 'gemini_2_5_pro',
+    primary: 'gemini_3_1_pro',
     fallback: 'claude_sonnet_4_6',
     uses: ['FuturePulse', 'Beteendemönster', 'Säsongsanalys', 'Anomalidetektering'],
   },

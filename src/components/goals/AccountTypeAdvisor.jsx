@@ -69,6 +69,7 @@ export default function AccountTypeAdvisor({ months, isBuffer = false, goalName,
     setLoading(true);
     const horizonLabel = isBuffer ? 'buffert (trygghetskonto)' : months <= 3 ? 'kortsiktigt mål (0–3 mån)' : months <= 12 ? 'medellångt mål (3–12 mån)' : 'långsiktigt mål (12+ mån)';
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är CFO-Analytikern i appen ANCHOR. Användaren har ett ${horizonLabel}: "${goalName || 'Sparmål'}" på ${goalAmount ? goalAmount.toLocaleString('sv-SE') + ' kr' : 'okänt belopp'}.
 
 Rekommenderad kontotyp: ${type.label} (${type.tagline}).

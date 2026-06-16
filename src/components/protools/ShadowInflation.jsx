@@ -85,6 +85,7 @@ export default function ShadowInflation({ profile }) {
   const handleAiScan = async () => {
     setScanning(true);
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en prisanalytiker i Sverige 2026. Analysera hur dessa livsstilskostnader har förändrats sen 2025:
 Abonnemang: ${subs.map(s => `${s.name}: ${s.amount} kr`).join(', ') || 'inga registrerade'}
 Inkomst: ${fmt(income)} kr/mån

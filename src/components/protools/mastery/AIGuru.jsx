@@ -22,6 +22,7 @@ export default function AIGuru({ profile }) {
     setLoading(true);
     try {
       const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
         prompt: `Svara på svenska i max 2 meningar, konkret och utan emojis.
 Användaren sparar ${value} kr extra per månad. Inkomst ${income} kr, fasta ${fixed} kr, marginal ${margin} kr.
 Ge en tydlig insikt om vad det betyder per år.`,

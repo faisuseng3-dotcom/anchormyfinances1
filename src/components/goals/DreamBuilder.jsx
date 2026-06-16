@@ -81,6 +81,7 @@ export default function DreamBuilder({ isOpen, onClose, profile, onSave }) {
     const freqLabel = FREQUENCIES.find(f => f.id === customFreq)?.label || customFreq;
     const triggerLabel = customTrigger?.label || customTriggerText || 'ingen trigger vald';
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är CFO-Analytikern, en vänlig men ärlig ekonomisk rådgivare.
 Användaren vill skapa ett eget spar-schema för sitt mål "${form.name}".
 
@@ -123,6 +124,7 @@ Svara på svenska med 2-3 meningar. Bekräfta om schemat är hållbart, och ge e
     setLoadingAi(true);
     const needed = monthlyNeeded();
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är CFO-Analytikern. Användaren vill spara till "${form.name}".
 Målsumma: ${form.amount} kr
 Månader kvar: ${monthsUntil()}

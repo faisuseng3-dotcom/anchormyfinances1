@@ -34,6 +34,7 @@ export default function MagicEntryBox({ isOpen, onClose, onSaved }) {
     const today = new Date().toISOString().split('T')[0];
 
     const result = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Extrahera transaktionsdata från denna text: "${text}"
 Dagens datum är ${today}.
 Returnera JSON med: description (string), amount (negativt om utgift), date (YYYY-MM-DD).

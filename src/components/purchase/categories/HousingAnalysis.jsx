@@ -65,6 +65,7 @@ export default function HousingAnalysis({ mode, profile }) {
     if (!urlInput) return;
     setUrlLoading(true);
     const res = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Läs av denna bostadsannons-URL och extrahera data: ${urlInput}. Returnera JSON med: name (adress), price (slutpris/begärt pris i kr), monthly_fee (månadsavgift i kr), area (boarea m2), location (område/stad), type (brf/house/rental).`,
       add_context_from_internet: true,
       response_json_schema: {
@@ -98,6 +99,7 @@ export default function HousingAnalysis({ mode, profile }) {
     const fee = parseFloat(housing.fee) || 0;
 
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en bostads-CFO för en privatperson i Sverige.
 
 Bostad: ${housing.name || housing.type} i ${housing.location}

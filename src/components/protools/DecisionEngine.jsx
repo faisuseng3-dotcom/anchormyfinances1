@@ -38,6 +38,7 @@ export default function DecisionEngine({ profile }) {
     setLoading(true);
     setWinner(null);
     const ai = await base44.integrations.Core.InvokeLLM({
+        model: 'claude_sonnet_4_6',
       prompt: `Du är en livs-CFO som hjälper en person att välja mellan två alternativ. Du väger inte bara pengar utan tid, frihet och välmående.
 
 Val A: "${choiceA}"${costA ? ` – kostnad: ${fmt(costA)} kr` : ''}
