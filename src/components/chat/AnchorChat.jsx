@@ -1,59 +1,12 @@
 // @ts-nocheck
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { Send, CheckCircle2 } from 'lucide-react';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
+import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useAppMemoryContext } from '@/hooks/useAppMemoryContext';
-import { rememberInsight } from '@/lib/aiMemory';
-
+import { askCoachChat } from '@/lib/coachChat';
 import { COACH_SUGGESTIONS } from '@/lib/coachSuggestions';
-
-const OFF_TOPIC =
-  'Jag är Anchors ekonomirådgivare och kan bara hjälpa dig med frågor om din privatekonomi — budget, sparande, lån, prenumerationer eller din månadsekonomi.';
-
-function buildPrompt(profile, transactions, appMemory) {
-  const income    = profile?.income || 0;
-  const housing   = profile?.housingCost || 0;
-  const buffer    = profile?.buffer || 0;
-  const subTotal  = (profile?.subscriptions || []).reduce((s, x) => s + (x.amount || 0), 0);
-  const loanTotal = (profile?.loans || []).reduce((s, l) => s + (l.monthlyPayment || 0), 0);
-  const margin    = Math.max(0, income - housing - subTotal - loanTotal);
-
-  const subs = (profile?.subscriptions || [])
-    .map((s) => `${s.name}: ${s.amount} kr/mån`).join(', ') || 'inga';
-
-  const loans = (profile?.loans || [])
-    .map((l) => `${l.name}: ${l.totalAmount?.toLocaleString('sv-SE')} kr kvar, ${l.interestRate || 0}% ränta, ${l.monthlyPayment || 0} kr/mån`).join('\n  ') || 'inga';
-
-  const recentTx = (transactions || []).slice(0, 15)
-    .map((t) => `${t.description || t.vendor || 'Transaktion'} (${t.date || ''}): ${t.amount > 0 ? '+' : ''}${t.amount} kr`)
-    .join('\n  ') || 'inga';
-
-  return `Du är Anchor — en personlig ekonomirådgivare inbyggd i appen Anchor. Du pratar alltid svenska och svarar kortfattat.
-
-ANVÄNDARENS EKONOMI:
-  Inkomst: ${income.toLocaleString('sv-SE')} kr/mån
-  Boende: ${housing.toLocaleString('sv-SE')} kr/mån
-  Prenumerationer: ${subTotal.toLocaleString('sv-SE')} kr/mån (${subs})
-  Lånekostnader: ${loanTotal.toLocaleString('sv-SE')} kr/mån
-  Buffert: ${buffer.toLocaleString('sv-SE')} kr
-  Månadsmarginal: ${margin.toLocaleString('sv-SE')} kr
-
-LÅN:
-  ${loans}
-
-SENASTE TRANSAKTIONER:
-  ${recentTx}
-
-${appMemory ? `AKTIVITET I APPEN:\n${appMemory}\n` : ''}
-REGLER — följ dessa utan undantag:
-1. Svara BARA på frågor om privatekonomi: budget, sparande, lån, räntor, prenumerationer, skatteplanering, investeringar, konsumtion, ekonomiska beslut.
-2. Om frågan INTE handlar om ekonomi — svara exakt: "${OFF_TOPIC}" — inget annat.
-3. Max 3 meningar om inget annat krävs. Inga emojis.
-4. Basera alltid råd på siffrorna ovan.
-5. Använd app-aktiviteten (köpanalyser, resor, minnen) när det är relevant.`;
-}
 
 const AnchorIcon = () => (
   <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center"
@@ -67,21 +20,29 @@ const AnchorIcon = () => (
 
 export default function AnchorChat({ hideSuggestions = false }) {
   const { profile, transactions } = useAdvisorContext();
+  const { updateProfile } = useFinancialProfile();
   const [pendingQuery, setPendingQuery] = useState('');
   const appMemory = useAppMemoryContext(pendingQuery);
 
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: 'Välj en fråga ovan eller skriv din egen — jag svarar utifrån din ekonomi.',
+    content: 'Jag kan svara på allt om din ekonomi — och ändra budget, inkomst, lån och prenumerationer om du ber mig. Välj en fråga eller skriv själv.',
   }]);
-  const [input, setInput]     = useState('');
+  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
-  const inputRef  = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
+
+  const buildHistory = useCallback((msgs, userMsg) => {
+    return [...msgs, userMsg]
+      .filter((m) => m.role === 'user' || m.role === 'assistant')
+      .slice(-12)
+      .map((m) => `${m.role === 'user' ? 'Användare' : 'Anchor'}: ${m.content}`)
+      .join('\n');
+  }, []);
 
   const send = useCallback(async (text) => {
     const userText = (text || input).trim();
@@ -94,35 +55,37 @@ export default function AnchorChat({ hideSuggestions = false }) {
     setLoading(true);
 
     try {
-      const history = [...messages, userMsg]
-        .map((m) => `${m.role === 'user' ? 'Användare' : 'Anchor'}: ${m.content}`)
-        .join('\n');
-
-      const systemPrompt = buildPrompt(profile, transactions, appMemory);
-
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `${systemPrompt}\n\nSAMTALSHISTORIK:\n${history}\n\nAnchor:`,
-        model: 'claude_sonnet_4_6',
+      const history = buildHistory(messages, userMsg);
+      const { answer, profileUpdated } = await askCoachChat({
+        question: userText,
+        profile,
+        transactions,
+        history,
+        appMemory,
+        updateProfile,
       });
 
-      const reply = typeof result === 'string'
-        ? result.trim()
-        : result?.message?.trim() || result?.text?.trim() || OFF_TOPIC;
-
-      setMessages((prev) => [...prev, { role: 'assistant', content: reply }]);
-
-      // Spara fråga + svar i semantiskt minne för framtida sessioner
-      rememberInsight({ text: `Fråga: ${userText} — Svar: ${reply}`, type: 'chat' });
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: 'assistant',
+          content: answer,
+          profileUpdated,
+        },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: 'assistant', content: 'Något gick fel. Försök igen om en stund.' },
+        {
+          role: 'assistant',
+          content: 'Kunde inte nå AI-coachen just nu. Kontrollera nätverket och försök igen.',
+        },
       ]);
     } finally {
       setLoading(false);
       setPendingQuery('');
     }
-  }, [input, loading, messages, profile, transactions, appMemory]);
+  }, [input, loading, messages, profile, transactions, appMemory, updateProfile, buildHistory]);
 
   useEffect(() => {
     const onPrompt = (e) => {
@@ -135,8 +98,6 @@ export default function AnchorChat({ hideSuggestions = false }) {
 
   return (
     <div className="flex flex-col" style={{ height: '100%' }}>
-
-      {/* Meddelanden */}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ overscrollBehavior: 'contain' }}>
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
@@ -148,19 +109,27 @@ export default function AnchorChat({ hideSuggestions = false }) {
               className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.role === 'assistant' && <AnchorIcon />}
-              <div
-                className="max-w-[78%] px-4 py-2.5 text-[14px] leading-relaxed"
-                style={msg.role === 'user' ? {
-                  background: 'rgba(107,159,255,0.16)',
-                  color: '#fff',
-                  borderRadius: '18px 18px 4px 18px',
-                } : {
-                  background: 'rgba(255,255,255,0.06)',
-                  color: 'rgba(255,255,255,0.82)',
-                  borderRadius: '18px 18px 18px 4px',
-                }}
-              >
-                {msg.content}
+              <div className="max-w-[82%]">
+                <div
+                  className="px-4 py-2.5 text-[14px] leading-relaxed"
+                  style={msg.role === 'user' ? {
+                    background: 'rgba(107,159,255,0.16)',
+                    color: '#fff',
+                    borderRadius: '18px 18px 4px 18px',
+                  } : {
+                    background: 'rgba(255,255,255,0.06)',
+                    color: 'rgba(255,255,255,0.82)',
+                    borderRadius: '18px 18px 18px 4px',
+                  }}
+                >
+                  {msg.content}
+                </div>
+                {msg.profileUpdated && (
+                  <p className="flex items-center gap-1 text-[11px] text-[#22d97a] mt-1.5 ml-1">
+                    <CheckCircle2 size={12} />
+                    Profil uppdaterad
+                  </p>
+                )}
               </div>
             </motion.div>
           ))}
@@ -172,10 +141,10 @@ export default function AnchorChat({ hideSuggestions = false }) {
               <div className="px-4 py-3 rounded-[18px] rounded-bl-[4px]"
                 style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <div className="flex gap-1">
-                  {[0,1,2].map((i) => (
-                    <motion.span key={i} className="w-1.5 h-1.5 rounded-full bg-white/40"
-                      animate={{ opacity: [0.3,1,0.3] }}
-                      transition={{ duration: 1.1, delay: i * 0.18, repeat: Infinity }} />
+                  {[0, 1, 2].map((j) => (
+                    <motion.span key={j} className="w-1.5 h-1.5 rounded-full bg-white/40"
+                      animate={{ opacity: [0.3, 1, 0.3] }}
+                      transition={{ duration: 1.1, delay: j * 0.18, repeat: Infinity }} />
                   ))}
                 </div>
               </div>
@@ -183,7 +152,6 @@ export default function AnchorChat({ hideSuggestions = false }) {
           )}
         </AnimatePresence>
 
-        {/* Förslag — bara vid start */}
         {messages.length === 1 && !loading && !hideSuggestions && (
           <div className="flex flex-col gap-2 pt-1">
             {COACH_SUGGESTIONS.filter((s) => !s.navigate).map((s) => (
@@ -199,16 +167,14 @@ export default function AnchorChat({ hideSuggestions = false }) {
         <div ref={bottomRef} />
       </div>
 
-      {/* Inmatningsfält */}
       <div className="flex items-center gap-2 px-4 py-3 shrink-0"
         style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
         <input
-          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
-          placeholder="Fråga om din ekonomi..."
+          placeholder="Fråga eller be mig ändra något…"
           className="flex-1 h-11 rounded-full px-4 text-[14px] text-white outline-none placeholder-white/25"
           style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
         />

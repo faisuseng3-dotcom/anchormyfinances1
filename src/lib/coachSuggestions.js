@@ -10,9 +10,9 @@ export const COACH_SUGGESTIONS = [
     navigate: true,
   },
   {
-    id: 'save-1k',
-    label: 'Hur kan jag spara 1 000 kr denna månad?',
-    prompt: 'Hur kan jag spara 1 000 kr denna månad utifrån min nuvarande ekonomi?',
+    id: 'budget-change',
+    label: 'Sätt matbudget till 500 kr',
+    prompt: 'Sätt min matbudget till 500 kr per månad istället för nuvarande.',
   },
   {
     id: 'subs',
