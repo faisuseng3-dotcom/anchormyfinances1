@@ -284,7 +284,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="anchor-page min-h-screen flex flex-col overflow-x-hidden">
+    <div className="anchor-page h-full flex flex-col overflow-hidden">
       <div className="fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] anchor-onboarding-progress">
         <div className="anchor-onboarding-bar">
           <motion.div
@@ -301,7 +301,9 @@ export default function Onboarding() {
         </div>
       </div>
 
-      <AnimatePresence mode="wait">{steps[step]}</AnimatePresence>
+      <div className="flex-1 min-h-0 anchor-scroll-panel overflow-x-hidden">
+        <AnimatePresence mode="wait">{steps[step]}</AnimatePresence>
+      </div>
     </div>
   );
 }

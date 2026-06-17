@@ -134,17 +134,23 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior: none;
+    touch-action: manipulation;
+    height: 100%;
+    max-height: 100%;
     background: #040814;
   }
 
   body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
     background: var(--anchor-page-gradient);
     color: var(--color-text-primary);
     overscroll-behavior: none;
+    overflow: hidden;
+    touch-action: manipulation;
   }
 
   html,
@@ -156,8 +162,40 @@
   }
 
   #root {
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Enda tillåtna vertikala skrollytor — förhindrar bounce på hela sidan */
+  .anchor-scroll-panel {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    min-height: 0;
+  }
+
+  html.anchor-fixed-viewport .anchor-app-shell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  html.anchor-fixed-viewport .anchor-app-main {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
   }
 
   /* ── Anchor brand wordmark — används överallt där "Anchor" visas som namn ── */
@@ -220,39 +258,13 @@
     color: var(--color-text-primary);
   }
 
-  /* Base44 preview / sandbox iframe — nav must live in layout flow, not 100vh overflow */
-  html.anchor-embedded,
-  html.anchor-embedded body,
-  html.anchor-embedded #root {
-    height: 100%;
-    max-height: 100%;
-    overflow: hidden;
-  }
-
+  /* Base44 preview / sandbox iframe — extra layout tweaks */
   html.anchor-embedded body {
     min-height: 0;
   }
 
   html.anchor-embedded {
     --anchor-nav-height: 5.5rem;
-  }
-
-  html.anchor-embedded .anchor-app-shell {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    max-height: 100%;
-    min-height: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  html.anchor-embedded .anchor-app-main {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
   }
 
   html.anchor-embedded .anchor-bottom-nav {

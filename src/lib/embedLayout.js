@@ -13,6 +13,7 @@ export function isEmbeddedApp() {
 }
 
 export function initEmbeddedLayout() {
+  document.documentElement.classList.add('anchor-fixed-viewport');
   if (!isEmbeddedApp()) return;
   document.documentElement.classList.add('anchor-embedded');
 }

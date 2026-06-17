@@ -168,7 +168,7 @@ export default function Landing() {
     <motion.div
       animate={{ background: bgGradient }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen min-h-[100dvh] flex flex-col relative overflow-x-hidden anchor-page"
+      className="h-full anchor-scroll-panel flex flex-col relative overflow-x-hidden anchor-page"
       style={{ background: bgGradient }}
       {...pageEnter}
     >

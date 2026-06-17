@@ -74,18 +74,13 @@ export default function Layout({ children, currentPageName }) {
   const content = useAppShell ? (
     <AppShellLayout>{children}</AppShellLayout>
   ) : (
-    <main className={cn(embedded ? 'anchor-app-main' : 'overflow-x-hidden min-h-screen')}>
+    <main className="anchor-app-main">
       {children}
     </main>
   );
 
   return (
-    <div
-      className={cn(
-        'anchor-app anchor-page',
-        embedded ? 'anchor-app-shell h-full max-h-full' : 'min-h-screen',
-      )}
-    >
+    <div className="anchor-app anchor-page anchor-app-shell h-full max-h-full">
       <ProfileSwitcher />
       <ImpulseTrigger />
       {isGuestMode() && !hideChrome && <GuestBanner />}

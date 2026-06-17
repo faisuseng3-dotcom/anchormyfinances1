@@ -6,7 +6,7 @@ import { createPageUrl } from '@/utils';
 export default function AuthPageShell({ icon: Icon, title, subtitle, children, footer }) {
   return (
     <div
-      className="min-h-screen min-h-[100dvh] flex flex-col items-center justify-center px-6 py-12 anchor-page"
+      className="h-full anchor-scroll-panel flex flex-col items-center justify-center px-6 py-12 anchor-page"
       style={{ background: 'var(--color-background-primary)' }}
     >
       <motion.div

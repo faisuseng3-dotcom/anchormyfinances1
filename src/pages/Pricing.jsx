@@ -63,7 +63,7 @@ export default function Pricing() {
 
   return (
     <motion.div
-      className="min-h-screen min-h-[100dvh] anchor-page px-6 py-10 sm:py-12"
+      className="h-full anchor-scroll-panel anchor-page px-6 py-10 sm:py-12"
       style={{ background: 'var(--color-background-primary)' }}
       {...pageEnter}
     >

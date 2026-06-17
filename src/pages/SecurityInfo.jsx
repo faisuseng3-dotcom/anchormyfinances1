@@ -50,7 +50,7 @@ const sections = [
 
 export default function SecurityInfo() {
   return (
-    <div className="min-h-screen pb-24">
+    <div className="h-full anchor-scroll-panel pb-24">
       <div className="px-6 pt-8 pb-4">
         <Link to={createPageUrl('Settings')} className="flex items-center gap-2 text-slate-400 mb-6">
           <ArrowLeft className="w-4 h-4" />

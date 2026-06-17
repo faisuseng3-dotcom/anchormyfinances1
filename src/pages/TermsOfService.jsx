@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 export default function TermsOfService() {
   return (
     <div
-      className="min-h-screen px-6 py-10 max-w-2xl mx-auto"
+      className="h-full anchor-scroll-panel px-6 py-10 max-w-2xl mx-auto"
       style={{ background: 'var(--color-background-primary)', color: 'var(--color-text-secondary)' }}
     >
       <Link

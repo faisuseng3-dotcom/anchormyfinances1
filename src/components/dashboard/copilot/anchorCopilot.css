@@ -17,11 +17,12 @@
 
   font-family: 'Inter', sans-serif;
   background: linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%);
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
   color: var(--copilot-text-primary);
   display: flex;
-  overflow-x: hidden;
+  overflow: hidden;
   position: relative;
 }
 
@@ -287,11 +288,13 @@
 .anchor-copilot-shell .copilot-main {
   margin-left: 0;
   flex: 1;
-  min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   width: 100%;
+  overflow: hidden;
 }
 
 /* Sub-pages (Budget, FuturePulse etc) rendered inside the copilot shell
@@ -427,6 +430,12 @@
 .anchor-copilot-shell .copilot-content {
   padding: 20px 16px 100px;
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 }
 
 @media (min-width: 640px) {
