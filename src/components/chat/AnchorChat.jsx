@@ -7,15 +7,10 @@ import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { useAppMemoryContext } from '@/hooks/useAppMemoryContext';
 import { rememberInsight } from '@/lib/aiMemory';
 
+import { COACH_SUGGESTIONS } from '@/lib/coachSuggestions';
+
 const OFF_TOPIC =
   'Jag är Anchors ekonomirådgivare och kan bara hjälpa dig med frågor om din privatekonomi — budget, sparande, lån, prenumerationer eller din månadsekonomi.';
-
-const SUGGESTIONS = [
-  'Hur mycket kan jag spara varje månad?',
-  'Vilka prenumerationer bör jag avsluta?',
-  'Hur snabbt kan jag betala av mina lån?',
-  'Räcker min buffert?',
-];
 
 function buildPrompt(profile, transactions, appMemory) {
   const income    = profile?.income || 0;
@@ -70,14 +65,14 @@ const AnchorIcon = () => (
   </div>
 );
 
-export default function AnchorChat() {
+export default function AnchorChat({ hideSuggestions = false }) {
   const { profile, transactions } = useAdvisorContext();
   const [pendingQuery, setPendingQuery] = useState('');
   const appMemory = useAppMemoryContext(pendingQuery);
 
   const [messages, setMessages] = useState([{
     role: 'assistant',
-    content: 'Hej! Jag är Anchor. Ställ mig en fråga om din ekonomi.',
+    content: 'Välj en fråga ovan eller skriv din egen — jag svarar utifrån din ekonomi.',
   }]);
   const [input, setInput]     = useState('');
   const [loading, setLoading] = useState(false);
@@ -128,6 +123,15 @@ export default function AnchorChat() {
       setPendingQuery('');
     }
   }, [input, loading, messages, profile, transactions, appMemory]);
+
+  useEffect(() => {
+    const onPrompt = (e) => {
+      const prompt = e.detail?.prompt;
+      if (prompt) send(prompt);
+    };
+    window.addEventListener('anchor:coach-prompt', onPrompt);
+    return () => window.removeEventListener('anchor:coach-prompt', onPrompt);
+  }, [send]);
 
   return (
     <div className="flex flex-col" style={{ height: '100%' }}>
@@ -180,13 +184,13 @@ export default function AnchorChat() {
         </AnimatePresence>
 
         {/* Förslag — bara vid start */}
-        {messages.length === 1 && !loading && (
-          <div className="flex flex-wrap gap-2 pt-1">
-            {SUGGESTIONS.map((s) => (
-              <button key={s} type="button" onClick={() => send(s)}
-                className="px-3 py-2 rounded-xl text-[12px] text-white/55 touch-manipulation"
-                style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)' }}>
-                {s}
+        {messages.length === 1 && !loading && !hideSuggestions && (
+          <div className="flex flex-col gap-2 pt-1">
+            {COACH_SUGGESTIONS.filter((s) => !s.navigate).map((s) => (
+              <button key={s.id} type="button" onClick={() => send(s.prompt)}
+                className="w-full text-left px-4 py-3 rounded-2xl text-[13px] text-white/70 touch-manipulation"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                {s.label}
               </button>
             ))}
           </div>

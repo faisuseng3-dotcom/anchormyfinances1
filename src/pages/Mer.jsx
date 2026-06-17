@@ -7,7 +7,7 @@ import PageShell from '@/components/layout/PageShell';
 import {
   Settings, BookOpen, Users, Globe, Plane, Target,
   CreditCard, MessageSquare, ChevronRight, Building2,
-  Shield, BarChart2, ShoppingBag,
+  Shield, BarChart2, ShoppingBag, FileUp, Wrench,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
@@ -48,8 +48,24 @@ export default function Mer() {
   };
 
   return (
-    <PageShell title="Mer" subtitle="Verktyg och inställningar">
+    <PageShell title="Mer" subtitle="Allt utöver kärnflödet">
       <div className="space-y-5 pb-8">
+
+        <button
+          type="button"
+          onClick={() => navigate(createPageUrl('Import'))}
+          className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left touch-manipulation"
+          style={{ background: 'rgba(107,159,255,0.1)', border: '1px solid rgba(107,159,255,0.2)' }}
+        >
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(107,159,255,0.15)' }}>
+            <FileUp size={18} className="text-[#6B9FFF]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[15px] font-semibold text-white">Importera från banken</p>
+            <p className="text-[13px] text-white/45 mt-0.5">Ladda upp CSV — Anchor analyserar allt</p>
+          </div>
+          <ChevronRight size={16} className="text-white/25 shrink-0" />
+        </button>
 
         <SECTION title="Konto">
           <ROW icon={Settings} label="Inställningar" sublabel="Profil, lön, abonnemang" onPress={() => navigate(createPageUrl('Settings'))} />
@@ -65,6 +81,7 @@ export default function Mer() {
         </SECTION>
 
         <SECTION title="Utforska">
+          <ROW icon={Wrench} label="ProTools" sublabel="Avancerade verktyg" onPress={() => navigate(createPageUrl('ProTools'))} />
           <ROW icon={Globe} label="Galaxy" sublabel="Se ekonomiska mönster" onPress={() => navigate(createPageUrl('Insights'))} />
           <ROW icon={Users} label="Social" sublabel="Dela och jämför" onPress={() => navigate(createPageUrl('Social'))} />
           <ROW icon={Users} label="Squads" sublabel="Spara tillsammans" onPress={() => navigate(createPageUrl('Squads'))} color="#a78bfa" />

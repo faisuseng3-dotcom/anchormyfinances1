@@ -3,7 +3,6 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageShell from '@/components/layout/PageShell';
 import PlanCalendar from '@/components/planner/PlanCalendar';
-import DinFramtidPanel from '@/components/pulse/DinFramtidPanel';
 import ScenarioCompare from '@/components/future/ScenarioCompare';
 import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
@@ -20,7 +19,6 @@ export default function FuturePulse() {
   const { profile } = useFinancialProfile();
   const { profileWithEvents, savePlannedEvents, syncFromLocalIfEmpty } = usePlannedEvents();
   const { transactions } = useTransactions({ limit: 1000 });
-  const runwayMonths = profile?.buffer && profile?.income ? Math.floor(profile.buffer / (profile.income / 12)) : null;
   const showCalendar = view === 'kalender';
 
   useEffect(() => {
@@ -39,13 +37,6 @@ export default function FuturePulse() {
         backHref={createPageUrl('FuturePulse')}
       >
         <PlanGate feature="future_pulse">
-          {runwayMonths != null && runwayMonths > 0 && (
-            <p className="mb-4 rounded-2xl px-4 py-3 organic-surface bg-[var(--copilot-bg-card)] text-[14px] text-[var(--copilot-text-secondary)]">
-              Din buffert ger{' '}
-              <span className="text-[var(--copilot-accent-green)] font-semibold tabular-nums">{runwayMonths}</span>
-              {' '}månad{runwayMonths === 1 ? '' : 'er'} handlingsutrymme framåt.
-            </p>
-          )}
           <PlanCalendar
             profile={profileWithEvents || profile}
             onSavePlannedEvents={savePlannedEvents}
@@ -58,14 +49,11 @@ export default function FuturePulse() {
   return (
     <PageShell
       title="Framtid"
-      subtitle="Se vad som händer om du fortsätter — eller ändrar något"
+      subtitle="Tre scenarier — vad händer om du fortsätter eller ändrar något?"
       backHref={createPageUrl('Dashboard')}
     >
       <PlanGate feature="future_pulse">
-        <div className="space-y-8">
-          <ScenarioCompare profile={profile} transactions={transactions} />
-          <DinFramtidPanel profile={profile} transactions={transactions} />
-        </div>
+        <ScenarioCompare profile={profile} transactions={transactions} />
       </PlanGate>
     </PageShell>
   );

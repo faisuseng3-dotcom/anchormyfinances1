@@ -129,7 +129,7 @@ export default function ProactiveInsights({ profile, transactions }) {
       <div className="divide-y divide-white/[0.05]">
         {insights.map((insight, i) => (
           <div key={i} className="flex items-start gap-2.5 px-4 py-3">
-            <span className="text-[14px] shrink-0">🧠</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#6B9FFF]/60 shrink-0 mt-2" />
             <p className="text-[13px] text-white/70 leading-relaxed">{insight}</p>
           </div>
         ))}
