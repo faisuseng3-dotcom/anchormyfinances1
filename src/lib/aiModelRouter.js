@@ -104,6 +104,7 @@ export const SCENARIO_TASK_MAP = {
   coach_message: 'coaching',
   expense_feedback: 'coaching',
   question: 'coaching',
+  coach_chat: 'coaching',
   analysis_coach: 'coaching',
   voice_expense_parse: 'voice_fast',
   voice_quick_answer: 'voice_fast',

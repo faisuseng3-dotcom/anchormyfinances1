@@ -69,6 +69,7 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
   const {
     scenario = 'dashboard_briefing',
     question,
+    history,
     transaction,
     subscription,
     coachType,
@@ -102,6 +103,7 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
   const prompt = buildAdvisorScenarioPrompt(scenario, snapshot, {
     profile: activeProfile,
     question,
+    history,
     transaction,
     subscription,
     coachType,

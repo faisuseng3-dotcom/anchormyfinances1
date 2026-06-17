@@ -73,12 +73,15 @@ export default function AnchorChat({ hideSuggestions = false }) {
           profileUpdated,
         },
       ]);
-    } catch {
+    } catch (err) {
+      console.error('coachChat error:', err);
       setMessages((prev) => [
         ...prev,
         {
           role: 'assistant',
-          content: 'Kunde inte nå AI-coachen just nu. Kontrollera nätverket och försök igen.',
+          content: err?.message === 'coach_unavailable'
+            ? 'AI-coachen svarar inte just nu. Försök igen om en stund — budgetändringar som "sätt matbudget till 500 kr" fungerar oftast direkt.'
+            : 'Kunde inte nå AI-coachen just nu. Kontrollera nätverket och försök igen.',
         },
       ]);
     } finally {

@@ -1,79 +1,26 @@
 /**
  * Coach-chatt — svarar om hela användarens ekonomi och kan uppdatera profilen.
  */
-import { base44 } from '@/api/base44Client';
-import { invokeLlmForTask } from '@/lib/aiModelRouter';
-import { buildAdvisorSnapshot, getAdvisorSystemRules } from '@/lib/buildAdvisorContext';
+import { askPersonalAdvisor } from '@/lib/personalAdvisor';
 import { formatCoachText } from '@/lib/coachingCopy';
 import { canUseAiCoachClient, currentMonthKey } from '@/lib/billingPlans';
-import { BUDGET_CATEGORY_META, TRACKED_BUDGET_CATEGORIES } from '@/lib/budgetCategories';
+import { BUDGET_CATEGORY_META } from '@/lib/budgetCategories';
 import { getMonthlyMargin } from '@/lib/financialUtils';
-import { recallRelevantMemories, formatMemoryContext } from '@/lib/aiMemory';
+import { tryLocalCoachAction } from '@/lib/coachLocalActions';
 
 export const COACH_OFF_TOPIC =
   'Jag är Anchors ekonomicoach och svarar bara på frågor om din privatekonomi — budget, sparande, lån, prenumerationer, inkomst och utgifter. Ställ en ekonomifråga så hjälper jag dig.';
 
-export const COACH_CHAT_SCHEMA = {
-  type: 'object',
-  properties: {
-    off_topic: { type: 'boolean', description: 'true om frågan INTE handlar om ekonomi' },
-    answer: { type: 'string', description: 'Svar till användaren på svenska' },
-    profile_patch: {
-      type: 'object',
-      description: 'Fält att uppdatera i profilen om användaren ber om ändringar',
-      properties: {
-        income: { type: 'number' },
-        housingCost: { type: 'number' },
-        buffer: { type: 'number' },
-        savingsGoal: { type: 'number' },
-        savingsGoalName: { type: 'string' },
-        savingsCurrentBalance: { type: 'number' },
-        incomeDay: { type: 'number' },
-        budgetLimits: {
-          type: 'object',
-          additionalProperties: { type: 'number' },
-        },
-        subscription_changes: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              action: { type: 'string', enum: ['add', 'update', 'remove'] },
-              name: { type: 'string' },
-              amount: { type: 'number' },
-              category: { type: 'string' },
-            },
-            required: ['action', 'name'],
-          },
-        },
-        loan_changes: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              action: { type: 'string', enum: ['add', 'update', 'remove'] },
-              name: { type: 'string' },
-              monthlyPayment: { type: 'number' },
-              totalAmount: { type: 'number' },
-              interestRate: { type: 'number' },
-            },
-            required: ['action', 'name'],
-          },
-        },
-      },
-    },
-    changes_summary: {
-      type: 'array',
-      items: { type: 'string' },
-      description: 'Korta beskrivningar av vad som ändrades',
-    },
-  },
-  required: ['off_topic', 'answer'],
+const BUDGET_FIELD_MAP = {
+  budget_food: 'food',
+  budget_transport: 'transport',
+  budget_entertainment: 'entertainment',
+  budget_travel: 'travel',
+  budget_health: 'health',
+  budget_home: 'home',
+  budget_shopping: 'shopping',
+  budget_other: 'other',
 };
-
-const BUDGET_KEYS_DOC = TRACKED_BUDGET_CATEGORIES.map(
-  (k) => `${k} (${BUDGET_CATEGORY_META[k]?.label || k})`,
-).join(', ');
 
 function normalizeName(s) {
   return String(s || '').trim().toLowerCase();
@@ -142,7 +89,31 @@ function applyLoanChanges(loans, changes = []) {
   return list;
 }
 
-/** Bygg säker profil-patch från LLM-svar. */
+/** Konvertera platt coach_chat-svar till profil-patch. */
+export function coachChatResultToProfilePatch(result = {}) {
+  const patch = {};
+  const budgetLimits = {};
+
+  Object.entries(BUDGET_FIELD_MAP).forEach(([field, cat]) => {
+    if (result[field] != null && !Number.isNaN(Number(result[field]))) {
+      budgetLimits[cat] = Math.round(Number(result[field]));
+    }
+  });
+
+  if (Object.keys(budgetLimits).length) patch.budgetLimits = budgetLimits;
+  if (result.income != null && !Number.isNaN(Number(result.income))) patch.income = Number(result.income);
+  if (result.housing_cost != null && !Number.isNaN(Number(result.housing_cost))) {
+    patch.housingCost = Number(result.housing_cost);
+  }
+  if (result.buffer != null && !Number.isNaN(Number(result.buffer))) patch.buffer = Number(result.buffer);
+  if (result.savings_goal != null && !Number.isNaN(Number(result.savings_goal))) {
+    patch.savingsGoal = Number(result.savings_goal);
+  }
+
+  return Object.keys(patch).length ? patch : null;
+}
+
+/** Bygg säker profil-patch från LLM eller lokalt svar. */
 export function buildProfilePatchFromCoach(profile, patch = {}) {
   if (!patch || typeof patch !== 'object') return null;
 
@@ -163,9 +134,7 @@ export function buildProfilePatchFromCoach(profile, patch = {}) {
   if (patch.budgetLimits && typeof patch.budgetLimits === 'object') {
     const merged = { ...(profile.budgetLimits || {}) };
     Object.entries(patch.budgetLimits).forEach(([cat, amt]) => {
-      if (TRACKED_BUDGET_CATEGORIES.includes(cat) && Number(amt) >= 0) {
-        merged[cat] = Math.round(Number(amt));
-      }
+      if (Number(amt) >= 0) merged[cat] = Math.round(Number(amt));
     });
     out.budgetLimits = merged;
   }
@@ -181,51 +150,46 @@ export function buildProfilePatchFromCoach(profile, patch = {}) {
   return Object.keys(out).length ? out : null;
 }
 
-function buildCoachChatPrompt(profile, transactions, history, appMemory) {
-  const snapshot = buildAdvisorSnapshot(profile, transactions);
-  const rules = getAdvisorSystemRules(profile);
-  const memories = formatMemoryContext(recallRelevantMemories(history, { limit: 6 }));
-
-  return `${rules}
-
-DU ÄR I COACH-CHATTEN. Du kan både svara och UTFÖRA ändringar i användarens profil.
-
-OMFATTNING — svara utförligt om ALLT som rör användarens ekonomi:
-- Inkomst, marginal, "säkert att spendera", buffert, sparande
-- Budget per kategori, utgiftsmönster, transaktioner
-- Lån, räntor, amortering, skuldsättning
-- Prenumerationer och fasta kostnader
-- Sparmål, köpbedömningar, ekonomiska beslut
-- Skatter, CSN, bolån, försäkringar — om det påverkar plånboken
-
-OFF-TOPIC: Om frågan inte handlar om ekonomi (sport, politik, recept, kod, väder m.m.) — sätt off_topic: true och svara kort med att du bara hjälper med ekonomi.
-
-ÄNDRINGAR I PROFILEN:
-När användaren ber dig ändra något (t.ex. "sätt matbudget till 500 kr", "ändra inkomst till 32 000", "ta bort Netflix", "lägg till billån 2500 kr/mån"):
-1. Fyll i profile_patch med exakta ändringar.
-2. Bekräfta i answer vad du gjorde med deras siffror.
-3. Fyll changes_summary med korta rader om varje ändring.
-
-Budgetkategorier (nycklar för budgetLimits): ${BUDGET_KEYS_DOC}
-
-Marginal beräknas: inkomst − boende − abonnemang − lån. Du kan inte sätta "marginal" direkt — ändra inkomst eller kostnader.
-
-SNAPSHOT (sanning — basera svar på detta):
-${JSON.stringify(snapshot, null, 2)}
-
-${appMemory ? `APP-AKTIVITET:\n${appMemory}\n` : ''}
-${memories ? `${memories}\n` : ''}
-SAMTAL:
-${history}
-
-Svara med JSON enligt schema. answer: 2–5 meningar, flytande prosa, inga punktlistor.`;
-}
-
 async function incrementCoachUsage(profile, updateProfile) {
   if (!profile?.id || !updateProfile) return;
   const month = currentMonthKey();
   const count = profile.aiCoachMonth === month ? (profile.aiCoachCount || 0) + 1 : 1;
   await updateProfile({ aiCoachMonth: month, aiCoachCount: count });
+}
+
+async function applyCoachPatch({ profile, patch, updateProfile, answer }) {
+  let profileUpdated = false;
+  let appliedPatch = null;
+  let finalAnswer = answer;
+
+  const safePatch = buildProfilePatchFromCoach(profile, patch);
+  if (!safePatch || !updateProfile) {
+    return { answer: finalAnswer, profileUpdated, patch: appliedPatch };
+  }
+
+  try {
+    await updateProfile(safePatch);
+    profileUpdated = true;
+    appliedPatch = safePatch;
+
+    const margin = getMonthlyMargin({ ...profile, ...safePatch });
+    if (safePatch.budgetLimits) {
+      const cats = Object.entries(safePatch.budgetLimits)
+        .filter(([k]) => safePatch.budgetLimits[k] !== profile.budgetLimits?.[k])
+        .map(([k, v]) => `${BUDGET_CATEGORY_META[k]?.label || k}budget ${v.toLocaleString('sv-SE')} kr`);
+      if (cats.length && !finalAnswer.toLowerCase().includes('uppdater')) {
+        finalAnswer = `${finalAnswer} Jag har uppdaterat ${cats.join(' och ')}.`;
+      }
+    }
+    if (margin > 0 && (safePatch.income || safePatch.housingCost || safePatch.subscriptions || safePatch.loans)) {
+      finalAnswer = `${finalAnswer} Din nya månadsmarginal är ${Math.round(margin).toLocaleString('sv-SE')} kr.`;
+    }
+  } catch (err) {
+    console.error('coachChat profile update failed:', err);
+    finalAnswer = `${finalAnswer} Jag kunde tyvärr inte spara ändringen just nu — prova under Inställningar eller försök igen.`;
+  }
+
+  return { answer: finalAnswer, profileUpdated, patch: appliedPatch };
 }
 
 /**
@@ -255,19 +219,47 @@ export async function askCoachChat({
     };
   }
 
-  const prompt = buildCoachChatPrompt(profile, transactions, history, appMemory);
+  const local = tryLocalCoachAction(question, profile);
+  if (local.handled) {
+    const applied = await applyCoachPatch({
+      profile,
+      patch: local.profile_patch,
+      updateProfile,
+      answer: formatCoachText(local.answer || ''),
+    });
+    await incrementCoachUsage(profile, updateProfile);
+    return applied;
+  }
 
   let result;
   try {
-    const res = await invokeLlmForTask(base44, {
-      prompt: `${prompt}\n\nAnvändarens senaste meddelande: "${question}"`,
-      response_json_schema: COACH_CHAT_SCHEMA,
-      scenario: 'coaching',
-    });
-    result = res.result;
+    result = await askPersonalAdvisor(
+      {
+        scenario: 'coach_chat',
+        question,
+        history: [history, appMemory ? `APP-AKTIVITET:\n${appMemory}` : ''].filter(Boolean).join('\n'),
+      },
+      { profile, transactions },
+    );
   } catch (err) {
-    console.error('coachChat LLM error:', err);
-    throw new Error('llm_failed');
+    console.error('coachChat personalAdvisor error:', err);
+    try {
+      result = await askPersonalAdvisor(
+        { scenario: 'question', question },
+        { profile, transactions },
+      );
+    } catch (fallbackErr) {
+      console.error('coachChat question fallback error:', fallbackErr);
+      throw new Error('coach_unavailable');
+    }
+  }
+
+  if (result?.error === 'ai_coach_limit') {
+    return {
+      answer: result.message || `Du har använt alla ${access.limit} AI-coach-frågor den här månaden.`,
+      profileUpdated: false,
+      limitReached: true,
+    };
   }
 
   if (result?.off_topic) {
@@ -275,37 +267,19 @@ export async function askCoachChat({
     return { answer: COACH_OFF_TOPIC, profileUpdated: false };
   }
 
-  let answer = formatCoachText(result?.answer || '');
-  let profileUpdated = false;
-  let appliedPatch = null;
-
-  const patch = buildProfilePatchFromCoach(profile, result?.profile_patch);
-  if (patch && updateProfile) {
-    try {
-      await updateProfile(patch);
-      profileUpdated = true;
-      appliedPatch = patch;
-      const margin = getMonthlyMargin({ ...profile, ...patch });
-      const summaries = result?.changes_summary || [];
-      if (summaries.length && !answer.toLowerCase().includes('uppdater')) {
-        answer = `${answer} ${summaries.join(' ')}`;
-      }
-      if (patch.budgetLimits && !summaries.length) {
-        const cats = Object.entries(patch.budgetLimits)
-          .filter(([k]) => patch.budgetLimits[k] !== profile.budgetLimits?.[k])
-          .map(([k, v]) => `${BUDGET_CATEGORY_META[k]?.label || k}budget ${v.toLocaleString('sv-SE')} kr`);
-        if (cats.length) answer = `${answer} Jag har uppdaterat ${cats.join(' och ')}.`;
-      }
-      if (margin > 0 && (patch.income || patch.housingCost || patch.subscriptions || patch.loans)) {
-        answer = `${answer} Din nya månadsmarginal är ${Math.round(margin).toLocaleString('sv-SE')} kr.`;
-      }
-    } catch (err) {
-      console.error('coachChat profile update failed:', err);
-      answer = `${answer} Jag kunde tyvärr inte spara ändringen just nu — prova under Inställningar eller försök igen.`;
-    }
-  }
+  const llmPatch = coachChatResultToProfilePatch(result);
+  const applied = await applyCoachPatch({
+    profile,
+    patch: llmPatch,
+    updateProfile,
+    answer: formatCoachText(result?.answer || result?.message || ''),
+  });
 
   await incrementCoachUsage(profile, updateProfile);
 
-  return { answer: answer || 'Jag kunde inte formulera ett svar — försök omformulera frågan.', profileUpdated, patch: appliedPatch };
+  return {
+    answer: applied.answer || 'Jag kunde inte formulera ett svar — försök omformulera frågan.',
+    profileUpdated: applied.profileUpdated,
+    patch: applied.patch,
+  };
 }

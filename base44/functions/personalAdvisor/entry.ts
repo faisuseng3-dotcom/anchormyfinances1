@@ -194,6 +194,26 @@ const SCHEMAS = {
     properties: { answer: { type: 'string' } },
     required: ['answer'],
   },
+  coach_chat: {
+    type: 'object',
+    properties: {
+      off_topic: { type: 'boolean' },
+      answer: { type: 'string' },
+      budget_food: { type: 'number' },
+      budget_transport: { type: 'number' },
+      budget_entertainment: { type: 'number' },
+      budget_travel: { type: 'number' },
+      budget_health: { type: 'number' },
+      budget_home: { type: 'number' },
+      budget_shopping: { type: 'number' },
+      budget_other: { type: 'number' },
+      income: { type: 'number' },
+      housing_cost: { type: 'number' },
+      buffer: { type: 'number' },
+      savings_goal: { type: 'number' },
+    },
+    required: ['off_topic', 'answer'],
+  },
   subscription_scan: {
     type: 'object',
     properties: {
@@ -296,6 +316,18 @@ Användarens fråga: "${extras.question || ''}"
 Svara som personlig rådgivare med deras siffror. answer: 2–4 meningar.
 Returnera JSON.`;
 
+    case 'coach_chat':
+      return `${base}
+DU ÄR I COACH-CHATTEN. Svara om ALLT som rör användarens ekonomi (budget, lån, prenumerationer, sparande, marginal).
+OFF-TOPIC: Om frågan INTE handlar om ekonomi — sätt off_topic: true och svara kort att du bara hjälper med privatekonomi.
+
+ÄNDRINGAR: Om användaren ber dig ändra något, fyll i relevanta fält (budget_food, budget_transport, income, housing_cost m.m.) OCH bekräfta i answer.
+Budgetnycklar: food=mat, transport, entertainment=nöje, travel=resa, health=hälsa, home=bostad, shopping, other=övrigt.
+
+${extras.history ? `SAMTAL:\n${extras.history}\n` : ''}
+Användarens senaste meddelande: "${extras.question || ''}"
+answer: 2–5 meningar, löpande prosa. Returnera JSON.`;
+
     case 'subscription_scan':
       return `${base}
 Scenario: Prenumerationsscanner. subscription_scan.total_kr är sanning.
@@ -342,6 +374,7 @@ Deno.serve(async (req) => {
     const {
       scenario = 'dashboard_briefing',
       question,
+      history,
       transaction,
       subscription,
       coachType,
@@ -391,6 +424,7 @@ Deno.serve(async (req) => {
     const schema = SCHEMAS[scenario] || SCHEMAS.coach_message;
     const prompt = buildScenarioPrompt(scenario, snapshot, {
       question,
+      history,
       transaction,
       subscription,
       coachType,
