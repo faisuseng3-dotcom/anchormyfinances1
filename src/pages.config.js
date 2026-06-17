@@ -22,6 +22,8 @@ import AnchorAcademy from './pages/AnchorAcademy';
 import AnchorAnalysis from './pages/AnchorAnalysis';
 import Insights from './pages/Insights';
 import Pricing from './pages/Pricing';
+import Mer from './pages/Mer';
+import Social from './pages/Social';
 import __Layout from './Layout.jsx';
 
 export { PAGE_SEO, GLOBAL_PAGE_META, pageSeoFor, sanitizePageTitle } from './lib/pageSeo';
@@ -48,6 +50,8 @@ export const PAGES = {
   Insights,
   Pricing,
   YearEndClosing,
+  Mer,
+  Social,
 };
 
 export const pagesConfig = {

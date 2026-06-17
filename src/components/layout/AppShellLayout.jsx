@@ -15,6 +15,7 @@ import AppTopBar from '@/components/layout/AppTopBar';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import TheSwipe from '@/components/transactions/TheSwipe';
 import PageTransition from '@/components/ui-premium/PageTransition';
+import BottomTabBar from '@/components/layout/BottomTabBar';
 import { CopilotNavProvider, useCopilotNav } from './CopilotNavContext';
 
 const VIEW_ROUTE_MAP = {
@@ -106,9 +107,10 @@ function AppShellInner({ children }) {
       />
       <main className="copilot-main">
         <AppTopBar />
-        <div className="copilot-content flex-1">
+        <div className="copilot-content flex-1 pb-[calc(60px+env(safe-area-inset-bottom))] lg:pb-0">
           <PageTransition>{children}</PageTransition>
         </div>
+        <BottomTabBar />
       </main>
 
       <AccountDetailDrawer

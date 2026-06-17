@@ -27,9 +27,9 @@ export function isOnboardingComplete(profile) {
   return Boolean(profile?.onboardingCompleted);
 }
 
-/** Steg 1–3 i personlig onboarding är ifyllda. */
+/** Personlig onboarding klar när ekonomiska grunddata finns. */
 export function isPersonalWizardComplete(profile) {
-  return Boolean(profile?.userType && profile?.economicGoal && profile?.economyMood);
+  return Boolean(profile?.income > 0);
 }
 
 /** Var ska användaren efter inloggning / om de redan är inloggade? */

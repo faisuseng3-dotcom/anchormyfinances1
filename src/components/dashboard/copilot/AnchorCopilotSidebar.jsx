@@ -5,7 +5,7 @@ import { fmtKr, buildAccountItems } from './copilotDashboardUtils';
 import { NavIcon } from '@/lib/anchorIcons';
 import { triggerHaptic } from '@/lib/haptics';
 import { useBilling } from '@/hooks/useBilling';
-import { OVERVIEW_NAV, TOOLS_NAV, isNavActive } from '@/lib/appNav';
+import { PRIMARY_NAV, isNavActive } from '@/lib/appNav';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import { Target, FileUp, ChevronRight } from 'lucide-react';
 
@@ -68,8 +68,8 @@ export default function AnchorCopilotSidebar({
           <span className="copilot-logo-text">Anchor</span>
         </div>
 
-        <div className="copilot-sidebar-section-label">Översikt</div>
-        {OVERVIEW_NAV.map((item) => {
+        <div className="copilot-sidebar-section-label">Meny</div>
+        {PRIMARY_NAV.map((item) => {
           const active = isNavActive(item.id, location.pathname);
           if (item.id === 'Dashboard') {
             return (
@@ -101,7 +101,7 @@ export default function AnchorCopilotSidebar({
           );
         })}
 
-        <div className="copilot-sidebar-section-label" style={{ marginTop: 8 }}>
+        <div className="copilot-sidebar-section-label" style={{ marginTop: 12 }}>
           Konton
         </div>
         <div>
@@ -145,26 +145,6 @@ export default function AnchorCopilotSidebar({
             + Lägg till
           </button>
         </div>
-
-        <div className="copilot-sidebar-section-label" style={{ marginTop: 8 }}>
-          Verktyg
-        </div>
-        {TOOLS_NAV.map((item) => {
-          const active = isNavActive(item.id, location.pathname);
-          return (
-            <Link
-              key={item.id}
-              to={item.href}
-              className={`copilot-nav-item ${active ? 'active' : ''}`}
-              onClick={handleNav}
-            >
-              <span className={`copilot-nav-icon ${active ? 'copilot-nav-icon--active' : ''}`}>
-                <NavIcon name={item.icon} size={16} />
-              </span>
-              {item.label}
-            </Link>
-          );
-        })}
 
         <div className="copilot-sidebar-footer">
           <Link to={createPageUrl('Settings')} className="copilot-user-row" onClick={handleNav}>

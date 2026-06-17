@@ -21,6 +21,37 @@ const VERDICT_LABEL = {
   'Hitta billigare': { text: 'text-white/70', label: 'Leta alternativ' },
 };
 
+function computeBuyScore(result, profile) {
+  if (!result) return { score: 0, recommendation: 'VÄNTA', reasons: [] };
+
+  const impact = Math.min(100, result.budgetImpact || 0);
+  const delayPenalty = Math.min(40, (result.daysDelayedGoal || 0) * 3);
+  const threshold = profile?.impulseThreshold || 700;
+  const pricePenalty = (result.price || 0) > threshold ? 15 : 0;
+  const score = Math.max(0, Math.min(100, Math.round(100 - impact - delayPenalty - pricePenalty)));
+
+  let recommendation = 'VÄNTA';
+  if (score >= 75) recommendation = 'KÖP';
+  else if (score < 40) recommendation = 'AVVAKTA';
+
+  const reasons = [];
+  if ((result.daysDelayedGoal || 0) < 3) reasons.push('Påverkar inte ditt sparmål');
+  else if ((result.daysDelayedGoal || 0) < 10) reasons.push('Påverkar sparmålet marginellt');
+  else reasons.push('Försenar ditt sparmål märkbart');
+
+  if ((result.budgetImpact || 0) <= 15) reasons.push('Ligger inom din budget');
+  else if ((result.budgetImpact || 0) <= 35) reasons.push('Tar en del av månadsmarginalen');
+  else reasons.push('Överstiger din rekommenderade marginal');
+
+  if (result.priceAssessment?.toLowerCase().includes('bra') || result.verdict === 'Köp') {
+    reasons.push('Bra pris jämfört med alternativ');
+  } else {
+    reasons.push('Jämför pris innan du bestämmer dig');
+  }
+
+  return { score, recommendation, reasons: reasons.slice(0, 3) };
+}
+
 function getRisk(result, profile) {
   if (!result) return { level: 'low', reason: '' };
   const threshold = profile?.impulseThreshold || 700;
@@ -151,6 +182,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
   };
 
   const vs = result ? (VERDICT_LABEL[result.verdict] || VERDICT_LABEL.Vänta) : null;
+  const buyScore = computeBuyScore(result, profile);
   const risk = getRisk(result, profile);
   const shieldEnabled = profile?.impulseShieldEnabled !== false;
   const showShield = !!result && shieldEnabled && risk.level !== 'low';
@@ -234,6 +266,42 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               <p className="text-[20px] font-semibold text-white tabular-nums shrink-0">
                 {fmt(result.price)} kr
               </p>
+            </div>
+
+            {/* Köp-score */}
+            <div
+              className="mt-5 rounded-2xl px-5 py-5 text-center"
+              style={{
+                background: buyScore.recommendation === 'KÖP'
+                  ? 'rgba(34,217,122,0.08)'
+                  : buyScore.recommendation === 'AVVAKTA'
+                    ? 'rgba(248,113,113,0.08)'
+                    : 'rgba(251,191,36,0.08)',
+                border: '1px solid rgba(255,255,255,0.06)',
+              }}
+            >
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-white/40">Köp-score</p>
+              <p className="text-[56px] font-bold text-white tabular-nums leading-none mt-2">
+                {buyScore.score}
+                <span className="text-[22px] text-white/35 font-medium">/100</span>
+              </p>
+              <p
+                className="text-[18px] font-bold mt-3 tracking-wide"
+                style={{
+                  color: buyScore.recommendation === 'KÖP' ? '#22d97a'
+                    : buyScore.recommendation === 'AVVAKTA' ? '#f87171' : '#fbbf24',
+                }}
+              >
+                {buyScore.recommendation}
+              </p>
+              <ul className="mt-4 space-y-1.5 text-left max-w-xs mx-auto">
+                {buyScore.reasons.map((r) => (
+                  <li key={r} className="flex items-start gap-2 text-[13px] text-white/65">
+                    <span className="text-white/30 mt-0.5">•</span>
+                    {r}
+                  </li>
+                ))}
+              </ul>
             </div>
 
             <div className="mt-4">

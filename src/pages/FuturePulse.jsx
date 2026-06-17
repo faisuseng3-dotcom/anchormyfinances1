@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageShell from '@/components/layout/PageShell';
 import PlanCalendar from '@/components/planner/PlanCalendar';
 import DinFramtidPanel from '@/components/pulse/DinFramtidPanel';
+import ScenarioCompare from '@/components/future/ScenarioCompare';
 import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { usePlannedEvents } from '@/hooks/usePlannedEvents';
@@ -56,12 +57,15 @@ export default function FuturePulse() {
 
   return (
     <PageShell
-      title="Din Framtid"
-      subtitle="Se vad som väntar — justera och planera framåt"
+      title="Framtid"
+      subtitle="Se vad som händer om du fortsätter — eller ändrar något"
       backHref={createPageUrl('Dashboard')}
     >
       <PlanGate feature="future_pulse">
-        <DinFramtidPanel profile={profile} transactions={transactions} />
+        <div className="space-y-8">
+          <ScenarioCompare profile={profile} transactions={transactions} />
+          <DinFramtidPanel profile={profile} transactions={transactions} />
+        </div>
       </PlanGate>
     </PageShell>
   );
