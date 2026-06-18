@@ -575,6 +575,27 @@
     align-items: start;
   }
 
+  /* Revolut-style open hero — belopp direkt på bakgrunden */
+  .anchor-hero-open {
+    padding: 12px 4px 8px;
+    text-align: left;
+  }
+
+  .anchor-hero-amount {
+    font-size: clamp(4.5rem, 14vw, 5.5rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .anchor-hero-currency {
+    font-size: 0.42em;
+    font-weight: 600;
+    margin-left: 0.12em;
+    letter-spacing: -0.02em;
+    vertical-align: baseline;
+  }
+
   /* Press feedback */
   .anchor-pressable {
     transition: opacity var(--transition-fast), transform var(--transition-fast);

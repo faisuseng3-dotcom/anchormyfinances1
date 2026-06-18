@@ -53,14 +53,14 @@ export function buildHeroContext(profile, transactions) {
     else budgetLine = 'Håll koll på utgifterna denna månad';
   }
 
-  const paydayLine = `${paydayDays} dag${paydayDays === 1 ? '' : 'ar'} till nästa lön`;
+  const paydayLine = `${paydayDays} dag${paydayDays === 1 ? '' : 'ar'} till lön`;
 
   let trendLine = null;
   if (prevSpent > 500) {
     const diffPct = Math.round(((prevSpent - spent) / prevSpent) * 100);
-    if (diffPct >= 5) trendLine = `+${diffPct}% bättre än förra månaden`;
-    else if (diffPct <= -5) trendLine = `${Math.abs(diffPct)}% mer spenderat än förra månaden`;
+    if (diffPct >= 5) trendLine = `${diffPct}% bättre än förra månaden`;
+    else if (diffPct <= -5) trendLine = `${Math.abs(diffPct)}% mer än förra månaden`;
   }
 
-  return { budgetLine, paydayLine, trendLine, freeMoney, margin, fmt };
+  return { budgetLine, paydayLine, trendLine, trendPositive: trendLine?.includes('bättre') ?? null, freeMoney, margin, fmt };
 }

@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
-import ProactiveInsights from './ProactiveInsights';
-import UpcomingThings from './UpcomingThings';
-import WeeklyReport from './WeeklyReport';
-import EconomicControlCard from './EconomicControlCard';
+import DashboardDiscoveries from './DashboardDiscoveries';
 import ImportBankCta from './ImportBankCta';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
 import { recordSafeToSpendView } from '@/lib/northStar';
 import { base44 } from '@/api/base44Client';
 
-const DASHBOARD_LAYOUT_ID = 'north-star-v1';
+const DASHBOARD_LAYOUT_ID = 'north-star-fintech-open';
 
 export default function CopilotBentoDashboard({
   profile,
@@ -43,22 +40,16 @@ export default function CopilotBentoDashboard({
 
   return (
     <div
-      className="copilot-bento-dashboard min-h-full flex flex-col flex-1 w-full"
+      className="copilot-bento-dashboard copilot-bento-dashboard--open min-h-full flex flex-col flex-1 w-full"
       data-dashboard-layout={DASHBOARD_LAYOUT_ID}
     >
-      <div className="copilot-content !pt-0 space-y-5 pb-24">
+      <div className="copilot-content copilot-content--open !pt-2 space-y-10 pb-28">
 
         <CopilotFreeMoneyHero />
 
-        <EconomicControlCard />
+        <DashboardDiscoveries profile={profile} transactions={transactions} />
 
-        <WeeklyReport profile={profile} transactions={transactions} />
-
-        <ProactiveInsights profile={profile} transactions={transactions} />
-
-        <UpcomingThings profile={profile} />
-
-        <ImportBankCta transactionCount={(transactions || []).length} />
+        <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
       </div>
 
       <button
