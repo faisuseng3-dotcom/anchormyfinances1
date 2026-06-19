@@ -167,7 +167,7 @@ function SavingsAccountPanel({ account, profile, transactions, onOpenSwipe }) {
             <Icon className="w-7 h-7" style={{ color: meta.accent }} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)]">
+            <p className="anchor-card-eyebrow">
               {meta.subtitle}
             </p>
             <p className="text-[32px] font-bold text-white tabular-nums leading-none mt-1">
@@ -199,9 +199,9 @@ function SavingsAccountPanel({ account, profile, transactions, onOpenSwipe }) {
         </div>
       )}
 
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-3">
+      <h2 className="anchor-card-title mb-3">
         Senaste överföringar
-      </p>
+      </h2>
       <div className="space-y-2 mb-6">
         {transfers.length === 0 ? (
           <p className="text-[13px] text-[var(--copilot-text-muted)] py-6 text-center">

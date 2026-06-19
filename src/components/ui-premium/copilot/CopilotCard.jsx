@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { cardEyebrowClass, cardTitleClass } from '@/lib/anchorTheme';
 
 /**
  * @param {{ children: React.ReactNode; className?: string; onClick?: () => void; as?: any; [key: string]: any }} props
@@ -45,11 +46,11 @@ export function CopilotCardHeader({ title, action, meta }) {
     <div className="flex items-center justify-between gap-3 mb-4">
       <div>
         {meta && (
-          <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--copilot-text-muted)] mb-1">
+          <p className={`${cardEyebrowClass} mb-1`}>
             {meta}
           </p>
         )}
-        <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-secondary)]">
+        <h2 className={cardTitleClass}>
           {title}
         </h2>
       </div>

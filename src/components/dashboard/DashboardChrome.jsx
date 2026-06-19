@@ -141,7 +141,7 @@ export function DashboardStatStrip({ items }) {
         <React.Fragment key={item.label}>
           {i > 0 && <div className="w-px self-stretch bg-[var(--copilot-border)] my-1" />}
           <div className="flex-1 text-center min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)]">
+            <p className="text-[10px] anchor-card-eyebrow">
               {item.label}
             </p>
             <p className="text-[17px] font-bold text-white tabular-nums mt-1 leading-none">{item.value}</p>

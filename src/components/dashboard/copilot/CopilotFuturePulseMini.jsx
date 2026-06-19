@@ -43,9 +43,7 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
     >
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
-            Din framtid
-          </p>
+          <h2 className="anchor-card-title">Din framtid</h2>
           <p className="text-[18px] font-bold text-white mt-1 tracking-tight">
             {saldo30} om 30 dagar
           </p>

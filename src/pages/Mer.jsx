@@ -13,7 +13,7 @@ import { base44 } from '@/api/base44Client';
 
 const SECTION = ({ title, children }) => (
   <div>
-    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/30 mb-2 px-1">{title}</p>
+    <h2 className="anchor-card-title mb-2 px-1">{title}</h2>
     <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
       {children}
     </div>

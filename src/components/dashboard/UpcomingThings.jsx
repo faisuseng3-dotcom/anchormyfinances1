@@ -70,7 +70,7 @@ export default function UpcomingThings({ profile }) {
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
     >
       <div className="px-4 pt-4 pb-2">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/35">Kommande saker</p>
+        <h2 className="anchor-card-title">Kommande betalningar</h2>
       </div>
       <div className="divide-y divide-white/[0.05]">
         {items.map((item, i) => {

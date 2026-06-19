@@ -673,10 +673,13 @@
 }
 
 .anchor-copilot-shell .copilot-card-title {
-  font-size: 13px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  font-size: 15px;
   font-weight: 600;
-  color: var(--copilot-text-secondary);
-  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  text-transform: none;
 }
 
 .anchor-copilot-shell .copilot-card-action {

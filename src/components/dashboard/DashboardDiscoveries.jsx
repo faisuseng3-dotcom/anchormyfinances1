@@ -18,7 +18,7 @@ export default function DashboardDiscoveries({ profile, transactions }) {
       transition={{ delay: 0.12 }}
       className="pt-2"
     >
-      <p className="text-[15px] font-medium text-white/55 mb-4">Anchor har upptäckt</p>
+      <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Anchor har upptäckt</h2>
       <ul className="space-y-3">
         {items.map((text) => (
           <li key={text} className="flex items-start gap-3 text-[15px] text-white/75 leading-snug">

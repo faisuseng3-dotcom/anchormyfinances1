@@ -100,7 +100,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
     <div className="space-y-8">
       {/* Läget nu — kompakt */}
       <motion.div {...staggerItem(0)} className="rounded-2xl px-4 py-4 organic-surface bg-[var(--copilot-bg-card)]">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2">Läget nu</p>
+        <p className="anchor-card-title mb-2">Läget nu</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-[var(--copilot-text-secondary)]">
           <span><strong className="text-white tabular-nums">{fmt(pulseNow?.remainingWeek)}</strong> kvar den här veckan</span>
           <span><strong className="text-[var(--copilot-accent-green)] tabular-nums">{fmt(pulseNow?.safe)}</strong> säkert att spendera</span>

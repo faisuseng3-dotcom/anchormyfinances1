@@ -34,7 +34,13 @@ export function elevatedSheet(overrides = {}) {
 export const dashboardGlassSurface = glassSurface;
 
 /** Sentence-case section titles — not uppercase labels */
-export const sectionTitleClass = 'text-[17px] font-semibold tracking-tight text-white';
+export const sectionTitleClass = 'anchor-dash-heading anchor-dash-heading--section tracking-tight text-white';
+
+/** Titlar inuti cards/widgets */
+export const cardTitleClass = 'anchor-card-title';
+
+/** Liten etikett ovanför card-titel */
+export const cardEyebrowClass = 'anchor-card-eyebrow';
 
 export const sectionLabelClass = sectionTitleClass;
 

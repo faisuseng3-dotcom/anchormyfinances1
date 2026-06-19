@@ -74,9 +74,9 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
           sublabel="mot frihet"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)] flex items-center gap-1.5">
+          <h2 className="anchor-card-title flex items-center gap-1.5">
             <Flag className="w-3.5 h-3.5" /> Din skuldfrihetsplan
-          </p>
+          </h2>
           <p className="text-[22px] font-bold text-white mt-1 leading-tight">
             {monthsLeft > 0 ? (
               <>Skuldfri om cirka <span className="text-[var(--copilot-accent-green)]">{monthsLeft} mån</span></>

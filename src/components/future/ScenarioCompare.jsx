@@ -39,9 +39,9 @@ export default function ScenarioCompare({ profile, transactions }) {
             >
               <div className="flex items-start justify-between gap-3 mb-3">
                 <div className="min-w-0">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-white/35">
+                  <h3 className="anchor-card-title">
                     Scenario {String.fromCharCode(65 + i)}
-                  </p>
+                  </h3>
                   <p className="text-[14px] font-medium text-white mt-0.5">{s.label}</p>
                   {s.hint && <p className="text-[12px] text-white/40 mt-0.5">{s.hint}</p>}
                 </div>

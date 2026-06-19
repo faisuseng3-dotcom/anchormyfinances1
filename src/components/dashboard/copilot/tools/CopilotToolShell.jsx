@@ -24,7 +24,7 @@ export default function CopilotToolShell({
           <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
             {eyebrow}
           </p>
-          <h1 className="text-[26px] sm:text-[28px] font-bold text-white tracking-tight mt-1">
+          <h1 className="anchor-dash-heading anchor-dash-heading--page tracking-tight mt-1">
             {title}
           </h1>
           {subtitle && (

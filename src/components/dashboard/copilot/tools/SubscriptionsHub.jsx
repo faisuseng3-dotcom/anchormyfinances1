@@ -179,9 +179,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
         className="anchor-premium-hero organic-surface--hero rounded-3xl p-6 mb-8"
         style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.16) 0%, rgba(74,122,255,0.1) 100%)' }}
       >
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)]">
-          Tysta utgifter
-        </p>
+        <h2 className="anchor-card-title">Tysta utgifter</h2>
         <p className="text-[36px] font-bold text-white tabular-nums leading-none mt-2">
           {fmtKr(total)}
           <span className="text-[16px] font-medium text-[var(--copilot-text-secondary)] ml-2">/mån</span>
@@ -201,7 +199,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
       </div>
 
       <section className="mb-8">
-        <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-3">
+        <h2 className="anchor-card-title mb-3">
           Dina abonnemang
         </h2>
         <div className="space-y-3">
@@ -315,7 +313,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
 
       {weeklyActive.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-3">
+          <h2 className="anchor-card-title mb-3">
             Aktivitet denna vecka
           </h2>
           <div className="space-y-3">
@@ -327,7 +325,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
       )}
 
       <section>
-        <h2 className="text-[13px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-3 flex items-center gap-2">
+        <h2 className="anchor-card-title mb-3 flex items-center gap-2">
           <CalendarClock className="w-3.5 h-3.5" />
           Kommande dragningar
         </h2>

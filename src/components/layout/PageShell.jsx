@@ -71,7 +71,7 @@ export default function PageShell({
                   {subtitle}
                 </p>
               )}
-              <h1 className="text-[22px] sm:text-[26px] font-bold tracking-tight text-white truncate">
+              <h1 className="anchor-dash-heading anchor-dash-heading--page tracking-tight truncate">
                 {title}
               </h1>
             </div>
@@ -92,7 +92,7 @@ export function GlassSection({ title, subtitle, children, className = '' }) {
     <CopilotCard className={className}>
       {title && (
         <div className="mb-4">
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-secondary)]">
+          <h2 className="anchor-card-title">
             {title}
           </h2>
           {subtitle && (

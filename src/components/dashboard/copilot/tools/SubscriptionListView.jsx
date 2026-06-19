@@ -231,9 +231,7 @@ export default function SubscriptionListView({ profile, updateProfile }) {
         className="organic-surface rounded-[20px] p-5 mb-6"
         style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.14) 0%, rgba(74,122,255,0.08) 100%)' }}
       >
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)]">
-          Totalt per månad
-        </p>
+        <h2 className="anchor-card-title">Totalt per månad</h2>
         <p className="text-[32px] font-bold text-white tabular-nums mt-1">
           {fmtKr(total)}
         </p>

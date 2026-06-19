@@ -280,7 +280,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                 border: '1px solid rgba(255,255,255,0.06)',
               }}
             >
-              <p className="text-[11px] font-semibold uppercase tracking-wide text-white/40">Köp-score</p>
+              <h2 className="anchor-card-title">Köp-score</h2>
               <p className="text-[56px] font-bold text-white tabular-nums leading-none mt-2">
                 {buyScore.score}
                 <span className="text-[22px] text-white/35 font-medium">/100</span>

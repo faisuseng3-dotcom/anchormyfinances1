@@ -15,9 +15,9 @@ export default function WeeklyReport({ profile, transactions }) {
       className="rounded-[20px] px-5 py-5"
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/35 mb-4">
+      <h2 className="anchor-card-title mb-4">
         {report.label}
-      </p>
+      </h2>
       <div className="grid grid-cols-3 gap-4">
         <div>
           <p className="text-[12px] text-white/40">Du spenderade</p>

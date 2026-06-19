@@ -24,7 +24,7 @@ export default function EconomicControlCard() {
         <Shield size={16} className="text-[#6B9FFF]" />
       </div>
       <div>
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-white/35">Ekonomisk kontroll</p>
+        <h2 className="anchor-card-title mb-1">Ekonomisk kontroll</h2>
         <p className="text-[14px] text-white/75 mt-0.5">
           Du har haft koll på din ekonomi{' '}
           <span className="text-white font-semibold">{weeks} veck{weeks === 1 ? 'a' : 'or'}</span>

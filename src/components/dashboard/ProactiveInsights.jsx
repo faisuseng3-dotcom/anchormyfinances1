@@ -124,7 +124,7 @@ export default function ProactiveInsights({ profile, transactions }) {
       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
     >
       <div className="px-4 pt-4 pb-1 flex items-center gap-2">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/35">Anchors insikter</span>
+        <h2 className="anchor-card-title">Insikter</h2>
       </div>
       <div className="divide-y divide-white/[0.05]">
         {insights.map((insight, i) => (
