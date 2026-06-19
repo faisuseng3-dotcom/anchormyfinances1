@@ -1,16 +1,13 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useFreeMoney } from '@/hooks/useFreeMoney';
 import { buildHeroContext } from '@/lib/dashboardHeroContext';
-import { springPop } from '@/lib/motionPresets';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 /**
- * Öppen hero — beloppet ligger direkt på bakgrunden (Revolut/Copilot Money).
- * Ingen card, border, shadow eller glassmorphism.
+ * Säkert att spendera — beloppet renderas direkt i sidlayouten, utan card.
  */
 export default function CopilotFreeMoneyHero({
   previewAmount = null,
@@ -30,17 +27,11 @@ export default function CopilotFreeMoneyHero({
   const context = buildHeroContext(profile, transactions);
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={springPop}
-      className={`anchor-hero-open ${className}`.trim()}
-    >
-      <p className="anchor-hero-label">Säkert att spendera</p>
-
-      <p className="anchor-hero-amount">
+    <section className={['anchor-sts', className].filter(Boolean).join(' ')}>
+      <p className="anchor-sts-label">Säkert att spendera</p>
+      <p className="anchor-sts-amount">
         {fmt(free)}
-        <span className="anchor-hero-currency">kr</span>
+        <span className="anchor-sts-currency">kr</span>
       </p>
 
       <div className="anchor-hero-meta">
@@ -61,6 +52,6 @@ export default function CopilotFreeMoneyHero({
           <p className="anchor-hero-sub">{context.budgetLine}</p>
         )}
       </div>
-    </motion.header>
+    </section>
   );
 }

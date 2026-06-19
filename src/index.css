@@ -575,48 +575,52 @@
     align-items: start;
   }
 
-  /* Revolut-style open hero — belopp direkt på bakgrunden, ingen widget */
-  .anchor-hero-open {
-    padding: 16px 0 12px;
-    text-align: left;
-    background: transparent !important;
+  /* Safe-to-spend — Revolut balance, ingen card/widget */
+  .anchor-sts {
+    margin: 0;
+    padding: 0;
+    background: none !important;
     border: none !important;
     box-shadow: none !important;
+    border-radius: 0 !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
-    border-radius: 0 !important;
   }
 
-  .anchor-hero-label {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  .anchor-sts-label {
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.5);
-    letter-spacing: -0.01em;
+    margin: 0;
+    padding: 0;
     line-height: 1.2;
   }
 
-  .anchor-hero-amount {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-    font-size: clamp(4.5rem, 14vw, 5.5rem);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    color: #ffffff;
+  .anchor-sts-amount {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 82px;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: #FFFFFF;
     text-shadow: none;
     background: none;
-    -webkit-text-fill-color: currentColor;
-    margin-top: 12px;
+    -webkit-text-fill-color: #FFFFFF;
+    margin: 0;
+    margin-top: 40px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
     font-variant-numeric: tabular-nums;
   }
 
-  .anchor-hero-currency {
-    font-size: 0.42em;
+  .anchor-sts-currency {
+    font-size: 0.38em;
     font-weight: 600;
-    margin-left: 0.12em;
-    letter-spacing: -0.02em;
-    vertical-align: baseline;
-    color: #ffffff;
+    margin-left: 0.1em;
+    letter-spacing: -0.03em;
+    color: #FFFFFF;
   }
 
   .anchor-hero-meta {
