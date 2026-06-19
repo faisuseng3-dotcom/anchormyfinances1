@@ -743,6 +743,53 @@
     color: #FFFFFF;
   }
 
+  /* Knappar — konsekvent Inter 600 + spacing (Sprint 5) */
+  .anchor-btn {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    gap: 8px;
+    touch-action: manipulation;
+  }
+
+  .anchor-btn--default {
+    min-height: 52px;
+    padding: 0 24px;
+  }
+
+  .anchor-btn--compact {
+    min-height: 44px;
+    padding: 0 20px;
+  }
+
+  .anchor-btn--pill {
+    border-radius: 9999px;
+  }
+
+  .anchor-btn--rounded {
+    border-radius: 12px;
+  }
+
+  .anchor-btn--icon {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0;
+  }
+
+  /* Fallback: alla action-knappar i appen utan egen nav-typografi */
+  .anchor-copilot-shell .copilot-main button:not(.copilot-nav-item):not(.copilot-account-item):not(.copilot-account-add):not(.copilot-user-row):not(.copilot-icon-btn),
+  .anchor-copilot-shell .copilot-main input[type="button"],
+  .anchor-copilot-shell .copilot-main input[type="submit"],
+  .anchor-app-main button:not(.copilot-nav-item):not(.copilot-account-item):not(.copilot-account-add):not(.copilot-user-row):not(.copilot-icon-btn),
+  .anchor-app-main input[type="button"],
+  .anchor-app-main input[type="submit"] {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
   /* Press feedback */
   .anchor-pressable {
     transition: opacity var(--transition-fast), transform var(--transition-fast);

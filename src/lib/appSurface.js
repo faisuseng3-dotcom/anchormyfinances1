@@ -39,7 +39,7 @@ export const techPageBackHeader =
 
 /** Ersätt "Genererar…" / AI-knappar */
 export const techCta =
-  'inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full text-[14px] font-semibold bg-white text-[#050d28] hover:bg-white/95 transition-colors disabled:opacity-50';
+  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center bg-white text-[#050d28] hover:bg-white/95 transition-colors disabled:opacity-50';
 
 export const techCtaGhost =
-  'inline-flex items-center justify-center gap-2 h-11 px-5 rounded-full text-[14px] font-medium text-white/80 bg-white/[0.07] ring-1 ring-white/[0.1] hover:bg-white/[0.1]';
+  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center text-white/80 bg-white/[0.07] ring-1 ring-white/[0.1] hover:bg-white/[0.1]';

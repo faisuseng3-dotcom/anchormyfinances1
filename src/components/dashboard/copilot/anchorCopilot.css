@@ -157,16 +157,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 0 20px;
-  border-radius: 16px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 12px;
   color: #fff;
   background: var(--copilot-accent-blue);
   border: none;
   cursor: pointer;
-  font-family: inherit;
+}
+
+.anchor-copilot-shell .app-shell-btn.anchor-btn {
+  min-height: 52px;
+  padding: 0 24px;
 }
 
 .anchor-copilot-shell .copilot-nav-item {
@@ -1069,6 +1069,9 @@
   border: none;
   color: white;
   font-size: 22px;
+  font-weight: 600;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+  letter-spacing: -0.01em;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(74, 122, 255, 0.4);
   display: flex;
@@ -1076,7 +1079,7 @@
   justify-content: center;
   transition: all 0.2s;
   z-index: 200;
-  font-family: inherit;
+  padding: 0;
 }
 
 .anchor-copilot-shell .copilot-fab:hover {

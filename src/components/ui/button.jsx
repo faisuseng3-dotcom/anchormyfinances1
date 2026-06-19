@@ -6,7 +6,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "anchor-btn inline-flex items-center justify-center whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -19,13 +19,13 @@ const buttonVariants = cva(
         secondary:
           "bg-white/10 text-white/90 border border-white/14 hover:bg-white/15",
         ghost: "hover:bg-white/10 text-white/80",
-        link: "text-[#9FB5FF] underline-offset-4 hover:underline",
+        link: "text-[#9FB5FF] underline-offset-4 hover:underline anchor-btn--compact !min-h-0 !px-0",
       },
       size: {
-        default: "h-11 px-5 py-2",
-        sm: "h-9 rounded-xl px-3 text-xs",
-        lg: "h-14 rounded-2xl px-8",
-        icon: "h-10 w-10 rounded-full",
+        default: "anchor-btn--default anchor-btn--rounded",
+        sm: "anchor-btn--compact anchor-btn--rounded",
+        lg: "anchor-btn--default anchor-btn--rounded min-h-[56px] !px-8",
+        icon: "anchor-btn--icon rounded-full",
       },
     },
     defaultVariants: {

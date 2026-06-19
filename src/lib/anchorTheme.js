@@ -68,17 +68,20 @@ export const anchorListRowClass =
 
 export const anchorGlassCardClass = 'rounded-2xl p-5 sm:p-6';
 
+export const anchorButtonBaseClass =
+  'anchor-btn inline-flex items-center justify-center transition-colors disabled:opacity-50 touch-manipulation';
+
 export const anchorPrimaryButtonClass =
-  'inline-flex items-center justify-center gap-2 h-[52px] px-6 rounded-xl text-[15px] font-semibold text-[#0a1628] bg-white hover:bg-white/95 transition-colors disabled:opacity-50 shadow-[0_8px_24px_rgba(0,0,0,0.18)]';
+  `${anchorButtonBaseClass} anchor-btn--default anchor-btn--rounded text-[#0a1628] bg-white hover:bg-white/95 shadow-[0_8px_24px_rgba(0,0,0,0.18)]`;
 
 export const anchorSecondaryButtonClass =
-  'inline-flex items-center justify-center gap-2 h-[52px] px-6 rounded-xl text-[15px] font-semibold text-white/90 bg-white/[0.08] hover:bg-white/[0.12] transition-colors disabled:opacity-50';
+  `${anchorButtonBaseClass} anchor-btn--default anchor-btn--rounded text-white/90 bg-white/[0.08] hover:bg-white/[0.12]`;
 
 export const anchorGhostButtonClass =
-  'inline-flex items-center justify-center gap-1.5 text-[15px] font-medium text-white/70 hover:text-white transition-colors';
+  `${anchorButtonBaseClass} anchor-btn--compact text-white/70 hover:text-white`;
 
 export const anchorIconButtonClass =
-  'w-12 h-12 rounded-full flex items-center justify-center bg-white/[0.08] text-white/80 hover:bg-white/[0.12] transition-colors anchor-pressable';
+  `${anchorButtonBaseClass} anchor-btn--icon rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.12] anchor-pressable`;
 
 export const anchorInputClass =
   'organic-input flex w-full h-12 rounded-full px-5 text-[15px] text-white bg-white/[0.08] placeholder:text-white/35 focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(74,122,255,0.25)] disabled:opacity-50';

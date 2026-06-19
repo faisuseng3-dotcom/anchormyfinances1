@@ -71,20 +71,20 @@ export const copilotInputClass =
 
 export const copilotChipClass = (active) =>
   [
-    'organic-pill px-4 py-2.5 min-h-11 rounded-full text-[13px] font-medium transition-all duration-200 active:scale-[0.97]',
+    'anchor-btn anchor-btn--compact anchor-btn--pill organic-pill transition-all duration-200 active:scale-[0.97] inline-flex items-center justify-center',
     active
       ? 'bg-[var(--copilot-accent-blue)] text-white shadow-[0_4px_20px_rgba(74,122,255,0.35)]'
       : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] hover:bg-[var(--copilot-bg-card-hover)]',
   ].join(' ');
 
 export const copilotPrimaryBtnClass =
-  'w-full h-12 rounded-full bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white font-semibold text-[15px] disabled:opacity-40 shadow-[0_8px_32px_rgba(74,122,255,0.4)] transition-transform active:scale-[0.97] min-h-12';
+  'anchor-btn anchor-btn--default anchor-btn--pill w-full inline-flex items-center justify-center bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white disabled:opacity-40 shadow-[0_8px_32px_rgba(74,122,255,0.4)] transition-transform active:scale-[0.97]';
 
 export const copilotSecondaryBtnClass =
-  'w-full h-12 rounded-full bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] font-semibold text-[15px] hover:bg-[var(--copilot-bg-card-hover)] hover:text-white shadow-[var(--anchor-shadow-1)] transition-all active:scale-[0.97] min-h-12';
+  'anchor-btn anchor-btn--default anchor-btn--pill w-full inline-flex items-center justify-center bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] hover:bg-[var(--copilot-bg-card-hover)] hover:text-white shadow-[var(--anchor-shadow-1)] transition-all active:scale-[0.97]';
 
 export const copilotGhostBtnClass =
-  'inline-flex items-center justify-center gap-2 px-5 py-2.5 min-h-12 rounded-full text-[13px] font-semibold text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card)] transition-all active:scale-[0.97]';
+  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center text-[var(--copilot-text-secondary)] hover:text-white hover:bg-[var(--copilot-bg-card)] transition-all active:scale-[0.97]';
 
 /** Månadsmarginal minus utgifter denna månad — "dina fria pengar". */
 export function computeFreeMoney(profile, transactions = []) {

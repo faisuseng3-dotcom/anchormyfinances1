@@ -20,7 +20,7 @@ export default function SegmentTabs({ value, onChange, tabs, className = '' }) {
             aria-selected={active}
             onClick={() => onChange(tab.id)}
             minTouch={false}
-            className={`flex-1 flex items-center justify-center gap-2 py-2.5 min-h-11 rounded-[var(--anchor-radius-sm)] text-[14px] font-semibold ${
+            className={`anchor-btn anchor-btn--compact anchor-btn--rounded flex-1 flex items-center justify-center gap-2 py-2.5 min-h-11 ${
               active
                 ? 'bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1'
                 : 'text-white/55'
