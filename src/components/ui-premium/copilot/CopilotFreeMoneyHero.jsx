@@ -8,11 +8,13 @@ const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 /**
  * Säkert att spendera — beloppet renderas direkt i sidlayouten, utan card.
+ * layout="balance" → centrerad Revolut-layout (endast dashboard).
  */
 export default function CopilotFreeMoneyHero({
   previewAmount = null,
   isExpensePreview = true,
   className = '',
+  layout = 'default',
 }) {
   const { profile } = useFinancialProfile();
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
@@ -26,32 +28,26 @@ export default function CopilotFreeMoneyHero({
 
   const context = buildHeroContext(profile, transactions);
 
+  const subline = context.trendLine
+    ? (context.trendPositive ? `Du ligger ${context.trendLine}` : context.trendLine)
+    : context.paydayLine || context.budgetLine || null;
+
+  const rootClass = [
+    'anchor-sts',
+    layout === 'balance' ? 'anchor-sts--balance' : '',
+    className,
+  ].filter(Boolean).join(' ');
+
   return (
-    <section className={['anchor-sts', className].filter(Boolean).join(' ')}>
+    <section className={rootClass}>
       <p className="anchor-sts-label">Säkert att spendera</p>
       <p className="anchor-sts-amount">
         {fmt(free)}
         <span className="anchor-sts-currency">kr</span>
       </p>
-
-      <div className="anchor-hero-meta">
-        {context.trendLine && (
-          <p
-            className={`anchor-hero-trend ${
-              context.trendPositive ? 'anchor-hero-trend--up' : 'anchor-hero-trend--down'
-            }`}
-          >
-            {context.trendPositive ? '↑ ' : '↓ '}
-            {context.trendLine}
-          </p>
-        )}
-        {context.paydayLine && (
-          <p className="anchor-hero-sub">{context.paydayLine}</p>
-        )}
-        {!context.trendLine && context.budgetLine && (
-          <p className="anchor-hero-sub">{context.budgetLine}</p>
-        )}
-      </div>
+      {subline && (
+        <p className="anchor-sts-subline">{subline}</p>
+      )}
     </section>
   );
 }

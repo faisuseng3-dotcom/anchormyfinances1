@@ -7,7 +7,7 @@ import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
 import { recordSafeToSpendView } from '@/lib/northStar';
 import { base44 } from '@/api/base44Client';
 
-const DASHBOARD_LAYOUT_ID = 'north-star-fintech-open';
+const DASHBOARD_LAYOUT_ID = 'revolut-balance-hero';
 
 export default function CopilotBentoDashboard({
   profile,
@@ -43,12 +43,12 @@ export default function CopilotBentoDashboard({
       className="copilot-bento-dashboard copilot-bento-dashboard--open min-h-full flex flex-col flex-1 w-full"
       data-dashboard-layout={DASHBOARD_LAYOUT_ID}
     >
-      <div className="anchor-dashboard-body space-y-10 pb-8">
+      <section className="anchor-dashboard-hero" aria-label="Säkert att spendera">
+        <CopilotFreeMoneyHero layout="balance" />
+      </section>
 
-        <CopilotFreeMoneyHero />
-
+      <div className="anchor-dashboard-below">
         <DashboardDiscoveries profile={profile} transactions={transactions} />
-
         <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
       </div>
 

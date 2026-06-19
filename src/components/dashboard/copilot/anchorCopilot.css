@@ -438,14 +438,26 @@
   touch-action: pan-y;
 }
 
-.copilot-bento-dashboard--open .anchor-dashboard-body {
-  padding-top: 4px;
+.copilot-bento-dashboard--open .anchor-dashboard-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: min(52dvh, 420px);
+  padding: 12px 20px 28px;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-@media (min-width: 640px) {
-  .copilot-bento-dashboard--open .anchor-dashboard-body {
-    padding-top: 8px;
-  }
+.copilot-bento-dashboard--open .anchor-dashboard-below {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 32px;
 }
 
 @media (min-width: 640px) {
