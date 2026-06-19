@@ -69,12 +69,7 @@ export default function BottomTabBar() {
             style={{ color: active ? '#ffffff' : 'rgba(255,255,255,0.35)' }}
           >
             {tab.icon(active)}
-            <span style={{
-              fontSize: 10,
-              fontWeight: active ? 600 : 400,
-              letterSpacing: '0.01em',
-              lineHeight: 1,
-            }}>
+            <span className={`anchor-nav-tab-label ${active ? 'anchor-nav-tab-label--active' : ''}`}>
               {tab.label}
             </span>
             {active && (

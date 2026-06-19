@@ -65,10 +65,10 @@ export default function AnchorCopilotSidebar({
           <div className="copilot-logo-icon" aria-hidden>
             ⚓
           </div>
-          <span className="copilot-logo-text">Anchor</span>
+          <span className="copilot-logo-text anchor-nav-brand">Anchor</span>
         </div>
 
-        <div className="copilot-sidebar-section-label">Meny</div>
+        <div className="copilot-sidebar-section-label anchor-nav-section-label">Meny</div>
         {PRIMARY_NAV.map((item) => {
           const active = isNavActive(item.id, location.pathname);
           if (item.id === 'Dashboard') {
@@ -82,7 +82,7 @@ export default function AnchorCopilotSidebar({
                 <span className={`copilot-nav-icon ${active ? 'copilot-nav-icon--active' : ''}`}>
                   <NavIcon name={item.icon} size={16} />
                 </span>
-                {item.label}
+                <span className="anchor-nav-menu-label">{item.label}</span>
               </button>
             );
           }
@@ -96,12 +96,12 @@ export default function AnchorCopilotSidebar({
               <span className={`copilot-nav-icon ${active ? 'copilot-nav-icon--active' : ''}`}>
                 <NavIcon name={item.icon} size={16} />
               </span>
-              {item.label}
+              <span className="anchor-nav-menu-label">{item.label}</span>
             </Link>
           );
         })}
 
-        <div className="copilot-sidebar-section-label" style={{ marginTop: 12 }}>
+        <div className="copilot-sidebar-section-label anchor-nav-section-label" style={{ marginTop: 12 }}>
           Konton
         </div>
         <div>
@@ -123,7 +123,7 @@ export default function AnchorCopilotSidebar({
                   className="copilot-account-item copilot-account-item--interactive w-full text-left"
                 >
                   <div className="copilot-account-dot" style={{ background: acc.color }} />
-                  {acc.name}
+                  <span className="anchor-nav-menu-label">{acc.name}</span>
                   <span className="copilot-account-amount">{amountLabel}</span>
                 </button>
               );
@@ -132,14 +132,14 @@ export default function AnchorCopilotSidebar({
             return (
               <div key={acc.id || acc.name} className="copilot-account-item">
                 <div className="copilot-account-dot" style={{ background: acc.color }} />
-                {acc.name}
+                <span className="anchor-nav-menu-label">{acc.name}</span>
                 <span className="copilot-account-amount">{amountLabel}</span>
               </div>
             );
           })}
           <button
             type="button"
-            className="copilot-account-item copilot-account-add w-full text-left"
+            className="copilot-account-item copilot-account-add w-full text-left anchor-nav-menu-label"
             onClick={handleAddAccount}
           >
             + Lägg till
@@ -150,8 +150,8 @@ export default function AnchorCopilotSidebar({
           <Link to={createPageUrl('Settings')} className="copilot-user-row" onClick={handleNav}>
             <div className="copilot-user-avatar">{initial}</div>
             <div className="min-w-0">
-              <div className="copilot-user-name">{firstName}</div>
-              <div className="copilot-user-plan">{planLabel}</div>
+              <div className="copilot-user-name anchor-nav-menu-label">{firstName}</div>
+              <div className="copilot-user-plan anchor-nav-section-label">{planLabel}</div>
             </div>
             <span className="copilot-user-settings" aria-hidden>
               <NavIcon name="settings" size={16} />
