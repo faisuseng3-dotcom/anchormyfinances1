@@ -43,7 +43,7 @@ export default function CopilotBentoDashboard({
       className="copilot-bento-dashboard copilot-bento-dashboard--open min-h-full flex flex-col flex-1 w-full"
       data-dashboard-layout={DASHBOARD_LAYOUT_ID}
     >
-      <div className="copilot-content copilot-content--open !pt-2 space-y-10 pb-28">
+      <div className="anchor-dashboard-body space-y-10 pb-8">
 
         <CopilotFreeMoneyHero />
 

@@ -10,6 +10,7 @@ const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 /**
  * Öppen hero — beloppet ligger direkt på bakgrunden (Revolut/Copilot Money).
+ * Ingen card, border, shadow eller glassmorphism.
  */
 export default function CopilotFreeMoneyHero({
   previewAmount = null,
@@ -33,22 +34,20 @@ export default function CopilotFreeMoneyHero({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={springPop}
-      className={`anchor-hero-open ${className}`}
+      className={`anchor-hero-open ${className}`.trim()}
     >
-      <p className="text-[15px] font-medium text-white/50 tracking-tight">
-        Säkert att spendera
-      </p>
+      <p className="anchor-hero-label">Säkert att spendera</p>
 
-      <p className="anchor-hero-amount text-white tabular-nums tracking-tight mt-3">
+      <p className="anchor-hero-amount">
         {fmt(free)}
         <span className="anchor-hero-currency">kr</span>
       </p>
 
-      <div className="mt-5 space-y-1.5">
+      <div className="anchor-hero-meta">
         {context.trendLine && (
           <p
-            className={`text-[15px] font-medium tabular-nums ${
-              context.trendPositive ? 'text-[#22d97a]' : 'text-white/55'
+            className={`anchor-hero-trend ${
+              context.trendPositive ? 'anchor-hero-trend--up' : 'anchor-hero-trend--down'
             }`}
           >
             {context.trendPositive ? '↑ ' : '↓ '}
@@ -56,10 +55,10 @@ export default function CopilotFreeMoneyHero({
           </p>
         )}
         {context.paydayLine && (
-          <p className="text-[15px] text-white/45">{context.paydayLine}</p>
+          <p className="anchor-hero-sub">{context.paydayLine}</p>
         )}
         {!context.trendLine && context.budgetLine && (
-          <p className="text-[15px] text-white/45">{context.budgetLine}</p>
+          <p className="anchor-hero-sub">{context.budgetLine}</p>
         )}
       </div>
     </motion.header>

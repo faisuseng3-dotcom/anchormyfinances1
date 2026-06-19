@@ -156,6 +156,13 @@
   box-shadow: var(--organic-shadow-float), var(--organic-shadow-inset);
 }
 
+.copilot-bento-dashboard .anchor-hero-open {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}
+
 .copilot-bento-dashboard .copilot-bento {
   display: grid;
   grid-template-columns: 1fr;

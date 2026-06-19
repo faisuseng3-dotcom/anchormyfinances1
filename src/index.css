@@ -575,17 +575,39 @@
     align-items: start;
   }
 
-  /* Revolut-style open hero — belopp direkt på bakgrunden */
+  /* Revolut-style open hero — belopp direkt på bakgrunden, ingen widget */
   .anchor-hero-open {
-    padding: 12px 4px 8px;
+    padding: 16px 0 12px;
     text-align: left;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-radius: 0 !important;
+  }
+
+  .anchor-hero-label {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: -0.01em;
+    line-height: 1.2;
   }
 
   .anchor-hero-amount {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
     font-size: clamp(4.5rem, 14vw, 5.5rem);
-    font-weight: 700;
+    font-weight: 800;
     line-height: 0.95;
     letter-spacing: -0.03em;
+    color: #ffffff;
+    text-shadow: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    margin-top: 12px;
+    font-variant-numeric: tabular-nums;
   }
 
   .anchor-hero-currency {
@@ -594,6 +616,35 @@
     margin-left: 0.12em;
     letter-spacing: -0.02em;
     vertical-align: baseline;
+    color: #ffffff;
+  }
+
+  .anchor-hero-meta {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .anchor-hero-trend {
+    font-size: 15px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  .anchor-hero-trend--up {
+    color: #22d97a;
+  }
+
+  .anchor-hero-trend--down {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .anchor-hero-sub {
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.45);
+    letter-spacing: -0.01em;
   }
 
   /* Press feedback */
