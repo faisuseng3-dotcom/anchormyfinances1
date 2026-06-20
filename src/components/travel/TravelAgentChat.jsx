@@ -11,6 +11,120 @@ import BookingModal from './BookingModal';
 const CACHE_KEY = 'anchor_travel_cache';
 const CACHE_TTL = 24 * 60 * 60 * 1000; // 24h
 
+const TRAVEL_LLM_SCHEMA = {
+  type: 'object',
+  properties: {
+    analysis: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'string' }, nights: { type: 'number' }, totalBudget: { type: 'number' }, activityBudget: { type: 'number' }, summary: { type: 'string' } } },
+    timeline: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, event: { type: 'string' }, highlight: { type: 'boolean' } } } } } },
+    packages: { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, tag: { type: 'string' }, accommodation: { type: 'string' }, accommodationCost: { type: 'number' }, activities: { type: 'string' }, activitiesCost: { type: 'number' }, otherCosts: { type: 'number' }, totalCost: { type: 'number' }, margin: { type: 'number' }, aiComment: { type: 'string' }, bookingUrl: { type: 'string' }, provider: { type: 'string' } } } },
+    budgetCheck: { type: 'object', properties: { breakdown: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, amount: { type: 'number' } } } }, marginPerDay: { type: 'number' }, verdict: { type: 'string' } } },
+    goalName: { type: 'string' },
+    goalEndDate: { type: 'string' },
+  },
+};
+
+function packageTotalCost(pkg) {
+  const explicit = Number(pkg?.totalCost);
+  if (Number.isFinite(explicit) && explicit > 0) return explicit;
+  return (Number(pkg?.accommodationCost) || 0)
+    + (Number(pkg?.activitiesCost) || 0)
+    + (Number(pkg?.otherCosts) || 0);
+}
+
+/** Unwrap InvokeLLM payloads and fill in missing totalCost from line items. */
+function normalizeTravelResponse(raw) {
+  const result = raw?.data ?? raw?.result ?? raw;
+  if (!result || typeof result !== 'object') return null;
+
+  if (Array.isArray(result.packages)) {
+    result.packages = result.packages.map((pkg) => {
+      const accommodationCost = Number(pkg.accommodationCost) || 0;
+      const activitiesCost = Number(pkg.activitiesCost) || 0;
+      const otherCosts = Number(pkg.otherCosts) || 0;
+      const totalCost = packageTotalCost(pkg);
+      return {
+        ...pkg,
+        accommodationCost,
+        activitiesCost,
+        otherCosts,
+        totalCost,
+      };
+    });
+  }
+
+  return result;
+}
+
+function validateTravelResponse(result) {
+  if (!result) return { ok: false, reason: 'empty_result' };
+  if (!Array.isArray(result.packages) || result.packages.length === 0) {
+    return { ok: false, reason: 'missing_packages', keys: Object.keys(result) };
+  }
+  const priced = result.packages.filter((p) => packageTotalCost(p) > 0);
+  if (priced.length === 0) {
+    return {
+      ok: false,
+      reason: 'packages_zero_cost',
+      packages: result.packages.map((p) => ({
+        name: p.name,
+        totalCost: p.totalCost,
+        accommodationCost: p.accommodationCost,
+        activitiesCost: p.activitiesCost,
+      })),
+    };
+  }
+  if (!result.analysis?.destination) {
+    return { ok: false, reason: 'missing_destination', analysis: result.analysis };
+  }
+  return { ok: true, pricedCount: priced.length };
+}
+
+async function invokeTravelLlm(prompt) {
+  const baseOpts = {
+    prompt,
+    add_context_from_internet: true,
+    response_json_schema: TRAVEL_LLM_SCHEMA,
+  };
+
+  try {
+    console.log('[TravelAgent] InvokeLLM start', { model: 'claude_sonnet_4_6', promptLength: prompt.length });
+    const result = await base44.integrations.Core.InvokeLLM({
+      ...baseOpts,
+      model: 'claude_sonnet_4_6',
+    });
+    console.log('[TravelAgent] InvokeLLM success (claude)', {
+      keys: result && typeof result === 'object' ? Object.keys(result) : typeof result,
+      packageCount: result?.packages?.length,
+    });
+    return { result, model: 'claude_sonnet_4_6' };
+  } catch (primaryErr) {
+    console.error('[TravelAgent] InvokeLLM claude_sonnet_4_6 failed:', {
+      message: primaryErr?.message,
+      status: primaryErr?.status ?? primaryErr?.response?.status,
+      data: primaryErr?.data ?? primaryErr?.response?.data,
+    });
+
+    try {
+      console.log('[TravelAgent] InvokeLLM fallback → gpt_5_5');
+      const result = await base44.integrations.Core.InvokeLLM({
+        ...baseOpts,
+        model: 'gpt_5_5',
+      });
+      console.log('[TravelAgent] InvokeLLM success (gpt_5_5 fallback)', {
+        packageCount: result?.packages?.length,
+      });
+      return { result, model: 'gpt_5_5_fallback' };
+    } catch (fallbackErr) {
+      console.error('[TravelAgent] InvokeLLM gpt_5_5 fallback failed:', {
+        message: fallbackErr?.message,
+        status: fallbackErr?.status ?? fallbackErr?.response?.status,
+        data: fallbackErr?.data ?? fallbackErr?.response?.data,
+      });
+      throw fallbackErr;
+    }
+  }
+}
+
 function saveToCache(data) {
   localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
 }
@@ -407,6 +521,8 @@ export default function TravelAgentChat({ profile }) {
   const handleSend = async () => {
     if (!input.trim() || loading) return;
     const userMsg = input.trim();
+    console.log('[TravelAgent] submit', { userMsg, profileIncome: profile?.income });
+
     setInput('');
     setMessages(prev => [...prev, { role: 'user', content: userMsg, type: 'text' }]);
     setLoading(true);
@@ -418,21 +534,30 @@ export default function TravelAgentChat({ profile }) {
       (profile?.subscriptions || []).reduce((s, x) => s + x.amount, 0) +
       (profile?.loans || []).reduce((s, x) => s + x.monthlyPayment, 0);
     const margin = income - fixedCosts;
+    const safeMargin = Math.max(0, margin);
 
-    // Extract checkin/checkout dates from user message for deep-linking
     const today = new Date();
     const checkinDefault = new Date(today.getFullYear(), today.getMonth() + 1, 15);
     const checkoutDefault = new Date(checkinDefault);
     checkoutDefault.setDate(checkoutDefault.getDate() + 5);
     const fmt = (d) => d.toISOString().split('T')[0];
+    const budgetHint = Math.max(5000, Math.min(safeMargin * 3, profile?.buffer || safeMargin * 3 || 15000));
 
-    const memoryBlock = await buildMemoryPromptContext({
-      profile,
-      query: userMsg,
-      feature: AI_FEATURES.TRAVEL,
-    });
+    try {
+      let memoryBlock = '';
+      try {
+        console.log('[TravelAgent] building memory context');
+        memoryBlock = await buildMemoryPromptContext({
+          profile,
+          query: userMsg,
+          feature: AI_FEATURES.TRAVEL,
+        });
+        console.log('[TravelAgent] memory context ready', { length: memoryBlock.length });
+      } catch (memErr) {
+        console.error('[TravelAgent] memory context failed (continuing without):', memErr?.message);
+      }
 
-    const prompt = `Du är "Anchor Travel Agent", en smart rese-AI med CFO-instinkt.
+      const prompt = `Du är "Anchor Travel Agent", en smart rese-AI med CFO-instinkt.
 ${memoryBlock}
 Användaren skriver: "${userMsg}"
 
@@ -446,124 +571,50 @@ VIKTIGT: Analysera noggrant vad användaren faktiskt frågar om. Destinationen M
 Steg 1 – Smart Analys: Identifiera destination (från användarens meddelande!), datum (YYYY-MM-DD format), antal nätter, total budget.
 - Om användaren nämner "sol" / "strand" → föreslå sydeuropeiska destinationer (Mallorca, Kreta, Malaga, etc.)
 - Om användaren nämner "kultur" / "stad" → föreslå passande storstäder baserat på budget
-- Anpassa budget efter användarens marginal: om inget anges, föreslå resor som ryms inom ${margin} kr/mån × 3
+- Anpassa budget efter användarens marginal: om inget anges, föreslå resor som ryms inom ${budgetHint} kr totalt
 
 Steg 2 – Generera EXAKT 3 respaket med tags "experience", "balance", "safety".
 - Alla priser ska vara REALISTISKA för den faktiska destinationen och tidsperioden
+- totalCost MÅSTE vara > 0 för varje paket (summa av accommodationCost + activitiesCost + otherCosts)
 - bookingUrl: Bygg en RIKTIG Booking.com söklänk med parametrarna: ss=[destination på engelska], checkin=[YYYY-MM-DD], checkout=[YYYY-MM-DD], group_adults=2
-- Exempel: https://www.booking.com/searchresults.html?ss=Palma+de+Mallorca&checkin=2026-07-10&checkout=2026-07-17&group_adults=2
 
 Steg 3 – Budget-koll: Beräkna marginalen per dag baserat på det valda paketet.
 
-Svara med JSON där ALL data är anpassad efter användarens faktiska önskemål och destination:
+Svara med JSON. Exempelstruktur (ersätt ALLA värden med verkliga siffror > 0):
 
 {
   "analysis": {
-    "destination": "[DEN DESTINATION ANVÄNDAREN FRÅGAT OM]",
-    "dates": "[FAKTISKA DATUM]",
+    "destination": "Palma de Mallorca",
+    "dates": "10–17 juli 2026",
     "checkin": "${fmt(checkinDefault)}",
     "checkout": "${fmt(checkoutDefault)}",
     "nights": 5,
-    "totalBudget": ${Math.min(margin * 3, profile?.buffer || margin * 3)},
-    "activityBudget": ${Math.round(margin * 1)},
-    "summary": "Sammanfattning baserad på DENNA destination och önskemål"
+    "totalBudget": ${budgetHint},
+    "activityBudget": ${Math.round(safeMargin || 3000)},
+    "summary": "Kort sammanfattning av resan"
   },
-  "timeline": {
-    "destination": "[FAKTISK DESTINATION]",
-    "dates": [
-      { "label": "Dag 1", "event": "Ankomst", "highlight": false },
-      { "label": "Dag 2", "event": "[Aktivitet för denna destination]", "highlight": true },
-      { "label": "Dag 3", "event": "[Aktivitet för denna destination]", "highlight": true },
-      { "label": "Dag 4", "event": "[Aktivitet för denna destination]", "highlight": false },
-      { "label": "Dag 5", "event": "Hemresa", "highlight": false }
-    ]
-  },
+  "timeline": { "destination": "Palma", "dates": [{ "label": "Dag 1", "event": "Ankomst", "highlight": false }] },
   "packages": [
-    {
-      "id": "explorer",
-      "name": "[Kreativt namn för DENNA destination/resa]",
-      "tag": "experience",
-      "accommodation": "[Specifikt hotell/hostel för DENNA destination]",
-      "accommodationCost": 0,
-      "activities": "[Specifika aktiviteter för DENNA destination]",
-      "activitiesCost": 0,
-      "otherCosts": 0,
-      "totalCost": 0,
-      "margin": 0,
-      "aiComment": "[Kommentar specifik för DENNA resa]",
-      "bookingUrl": "https://www.booking.com/searchresults.html?ss=[DESTINATION_PÅ_ENGELSKA]&checkin=[YYYY-MM-DD]&checkout=[YYYY-MM-DD]&group_adults=2",
-      "provider": "Booking.com"
-    },
-    {
-      "id": "chill",
-      "name": "[Kreativt namn för DENNA destination/resa]",
-      "tag": "balance",
-      "accommodation": "[Annat specifikt hotell för DENNA destination]",
-      "accommodationCost": 0,
-      "activities": "[Andra specifika aktiviteter för DENNA destination]",
-      "activitiesCost": 0,
-      "otherCosts": 0,
-      "totalCost": 0,
-      "margin": 0,
-      "aiComment": "[Kommentar specifik för DENNA resa]",
-      "bookingUrl": "https://www.booking.com/searchresults.html?ss=[DESTINATION_PÅ_ENGELSKA]&checkin=[YYYY-MM-DD]&checkout=[YYYY-MM-DD]&group_adults=2",
-      "provider": "Booking.com"
-    },
-    {
-      "id": "ninja",
-      "name": "[Kreativt namn för DENNA destination/resa]",
-      "tag": "safety",
-      "accommodation": "[Hotell med bra marginal för DENNA destination]",
-      "accommodationCost": 0,
-      "activities": "[Utvalda aktiviteter för DENNA destination]",
-      "activitiesCost": 0,
-      "otherCosts": 0,
-      "totalCost": 0,
-      "margin": 0,
-      "aiComment": "[Kommentar specifik för DENNA resa]",
-      "bookingUrl": "https://www.booking.com/searchresults.html?ss=[DESTINATION_PÅ_ENGELSKA]&checkin=[YYYY-MM-DD]&checkout=[YYYY-MM-DD]&group_adults=2",
-      "provider": "Booking.com"
-    }
+    { "id": "explorer", "name": "...", "tag": "experience", "accommodation": "...", "accommodationCost": 8000, "activities": "...", "activitiesCost": 3000, "otherCosts": 1500, "totalCost": 12500, "margin": 2000, "aiComment": "...", "bookingUrl": "https://...", "provider": "Booking.com" }
   ],
-  "budgetCheck": {
-    "breakdown": [
-      { "label": "Boende", "amount": 0 },
-      { "label": "Aktiviteter", "amount": 0 },
-      { "label": "Marginal", "amount": 0 }
-    ],
-    "marginPerDay": 0,
-    "verdict": "[Omdöme om budget specifikt för DENNA destination]"
-  },
-  "goalName": "[Resmålets namn]-resa",
+  "budgetCheck": { "breakdown": [{ "label": "Boende", "amount": 8000 }], "marginPerDay": 400, "verdict": "..." },
+  "goalName": "Mallorca-resa",
   "goalEndDate": "${fmt(checkinDefault)}"
 }
 
-KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska destinationen. Beräkna alla kostnader (accommodationCost, activitiesCost, etc.) baserat på realistiska priser. Bygg bookingUrl med faktisk destination på engelska och faktiska datum.`;
+KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destinationen.`;
 
-    try {
-      const result = await base44.integrations.Core.InvokeLLM({
-        model: 'claude_sonnet_4_6',
-        prompt,
-        add_context_from_internet: true,
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            analysis: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'string' }, nights: { type: 'number' }, totalBudget: { type: 'number' }, activityBudget: { type: 'number' }, summary: { type: 'string' } } },
-            timeline: { type: 'object', properties: { destination: { type: 'string' }, dates: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, event: { type: 'string' }, highlight: { type: 'boolean' } } } } } },
-            packages: { type: 'array', items: { type: 'object', properties: { id: { type: 'string' }, name: { type: 'string' }, tag: { type: 'string' }, accommodation: { type: 'string' }, accommodationCost: { type: 'number' }, activities: { type: 'string' }, activitiesCost: { type: 'number' }, otherCosts: { type: 'number' }, totalCost: { type: 'number' }, margin: { type: 'number' }, aiComment: { type: 'string' }, bookingUrl: { type: 'string' }, provider: { type: 'string' } } } },
-            budgetCheck: { type: 'object', properties: { breakdown: { type: 'array', items: { type: 'object', properties: { label: { type: 'string' }, amount: { type: 'number' } } } }, marginPerDay: { type: 'number' }, verdict: { type: 'string' } } },
-            goalName: { type: 'string' },
-            goalEndDate: { type: 'string' }
-          }
-        }
-      });
+      const { result: rawResult, model } = await invokeTravelLlm(prompt);
+      console.log('[TravelAgent] raw LLM response', { model, rawType: typeof rawResult });
 
-      const hasValidPackages = Array.isArray(result?.packages) &&
-        result.packages.length > 0 &&
-        result.packages.some(p => p.totalCost > 0);
+      const result = normalizeTravelResponse(rawResult);
+      const validation = validateTravelResponse(result);
+      console.log('[TravelAgent] validation', validation);
 
-      if (!result || !hasValidPackages) {
-        throw new Error('Ofullständigt svar från AI');
+      if (!validation.ok) {
+        const err = new Error(`travel_response_invalid:${validation.reason}`);
+        err.validation = validation;
+        throw err;
       }
 
       setLatestBudgetCheck(result.budgetCheck);
@@ -573,8 +624,10 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
         { role: 'assistant', type: 'analysis', content: result.analysis?.summary || '', analysis: result.analysis },
         { role: 'assistant', type: 'timeline', timeline: result.timeline },
         { role: 'assistant', type: 'packages', packages: result.packages, goalName: result.goalName, goalEndDate: result.goalEndDate, destination: result.analysis?.destination },
-        { role: 'assistant', type: 'budgetcheck', budgetCheck: result.budgetCheck }
+        { role: 'assistant', type: 'budgetcheck', budgetCheck: result.budgetCheck },
       ];
+
+      console.log('[TravelAgent] rendering', { destination: result.analysis?.destination, packages: result.packages.length });
       setMessages(prev => {
         const updated = [...prev, ...newMsgs];
         saveToCache({ messages: updated });
@@ -587,14 +640,20 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
         message: userMsg,
         response: result.analysis?.summary || `Reseplan till ${result.analysis?.destination || 'destination'}`,
       });
-    } catch {
+    } catch (err) {
+      console.error('[TravelAgent] handleSend failed:', {
+        message: err?.message,
+        validation: err?.validation,
+        stack: err?.stack,
+      });
       setMessages(prev => [...prev, {
         role: 'assistant',
         type: 'text',
-        content: 'Det gick inte att hämta resförslag just nu. Försök igen om en stund eller beskriv resan på ett annat sätt.'
+        content: 'Det gick inte att hämta resförslag just nu. Försök igen om en stund eller beskriv resan på ett annat sätt.',
       }]);
     } finally {
       setLoading(false);
+      console.log('[TravelAgent] handleSend complete');
     }
   };
 
