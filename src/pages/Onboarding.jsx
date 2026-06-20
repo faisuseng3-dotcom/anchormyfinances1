@@ -15,6 +15,7 @@ import {
   onboardingBackBtn,
   onboardingFieldLabel,
 } from '@/components/onboarding/onboardingUi';
+import { anchorInputAmountClass, anchorInputSuffixClass } from '@/lib/anchorTheme';
 import { ensureOnboardingMode } from '@/lib/onboardingRouter';
 import { fetchOnboardingProfile } from '@/lib/authFlow';
 import { computeFreeMoney } from '@/lib/copilotTheme';
@@ -46,9 +47,9 @@ function AmountField({ icon: Icon, label, placeholder, value, onChange }) {
           placeholder={placeholder}
           value={formatNumber(value)}
           onChange={(e) => onChange(parseNumber(e.target.value))}
-          className="w-full h-14 text-lg pr-14 rounded-2xl bg-white/[0.05] border border-white/[0.1] text-white placeholder:text-white/30 px-4 outline-none focus:border-[#6B9FFF]/50 transition-colors"
+          className={`${anchorInputAmountClass} pr-14`}
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/35 text-[15px]">kr</span>
+        <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
       </div>
     </div>
   );

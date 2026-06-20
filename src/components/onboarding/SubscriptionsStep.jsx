@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X, Tv, Car, Heart, Apple, Shield, MoreHorizontal, Music } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
+import { anchorInputClass } from '@/lib/anchorTheme';
 
 const categories = [
   { id: 'entertainment', label: 'Nöje', icon: Music, color: 'bg-purple-100 text-purple-700' },
@@ -90,14 +91,14 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
               placeholder="Namn (t.ex. Netflix, Gym)"
               value={newSub.name}
               onChange={(e) => setNewSub({ ...newSub, name: e.target.value })}
-              className="h-12 rounded-lg"
+              className={anchorInputClass}
             />
             <Input
               type="number"
               placeholder="Belopp per månad"
               value={newSub.amount}
               onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })}
-              className="h-12 rounded-lg"
+              className={anchorInputClass}
             />
             <Input
               type="number"
@@ -106,7 +107,7 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
               max="31"
               value={newSub.billingDay}
               onChange={(e) => setNewSub({ ...newSub, billingDay: e.target.value })}
-              className="h-12 rounded-lg"
+              className={anchorInputClass}
             />
             <div className="flex flex-wrap gap-2">
               {categories.map(cat => (

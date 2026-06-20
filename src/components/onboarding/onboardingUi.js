@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { copilotPrimaryBtnClass, copilotSecondaryBtnClass } from '@/lib/copilotTheme';
+import { anchorInputLabelClass } from '@/lib/anchorTheme';
 
 export function onboardingChoiceCard(selected) {
   return cn(
@@ -23,4 +24,4 @@ export const onboardingSecondaryBtn = `${copilotSecondaryBtnClass} !h-14 !rounde
 
 export const onboardingBackBtn = `${copilotSecondaryBtnClass} flex-1 !h-14 !rounded-2xl`;
 
-export const onboardingFieldLabel = 'text-[13px] font-medium text-white/50 flex items-center gap-2';
+export const onboardingFieldLabel = `${anchorInputLabelClass} flex items-center gap-2`;

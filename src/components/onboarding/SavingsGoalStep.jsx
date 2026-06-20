@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Target, PiggyBank } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
 import GoalVisualPicker from '@/components/goals/GoalVisualPicker';
 import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
+import { anchorInputAmountClass, anchorInputClass, anchorInputSuffixClass } from '@/lib/anchorTheme';
+import { onboardingFieldLabel } from './onboardingUi';
 
 const suggestions = [
   { name: 'Semester i Thailand', amount: 25000, iconId: 'travel' },
@@ -113,35 +114,35 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-slate-300 flex items-center gap-2">
-              <Target className="w-4 h-4 text-emerald-500" />
+            <label className={onboardingFieldLabel}>
+              <Target className="w-4 h-4 text-[#9FB5FF]" />
               Namn på sparmål
-            </Label>
+            </label>
             <Input
               placeholder="t.ex. Thailand-resa, Min första bil"
               value={data.savingsGoalName || ''}
               onChange={(e) => { onChange({ ...data, savingsGoalName: e.target.value }); setError(null); }}
-              className="h-12 rounded-2xl-slate-200"
+              className={anchorInputClass}
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-slate-700">Målbelopp</Label>
+            <label className={onboardingFieldLabel}>Målbelopp</label>
             <div className="relative">
               <Input
                 type="text"
                 placeholder="50 000"
                 value={formatNumber(data.savingsGoal)}
                 onChange={(e) => { onChange({ ...data, savingsGoal: parseNumber(e.target.value) }); setError(null); }}
-                className="h-14 text-lg pr-12 rounded-2xl-slate-200"
+                className={`${anchorInputAmountClass} pr-12`}
               />
-              <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">kr</span>
+              <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
             </div>
           </div>
 
           {data.savingsGoal > 0 && (
             <div>
-              <Label className="text-slate-300 text-sm mb-2 block">Bild eller symbol (obligatoriskt)</Label>
+              <label className={`${onboardingFieldLabel} mb-2 block`}>Bild eller symbol (obligatoriskt)</label>
               <GoalVisualPicker
                 imageUrl={data.savingsGoalImageUrl}
                 iconId={data.savingsGoalIcon || 'default'}

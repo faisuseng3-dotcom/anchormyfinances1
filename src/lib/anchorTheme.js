@@ -83,5 +83,13 @@ export const anchorGhostButtonClass =
 export const anchorIconButtonClass =
   `${anchorButtonBaseClass} anchor-btn--icon rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.12] anchor-pressable`;
 
-export const anchorInputClass =
-  'organic-input flex w-full h-12 rounded-full px-5 text-[15px] text-white bg-white/[0.08] placeholder:text-white/35 focus-visible:outline-none focus-visible:shadow-[0_0_0_3px_rgba(74,122,255,0.25)] disabled:opacity-50';
+export const anchorInputBaseClass =
+  'anchor-input organic-input w-full transition-all focus-visible:shadow-[0_0_0_3px_rgba(74,122,255,0.25)]';
+
+export const anchorInputClass = `${anchorInputBaseClass} anchor-input--field`;
+
+export const anchorInputAmountClass = `${anchorInputBaseClass} anchor-input--amount`;
+
+export const anchorInputLabelClass = 'anchor-input-label';
+
+export const anchorInputSuffixClass = 'anchor-input-suffix';

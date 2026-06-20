@@ -162,7 +162,7 @@ export default function OnboardingHistoryImport({ pendingRows = [], onChange }) 
                 onChange={(e) => setPaste(e.target.value)}
                 placeholder="Klistra transaktionsrader här…"
                 rows={4}
-                className="w-full rounded-xl px-3 py-2.5 text-xs font-mono text-white bg-white/8 border-0 placeholder:text-white/30 resize-none focus:outline-none focus:ring-1 focus:ring-white/20"
+                className="anchor-input anchor-input--textarea w-full resize-none"
               />
 
               <div className="flex gap-2">

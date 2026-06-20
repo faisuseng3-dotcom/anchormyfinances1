@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Plus, X, Landmark } from 'lucide-react';
 import OnboardingStep from './OnboardingStep';
+import { anchorInputClass } from '@/lib/anchorTheme';
+import { onboardingFieldLabel } from './onboardingUi';
 
 export default function LoansStep({ data, onChange, onNext, onBack }) {
   const [newLoan, setNewLoan] = useState({ name: '', totalAmount: '', interestRate: '', monthlyPayment: '', billingDay: '' });
@@ -91,49 +92,49 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
         {showForm ? (
           <div className="p-4 dark-card rounded-xl space-y-4">
             <div>
-              <Label className="text-slate-300 text-sm">Namn på lån</Label>
+              <label className={`${onboardingFieldLabel} block mb-1`}>Namn på lån</label>
               <Input
                 placeholder="t.ex. Billån, CSN, Privatlån"
                 value={newLoan.name}
                 onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })}
-                className="h-12 rounded-lg mt-1"
+                className={anchorInputClass}
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label className="text-slate-300 text-sm">Totalt belopp</Label>
+                <label className={`${onboardingFieldLabel} block mb-1`}>Totalt belopp</label>
                 <Input
                   type="text"
                   placeholder="100 000"
                   value={newLoan.totalAmount}
                   onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })}
-                  className="h-12 rounded-lg mt-1"
+                  className={anchorInputClass}
                 />
               </div>
               <div>
-                <Label className="text-slate-300 text-sm">Ränta %</Label>
+                <label className={`${onboardingFieldLabel} block mb-1`}>Ränta %</label>
                 <Input
                   type="number"
                   step="0.1"
                   placeholder="5.5"
                   value={newLoan.interestRate}
                   onChange={(e) => setNewLoan({ ...newLoan, interestRate: e.target.value })}
-                  className="h-12 rounded-lg mt-1"
+                  className={anchorInputClass}
                 />
               </div>
             </div>
             <div>
-              <Label className="text-slate-300 text-sm">Månadskostnad</Label>
+              <label className={`${onboardingFieldLabel} block mb-1`}>Månadskostnad</label>
               <Input
                 type="text"
                 placeholder="2 500"
                 value={newLoan.monthlyPayment}
                 onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })}
-                className="h-12 rounded-lg mt-1"
+                className={anchorInputClass}
               />
             </div>
             <div>
-              <Label className="text-slate-300 text-sm">Förfallodag (1–31)</Label>
+              <label className={`${onboardingFieldLabel} block mb-1`}>Förfallodag (1–31)</label>
               <Input
                 type="number"
                 placeholder="t.ex. 25"
@@ -141,7 +142,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
                 max="31"
                 value={newLoan.billingDay}
                 onChange={(e) => setNewLoan({ ...newLoan, billingDay: e.target.value })}
-                className="h-12 rounded-lg mt-1"
+                className={anchorInputClass}
               />
             </div>
             <div className="flex gap-2">

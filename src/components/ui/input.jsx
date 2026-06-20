@@ -8,7 +8,7 @@ const Input = React.forwardRef(({ className, type, ...props }, ref) => {
     (<input
       type={type}
       className={cn(
-        "anchor-input md:text-sm",
+        "anchor-input anchor-input--field",
         className
       )}
       ref={ref}

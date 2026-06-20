@@ -7,6 +7,7 @@ import {
   onboardingBackBtn,
   onboardingFieldLabel,
 } from './onboardingUi';
+import { anchorInputAmountClass, anchorInputSuffixClass } from '@/lib/anchorTheme';
 import SubscriptionDetective from './SubscriptionDetective';
 import OnboardingHistoryImport from './OnboardingHistoryImport';
 import { CITY_PRESETS } from '@/lib/anchorBrain';
@@ -108,7 +109,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
           <select
             value={data.city || ''}
             onChange={(e) => onChange({ ...data, city: e.target.value })}
-            className={`${copilotInputClass} h-12`}
+            className={`${copilotInputClass} anchor-input`}
           >
             <option value="">Välj stad</option>
             {CITY_PRESETS.map((c) => (
@@ -134,9 +135,9 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                 const val = parseNumber(e.target.value);
                 onChange({ ...data, income: Math.max(0, val) });
               }}
-              className={`${copilotInputClass} h-14 text-lg pr-12`}
+              className={`${anchorInputAmountClass} pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
+            <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
           </div>
         </div>
 
@@ -156,7 +157,7 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                   value={item.label}
                   onChange={(e) => updateItem(item.id, 'label', e.target.value)}
                   placeholder="t.ex. Hyra"
-                  className={`${copilotInputClass} flex-1 h-11`}
+                  className={`${copilotInputClass} flex-1`}
                 />
                 <div className="relative w-32 flex-shrink-0">
                   <input
@@ -164,9 +165,9 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
                     value={item.amount}
                     onChange={(e) => updateItem(item.id, 'amount', e.target.value)}
                     placeholder={item.placeholder}
-                    className={`${copilotInputClass} h-11 pr-8`}
+                    className={`${copilotInputClass} pr-8`}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 text-xs">kr</span>
+                  <span className={`absolute right-3 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
                 </div>
                 {costItems.length > 1 && (
                   <button
@@ -248,9 +249,9 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               placeholder="0"
               value={formatNumber(data.buffer)}
               onChange={(e) => onChange({ ...data, buffer: parseNumber(e.target.value) })}
-              className={`${copilotInputClass} h-12 pr-12`}
+              className={`${copilotInputClass} pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
+            <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
           </div>
         </div>
 
@@ -265,9 +266,9 @@ export default function QuickDataStep({ data, onChange, onNext, onBack }) {
               placeholder="0"
               value={formatNumber(data.totalLoans || 0)}
               onChange={(e) => onChange({ ...data, totalLoans: parseNumber(e.target.value) })}
-              className={`${copilotInputClass} h-12 pr-12`}
+              className={`${copilotInputClass} pr-12`}
             />
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40">kr</span>
+            <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
           </div>
         </div>
 

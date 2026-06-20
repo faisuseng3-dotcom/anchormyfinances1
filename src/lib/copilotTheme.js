@@ -66,8 +66,9 @@ export const copilotCardClass =
 export const copilotPanelClass =
   'organic-surface rounded-[24px] p-5 transition-transform active:scale-[0.99]';
 
-export const copilotInputClass =
-  'organic-input w-full h-12 rounded-full bg-[var(--copilot-bg-card)] px-5 text-[15px] text-white placeholder:text-[var(--copilot-text-muted)] outline-none focus:shadow-[0_0_0_3px_rgba(74,122,255,0.25)] transition-all active:scale-[0.99]';
+import { anchorInputClass } from '@/lib/anchorTheme';
+
+export const copilotInputClass = anchorInputClass;
 
 export const copilotChipClass = (active) =>
   [
