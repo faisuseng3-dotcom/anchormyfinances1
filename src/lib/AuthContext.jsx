@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
 import { queryClientInstance } from '@/lib/query-client';
+import { clearAllLocalMemoryKeys } from '@/lib/anchorMemory';
 
 // All localStorage keys that contain user-specific data
 const USER_SESSION_KEYS = [
@@ -16,7 +17,7 @@ const USER_SESSION_KEYS = [
 
 const clearUserSessionData = () => {
   USER_SESSION_KEYS.forEach(key => localStorage.removeItem(key));
-  // Clear ALL React Query cached data so new user starts fresh
+  clearAllLocalMemoryKeys();
   queryClientInstance.clear();
 };
 

@@ -1,0 +1,31 @@
+{
+  "name": "AIChatMessage",
+  "type": "object",
+  "properties": {
+    "profileId": {
+      "type": "string",
+      "description": "FinancialProfile-id som äger konversationen"
+    },
+    "chatId": {
+      "type": "string",
+      "description": "Sessions-id för en konversationskedja"
+    },
+    "feature": {
+      "type": "string",
+      "description": "AI-funktion: coach, voice_assistant, purchase_analysis, future_pulse, travel_planner, business_assistant"
+    },
+    "message": {
+      "type": "string",
+      "description": "Användarens meddelande"
+    },
+    "response": {
+      "type": "string",
+      "description": "AI-svaret"
+    }
+  },
+  "required": [
+    "profileId",
+    "feature",
+    "message"
+  ]
+}

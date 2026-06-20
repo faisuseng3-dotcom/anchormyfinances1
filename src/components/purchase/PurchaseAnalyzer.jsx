@@ -11,6 +11,8 @@ import {
   sectionMetaClass,
   sectionSubtitleClass,
 } from '@/lib/anchorTheme';
+import { recordAIExchange, saveSemanticMemory } from '@/lib/anchorMemory';
+import { AI_FEATURES, MEMORY_TYPES } from '@/lib/anchorMemory/types';
 import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
 
 const fmt = (v) => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -129,6 +131,25 @@ export default function PurchaseAnalyzer({ profile }) {
       });
       const payload = res?.data || res;
       setResult({ ...payload, margin });
+      const productName = payload?.productName || url || 'köp';
+      const userMsg = `Jag funderar på att köpa ${productName}`;
+      const aiReply = payload?.aiInsight || payload?.verdictReason || payload?.verdict || '';
+      void recordAIExchange({
+        profile,
+        feature: AI_FEATURES.PURCHASE,
+        message: userMsg,
+        response: aiReply,
+      });
+      if (productName && productName !== 'köp') {
+        void saveSemanticMemory({
+          profile,
+          type: MEMORY_TYPES.MAJOR_PURCHASE,
+          value: `Funderar på att köpa ${productName}`,
+          sourceFeature: AI_FEATURES.PURCHASE,
+          keywords: [productName.toLowerCase()],
+          metadata: { price: payload?.price, verdict: payload?.verdict },
+        });
+      }
     } catch (err) {
       console.warn('purchaseAdvisor unavailable, fallback to direct InvokeLLM', err);
       const fallback = await base44.integrations.Core.InvokeLLM({
@@ -158,6 +179,13 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
         file_urls: fileUrls.length > 0 ? fileUrls : null,
       });
       setResult({ ...fallback, model: 'direct_fallback', margin });
+      const productName = fallback?.productName || url || 'köp';
+      void recordAIExchange({
+        profile,
+        feature: AI_FEATURES.PURCHASE,
+        message: `Jag funderar på att köpa ${productName}`,
+        response: fallback?.aiInsight || fallback?.verdict || '',
+      });
     } finally {
       setLoading(false);
     }

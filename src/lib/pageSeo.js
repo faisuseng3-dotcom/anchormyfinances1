@@ -106,6 +106,11 @@ export const PAGE_SEO = {
     description:
       'Hantera profil, inkomst, abonnemang, kommunikationsstil och integritet. Uppdatera det som styr dina ekonomiska beräkningar.',
   },
+  AIMemoryProfile: {
+    title: 'Min AI-profil — Anchor',
+    description:
+      'Se och hantera vad Anchor kommer ihåg om dina mål, köp och diskussioner. Exportera, redigera eller radera ditt AI-minne.',
+  },
   TravelPlanner: {
     title: 'Resplanering — Anchor',
     description:

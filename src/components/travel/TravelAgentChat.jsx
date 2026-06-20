@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Plane, Loader2, Calendar, Wallet, Star, Zap, CheckCircle, Hotel, ChevronLeft, ChevronRight, TrendingUp, ExternalLink, Backpack, Building2, Wine, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { base44 } from '@/api/base44Client';
+import { buildMemoryPromptContext, recordAIExchange } from '@/lib/anchorMemory';
+import { AI_FEATURES } from '@/lib/anchorMemory/types';
 import BookingModal from './BookingModal';
 
 const CACHE_KEY = 'anchor_travel_cache';
@@ -424,8 +426,14 @@ export default function TravelAgentChat({ profile }) {
     checkoutDefault.setDate(checkoutDefault.getDate() + 5);
     const fmt = (d) => d.toISOString().split('T')[0];
 
-    const prompt = `Du är "Anchor Travel Agent", en smart rese-AI med CFO-instinkt.
+    const memoryBlock = await buildMemoryPromptContext({
+      profile,
+      query: userMsg,
+      feature: AI_FEATURES.TRAVEL,
+    });
 
+    const prompt = `Du är "Anchor Travel Agent", en smart rese-AI med CFO-instinkt.
+${memoryBlock}
 Användaren skriver: "${userMsg}"
 
 Användarens ekonomi:
@@ -571,6 +579,13 @@ KRITISKT: Byt ut ALLA placeholder-värden med verkliga data för den faktiska de
         const updated = [...prev, ...newMsgs];
         saveToCache({ messages: updated });
         return updated;
+      });
+
+      void recordAIExchange({
+        profile,
+        feature: AI_FEATURES.TRAVEL,
+        message: userMsg,
+        response: result.analysis?.summary || `Reseplan till ${result.analysis?.destination || 'destination'}`,
       });
     } catch {
       setMessages(prev => [...prev, {

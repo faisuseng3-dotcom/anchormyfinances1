@@ -1,0 +1,56 @@
+{
+  "name": "AIMemory",
+  "type": "object",
+  "properties": {
+    "profileId": {
+      "type": "string",
+      "description": "FinancialProfile-id som äger minnet"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "goal",
+        "major_purchase",
+        "travel_plan",
+        "savings_goal",
+        "loan",
+        "family",
+        "business",
+        "subscription",
+        "budget_preference",
+        "ai_decision",
+        "insight"
+      ],
+      "description": "Semantiskt minnestyp"
+    },
+    "value": {
+      "type": "string",
+      "description": "Mänskligt läsbar sammanfattning av minnet"
+    },
+    "sourceFeature": {
+      "type": "string",
+      "description": "Vilken AI-funktion som skapade minnet"
+    },
+    "keywords": {
+      "type": "array",
+      "description": "Nyckelord för sökning och matchning",
+      "items": {
+        "type": "string"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Strukturerad extra data (belopp, datum, produktnamn)"
+    },
+    "active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Om minnet är aktivt och ska användas i prompts"
+    }
+  },
+  "required": [
+    "profileId",
+    "type",
+    "value"
+  ]
+}

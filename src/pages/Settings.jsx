@@ -10,7 +10,7 @@ import { createPageUrl } from '@/utils';
 import { motion } from 'framer-motion';
 import {
   Plus, X, Wallet, Home, PiggyBank, Target, LogOut, Shield, ChevronRight,
-  RefreshCw, TrendingUp, Users, GitBranch, Info,
+  RefreshCw, TrendingUp, Users, GitBranch, Info, Brain,
 } from 'lucide-react';
 import { ANCHOR_COACH_DISCLAIMER } from '@/lib/disclaimerCopy';
 import PageShell, { GlassSection } from '@/components/layout/PageShell';
@@ -436,6 +436,17 @@ export default function Settings() {
       </StaggerBlock>
 
       <StaggerBlock index={6}>
+        <DashboardSection nested title="AI-minne">
+          <DashboardListRow
+            href={createPageUrl('AIMemoryProfile')}
+            leading={<SettingsRowIcon icon={Brain} />}
+            title="Min AI-profil"
+            subtitle="Se, redigera och radera vad Anchor kommer ihåg"
+          />
+        </DashboardSection>
+      </StaggerBlock>
+
+      <StaggerBlock index={7}>
         <DashboardSection nested title="Mer">
           <DashboardListRow
             href={createPageUrl('Galaxy')}

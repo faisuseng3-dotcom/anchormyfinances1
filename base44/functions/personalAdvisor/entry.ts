@@ -30,6 +30,50 @@ async function incrementAiCoachUsage(base44: any, profile: any) {
   await base44.entities.FinancialProfile.update(profile.id, { aiCoachMonth: month, aiCoachCount: count });
   return count;
 }
+
+async function loadServerMemoryContext(base44: any, profile: any, query: string) {
+  if (profile?.aiMemoryEnabled === false || !profile?.id) return '';
+  try {
+    const parts: string[] = [];
+    const memories = await base44.entities.AIMemory.filter({ profileId: profile.id, active: true }, '-updated_date', 12);
+    if (memories?.length) {
+      const lines = memories.slice(0, 8).map((m: any) => `  • [${m.type}] ${m.value}`);
+      parts.push(`VIKTIGA MINNEN OM ANVÄNDAREN:\n${lines.join('\n')}`);
+    }
+    const chats = await base44.entities.AIChatMessage.filter({ profileId: profile.id }, '-created_date', 10);
+    if (chats?.length) {
+      const lines = chats.slice(0, 6).map((c: any) => {
+        const date = new Date(c.created_date || Date.now()).toLocaleDateString('sv-SE');
+        return `  • ${date} (${c.feature}): ${String(c.message || '').slice(0, 100)}`;
+      });
+      parts.push(`TIDIGARE DISKUSSIONER:\n${lines.join('\n')}`);
+    }
+    if (!parts.length) return '';
+    return `\nANCHOR-MINNE (använd för kontinuitet — referera naturligt):\n${parts.join('\n\n')}\n`;
+  } catch {
+    return '';
+  }
+}
+
+async function recordServerExchange(base44: any, profile: any, scenario: string, message: string, response: string) {
+  if (profile?.aiMemoryEnabled === false || !profile?.id || !message?.trim()) return;
+  try {
+    const featureMap: Record<string, string> = {
+      coach_chat: 'coach', question: 'coach', voice_expense_parse: 'voice_assistant',
+      voice_quick_answer: 'voice_assistant', purchase_analysis: 'purchase_analysis',
+      travel_planner: 'travel_planner',
+    };
+    await base44.entities.AIChatMessage.create({
+      profileId: profile.id,
+      chatId: 'default',
+      feature: featureMap[scenario] || 'other',
+      message: message.trim().slice(0, 2000),
+      response: String(response || '').slice(0, 4000),
+    });
+  } catch (e) {
+    console.warn('recordServerExchange failed:', e);
+  }
+}
 // ───────────────────────────────────────────────────────────────────────────
 
 const ADVISOR_RULES = `Du är Anchors personliga ekonomicoach — som en varm, klok vän som kan räkna.
@@ -422,9 +466,11 @@ Deno.serve(async (req) => {
 
     const snapshot = buildSnapshot(profile, transactions);
     const schema = SCHEMAS[scenario] || SCHEMAS.coach_message;
+    const memoryBlock = await loadServerMemoryContext(base44, profile, question || scenario);
+    const combinedHistory = [history, memoryBlock].filter(Boolean).join('\n\n');
     const prompt = buildScenarioPrompt(scenario, snapshot, {
       question,
-      history,
+      history: combinedHistory,
       transaction,
       subscription,
       coachType,
@@ -439,6 +485,11 @@ Deno.serve(async (req) => {
     });
 
     await incrementAiCoachUsage(base44, profile);
+
+    const responseText = result?.answer || result?.message || result?.headline || '';
+    if (question) {
+      await recordServerExchange(base44, profile, scenario, question, responseText);
+    }
 
     if (scenario === 'question') {
       return Response.json({ ...result, model, snapshot_summary: { margin: snapshot.monthly_margin_kr } });

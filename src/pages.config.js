@@ -24,6 +24,7 @@ import Insights from './pages/Insights';
 import Pricing from './pages/Pricing';
 import Mer from './pages/Mer';
 import Social from './pages/Social';
+import AIMemoryProfile from './pages/AIMemoryProfile';
 import __Layout from './Layout.jsx';
 
 export { PAGE_SEO, GLOBAL_PAGE_META, pageSeoFor, sanitizePageTitle } from './lib/pageSeo';
@@ -52,6 +53,7 @@ export const PAGES = {
   YearEndClosing,
   Mer,
   Social,
+  AIMemoryProfile,
 };
 
 export const pagesConfig = {

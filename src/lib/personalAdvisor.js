@@ -8,7 +8,11 @@ import {
 import { hasAdvisorProfileData, isLocalAdvisorProfile } from '@/lib/advisorProfile';
 import { sanitizeAdvisorResponse } from '@/lib/coachingCopy';
 import { invokeLlmForTask } from '@/lib/aiModelRouter';
-import { recallRelevantMemories, formatMemoryContext, rememberInsight } from '@/lib/aiMemory';
+import {
+  buildMemoryPromptContext,
+  recordAIExchange,
+  isMemoryEnabled,
+} from '@/lib/anchorMemory';
 import { canUseAiCoachClient } from '@/lib/billingPlans';
 
 function checkClientAiCoachLimit(profile) {
@@ -96,9 +100,11 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
 
   const snapshot = buildAdvisorSnapshot(activeProfile, activeTransactions);
   const schema = ADVISOR_SCHEMAS[scenario] || ADVISOR_SCHEMAS.coach_message;
-  const memoryQuery = question || transaction?.name || scenario;
-  const memories = recallRelevantMemories(memoryQuery, { limit: 4 });
-  const memoryBlock = formatMemoryContext(memories);
+  const memoryBlock = await buildMemoryPromptContext({
+    profile: activeProfile,
+    query: question || transaction?.name || scenario,
+    feature: scenario,
+  });
 
   const prompt = buildAdvisorScenarioPrompt(scenario, snapshot, {
     profile: activeProfile,
@@ -113,19 +119,20 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
 
   const result = await invokeLlmWithFallback(prompt, schema, scenario);
 
-  const headline = result.headline || result.message || result.answer;
-  if (headline && scenario !== 'voice_expense_parse') {
-    rememberInsight({ text: headline.slice(0, 280), type: 'coach', tags: [scenario] });
-  }
-  if (question) {
-    rememberInsight({ text: question.slice(0, 200), type: 'question', tags: [scenario] });
+  const responseText = result.answer || result.message || result.headline || '';
+  if (question && isMemoryEnabled(activeProfile)) {
+    void recordAIExchange({
+      profile: activeProfile,
+      scenario,
+      message: question,
+      response: responseText,
+    });
   }
 
   return sanitizeAdvisorResponse({
     ...result,
     snapshot_summary: { margin: snapshot.monthly_margin_kr },
     _source: 'client',
-    _memories_used: memories.length,
   });
 }
 
@@ -139,6 +146,19 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
  */
 export async function askPersonalAdvisor(params, options = {}) {
   const { profile, transactions, isDemoMode } = options;
+  const enrichedParams = { ...params };
+
+  if (hasAdvisorProfileData(profile) && isMemoryEnabled(profile)) {
+    const memoryBlock = await buildMemoryPromptContext({
+      profile,
+      query: params.question || params.scenario || '',
+      feature: params.scenario,
+    });
+    if (memoryBlock) {
+      enrichedParams.history = [params.history, memoryBlock].filter(Boolean).join('\n\n');
+      enrichedParams.memoryEnabled = true;
+    }
+  }
 
   if (!isDemoMode && hasAdvisorProfileData(profile)) {
     const limitError = checkClientAiCoachLimit(profile);
@@ -147,26 +167,26 @@ export async function askPersonalAdvisor(params, options = {}) {
 
   // Demo/Alex eller profil utan DB-id: använd alltid klienten med visad profil
   if (hasAdvisorProfileData(profile) && isLocalAdvisorProfile(profile, isDemoMode)) {
-    return askPersonalAdvisorClient(params, profile, transactions);
+    return askPersonalAdvisorClient(enrichedParams, profile, transactions);
   }
 
   try {
-    const res = await base44.functions.invoke('personalAdvisor', params);
+    const res = await base44.functions.invoke('personalAdvisor', enrichedParams);
     const payload = res?.data ?? res;
     if (payload?.error === 'ai_coach_limit') return sanitizeAdvisorResponse(payload);
     if (payload?.error) throw new Error(payload.error);
 
     // Server saknar profil men UI har data (t.ex. onboarding sparad lokalt)
     if (payload?.needs_profile && hasAdvisorProfileData(profile)) {
-      return askPersonalAdvisorClient(params, profile, transactions);
+      return askPersonalAdvisorClient(enrichedParams, profile, transactions);
     }
 
     return payload;
   } catch (err) {
     console.warn('personalAdvisor server unavailable, client fallback:', err?.message);
     if (hasAdvisorProfileData(profile)) {
-      return sanitizeAdvisorResponse(await askPersonalAdvisorClient(params, profile, transactions));
+      return sanitizeAdvisorResponse(await askPersonalAdvisorClient(enrichedParams, profile, transactions));
     }
-    return sanitizeAdvisorResponse(await askPersonalAdvisorClient(params));
+    return sanitizeAdvisorResponse(await askPersonalAdvisorClient(enrichedParams));
   }
 }

@@ -7,6 +7,8 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useAppMemoryContext } from '@/hooks/useAppMemoryContext';
 import { askCoachChat } from '@/lib/coachChat';
 import { COACH_SUGGESTIONS } from '@/lib/coachSuggestions';
+import { getRecentConversations, MEMORY_UX_NOTICE, isMemoryEnabled } from '@/lib/anchorMemory';
+import { AI_FEATURES } from '@/lib/anchorMemory/types';
 
 const AnchorIcon = () => (
   <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center"
@@ -28,6 +30,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
     role: 'assistant',
     content: 'Jag kan svara på allt om din ekonomi — och ändra budget, inkomst, lån och prenumerationer om du ber mig. Välj en fråga eller skriv själv.',
   }]);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
@@ -35,6 +38,33 @@ export default function AnchorChat({ hideSuggestions = false }) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
+
+  useEffect(() => {
+    if (!profile || historyLoaded) return;
+    let cancelled = false;
+    (async () => {
+      if (!isMemoryEnabled(profile)) {
+        setHistoryLoaded(true);
+        return;
+      }
+      const chats = await getRecentConversations(profile, { limit: 20, feature: AI_FEATURES.COACH });
+      if (cancelled || !chats.length) {
+        setHistoryLoaded(true);
+        return;
+      }
+      const restored = chats.flatMap((c) => {
+        const pair = [];
+        if (c.message) pair.push({ role: 'user', content: c.message });
+        if (c.response) pair.push({ role: 'assistant', content: c.response });
+        return pair;
+      }).slice(-16);
+      if (restored.length) {
+        setMessages((prev) => [prev[0], ...restored]);
+      }
+      setHistoryLoaded(true);
+    })();
+    return () => { cancelled = true; };
+  }, [profile, historyLoaded]);
 
   const buildHistory = useCallback((msgs, userMsg) => {
     return [...msgs, userMsg]
@@ -101,6 +131,11 @@ export default function AnchorChat({ hideSuggestions = false }) {
 
   return (
     <div className="flex flex-col" style={{ height: '100%' }}>
+      {isMemoryEnabled(profile) && (
+        <p className="px-4 pt-3 text-[12px] text-white/40 leading-relaxed shrink-0">
+          {MEMORY_UX_NOTICE}
+        </p>
+      )}
       <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" style={{ overscrollBehavior: 'contain' }}>
         <AnimatePresence initial={false}>
           {messages.map((msg, i) => (
