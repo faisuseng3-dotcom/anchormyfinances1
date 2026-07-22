@@ -1,0 +1,38 @@
+/* Revolut-inspired marketing shell — scoped to .anchor-marketing */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.anchor-marketing {
+  --mk-bg: #ffffff;
+  --mk-ink: #191c1f;
+  --mk-muted: #6b7280;
+  --mk-line: #e8eaed;
+  --mk-soft: #f4f5f7;
+  --mk-cta: #191c1f;
+  --mk-cta-text: #ffffff;
+  --mk-pill: #eceef1;
+  --mk-accent: #2563eb;
+  --mk-font: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: var(--mk-font);
+  color: var(--mk-ink);
+  background: var(--mk-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.anchor-marketing * {
+  box-sizing: border-box;
+}
+
+.anchor-marketing a {
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .anchor-marketing *,
+  .anchor-marketing *::before,
+  .anchor-marketing *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

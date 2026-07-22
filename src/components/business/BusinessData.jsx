@@ -1,7 +1,7 @@
 // Simulated business data for demo/presentation mode
 
 export const SIMULATED_BUSINESS = {
-  companyName: 'Anchor AB',
+  companyName: 'Lago AB',
   orgNr: '556901-2345',
   vatRate: 0.25,
   bankBalance: 284700,

@@ -129,7 +129,7 @@ export default function AIMemoryProfile() {
   return (
     <PageShell
       title="Min AI-profil"
-      subtitle="Det Anchor kommer ihåg om dig"
+      subtitle="Det Lago kommer ihåg om dig"
       backHref={createPageUrl('Settings')}
     >
       <GlassSection>
@@ -164,14 +164,14 @@ export default function AIMemoryProfile() {
           <GlassSection className="mt-6">
             <p className="anchor-card-title mb-1">Sparade minnen</p>
             <p className="anchor-type-body-sm mb-4">
-              Mål, köp, resor och andra saker du diskuterat med Anchor.
+              Mål, köp, resor och andra saker du diskuterat med Lago.
             </p>
 
             {loading ? (
               <p className="text-white/40 text-sm">Laddar minnen…</p>
             ) : memories.length === 0 ? (
               <p className="text-white/40 text-sm py-4">
-                Inga minnen ännu. Prata med Coach, analysera köp eller planera resor — Anchor sparar det viktigaste automatiskt.
+                Inga minnen ännu. Prata med Coach, analysera köp eller planera resor — Lago sparar det viktigaste automatiskt.
               </p>
             ) : (
               <div>

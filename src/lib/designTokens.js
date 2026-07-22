@@ -1,5 +1,5 @@
 /**
- * Anchor Premium Design System — ui-ux-pro-max aligned.
+ * Lago Premium Design System — ui-ux-pro-max aligned.
  * 4/8pt spacing grid, semantic color, elevation, typography, z-index.
  */
 

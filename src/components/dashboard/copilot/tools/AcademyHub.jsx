@@ -133,7 +133,7 @@ export default function AcademyHub({ profile, transactions, updateProfile }) {
 
   return (
     <CopilotToolShell
-      title="Anchor Academy"
+      title="Lago Academy"
       subtitle="Micro-learning i korta kapitel — bygg vanor som håller, ett steg i taget."
     >
       <div

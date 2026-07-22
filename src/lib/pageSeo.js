@@ -14,9 +14,9 @@ export const GLOBAL_PAGE_META = {
 };
 
 const DEFAULT = {
-  title: 'Anchor — personlig ekonomi',
+  title: 'Lago — personlig ekonomi',
   description:
-    'Anchor ger dig koll på inkomst, utgifter och vad du har kvar varje månad. Planera, spara och fatta beslut utifrån din egen svenska vardagsekonomi.',
+    'Lago ger dig koll på inkomst, utgifter och vad du har kvar varje månad. Planera, spara och fatta beslut utifrån din egen svenska vardagsekonomi.',
 };
 
 /** Komplett pageSeo-export per sida (inkl. global meta för SEO-scan). */
@@ -32,197 +32,197 @@ export function pageSeoFor(keyOrEntry) {
 
 export const PAGE_SEO = {
   Landing: {
-    title: 'Anchor — kom igång',
+    title: 'Lago — kom igång',
     description:
-      'Välj privat eller företagsekonomi och logga in säkert. Anchor hjälper dig se marginal, utgifter och sparmål i kronor — anpassat för Sverige.',
+      'Välj privat eller företagsekonomi och logga in säkert. Lago hjälper dig se marginal, utgifter och sparmål i kronor — anpassat för Sverige.',
   },
   Login: {
-    title: 'Logga in — Anchor',
+    title: 'Logga in — Lago',
     description:
-      'Logga in på ditt Anchor-konto. Befintliga användare når dashboard, budget och sparverktyg direkt efter säker inloggning.',
+      'Logga in på ditt Lago-konto. Befintliga användare når dashboard, budget och sparverktyg direkt efter säker inloggning.',
   },
   SignIn: {
-    title: 'Logga in — Anchor',
+    title: 'Logga in — Lago',
     description:
-      'Logga in på ditt Anchor-konto. Befintliga användare når dashboard, budget och sparverktyg direkt efter säker inloggning.',
+      'Logga in på ditt Lago-konto. Befintliga användare når dashboard, budget och sparverktyg direkt efter säker inloggning.',
   },
   CreateAccount: {
-    title: 'Skapa konto — Anchor',
+    title: 'Skapa konto — Lago',
     description:
-      'Skapa ett Anchor-konto och spara din ekonomiprofil. Kom igång med budget, sparmål och personliga insikter på några minuter.',
+      'Skapa ett Lago-konto och spara din ekonomiprofil. Kom igång med budget, sparmål och personliga insikter på några minuter.',
   },
   ForgotPassword: {
-    title: 'Glömt lösenord — Anchor',
+    title: 'Glömt lösenord — Lago',
     description:
-      'Återställ ditt Anchor-lösenord. Vi skickar en säker länk till din e-post så du kan välja ett nytt lösenord.',
+      'Återställ ditt Lago-lösenord. Vi skickar en säker länk till din e-post så du kan välja ett nytt lösenord.',
   },
   ResetPassword: {
-    title: 'Nytt lösenord — Anchor',
+    title: 'Nytt lösenord — Lago',
     description:
-      'Välj ett nytt lösenord för ditt Anchor-konto efter återställningslänken från e-post.',
+      'Välj ett nytt lösenord för ditt Lago-konto efter återställningslänken från e-post.',
   },
   Onboarding: {
-    title: 'Kom igång — Anchor',
+    title: 'Kom igång — Lago',
     description:
-      'Sätt upp din ekonomiprofil: mål, inkomst, fasta kostnader och grundkurs i svensk privatekonomi. Anchor anpassar verktygen efter dig.',
+      'Sätt upp din ekonomiprofil: mål, inkomst, fasta kostnader och grundkurs i svensk privatekonomi. Lago anpassar verktygen efter dig.',
   },
   Dashboard: {
-    title: 'Översikt — Anchor',
+    title: 'Översikt — Lago',
     description:
       'Din ekonomiska översikt: pengometer, marginal, kommande utgifter och snabbåtgärder. Se vad du har kvar att leva på den här månaden.',
   },
   Expenses: {
-    title: 'Utgifter — Anchor',
+    title: 'Utgifter — Lago',
     description:
-      'Följ utgifter per kategori, hitta sparpotential och jämför mot budget. Anchor visar var pengarna tar vägen i svenska kronor.',
+      'Följ utgifter per kategori, hitta sparpotential och jämför mot budget. Lago visar var pengarna tar vägen i svenska kronor.',
   },
   Loans: {
-    title: 'Lån & skulder — Anchor',
+    title: 'Lån & skulder — Lago',
     description:
       'Överblick över lån, räntor och månadskostnader. Planera amortering och se hur skulder påverkar din marginal.',
   },
   Optimize: {
-    title: 'Optimera — Anchor',
+    title: 'Optimera — Lago',
     description:
       'Jämför abonnemang och fasta kostnader. Hitta billigare alternativ och se hur mycket du kan spara varje månad.',
   },
   ProTools: {
-    title: 'Verktyg — Anchor',
+    title: 'Verktyg — Lago',
     description:
       'Avancerade verktyg: marginal, framtidsimulator, extra sparande och gemensam planering. För dig som vill gå djupare.',
   },
   Subscriptions: {
-    title: 'Prenumerationer — Anchor',
+    title: 'Prenumerationer — Lago',
     description:
       'Alla dina abonnemang på ett ställe. Se månadskostnad, nästa dragning och pausa eller avsluta tjänster.',
   },
   PurchaseSimulator: {
-    title: 'Köpsimulator — Anchor',
+    title: 'Köpsimulator — Lago',
     description:
       'Testa ett köp innan du betalar. Se hur det påverkar budget, buffert och sparmål — i kronor och i tid.',
   },
   Settings: {
-    title: 'Inställningar — Anchor',
+    title: 'Inställningar — Lago',
     description:
       'Hantera profil, inkomst, abonnemang, kommunikationsstil och integritet. Uppdatera det som styr dina ekonomiska beräkningar.',
   },
   AIMemoryProfile: {
-    title: 'Min AI-profil — Anchor',
+    title: 'Min AI-profil — Lago',
     description:
-      'Se och hantera vad Anchor kommer ihåg om dina mål, köp och diskussioner. Exportera, redigera eller radera ditt AI-minne.',
+      'Se och hantera vad Lago kommer ihåg om dina mål, köp och diskussioner. Exportera, redigera eller radera ditt AI-minne.',
   },
   TravelPlanner: {
-    title: 'Resplanering — Anchor',
+    title: 'Resplanering — Lago',
     description:
       'Planera resa inom budget. Räkna kostnad per dag, jämför alternativ och få reseinsikter kopplade till din ekonomi.',
   },
   WhatIf: {
-    title: 'Planera — Anchor',
+    title: 'Planera — Lago',
     description:
       'Kalender, läget nu och scenarier på en plats. Se vad som väntar och testa t.ex. lägre lön eller pausade utgifter.',
   },
   TransactionHistory: {
-    title: 'Historik — Anchor',
+    title: 'Historik — Lago',
     description:
       'Transaktioner, insikter och trender på en plats. Sök, filtrera och följ hur din ekonomi utvecklas över tid.',
   },
   Pricing: {
-    title: 'Priser — Anchor',
+    title: 'Priser — Lago',
     description:
-      'Anchor Gratis, Plus och Business — tydliga priser i kronor. Börja gratis och uppgradera när du vill.',
+      'Lago Gratis, Plus och Business — tydliga priser i kronor. Börja gratis och uppgradera när du vill.',
   },
   Pulse: {
-    title: 'Planera — Anchor',
+    title: 'Planera — Lago',
     description:
       'Kalender, läget nu och scenarier på en plats. Se marginal, kommande risker och vad som händer framåt.',
   },
   FinancialHistory: {
-    title: 'Historik — Anchor',
+    title: 'Historik — Lago',
     description:
       'Transaktioner, insikter och trender på en plats. Följ buffert och skuld över senaste halvåret.',
   },
   SecurityInfo: {
-    title: 'Säkerhet — Anchor',
+    title: 'Säkerhet — Lago',
     description:
-      'Så skyddar Anchor dina uppgifter: GDPR, EU-lagring och tydlig hantering av data. Läs hur vi arbetar med säkerhet.',
+      'Så skyddar Lago dina uppgifter: GDPR, EU-lagring och tydlig hantering av data. Läs hur vi arbetar med säkerhet.',
   },
   FuturePulse: {
-    title: 'Din Framtid — Anchor',
+    title: 'Din Framtid — Lago',
     description:
       'Optimistisk, realistisk eller pessimistisk — justera inkomst och utgifter med sliders och se 60-dagarsprognosen. Dela scenariot med vänner.',
   },
   PrivacyPolicy: {
-    title: 'Integritetspolicy — Anchor',
+    title: 'Integritetspolicy — Lago',
     description:
-      'Läs hur Anchor samlar in, lagrar och använder dina uppgifter enligt GDPR. Tydlig information om dina rättigheter.',
+      'Läs hur Lago samlar in, lagrar och använder dina uppgifter enligt GDPR. Tydlig information om dina rättigheter.',
   },
   TermsOfService: {
-    title: 'Användarvillkor — Anchor',
+    title: 'Användarvillkor — Lago',
     description:
-      'Villkor för användning av Anchor. Tjänstens omfattning, ansvar och dina rättigheter som användare i Sverige.',
+      'Villkor för användning av Lago. Tjänstens omfattning, ansvar och dina rättigheter som användare i Sverige.',
   },
   BusinessDashboard: {
-    title: 'Företag — Anchor Business',
+    title: 'Företag — Lago Business',
     description:
-      'Översikt för enskild firma och AB: kassa, moms, kvitton och bokföring. Anchor Business på svenska villkor.',
+      'Översikt för enskild firma och AB: kassa, moms, kvitton och bokföring. Lago Business på svenska villkor.',
   },
   BusinessOnboarding: {
-    title: 'Företagsstart — Anchor Business',
+    title: 'Företagsstart — Lago Business',
     description:
-      'Kom igång med Anchor Business. Välj bransch, verktyg och få en profil anpassad för svensk småföretagsekonomi.',
+      'Kom igång med Lago Business. Välj bransch, verktyg och få en profil anpassad för svensk småföretagsekonomi.',
   },
   LedgerVault: {
-    title: 'Historik — Anchor Business',
+    title: 'Historik — Lago Business',
     description:
       'Verifikat och transaktioner för företaget — sök, granska och exportera bokföringsunderlag.',
   },
   Import: {
-    title: 'Importera — Anchor Business',
+    title: 'Importera — Lago Business',
     description:
       'Importera banktransaktioner från CSV, PDF eller inklistrad text. Kategorisera och spara i företagets ekonomi.',
   },
   Budget: {
-    title: 'Budget — Anchor',
+    title: 'Budget — Lago',
     description:
       'Månadsbudget per kategori med tydlig kvar-att-spendera-på-logik. Följ hur väl du håller planen i kronor.',
   },
   SavingsGoals: {
-    title: 'Sparmål — Anchor',
+    title: 'Sparmål — Lago',
     description:
-      'Sätt sparmål, följ progress och få insikter om tempo och kontotyp. Anchor hjälper dig nå målen steg för steg.',
+      'Sätt sparmål, följ progress och få insikter om tempo och kontotyp. Lago hjälper dig nå målen steg för steg.',
   },
   Social: {
-    title: 'Vänner — Anchor',
+    title: 'Vänner — Lago',
     description:
       'Profil, vänner och integritet. Hantera @användarnamn och vem som kan se din publicerade ekonomi i Jämför.',
   },
   Galaxy: {
-    title: 'Jämför — Anchor',
+    title: 'Jämför — Lago',
     description:
       'Jämför anonymt hur du fördelar lönen mot andra i din stad eller ålder. Inspiration utan att visa känsliga detaljer.',
   },
   Squads: {
-    title: 'Squads — Anchor',
+    title: 'Squads — Lago',
     description:
       'Spara tillsammans i grupp. Skapa squad, bjud in vänner och följ gemensamma sparmål.',
   },
   YearEndClosing: {
-    title: 'Bokslut — Anchor Business',
+    title: 'Bokslut — Lago Business',
     description:
       'Årsbokslut och verifikat för svenska företag. Gå igenom underlag och stäng året strukturerat.',
   },
   AnchorAnalysis: {
-    title: 'AI-Coach — Anchor',
+    title: 'AI-Coach — Lago',
     description:
       'Din personliga ekonomicoach — råd utifrån marginal, mål och humör på svenska.',
   },
   Insights: {
-    title: 'Insikter — Anchor',
+    title: 'Insikter — Lago',
     description:
       'Personliga insikter om utgifter, marginal och risker. Korta rekommendationer du kan agera på direkt.',
   },
   AnchorAcademy: {
-    title: 'Lektioner — Anchor',
+    title: 'Lektioner — Lago',
     description:
       'Korta lektioner om svensk inflation, ränta, buffert och osynliga utgifter — kopplat till din egen ekonomi.',
   },

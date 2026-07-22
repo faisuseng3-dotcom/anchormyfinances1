@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * leakageEngine — Läckagedetektorn för Anchor Personal.
+ * leakageEngine — Läckagedetektorn för Lago Personal.
  * Hittar dolda abonnemang, dubbletter och vanemönster i transaktionsdata.
  */
 

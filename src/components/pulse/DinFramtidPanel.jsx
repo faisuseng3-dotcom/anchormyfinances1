@@ -81,7 +81,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
     const text = scenarioShareLine(forecast, activeMode);
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'Din Framtid — Anchor', text });
+        await navigator.share({ title: 'Din Framtid — Lago', text });
         return;
       } catch { /* fallback */ }
     }

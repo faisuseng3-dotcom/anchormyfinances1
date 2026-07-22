@@ -111,7 +111,7 @@ export default function Dashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center p-6 text-center">
         <div>
-          <p className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Välkommen till Anchor</p>
+          <p className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Välkommen till Lago</p>
           <button onClick={() => navigate(getOnboardingPath('personal'))}
           className="mt-4 px-8 py-3 rounded-full text-white font-semibold" style={{ background: 'var(--color-accent)' }}>
             Kom igång

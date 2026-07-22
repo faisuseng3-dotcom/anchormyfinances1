@@ -34,8 +34,8 @@ export default function LifePuzzle({ profile }) {
     try {
       await base44.integrations.Core.SendEmail({
         to: email,
-        subject: 'Inbjudan till Anchor',
-        body: `Hej!\n\nJag bjuder in dig till Anchor så vi kan planera ekonomi tillsammans.\n\n${window.location.origin}\n`,
+        subject: 'Inbjudan till Lago',
+        body: `Hej!\n\nJag bjuder in dig till Lago så vi kan planera ekonomi tillsammans.\n\n${window.location.origin}\n`,
       });
       setSent(true);
     } catch {

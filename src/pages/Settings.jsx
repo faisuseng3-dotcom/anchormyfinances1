@@ -441,7 +441,7 @@ export default function Settings() {
             href={createPageUrl('AIMemoryProfile')}
             leading={<SettingsRowIcon icon={Brain} />}
             title="Min AI-profil"
-            subtitle="Se, redigera och radera vad Anchor kommer ihåg"
+            subtitle="Se, redigera och radera vad Lago kommer ihåg"
           />
         </DashboardSection>
       </StaggerBlock>

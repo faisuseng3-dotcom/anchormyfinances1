@@ -137,7 +137,7 @@ async function askPersonalAdvisorClient(params, profile, transactions) {
 }
 
 /**
- * Anropa Anchors personliga rådgivare.
+ * Anropa Lagos personliga rådgivare.
  * @param {object} params - scenario, question, transaction, etc.
  * @param {object} [options]
  * @param {object} [options.profile] - aktiv profil (demo/onboarding/dashboard)

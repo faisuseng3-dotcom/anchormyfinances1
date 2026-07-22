@@ -59,7 +59,7 @@ export function buildWeeklyReport(profile, transactions) {
     saved,
     goalPct,
     vsLastWeek: prevSpent > 0 ? Math.round(((prevSpent - spent) / prevSpent) * 100) : null,
-    label: isSunday ? 'Din vecka i Anchor' : 'Senaste 7 dagarna',
+    label: isSunday ? 'Din vecka i Lago' : 'Senaste 7 dagarna',
     fmt,
   };
 }

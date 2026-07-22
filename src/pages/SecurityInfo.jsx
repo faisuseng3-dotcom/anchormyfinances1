@@ -68,7 +68,7 @@ export default function SecurityInfo() {
             </div>
           </div>
           <p className="text-slate-400 text-sm mt-3 leading-relaxed">
-            ANCHOR är byggt på tillit. Här är exakt hur din data hanteras – transparent och ärligt.
+            LAGO är byggt på tillit. Här är exakt hur din data hanteras – transparent och ärligt.
           </p>
         </motion.div>
       </div>

@@ -84,7 +84,7 @@ function wrapPage(path, Page) {
 
 const AuthenticatedApp = () => {
   const location = useLocation();
-  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated } = useAuth();
 
   if (isLoadingPublicSettings || isLoadingAuth) {
     return <DashboardSkeleton />;
@@ -106,7 +106,14 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/Dashboard" replace />} />
+      <Route
+        path="/"
+        element={
+          isAuthenticated
+            ? <Navigate to="/Dashboard" replace />
+            : <Navigate to="/Landing" replace />
+        }
+      />
       <Route path="/Login" element={wrapPage('Login', Login)} />
       <Route path="/SignIn" element={<Navigate to="/Login" replace />} />
       <Route path="/ForgotPassword" element={wrapPage('ForgotPassword', ForgotPassword)} />

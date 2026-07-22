@@ -82,7 +82,7 @@ export default function Pricing() {
               <p className={dashLabel}>Priser</p>
               <h1 className="anchor-type-display mt-1">Enkla priser</h1>
               <p className="anchor-type-body-sm mt-3 max-w-[28rem]">
-                Anchor är byggt för svensk vardagsekonomi. Börja gratis — uppgradera när du vill gå
+                Lago är byggt för svensk vardagsekonomi. Börja gratis — uppgradera när du vill gå
                 djupare.
               </p>
             </div>

@@ -1,5 +1,5 @@
 {
-  "name": "Anchor",
+  "name": "Lago",
   "site": {
     "installCommand": "npm install",
     "buildCommand": "npm run build",

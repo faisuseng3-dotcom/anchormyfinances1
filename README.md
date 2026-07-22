@@ -39,7 +39,7 @@ STRIPE_PRICE_BASIC=price_...    # 99 kr/mån SEK
 STRIPE_PRICE_PRO=price_...      # 149 kr/mån SEK
 STRIPE_PRICE_BUSINESS=price_... # 299 kr/mån SEK
 RESEND_API_KEY=re_...           # valfritt — e-post vid misslyckad betalning
-BILLING_EMAIL_FROM=Anchor <billing@dindomän.se>
+BILLING_EMAIL_FROM=Lago <billing@dindomän.se>
 ```
 
 Webhook endpoint: deploy `stripeWebhook` and register the URL in Stripe Dashboard

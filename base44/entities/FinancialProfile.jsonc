@@ -371,7 +371,7 @@
     "aiMemoryEnabled": {
       "type": "boolean",
       "default": true,
-      "description": "Om Anchor f\u00e5r spara och anv\u00e4nda AI-minne och konversationshistorik"
+      "description": "Om Lago f\u00e5r spara och anv\u00e4nda AI-minne och konversationshistorik"
     }
   },
   "required": [

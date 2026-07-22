@@ -1,5 +1,5 @@
 /**
- * Anchor Foundations — modul 2: svensk privatekonomi (skolan lär inte ut detta).
+ * Lago Foundations — modul 2: svensk privatekonomi (skolan lär inte ut detta).
  * Statiskt innehåll + quiz — ingen amerikansk “stock market first”-logik.
  */
 
@@ -16,7 +16,7 @@ export const MODULE_SCHOOL_GAP = {
       id: 'why_sweden',
       title: 'Varför inte amerikansk ekonomi-tänk?',
       body:
-        'I USA pratar många om aktier, kreditscore och 401k först. I Sverige styrs vardagen mer av bolån/Riksbanken, CSN, ISK, pension (tjänstepension/allmän), moms och ett kontantlöst samhälle. Anchor utgår från svensk marginal — vad som är kvar efter hyra, lån och fasta utgifter.',
+        'I USA pratar många om aktier, kreditscore och 401k först. I Sverige styrs vardagen mer av bolån/Riksbanken, CSN, ISK, pension (tjänstepension/allmän), moms och ett kontantlöst samhälle. Lago utgår från svensk marginal — vad som är kvar efter hyra, lån och fasta utgifter.',
       benefit:
         'Du slipper råd som inte passar din verklighet — appen räknar i kronor efter svenska vanor.',
     },
@@ -42,7 +42,7 @@ export const MODULE_SCHOOL_GAP = {
       body:
         'Riskspridning betyder inte “köp 10 aktier direkt”. För de flesta svenskar är första steget buffert på sparkonto, sedan pension/ISK om det passar. En buffert skyddar mot oförutsedda utgifter utan nya SMS-lån.',
       benefit:
-        'Anchor prioriterar kvar-att-leva-på och buffert — samma logik som svenska rådgivare, inte TikTok-stocktips.',
+        'Lago prioriterar kvar-att-leva-på och buffert — samma logik som svenska rådgivare, inte TikTok-stocktips.',
     },
     {
       id: 'handle',
@@ -50,7 +50,7 @@ export const MODULE_SCHOOL_GAP = {
       body:
         'Hantera = veta marginal, se småutgifter i summa, amortera dyr skuld, spara automatiskt. Varför = mindre stress, färre överraskningar, mer valfrihet. Gynnar dig = mer pengar kvar till det du faktiskt vill, inte till ränta och glömda abonnemang.',
       benefit:
-        'Pengometern och verktygen i Anchor bygger på just detta — inte på skuld eller skam.',
+        'Pengometern och verktygen i Lago bygger på just detta — inte på skuld eller skam.',
     },
   ],
   quizIntro:

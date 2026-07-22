@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
     }
 
     const payload = JSON.stringify({
-      title: title || 'Anchor',
+      title: title || 'Lago',
       body: body || '',
       icon: icon || '/icon-192.png',
       badge: '/icon-96.png',

@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Bakåtkompatibilitet — delegerar till Anchor Memory V2.
+ * Bakåtkompatibilitet — delegerar till Lago Memory V2.
  * @deprecated Importera från @/lib/anchorMemory istället.
  */
 import {

@@ -16,7 +16,7 @@ export default function QuickProblemStep({ data, onChange, onNext }) {
       step={0}
       totalSteps={4}
       title="Systemet är svårt — vad känns tyngst?"
-      subtitle="Det är inte ditt fel. Vi anpassar Anchor efter din situation — du kan ändra senare."
+      subtitle="Det är inte ditt fel. Vi anpassar Lago efter din situation — du kan ändra senare."
     >
       <div className="space-y-2.5">
         {TOP_CONCERNS.map((item) => {

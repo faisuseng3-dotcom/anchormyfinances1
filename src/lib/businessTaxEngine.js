@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * businessTaxEngine — Skatte-ångest-lösaren för Anchor Business.
+ * businessTaxEngine — Skatte-ångest-lösaren för Lago Business.
  * Räknar ut vad som är "dina" pengar vs moms/skatt-reserv.
  */
 

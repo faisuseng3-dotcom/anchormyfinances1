@@ -34,7 +34,7 @@ export default function PrivacyPolicy() {
             Personuppgiftsansvarig för behandlingen av dina uppgifter i denna tjänst är den fysiska person som registrerat applikationen, nedan kallad tjänsteutgivaren. Kontaktuppgifter anges under avsnitt 7.
           </p>
           <p className="mt-3">
-            Tjänsten tillhandahålls under namnet Anchor och är ett verktyg för personlig ekonomiplanering. Anchor är ett produktnamn, inte en juridisk person.
+            Tjänsten tillhandahålls under namnet Lago och är ett verktyg för personlig ekonomiplanering. Lago är ett produktnamn, inte en juridisk person.
           </p>
         </section>
 

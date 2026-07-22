@@ -1,4 +1,4 @@
-# Anchor Design System (MASTER)
+# Lago Design System (MASTER)
 
 Source: ui-ux-pro-max + Copilot Dashboard DNA (`src/lib/copilotTheme.js`, `src/index.css`).
 

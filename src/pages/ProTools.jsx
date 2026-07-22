@@ -120,7 +120,7 @@ export default function ProTools() {
         </div>
       </GlassSection>
 
-      <GlassSection title="Gå djupare" subtitle="Bygger på din profil i Anchor">
+      <GlassSection title="Gå djupare" subtitle="Bygger på din profil i Lago">
         <div className="space-y-2">
           {DEEP_MODULES.map((mod) => {
             const Icon = mod.icon;

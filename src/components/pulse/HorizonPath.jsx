@@ -4,7 +4,7 @@ import { Zap } from 'lucide-react';
 
 const fmt = (n) => Math.round(Math.abs(n || 0)).toLocaleString('sv-SE');
 
-// Anchor custom icons (inline SVG)
+// Lago custom icons (inline SVG)
 const PortalIcon = ({ color = '#0FDEBD', size = 22 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" strokeLinecap="round" strokeLinejoin="round"
     style={{ filter: `drop-shadow(0 0 6px ${color})` }}>

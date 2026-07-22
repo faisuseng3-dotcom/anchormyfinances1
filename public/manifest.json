@@ -1,6 +1,6 @@
 {
-  "name": "Anchor — personlig ekonomicoach",
-  "short_name": "Anchor",
+  "name": "Lago — personlig ekonomicoach",
+  "short_name": "Lago",
   "description": "Koll på inkomst, utgifter och vad du har kvar varje månad.",
   "start_url": "/Dashboard",
   "display": "standalone",

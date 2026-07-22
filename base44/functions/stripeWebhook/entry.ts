@@ -9,9 +9,9 @@ function planToMode(plan: PlanId) { return (plan === 'pro' || plan === 'business
 async function findProfileByEmail(base44: any, email: string) { const p = await base44.asServiceRole.entities.FinancialProfile.filter({ created_by: email }); return p[0] || null; }
 async function findProfileByStripeCustomer(base44: any, customerId: string) { const p = await base44.asServiceRole.entities.FinancialProfile.filter({ stripeCustomerId: customerId }); return p[0] || null; }
 async function sendPaymentFailedEmail(to: string, plan: string) {
-  const apiKey = Deno.env.get('RESEND_API_KEY'); const from = Deno.env.get('BILLING_EMAIL_FROM') || 'Anchor <billing@anchor.app>';
+  const apiKey = Deno.env.get('RESEND_API_KEY'); const from = Deno.env.get('BILLING_EMAIL_FROM') || 'Lago <billing@anchor.app>';
   if (!apiKey) { console.warn('[stripeWebhook] RESEND_API_KEY saknas'); return { sent: false }; }
-  const res = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from, to: [to], subject: 'Betalningen misslyckades — uppdatera ditt kort', html: `<p>Vi kunde inte dra din Anchor ${plan}-prenumeration. <a href="https://anchor.app/Settings">Gå till Inställningar</a></p>` }) });
+  const res = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ from, to: [to], subject: 'Betalningen misslyckades — uppdatera ditt kort', html: `<p>Vi kunde inte dra din Lago ${plan}-prenumeration. <a href="https://anchor.app/Settings">Gå till Inställningar</a></p>` }) });
   if (!res.ok) return { sent: false }; return { sent: true };
 }
 // ───────────────────────────────────────────────────────────────────────────
@@ -150,7 +150,7 @@ Deno.serve(async (req) => {
         }
 
         if (email) {
-          const planLabel = profile?.plan || 'Anchor';
+          const planLabel = profile?.plan || 'Lago';
           await sendPaymentFailedEmail(email, planLabel);
         }
         break;

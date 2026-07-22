@@ -111,7 +111,7 @@ export default function BusinessDashboard() {
             <Building2 className="w-5 h-5 text-white" />
           </div>
           <div>
-            <p className="anchor-wordmark text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
+            <p className="anchor-wordmark text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Lago Business</p>
             <h1 className="text-base font-black text-white tracking-tight">
               {TAB_TITLES[activeTab] || activeBiz.companyName}
             </h1>

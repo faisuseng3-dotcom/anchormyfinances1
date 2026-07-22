@@ -5,7 +5,7 @@ self.addEventListener('push', (event) => {
   try {
     data = event.data.json();
   } catch {
-    data = { title: 'Anchor', body: event.data.text() };
+    data = { title: 'Lago', body: event.data.text() };
   }
 
   const options = {
@@ -23,7 +23,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Anchor', options)
+    self.registration.showNotification(data.title || 'Lago', options)
   );
 });
 

@@ -32,7 +32,7 @@ export default function UITranslate() {
     <div className="space-y-2">
       <div className="flex items-center gap-2 px-1">
         <Languages className="w-3.5 h-3.5" style={{ color: '#4B7CF3' }} />
-        <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#4B7CF3' }}>Anchor översätter Fortnox</p>
+        <p className="text-xs font-bold uppercase tracking-wider" style={{ color: '#4B7CF3' }}>Lago översätter Fortnox</p>
       </div>
       <AnimatePresence>
         {active.map(e => (

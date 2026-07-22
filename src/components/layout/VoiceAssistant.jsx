@@ -275,7 +275,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                 <div className="w-16 h-16 rounded-2xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center mx-auto mb-4">
                   <Mic className="w-8 h-8 text-[#0FDEBD]" />
                 </div>
-                <h3 className="font-semibold text-white mb-2">Prata med Anchor</h3>
+                <h3 className="font-semibold text-white mb-2">Prata med Lago</h3>
                 <p className="text-sm text-white/50 max-w-xs mx-auto">
                   Fråga om budget, köp eller sparande — svar bygger på din profil och transaktioner.
                 </p>

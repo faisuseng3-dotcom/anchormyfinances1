@@ -225,7 +225,7 @@ export default function LedgerSwipeFeed() {
       <div className="py-10 text-center">
         <Rocket className="w-8 h-8 mx-auto mb-2" style={{ color: '#3DAA7A' }} aria-hidden />
         <p className="font-bold" style={{ color: '#3DAA7A' }}>Allt bokfört!</p>
-        <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.5)' }}>Anchor håller löpande koll. Nästa transaktion hanteras automatiskt.</p>
+        <p className="text-xs mt-1" style={{ color: 'rgba(155,173,184,0.5)' }}>Lago håller löpande koll. Nästa transaktion hanteras automatiskt.</p>
       </div>
     );
   }

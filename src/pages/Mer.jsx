@@ -42,7 +42,7 @@ export default function Mer() {
   const navigate = useNavigate();
 
   const handleFeedback = () => {
-    const subject = encodeURIComponent('Feedback — Anchor');
+    const subject = encodeURIComponent('Feedback — Lago');
     const body = encodeURIComponent('Hej!\n\nJag vill rapportera:\n\n[ ] Bugg\n[ ] Förslag\n[ ] Problem\n\nBeskrivning:\n');
     window.location.href = `mailto:hello@anchormyfinances.com?subject=${subject}&body=${body}`;
   };
@@ -62,14 +62,14 @@ export default function Mer() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-semibold text-white">Importera från banken</p>
-            <p className="text-[13px] text-white/45 mt-0.5">Ladda upp CSV — Anchor analyserar allt</p>
+            <p className="text-[13px] text-white/45 mt-0.5">Ladda upp CSV — Lago analyserar allt</p>
           </div>
           <ChevronRight size={16} className="text-white/25 shrink-0" />
         </button>
 
         <SECTION title="Konto">
           <ROW icon={Settings} label="Inställningar" sublabel="Profil, lön, abonnemang" onPress={() => navigate(createPageUrl('Settings'))} />
-          <ROW icon={CreditCard} label="Prenumeration" sublabel="Hantera din Anchor-plan" onPress={() => navigate(createPageUrl('Pricing'))} />
+          <ROW icon={CreditCard} label="Prenumeration" sublabel="Hantera din Lago-plan" onPress={() => navigate(createPageUrl('Pricing'))} />
           <ROW icon={Shield} label="Säkerhet & integritet" sublabel="GDPR, lösenord" onPress={() => navigate(createPageUrl('SecurityInfo'))} last />
         </SECTION>
 
@@ -86,7 +86,7 @@ export default function Mer() {
           <ROW icon={Users} label="Social" sublabel="Dela och jämför" onPress={() => navigate(createPageUrl('Social'))} />
           <ROW icon={Users} label="Squads" sublabel="Spara tillsammans" onPress={() => navigate(createPageUrl('Squads'))} color="#a78bfa" />
           <ROW icon={Plane} label="Reseplanering" sublabel="AI-agent för din nästa resa" onPress={() => navigate(createPageUrl('TravelPlanner'))} />
-          <ROW icon={BookOpen} label="Anchor Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} color="#4fc3f7" last />
+          <ROW icon={BookOpen} label="Lago Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} color="#4fc3f7" last />
         </SECTION>
 
         <SECTION title="Hjälp oss bli bättre">
@@ -110,7 +110,7 @@ export default function Mer() {
         </button>
 
         <p className="text-[11px] text-white/20 text-center">
-          Anchor · hello@anchormyfinances.com
+          Lago · hello@anchormyfinances.com
         </p>
       </div>
     </PageShell>

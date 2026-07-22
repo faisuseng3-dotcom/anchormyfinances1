@@ -51,7 +51,7 @@ function SIEExport() {
 
   const handleExport = () => {
     // Simulate SIE file generation
-    const sie = `#FLAGGA 0\n#PROGRAM "Anchor Business" 1.0\n#GEN ${new Date().toISOString().slice(0,10).replace(/-/g,'')}\n#FNAMN "Ditt Företag AB"\n#KONTO 5420 "Programvaror"\n#KONTO 5800 "Resekostnader"\n#KONTO 5900 "Representation"\n#VER "" 1 ${new Date().toISOString().slice(0,10).replace(/-/g,'')} "Adobe Inc"\n{#TRANS 5420 {} -699.00\n#TRANS 2641 {} 139.80\n#TRANS 1930 {} 559.20}\n`;
+    const sie = `#FLAGGA 0\n#PROGRAM "Lago Business" 1.0\n#GEN ${new Date().toISOString().slice(0,10).replace(/-/g,'')}\n#FNAMN "Ditt Företag AB"\n#KONTO 5420 "Programvaror"\n#KONTO 5800 "Resekostnader"\n#KONTO 5900 "Representation"\n#VER "" 1 ${new Date().toISOString().slice(0,10).replace(/-/g,'')} "Adobe Inc"\n{#TRANS 5420 {} -699.00\n#TRANS 2641 {} 139.80\n#TRANS 1930 {} 559.20}\n`;
     const blob = new Blob([sie], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

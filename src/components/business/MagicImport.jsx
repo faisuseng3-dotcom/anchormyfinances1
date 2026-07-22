@@ -86,7 +86,7 @@ export default function MagicImport({ onClose, onComplete }) {
             {phase === 'upload' && (
               <motion.div key="upload" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 <p className="text-base font-bold text-center leading-snug" style={{ color: '#F0EAD6' }}>
-                  Ladda upp ditt kontoutdrag så bygger Anchor din ekonomiavdelning på 5 sekunder.
+                  Ladda upp ditt kontoutdrag så bygger Lago din ekonomiavdelning på 5 sekunder.
                 </p>
 
                 {/* Drag & drop zone */}

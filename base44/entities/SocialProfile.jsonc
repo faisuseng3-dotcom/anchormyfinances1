@@ -8,7 +8,7 @@
     },
     "username": {
       "type": "string",
-      "description": "Unikt Anchor-anv\u00e4ndarnamn (t.ex. @alice)"
+      "description": "Unikt Lago-anv\u00e4ndarnamn (t.ex. @alice)"
     },
     "bio": {
       "type": "string",

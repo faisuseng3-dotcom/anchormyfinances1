@@ -360,7 +360,7 @@ export const ALEX_TRANSACTIONS = [
   {
     id: 'ax_savings',
     label: 'Sparinsättning — Japan-resa',
-    vendor: 'Anchor Sparande',
+    vendor: 'Lago Sparande',
     amount: -2500,
     category: 'savings',
     type: 'savings_deposit',

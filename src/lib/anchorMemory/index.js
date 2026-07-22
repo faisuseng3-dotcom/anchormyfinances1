@@ -1,6 +1,6 @@
 // @ts-nocheck
 /**
- * Anchor Memory V2 — gemensamt minne för alla AI-funktioner.
+ * Lago Memory V2 — gemensamt minne för alla AI-funktioner.
  */
 
 import { base44 } from '@/api/base44Client';
@@ -18,8 +18,18 @@ import {
 const CHAT_FETCH_LIMIT = 30;
 const MEMORY_FETCH_LIMIT = 120;
 const RECALL_LIMIT = 8;
+const ENTITY_FETCH_TIMEOUT_MS = 8000;
 
 let entitiesAvailable = null;
+
+function withFetchTimeout(promise, label) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${label}_timeout`)), ENTITY_FETCH_TIMEOUT_MS);
+    }),
+  ]);
+}
 
 async function checkEntities() {
   if (entitiesAvailable !== null) return entitiesAvailable;
@@ -77,7 +87,10 @@ async function fetchChats(profileId, { limit = CHAT_FETCH_LIMIT, feature } = {})
       const filter = feature
         ? { profileId, feature }
         : { profileId };
-      const rows = await base44.entities.AIChatMessage.filter(filter, '-created_date', limit);
+      const rows = await withFetchTimeout(
+        base44.entities.AIChatMessage.filter(filter, '-created_date', limit),
+        'AIChatMessage_filter',
+      );
       return (rows || []).map(normalizeChat);
     } catch (err) {
       console.warn('AIChatMessage fetch failed, using local:', err?.message);
@@ -99,10 +112,13 @@ async function fetchMemories(profileId, { activeOnly = true } = {}) {
 
   if (hasEntities && profileId && !String(profileId).startsWith('guest_') && profileId !== 'local') {
     try {
-      const rows = await base44.entities.AIMemory.filter(
-        { profileId },
-        '-updated_date',
-        MEMORY_FETCH_LIMIT,
+      const rows = await withFetchTimeout(
+        base44.entities.AIMemory.filter(
+          { profileId },
+          '-updated_date',
+          MEMORY_FETCH_LIMIT,
+        ),
+        'AIMemory_filter',
       );
       return (rows || [])
         .map(normalizeMemory)
@@ -301,7 +317,7 @@ export async function buildMemoryPromptContext({
   if (activity) parts.push(activity);
 
   if (!parts.length) return '';
-  return `\nANCHOR-MINNE (använd för kontinuitet — referera naturligt, nämn inte "minne" eller teknik):\n${parts.join('\n\n')}\n`;
+  return `\nLAGO-MINNE (använd för kontinuitet — referera naturligt, nämn inte "minne" eller teknik):\n${parts.join('\n\n')}\n`;
 }
 
 function readAppActivity(profile) {

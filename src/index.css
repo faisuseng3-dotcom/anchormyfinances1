@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* ── Anchor Premium tokens (ui-ux-pro-max) ── */
+    /* ── Lago Premium tokens (ui-ux-pro-max) ── */
     --anchor-page-gradient: linear-gradient(145deg, #0e1fa8 0%, #050d28 100%);
     /* Copilot aliases → anchor tokens */
     --copilot-bg-deep: var(--color-background-primary);
@@ -198,7 +198,7 @@
     touch-action: pan-y;
   }
 
-  /* ── Anchor brand wordmark — används överallt där "Anchor" visas som namn ── */
+  /* ── Lago brand wordmark — används överallt där "Lago" visas som namn ── */
   .anchor-wordmark {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     font-weight: 800;
@@ -285,7 +285,7 @@
   }
 }
 
-/* Anchor — Revolut / Monzo / Apple Wallet canvas */
+/* Lago — Revolut / Monzo / Apple Wallet canvas */
 @layer components {
   .anchor-page {
     background: transparent;

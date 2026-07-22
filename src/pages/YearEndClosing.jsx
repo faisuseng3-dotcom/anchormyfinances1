@@ -59,7 +59,7 @@ export default function YearEndClosing() {
           </button>
         </Link>
         <div className="flex-1">
-          <p className="anchor-wordmark text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Anchor Business</p>
+          <p className="anchor-wordmark text-xs" style={{ color: 'rgba(255,255,255,0.6)' }}>Lago Business</p>
           <h1 className="text-base font-black text-white tracking-tight">Compliance Pilot — Årsavslut</h1>
         </div>
         <div className="text-right">
@@ -167,7 +167,7 @@ function ReconcileStep({ onComplete }) {
       className="rounded-3xl p-5 space-y-4" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
       <p className="font-black text-lg" style={{ color: '#1A2332' }}>Steg 1 — Bankavstämning</p>
       <p className="text-sm" style={{ color: '#4A5568' }}>
-        Anchor summerar dina bokförda transaktioner på konto 1930. Ange ditt riktiga banksaldo per 31 dec för att hitta differenser.
+        Lago summerar dina bokförda transaktioner på konto 1930. Ange ditt riktiga banksaldo per 31 dec för att hitta differenser.
       </p>
 
       <div className="rounded-2xl p-4" style={{ background: '#F4F6F8' }}>
@@ -318,7 +318,7 @@ function TaxMapStep({ isAB, companyName, onComplete }) {
       className="rounded-3xl p-5 space-y-4" style={{ background: '#fff', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
       <p className="font-black text-lg" style={{ color: '#1A2332' }}>Steg 3 — {formName}</p>
       <p className="text-sm" style={{ color: '#4A5568' }}>
-        Här ser du hur Anchors data mappar till Skatteverkets blanketter. Kopiera värdena till rätt rutor.
+        Här ser du hur Lagos data mappar till Skatteverkets blanketter. Kopiera värdena till rätt rutor.
       </p>
 
       {loading ? (
@@ -355,7 +355,7 @@ function TaxMapStep({ isAB, companyName, onComplete }) {
       <div className="rounded-2xl p-3" style={{ background: '#F0FFF4', boxShadow: 'var(--anchor-shadow-1)' }}>
         <p className="text-xs flex items-start gap-1.5" style={{ color: '#0D7377' }}>
           <Lightbulb className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" aria-hidden />
-          Logga in på <strong>skatteverket.se</strong> och välj {formName}. Kopiera värdena ovan till motsvarande rutor. Anchor sparar ett kalkylblad åt dig.
+          Logga in på <strong>skatteverket.se</strong> och välj {formName}. Kopiera värdena ovan till motsvarande rutor. Lago sparar ett kalkylblad åt dig.
         </p>
       </div>
 

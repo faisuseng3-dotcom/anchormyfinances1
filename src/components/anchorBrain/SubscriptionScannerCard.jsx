@@ -32,7 +32,7 @@ export default function SubscriptionScannerCard({ profile, transactions, variant
     const text = copy?.share_caption || scan.share_line;
     if (navigator.share) {
       try {
-        await navigator.share({ text, title: 'Anchor' });
+        await navigator.share({ text, title: 'Lago' });
         return;
       } catch {
         /* cancelled */

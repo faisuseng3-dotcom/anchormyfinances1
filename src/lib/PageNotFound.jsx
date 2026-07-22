@@ -19,7 +19,7 @@ export default function PageNotFound() {
         <div className="space-y-2">
           <h1 className="text-[24px] font-light tracking-tight text-white">Sidan finns inte</h1>
           <p className="text-[15px] text-white/50 leading-relaxed">
-            <span className="text-white/70">{pageName}</span> kunde inte hittas i Anchor.
+            <span className="text-white/70">{pageName}</span> kunde inte hittas i Lago.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">

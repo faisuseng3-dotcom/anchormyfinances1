@@ -84,13 +84,13 @@ export default function BookingModal({ pkg, onClose }) {
               </p>
               <p className="text-xs text-slate-400 leading-relaxed">
                 Din reseplan väntar här när du är klar!<br/>
-                Stäng fliken för att komma tillbaka till Anchor.
+                Stäng fliken för att komma tillbaka till Lago.
               </p>
             </div>
 
             {/* Affiliate disclosure */}
             <p className="text-[10px] text-slate-600 text-center">
-              Anchor kan få provision om du bokar via denna länk. Priset påverkas inte.
+              Lago kan få provision om du bokar via denna länk. Priset påverkas inte.
             </p>
 
             {/* CTA */}

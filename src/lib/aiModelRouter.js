@@ -1,5 +1,5 @@
 /**
- * Anchor AI Stack — central routing för modellval per uppgift.
+ * Lago AI Stack — central routing för modellval per uppgift.
  *
  * Claude Sonnet 4  → coaching, empati, faktabaserade råd
  * Gemini 2.5 Pro   → mönster, FuturePulse, långa kontexter
@@ -60,7 +60,7 @@ export const AI_TASKS = {
     label: 'Coaching & empati',
     primary: 'claude_sonnet_4_6',
     fallback: 'gpt_5_5',
-    uses: ['AI-coach', 'Emotionell incheckning', 'Anchor Academy', 'Avdragsrådgivning'],
+    uses: ['AI-coach', 'Emotionell incheckning', 'Lago Academy', 'Avdragsrådgivning'],
   },
   pattern_forecast: {
     id: 'pattern_forecast',
@@ -114,7 +114,7 @@ export const AI_STACK_LAYERS = [
   {
     model: 'claude_sonnet_4_6',
     badge: 'Primär',
-    title: 'Claude Sonnet 4 — Anchors hjärna',
+    title: 'Claude Sonnet 4 — Lagos hjärna',
     subtitle: 'Huvudmodell för coaching, analys och empati',
     stats: [
       { label: 'Empati & ton', value: 'Bäst' },

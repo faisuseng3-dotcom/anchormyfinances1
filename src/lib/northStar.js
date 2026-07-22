@@ -1,11 +1,11 @@
 /**
- * North Star Metric för Anchor:
+ * North Star Metric för Lago:
  * Användare som öppnar appen ≥3 gånger/vecka för att kolla "Säkert att spendera".
  */
 export const NORTH_STAR = {
   id: 'weekly_safe_to_spend_opens',
   label: 'Veckovis koll på Säkert att spendera',
-  description: 'Användare som öppnar Anchor minst 3 gånger per vecka för att kolla sitt Säkert att spendera.',
+  description: 'Användare som öppnar Lago minst 3 gånger per vecka för att kolla sitt Säkert att spendera.',
   targetPerWeek: 3,
 };
 

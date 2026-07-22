@@ -1,5 +1,5 @@
 /**
- * Anchor design system — Revolut / Monzo / Apple Wallet inspired.
+ * Lago design system — Revolut / Monzo / Apple Wallet inspired.
  * One canvas, typography-led hierarchy, dividers instead of nested boxes.
  */
 

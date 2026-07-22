@@ -4,7 +4,7 @@
  */
 
 export const ANCHOR_COACH_DISCLAIMER =
-  'Anchor är ett planeringsverktyg, inte licensierad finansiell rådgivning. ' +
+  'Lago är ett planeringsverktyg, inte licensierad finansiell rådgivning. ' +
   'Beräkningar och coach-texter bygger på de siffror du anger och är simuleringar — ' +
   'inte rekommendationer att köpa, sälja eller omstrukturera tillgångar eller skulder. ' +
   'Vid större ekonomiska beslut, kontakta en certifierad rådgivare eller auktoriserad revisor.';
@@ -13,6 +13,7 @@ const DISCLAIMER_PATTERNS = [
   /detta är inte finansiell rådgivning\.?/gi,
   /inte finansiell rådgivning\.?/gi,
   /anchor tillhandahåller inte licensierad finansiell rådgivning\.?/gi,
+  /lago tillhandahåller inte licensierad finansiell rådgivning\.?/gi,
   /all[aä] beräkningar[^.]*simuleringar[^.]*\./gi,
   /ska inte betraktas som rekommendationer[^.]*\./gi,
   /kontakta (en )?certifierad[^.]*\./gi,

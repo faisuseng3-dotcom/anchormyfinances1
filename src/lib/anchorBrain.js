@@ -1,5 +1,5 @@
 /**
- * Anchor Brain — deterministisk ekonomimotor + ton/triggers för AI-lager.
+ * Lago Brain — deterministisk ekonomimotor + ton/triggers för AI-lager.
  * LLM formulerar; denna modul räknar och bestämmer när.
  */
 import { getMonthlyMargin } from '@/lib/financialUtils';
@@ -136,7 +136,7 @@ export function scanSubscriptions(profile, transactions = []) {
     hidden_recurring_kr: Math.round(hiddenKr),
     subscription_count: Math.max(subs.length, count),
     items: subs.map((s) => ({ name: s.name, kr: s.amount || 0, source: 'profile' })),
-    share_line: `Jag betalar ${Math.round(totalKr).toLocaleString('sv-SE')} kr/mån på abonnemang i Anchor`,
+    share_line: `Jag betalar ${Math.round(totalKr).toLocaleString('sv-SE')} kr/mån på abonnemang i Lago`,
   };
 }
 

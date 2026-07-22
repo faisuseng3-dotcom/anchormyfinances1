@@ -9,7 +9,7 @@ import { getMonthlyMargin } from '@/lib/financialUtils';
 import { tryLocalCoachAction } from '@/lib/coachLocalActions';
 
 export const COACH_OFF_TOPIC =
-  'Jag är Anchors ekonomicoach och svarar bara på frågor om din privatekonomi — budget, sparande, lån, prenumerationer, inkomst och utgifter. Ställ en ekonomifråga så hjälper jag dig.';
+  'Jag är Lagos ekonomicoach och svarar bara på frågor om din privatekonomi — budget, sparande, lån, prenumerationer, inkomst och utgifter. Ställ en ekonomifråga så hjälper jag dig.';
 
 const BUDGET_FIELD_MAP = {
   budget_food: 'food',

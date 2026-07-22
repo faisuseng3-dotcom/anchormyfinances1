@@ -31,10 +31,10 @@ export default function TermsOfService() {
             1. Tjänstens karaktär
           </h2>
           <p>
-            Anchor är ett verktyg för personlig ekonomiplanering och budgetsimulering. Tjänsten beräknar prognoser och sammanställer ekonomisk data uteslutande baserat på de uppgifter du själv anger.
+            Lago är ett verktyg för personlig ekonomiplanering och budgetsimulering. Tjänsten beräknar prognoser och sammanställer ekonomisk data uteslutande baserat på de uppgifter du själv anger.
           </p>
           <p className="mt-3">
-            Anchor är ett produktnamn och utgör inte en juridisk person. Tjänsten tillhandahålls av den fysiska person som registrerat applikationen hos tjänsteleverantören Base44.
+            Lago är ett produktnamn och utgör inte en juridisk person. Tjänsten tillhandahålls av den fysiska person som registrerat applikationen hos tjänsteleverantören Base44.
           </p>
           <p className="mt-3">
             Genom att registrera ett konto och använda tjänsten godkänner du dessa villkor i sin helhet.
@@ -46,7 +46,7 @@ export default function TermsOfService() {
             2. Inte finansiell rådgivning
           </h2>
           <p>
-            Anchor tillhandahåller inte licensierad finansiell rådgivning. Alla beräkningar, prognoser och sammanfattningar i tjänsten är simuleringar baserade på de siffror du anger och ska inte betraktas som rekommendationer att köpa, sälja eller omstrukturera tillgångar eller skulder.
+            Lago tillhandahåller inte licensierad finansiell rådgivning. Alla beräkningar, prognoser och sammanfattningar i tjänsten är simuleringar baserade på de siffror du anger och ska inte betraktas som rekommendationer att köpa, sälja eller omstrukturera tillgångar eller skulder.
           </p>
           <p className="mt-3">
             Vid ekonomiska beslut av väsentlig karaktär rekommenderas kontakt med en certifierad finansiell rådgivare eller auktoriserad revisor.

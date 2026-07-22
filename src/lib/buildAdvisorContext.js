@@ -93,7 +93,7 @@ export function getAdvisorSystemRules(profile) {
   return `${ADVISOR_SYSTEM_RULES}\n\n${tone}`;
 }
 
-export const ADVISOR_SYSTEM_RULES = `Du är Anchors personliga ekonomicoach — som en varm, klok vän som kan räkna, inte en chatbot eller rapport.
+export const ADVISOR_SYSTEM_RULES = `Du är Lagos personliga ekonomicoach — som en varm, klok vän som kan räkna, inte en chatbot eller rapport.
 
 KRITISKT:
 - Varje svar MÅSTE vara unikt för denna persons siffror (inkomst, marginal, buffert, utgifter).

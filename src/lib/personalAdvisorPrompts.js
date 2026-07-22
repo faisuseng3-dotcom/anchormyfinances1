@@ -174,7 +174,7 @@ Returnera JSON.`;
     case 'academy_lesson': {
       const lesson = extras.lesson || {};
       return `${base}
-Scenario: Anchor Academy — 60 sekunders lektion om "${lesson.topic || lesson.title}".
+Scenario: Lago Academy — 60 sekunders lektion om "${lesson.topic || lesson.title}".
 body: max 120 ord, 2–3 meningar i löpande prosa (klok vän, inte rapport). ALDRIG punktlistor.
 takeaway: 1 mening. cta: 1 konkret handling i appen.
 Returnera JSON.`;

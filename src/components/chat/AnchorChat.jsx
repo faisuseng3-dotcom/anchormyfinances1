@@ -70,7 +70,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
     return [...msgs, userMsg]
       .filter((m) => m.role === 'user' || m.role === 'assistant')
       .slice(-12)
-      .map((m) => `${m.role === 'user' ? 'Användare' : 'Anchor'}: ${m.content}`)
+      .map((m) => `${m.role === 'user' ? 'Användare' : 'Lago'}: ${m.content}`)
       .join('\n');
   }, []);
 

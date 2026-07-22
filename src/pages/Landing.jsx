@@ -1,370 +1,536 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowRight,
+  Shield,
+  Sparkles,
+  Wallet,
+  Plane,
+  ShoppingBag,
+  TrendingUp,
+  Menu,
+  X,
+} from 'lucide-react';
 import { createPageUrl } from '@/utils';
-import { Lock, BarChart2, Smartphone, Shield, User, Building2, ArrowRight, Check } from 'lucide-react';
-import { useModeContext } from '@/components/modes/ModeContext';
 import { pageSeoFor } from '@/lib/pageSeo';
-import { dashLabel } from '@/lib/dashboardTheme';
-import { pageEnter, staggerItem } from '@/lib/motionPresets';
-import AnchorPressable from '@/components/ui-premium/AnchorPressable';
+import { useModeContext } from '@/components/modes/ModeContext';
+import { PLANS, PLAN_ORDER } from '@/lib/billingPlans';
 import { cn } from '@/lib/utils';
+import './landing.css';
 
 export const pageSeo = pageSeoFor('Landing');
 
-const MotionLink = motion.create(Link);
+const HERO_IMAGE =
+  'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=1800&q=80';
 
-const linkTap = {
-  whileTap: { scale: 0.96, opacity: 0.72 },
-  transition: { duration: 0.12, ease: 'easeOut' },
+const FEATURE_TABS = [
+  {
+    id: 'coach',
+    label: 'AI-coach',
+    title: 'En coach som känner din ekonomi',
+    body: 'Fråga på svenska, få konkreta råd baserat på dina siffror — inte generiska tips.',
+    cta: 'Prova coach',
+    icon: Sparkles,
+    preview: { label: 'Coach', value: 'Du kan spara 1 240 kr den här månaden', tone: 'blue' },
+  },
+  {
+    id: 'budget',
+    label: 'Budget',
+    title: 'Se vad som faktiskt blir kvar',
+    body: 'Pengometer, fasta kostnader och läckagedetektor i ett flöde — så du vet exakt hur mycket du har att röra dig med.',
+    cta: 'Öppna översikt',
+    icon: Wallet,
+    preview: { label: 'Fria pengar', value: '8 420 kr', tone: 'green' },
+  },
+  {
+    id: 'travel',
+    label: 'Resor',
+    title: 'Planera resan inom budget',
+    body: 'Beskriv destination och budget — Lago bygger tre paket med boende, aktiviteter och marginal per dag.',
+    cta: 'Planera resa',
+    icon: Plane,
+    preview: { label: 'Barcelona', value: '12 000 kr · 5 nätter', tone: 'indigo' },
+  },
+  {
+    id: 'purchase',
+    label: 'Köpcheck',
+    title: 'Stoppa impulsköp innan de sker',
+    body: 'Klistra in en länk eller fotografera en produkt. Lago väger priset mot ditt sparmål och din marginal.',
+    cta: 'Analysera köp',
+    icon: ShoppingBag,
+    preview: { label: 'Köpcheck', value: 'Vänta 48h · påverkar sparmålet', tone: 'amber' },
+  },
+  {
+    id: 'future',
+    label: 'Framtid',
+    title: 'Se 60 dagar framåt',
+    body: 'FuturePulse visar hur din ekonomi rör sig — och vad som händer om du höjer sparandet eller byter abonnemang.',
+    cta: 'Se din framtid',
+    icon: TrendingUp,
+    preview: { label: 'Prognos', value: '+4 800 kr om 60 dagar', tone: 'teal' },
+  },
+];
+
+const TRUST = [
+  { title: 'GDPR', sub: 'Data lagras inom EU' },
+  { title: 'Ingen bankkoppling', sub: 'Du styr vad du delar' },
+  { title: 'AI på svenska', sub: 'Coach, resa & köpcheck' },
+  { title: 'Privat & Business', sub: 'Separata miljöer' },
+];
+
+const PLAN_BLURBS = {
+  free: 'De ekonomiska grunderna — översikt, historik och AI-coach några gånger i månaden.',
+  basic: 'För dig som vill ha mer stöd — fler AI-frågor, scenarier och Academy.',
+  pro: 'Obegränsad coach, FuturePulse och Squads för dig som vill maxa kontrollen.',
+  business: 'Företagsdashboard, kvitton, moms och årsbokslut i samma app.',
 };
 
-const STEPS = ['Välj instans', 'Logga in', 'Din ekonomi'];
+function formatPrice(plan) {
+  if (!plan.priceKr) return 'Kostnadsfritt';
+  return `${plan.priceKr} kr/månad`;
+}
 
-const valuePoints = [
-  {
-    icon: BarChart2,
-    title: 'Fullständig ekonomisk historik',
-    description:
-      'Din data bevaras kontinuerligt. Följ din ekonomiska utveckling över månader och år med exakta siffror.',
-  },
-  {
-    icon: Lock,
-    title: 'Data lagrad inom EU',
-    description:
-      'Alla uppgifter lagras krypterat på servrar i Europa (Frankfurt/Stockholm) i enlighet med GDPR.',
-  },
-  {
-    icon: Smartphone,
-    title: 'Tillgänglig på alla enheter',
-    description: 'Din data är synkroniserad och tillgänglig oavsett om du använder mobil eller dator.',
-  },
-];
+function MarketingNav({ onSignup, onLogin, mode, setPersonal, setBusiness }) {
+  const [open, setOpen] = useState(false);
 
-const MODES = [
-  {
-    id: 'personal',
-    title: 'Anchor Personal',
-    description: 'Privatbudget, signaler och verktyg',
-    icon: User,
-    accent: 'var(--color-accent)',
-  },
-  {
-    id: 'business',
-    title: 'Anchor Business',
-    description: 'Likviditet, moms, fakturor & kassaflöde',
-    icon: Building2,
-    accent: '#D4AF37',
-  },
-];
-
-function StepIndicator({ accentColor }) {
   return (
-    <div className="flex items-center gap-2 text-xs text-[var(--color-text-tertiary)]">
-      {STEPS.map((label, i) => (
-        <React.Fragment key={label}>
-          {i > 0 && <div className="w-8 h-px bg-white/15" />}
-          <div className="flex items-center gap-1.5">
-            <div
-              className={cn(
-                'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold',
-                i === 0 ? 'text-white' : 'bg-white/10 text-[var(--color-text-tertiary)]',
-              )}
-              style={i === 0 ? { background: accentColor } : undefined}
-            >
-              {i + 1}
+    <header className="absolute inset-x-0 top-0 z-30">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:h-20 md:px-8">
+        <Link to="/Landing" className="text-[22px] font-extrabold tracking-tight text-white md:text-[24px]">
+          Lago
+        </Link>
+
+        <nav className="hidden items-center gap-8 text-[15px] font-medium text-white/95 md:flex">
+          <button
+            type="button"
+            onClick={setPersonal}
+            className={cn('cursor-pointer transition-opacity hover:opacity-80', mode === 'personal' && 'underline underline-offset-8')}
+          >
+            Privat
+          </button>
+          <button
+            type="button"
+            onClick={setBusiness}
+            className={cn('cursor-pointer transition-opacity hover:opacity-80', mode === 'business' && 'underline underline-offset-8')}
+          >
+            Business
+          </button>
+          <a href="#features" className="transition-opacity hover:opacity-80">Funktioner</a>
+          <a href="#plans" className="transition-opacity hover:opacity-80">Paket</a>
+        </nav>
+
+        <div className="hidden items-center gap-3 md:flex">
+          <button
+            type="button"
+            onClick={onLogin}
+            className="cursor-pointer px-3 py-2 text-[15px] font-medium text-white transition-opacity hover:opacity-80"
+          >
+            Logga in
+          </button>
+          <button
+            type="button"
+            onClick={onSignup}
+            className="cursor-pointer rounded-full bg-[#eceef1] px-5 py-2.5 text-[15px] font-semibold text-[#191c1f] transition-transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            Registrera dig
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="cursor-pointer rounded-full p-2 text-white md:hidden"
+          aria-label={open ? 'Stäng meny' : 'Öppna meny'}
+          onClick={() => setOpen((v) => !v)}
+        >
+          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="mx-4 rounded-2xl bg-white p-4 shadow-xl md:hidden"
+          >
+            <div className="flex flex-col gap-1 text-[15px] font-medium text-[#191c1f]">
+              <button type="button" className="cursor-pointer rounded-xl px-3 py-3 text-left hover:bg-[#f4f5f7]" onClick={() => { setPersonal(); setOpen(false); }}>Privat</button>
+              <button type="button" className="cursor-pointer rounded-xl px-3 py-3 text-left hover:bg-[#f4f5f7]" onClick={() => { setBusiness(); setOpen(false); }}>Business</button>
+              <a href="#features" className="rounded-xl px-3 py-3 hover:bg-[#f4f5f7]" onClick={() => setOpen(false)}>Funktioner</a>
+              <a href="#plans" className="rounded-xl px-3 py-3 hover:bg-[#f4f5f7]" onClick={() => setOpen(false)}>Paket</a>
+              <button type="button" className="cursor-pointer rounded-xl px-3 py-3 text-left hover:bg-[#f4f5f7]" onClick={() => { setOpen(false); onLogin(); }}>Logga in</button>
+              <button type="button" className="mt-1 cursor-pointer rounded-full bg-[#191c1f] px-4 py-3 text-center font-semibold text-white" onClick={() => { setOpen(false); onSignup(); }}>Registrera dig</button>
             </div>
-            <span className={i === 0 ? 'font-medium text-[var(--color-text-primary)]' : undefined}>
-              {label}
-            </span>
-          </div>
-        </React.Fragment>
-      ))}
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }
 
-function ModeCard({ mode, selected, onSelect }) {
-  const isSelected = selected === mode.id;
-  const Icon = mode.icon;
+function HeroPhonePreview() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.25, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="relative mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-[360px]"
+    >
+      <div className="rounded-[28px] border border-white/35 bg-white/15 p-4 shadow-2xl backdrop-blur-xl">
+        <div className="rounded-2xl bg-black/25 px-5 py-8 text-center text-white">
+          <p className="text-sm text-white/70">Personligt</p>
+          <p className="mt-1 text-4xl font-bold tracking-tight">72 144 kr</p>
+          <span className="mt-4 inline-flex rounded-full bg-white/15 px-4 py-1.5 text-sm text-white/90">
+            Konton
+          </span>
+        </div>
+      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55, duration: 0.5 }}
+        className="absolute -bottom-6 left-1/2 w-[92%] -translate-x-1/2 rounded-2xl bg-white p-3.5 shadow-xl"
+      >
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2563eb] text-white">
+            <Wallet className="h-5 w-5" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-[#191c1f]">Lön</p>
+            <p className="text-xs text-[#6b7280]">Idag 11:28</p>
+          </div>
+          <p className="text-sm font-semibold text-[#191c1f]">+30 600 kr</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function FeatureSection() {
+  const [active, setActive] = useState(FEATURE_TABS[0].id);
+  const tab = FEATURE_TABS.find((t) => t.id === active) || FEATURE_TABS[0];
+  const Icon = tab.icon;
 
   return (
-    <AnchorPressable
-      type="button"
-      onClick={() => onSelect(mode.id)}
-      className={cn(
-        'w-full rounded-[var(--anchor-radius-xl)] p-4 flex items-center gap-4 text-left',
-        isSelected ? 'anchor-elev-3' : 'anchor-elev-2',
-      )}
-      style={{
-        background: isSelected
-          ? `color-mix(in srgb, ${mode.accent} 16%, var(--color-surface-raised))`
-          : 'var(--color-surface-raised)',
-        boxShadow: isSelected
-          ? `0 0 0 2px ${mode.accent}, var(--anchor-shadow-2)`
-          : 'var(--anchor-shadow-1)',
-      }}
-    >
-      <div
-        className="w-12 h-12 rounded-[var(--anchor-radius-lg)] flex items-center justify-center shrink-0 anchor-elev-1"
-        style={{
-          background: isSelected
-            ? `color-mix(in srgb, ${mode.accent} 22%, transparent)`
-            : 'rgba(255, 255, 255, 0.06)',
-          border: `1px solid color-mix(in srgb, ${mode.accent} 30%, transparent)`,
-        }}
-      >
-        <Icon
-          className="w-6 h-6"
-          style={{ color: isSelected ? mode.accent : 'var(--color-text-tertiary)' }}
-        />
+    <section id="features" className="bg-white px-5 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-extrabold tracking-tight text-[#191c1f] md:text-5xl">
+            Din ekonomi i ny tappning
+          </h2>
+          <p className="mt-4 text-base text-[#6b7280] md:text-lg">
+            Budget, AI-coach, resor och köpcheck — i en app som visar vad du faktiskt har råd med.
+          </p>
+        </div>
+
+        <div className="mt-10 flex flex-wrap justify-center gap-2">
+          {FEATURE_TABS.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setActive(t.id)}
+              className={cn(
+                'cursor-pointer rounded-full px-4 py-2 text-sm font-semibold transition-colors',
+                active === t.id
+                  ? 'bg-[#191c1f] text-white'
+                  : 'bg-[#f4f5f7] text-[#191c1f] hover:bg-[#e8eaed]',
+              )}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-12 grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f4f5f7]">
+              <Icon className="h-6 w-6 text-[#191c1f]" />
+            </div>
+            <h3 className="text-2xl font-extrabold tracking-tight text-[#191c1f] md:text-4xl">
+              {tab.title}
+            </h3>
+            <p className="mt-4 text-base leading-relaxed text-[#6b7280] md:text-lg">
+              {tab.body}
+            </p>
+            <Link
+              to={createPageUrl('CreateAccount')}
+              className="mt-8 inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#191c1f] px-6 py-3 text-sm font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+            >
+              {tab.cta}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="rounded-[28px] bg-[#f4f5f7] p-8 md:p-12">
+            <div className="rounded-2xl bg-white p-6 shadow-sm">
+              <p className="text-sm text-[#6b7280]">{tab.preview.label}</p>
+              <p className="mt-2 text-2xl font-bold tracking-tight text-[#191c1f] md:text-3xl">
+                {tab.preview.value}
+              </p>
+              <div className="mt-6 h-2 overflow-hidden rounded-full bg-[#e8eaed]">
+                <motion.div
+                  key={tab.id}
+                  initial={{ width: '18%' }}
+                  animate={{ width: '72%' }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className="h-full rounded-full bg-[#2563eb]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="flex-1 min-w-0">
-        <p
-          className="anchor-wordmark text-base"
-          style={{ color: isSelected ? 'var(--color-text-primary)' : 'var(--color-text-secondary)' }}
-        >
-          {mode.title}
+    </section>
+  );
+}
+
+function PlansSection() {
+  return (
+    <section id="plans" className="bg-[#f4f5f7] px-5 py-20 md:px-8 md:py-28">
+      <div className="mx-auto max-w-6xl">
+        <p className="text-center text-sm font-semibold uppercase tracking-[0.18em] text-[#6b7280]">
+          Välj ditt paket
         </p>
-        <p className="text-xs mt-0.5 text-[var(--color-text-tertiary)]">{mode.description}</p>
+        <h2 className="mt-3 text-center text-3xl font-extrabold tracking-tight text-[#191c1f] md:text-5xl">
+          Börja gratis. Uppgradera när du vill.
+        </h2>
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {PLAN_ORDER.map((id) => {
+            const plan = PLANS[id];
+            const featured = id === 'pro';
+            return (
+              <Link
+                key={id}
+                to={createPageUrl('CreateAccount')}
+                className={cn(
+                  'flex cursor-pointer flex-col rounded-[24px] p-6 transition-transform hover:scale-[1.02] active:scale-[0.99]',
+                  featured ? 'bg-[#191c1f] text-white shadow-xl' : 'bg-white text-[#191c1f] shadow-sm',
+                )}
+              >
+                <h3 className="text-xl font-extrabold">{plan.name}</h3>
+                <p className={cn('mt-2 text-2xl font-bold', featured ? 'text-white' : 'text-[#191c1f]')}>
+                  {formatPrice(plan)}
+                </p>
+                <p className={cn('mt-4 flex-1 text-sm leading-relaxed', featured ? 'text-white/70' : 'text-[#6b7280]')}>
+                  {PLAN_BLURBS[id]}
+                </p>
+                <ul className={cn('mt-5 space-y-2 text-sm', featured ? 'text-white/85' : 'text-[#191c1f]')}>
+                  {plan.features.slice(0, 3).map((f) => (
+                    <li key={f} className="flex gap-2">
+                      <span className={featured ? 'text-white/50' : 'text-[#6b7280]'}>•</span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Link>
+            );
+          })}
+        </div>
       </div>
-      {isSelected && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="w-6 h-6 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: mode.accent }}
-        >
-          <Check className="w-3.5 h-3.5 text-white" strokeWidth={3} />
-        </motion.div>
-      )}
-    </AnchorPressable>
+    </section>
   );
 }
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [agreed, setAgreed] = useState(false);
-  const [selectedMode, setSelectedMode] = useState(null);
-  const { setPersonal, setBusiness } = useModeContext();
+  const { mode, setPersonal, setBusiness } = useModeContext();
 
-  const handleCTA = () => {
-    if (!agreed || !selectedMode) return;
-    if (selectedMode === 'business') {
-      setBusiness();
-    } else {
-      setPersonal();
-    }
+  const goSignup = () => {
+    if (mode === 'business') setBusiness();
+    else setPersonal();
     navigate(createPageUrl('CreateAccount'));
   };
 
-  const isBusiness = selectedMode === 'business';
-  const accentColor = isBusiness ? '#D4AF37' : 'var(--color-accent)';
-  const bgGradient = isBusiness
-    ? 'linear-gradient(135deg, #0D1B2A 0%, #0a1520 100%)'
-    : 'var(--color-background-primary)';
+  const goLogin = () => navigate(createPageUrl('Login'));
 
   return (
-    <motion.div
-      animate={{ background: bgGradient }}
-      transition={{ duration: 0.5 }}
-      className="h-full anchor-scroll-panel flex flex-col relative overflow-x-hidden anchor-page"
-      style={{ background: bgGradient }}
-      {...pageEnter}
-    >
-      <div className="relative z-10 flex justify-center pt-8 pb-2 px-6">
-        <StepIndicator accentColor={accentColor} />
-      </div>
+    <div className="anchor-marketing min-h-full overflow-x-hidden">
+      <section className="relative min-h-[100svh] overflow-hidden">
+        <img
+          src={HERO_IMAGE}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover object-[center_20%]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/40" />
 
-      <section className="relative z-10 flex flex-col items-center px-6 pt-6 pb-6 text-center max-w-sm mx-auto w-full">
-        <motion.div {...staggerItem(0)} className="w-full mb-8 text-left">
-          <p className={dashLabel}>Välkommen</p>
-          <h1 className="anchor-type-display mt-1">Välj din instans</h1>
-          <p className="anchor-type-body-sm mt-3">
-            Personal och Business är separata miljöer. Välj instans här vid inloggning — för att byta
-            måste du logga ut och välja igen.
+        <MarketingNav
+          onSignup={goSignup}
+          onLogin={goLogin}
+          mode={mode}
+          setPersonal={setPersonal}
+          setBusiness={setBusiness}
+        />
+
+        <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center gap-12 px-5 pb-16 pt-28 md:px-8 lg:flex-row lg:items-center lg:justify-between lg:pt-24">
+          <div className="max-w-xl">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45 }}
+              className="text-sm font-semibold uppercase tracking-[0.22em] text-white/80"
+            >
+              Lago
+            </motion.p>
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.55 }}
+              className="mt-3 text-5xl font-extrabold leading-[1.05] tracking-tight text-white md:text-7xl"
+            >
+              Ekonomi
+              <br />
+              &amp; mer
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18, duration: 0.5 }}
+              className="mt-5 max-w-md text-base leading-relaxed text-white/90 md:text-lg"
+            >
+              Se vad som blir kvar, få AI-råd på svenska och planera köp och resor — utan att koppla banken.
+              Registrera dig gratis på några sekunder.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.28, duration: 0.45 }}
+              className="mt-8 flex flex-wrap items-center gap-3"
+            >
+              <button
+                type="button"
+                onClick={goSignup}
+                className="cursor-pointer rounded-full bg-[#191c1f] px-7 py-3.5 text-[15px] font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
+              >
+                Kom igång gratis
+              </button>
+              <button
+                type="button"
+                onClick={goLogin}
+                className="cursor-pointer rounded-full border border-white/40 bg-white/10 px-6 py-3.5 text-[15px] font-semibold text-white backdrop-blur-md transition-colors hover:bg-white/20"
+              >
+                Logga in
+              </button>
+            </motion.div>
+          </div>
+
+          <div className="pb-8 lg:pb-0">
+            <HeroPhonePreview />
+          </div>
+        </div>
+      </section>
+
+      <section className="border-b border-[#e8eaed] bg-white px-5 py-16 md:px-8 md:py-20">
+        <div className="mx-auto max-w-6xl text-center">
+          <p className="text-lg font-medium text-[#6b7280] md:text-xl">
+            Ekonomiapen för dig som vill ha kontroll — inte fler kontoutdrag
           </p>
-        </motion.div>
+          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {TRUST.map((item) => (
+              <div key={item.title} className="text-center">
+                <p className="text-base font-extrabold text-[#191c1f]">{item.title}</p>
+                <p className="mt-1 text-sm text-[#6b7280]">{item.sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-        <motion.div {...staggerItem(1)} className="w-full space-y-3 mb-6">
-          {MODES.map((mode) => (
-            <ModeCard
-              key={mode.id}
-              mode={mode}
-              selected={selectedMode}
-              onSelect={setSelectedMode}
-            />
-          ))}
-        </motion.div>
+      <FeatureSection />
 
-        <motion.div {...staggerItem(2)} className="w-full space-y-3">
-          <AnimatePresence>
-            {selectedMode && (
-              <motion.div
-                key="login-buttons"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3 overflow-hidden"
-              >
-                <AnchorPressable
-                  type="button"
-                  onClick={handleCTA}
-                  disabled={!agreed}
-                  className={cn(
-                    'w-full min-h-14 rounded-[var(--anchor-radius-xl)] font-semibold text-sm flex items-center justify-center gap-2 anchor-elev-2',
-                    !agreed && 'opacity-55 cursor-not-allowed',
-                  )}
-                  style={{
-                    background: agreed
-                      ? isBusiness
-                        ? 'linear-gradient(135deg, #b8942a 0%, #D4AF37 100%)'
-                        : 'var(--color-accent)'
-                      : isBusiness
-                        ? 'rgba(212, 175, 55, 0.3)'
-                        : 'color-mix(in srgb, var(--color-accent) 30%, transparent)',
-                    color: isBusiness ? '#0D1B2A' : 'white',
-                  }}
-                >
-                  Logga in med {isBusiness ? 'Business' : 'Personal'}
-                  <ArrowRight className="w-4 h-4" />
-                </AnchorPressable>
-
-                <div className="flex items-center gap-3">
-                  <div className="flex-1 h-px bg-white/10" />
-                  <span className="text-xs text-[var(--color-text-tertiary)]">eller</span>
-                  <div className="flex-1 h-px bg-white/10" />
-                </div>
-
-                <AnchorPressable
-                  type="button"
-                  onClick={handleCTA}
-                  disabled={!agreed}
-                  className={cn(
-                    'w-full min-h-12 rounded-[var(--anchor-radius-xl)] font-medium text-sm flex items-center justify-center gap-2 border anchor-elev-1',
-                    !agreed && 'opacity-55 cursor-not-allowed',
-                  )}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.05)',
-                    borderColor: 'rgba(255, 255, 255, 0.12)',
-                    color: 'var(--color-text-primary)',
-                  }}
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" aria-hidden>
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  Fortsätt med Google
-                </AnchorPressable>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {!selectedMode && (
-            <p className="text-xs text-center text-[var(--color-text-tertiary)]">
-              Välj en instans ovan för att fortsätta
-            </p>
-          )}
-
-          <label className="flex items-start gap-3 cursor-pointer text-left mt-1 min-h-12">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-1 w-4 h-4 rounded shrink-0"
-              style={{ accentColor }}
-            />
-            <span className="text-xs leading-relaxed text-[var(--color-text-tertiary)]">
-              Jag har läst och godkänner{' '}
-              <Link
-                to="/TermsOfService"
-                className="underline underline-offset-2 hover:opacity-80"
-                style={{ color: accentColor }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                Användarvillkoren
-              </Link>{' '}
-              och{' '}
-              <Link
-                to="/PrivacyPolicy"
-                className="underline underline-offset-2 hover:opacity-80"
-                style={{ color: accentColor }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                Integritetspolicyn
-              </Link>
-              .
-            </span>
-          </label>
-
-          <div className="flex items-center justify-center gap-1 pt-1">
-            <Shield className="w-3 h-3 text-[var(--color-text-tertiary)]" />
-            <p className="text-xs text-[var(--color-text-tertiary)]">
-              GDPR-kompatibel · Data lagras inom EU · Ingen bankbehörighet krävs
+      <section className="bg-[#191c1f] px-5 py-20 md:px-8 md:py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2">
+          <div>
+            <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-white md:text-5xl">
+              Ett säkert utrymme för dina siffror
+            </h2>
+            <p className="mt-5 text-base leading-relaxed text-white/70 md:text-lg">
+              Lago kräver ingen bankbehörighet. Du lägger in det du vill, datan lagras inom EU enligt GDPR,
+              och du kan radera kontot när som helst.
             </p>
           </div>
-        </motion.div>
+          <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+            <ul className="space-y-5 text-white">
+              {[
+                'Krypterad lagring inom EU',
+                'Ingen delning av bankinloggning',
+                'AI-svar baserade på din profil — inte öppna webben',
+                'Tydliga villkor och integritetspolicy',
+              ].map((line) => (
+                <li key={line} className="flex items-start gap-3 text-[15px]">
+                  <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#2563eb]" />
+                  <span className="text-white/90">{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <section className="relative z-10 px-6 pb-16 space-y-3 max-w-sm mx-auto w-full">
-        <p className="text-center text-xs font-semibold tracking-widest uppercase mb-6 text-[var(--color-text-tertiary)]">
-          Om tjänsten
-        </p>
-        {valuePoints.map(({ icon: Icon, title, description }, i) => (
-          <motion.div
-            key={title}
-            className="flex items-start gap-4 p-4 rounded-[var(--anchor-radius-xl)] border anchor-elev-2"
-            style={{
-              background: 'var(--color-surface-raised)',
-              borderColor: 'rgba(255, 255, 255, 0.08)',
-            }}
-            {...staggerItem(3 + i)}
+      <PlansSection />
+
+      <section className="bg-white px-5 py-20 text-center md:px-8 md:py-28">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-3xl font-extrabold tracking-tight text-[#191c1f] md:text-5xl">
+            Börja med Lago idag
+          </h2>
+          <p className="mt-4 text-base text-[#6b7280] md:text-lg">
+            Skapa konto gratis. Välj Privat eller Business. Uppgradera när du behöver mer AI och prognoser.
+          </p>
+          <button
+            type="button"
+            onClick={goSignup}
+            className="mt-8 cursor-pointer rounded-full bg-[#191c1f] px-8 py-3.5 text-[15px] font-semibold text-white transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
-            <div className="w-10 h-10 rounded-[var(--anchor-radius-md)] flex items-center justify-center shrink-0 bg-white/[0.06] anchor-elev-1">
-              <Icon className="w-5 h-5 text-[var(--color-text-secondary)]" />
+            Registrera dig
+          </button>
+        </div>
+      </section>
+
+      <footer className="border-t border-[#e8eaed] bg-white px-5 py-12 md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-8 md:flex-row md:justify-between">
+          <div>
+            <p className="text-xl font-extrabold text-[#191c1f]">Lago</p>
+            <p className="mt-2 max-w-xs text-sm text-[#6b7280]">
+              En komplett app för din ekonomi — budget, AI-coach och smarta beslut.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-8 text-sm sm:grid-cols-3">
+            <div>
+              <p className="font-semibold text-[#191c1f]">Produkt</p>
+              <div className="mt-3 flex flex-col gap-2 text-[#6b7280]">
+                <a href="#features" className="hover:text-[#191c1f]">Funktioner</a>
+                <a href="#plans" className="hover:text-[#191c1f]">Paket</a>
+                <Link to={createPageUrl('Pricing')} className="hover:text-[#191c1f]">Priser</Link>
+              </div>
             </div>
             <div>
-              <p className="font-semibold text-sm mb-1 text-[var(--color-text-primary)]">{title}</p>
-              <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">{description}</p>
+              <p className="font-semibold text-[#191c1f]">Konto</p>
+              <div className="mt-3 flex flex-col gap-2 text-[#6b7280]">
+                <Link to={createPageUrl('Login')} className="hover:text-[#191c1f]">Logga in</Link>
+                <Link to={createPageUrl('CreateAccount')} className="hover:text-[#191c1f]">Registrera dig</Link>
+              </div>
             </div>
-          </motion.div>
-        ))}
-      </section>
-
-      <footer
-        className="relative z-10 mt-auto pb-10 pt-4 flex flex-wrap justify-center gap-x-8 gap-y-2 text-xs mt-2 pt-2 text-[var(--color-text-tertiary)]"
-      >
-        {[
-          { to: '/Login', label: 'Logga in' },
-          { to: '/CreateAccount', label: 'Skapa konto' },
-          { to: '/Pricing', label: 'Priser' },
-          { to: '/TermsOfService', label: 'Användarvillkor' },
-          { to: '/PrivacyPolicy', label: 'Integritetspolicy' },
-        ].map(({ to, label }) => (
-          <MotionLink
-            key={to}
-            to={to}
-            className="hover:text-[var(--color-text-secondary)] no-underline touch-manipulation"
-            {...linkTap}
-          >
-            {label}
-          </MotionLink>
-        ))}
+            <div>
+              <p className="font-semibold text-[#191c1f]">Juridiskt</p>
+              <div className="mt-3 flex flex-col gap-2 text-[#6b7280]">
+                <Link to="/TermsOfService" className="hover:text-[#191c1f]">Villkor</Link>
+                <Link to="/PrivacyPolicy" className="hover:text-[#191c1f]">Integritet</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p className="mx-auto mt-10 max-w-6xl text-xs text-[#6b7280]">
+          © {new Date().getFullYear()} Lago. Lago är inte en bank och erbjuder inte bankkonton eller
+          betalningar. Designen är inspirerad av moderna fintech-upplevelser.
+        </p>
       </footer>
-    </motion.div>
+    </div>
   );
 }

@@ -170,7 +170,7 @@ export default function BudgetDashboard() {
             <Trophy size={32} className="mx-auto mb-3 text-white/20" />
             <p className="text-[16px] font-bold text-white mb-1">Sätt din budget och vinn månaden</p>
             <p className="text-[13px] text-white/40 leading-relaxed">
-              Tryck på en kategori nedan för att sätta en gräns. Anchor håller koll åt dig.
+              Tryck på en kategori nedan för att sätta en gräns. Lago håller koll åt dig.
             </p>
           </div>
         )}

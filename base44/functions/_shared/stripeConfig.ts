@@ -79,7 +79,7 @@ export async function findProfileByStripeCustomer(
 
 export async function sendPaymentFailedEmail(to: string, plan: string) {
   const apiKey = Deno.env.get('RESEND_API_KEY');
-  const from = Deno.env.get('BILLING_EMAIL_FROM') || 'Anchor <billing@anchor.app>';
+  const from = Deno.env.get('BILLING_EMAIL_FROM') || 'Lago <billing@anchor.app>';
 
   if (!apiKey) {
     console.warn('[stripeWebhook] RESEND_API_KEY saknas — hoppar över e-post till', to);
@@ -97,9 +97,9 @@ export async function sendPaymentFailedEmail(to: string, plan: string) {
       to: [to],
       subject: 'Betalningen misslyckades — uppdatera ditt kort',
       html: `<p>Hej!</p>
-<p>Vi kunde inte dra din Anchor ${plan}-prenumeration. Uppdatera betalningsmetoden i Inställningar så att du behåller tillgång till dina funktioner.</p>
+<p>Vi kunde inte dra din Lago ${plan}-prenumeration. Uppdatera betalningsmetoden i Inställningar så att du behåller tillgång till dina funktioner.</p>
 <p><a href="https://anchor.app/Settings">Gå till Inställningar</a></p>
-<p>Hälsningar,<br/>Anchor</p>`,
+<p>Hälsningar,<br/>Lago</p>`,
     }),
   });
 

@@ -61,4 +61,4 @@ export function scenarioToFeature(scenario) {
 }
 
 export const MEMORY_UX_NOTICE =
-  'Anchor kommer ihåg tidigare diskussioner för att ge mer personliga råd.';
+  'Lago kommer ihåg tidigare diskussioner för att ge mer personliga råd.';

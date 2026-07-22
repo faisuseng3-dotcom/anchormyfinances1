@@ -79,50 +79,64 @@ function validateTravelResponse(result) {
   return { ok: true, pricedCount: priced.length };
 }
 
-async function invokeTravelLlm(prompt) {
-  const baseOpts = {
-    prompt,
-    add_context_from_internet: true,
-    response_json_schema: TRAVEL_LLM_SCHEMA,
-  };
+function withTimeout(promise, ms, label = 'operation') {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error(`${label}_timeout_after_${ms}ms`)), ms);
+    }),
+  ]);
+}
 
-  try {
-    console.log('[TravelAgent] InvokeLLM start', { model: 'claude_sonnet_4_6', promptLength: prompt.length });
-    const result = await base44.integrations.Core.InvokeLLM({
-      ...baseOpts,
-      model: 'claude_sonnet_4_6',
-    });
-    console.log('[TravelAgent] InvokeLLM success (claude)', {
-      keys: result && typeof result === 'object' ? Object.keys(result) : typeof result,
-      packageCount: result?.packages?.length,
-    });
-    return { result, model: 'claude_sonnet_4_6' };
-  } catch (primaryErr) {
-    console.error('[TravelAgent] InvokeLLM claude_sonnet_4_6 failed:', {
-      message: primaryErr?.message,
-      status: primaryErr?.status ?? primaryErr?.response?.status,
-      data: primaryErr?.data ?? primaryErr?.response?.data,
-    });
+async function invokeTravelLlm(prompt) {
+  const attempts = [
+    { model: 'claude_sonnet_4_6', add_context_from_internet: false, timeoutMs: 55000, label: 'claude_local' },
+    { model: 'gpt_5_5', add_context_from_internet: false, timeoutMs: 45000, label: 'gpt_local' },
+  ];
+
+  let lastErr = null;
+
+  for (const attempt of attempts) {
+    const callOpts = {
+      prompt,
+      model: attempt.model,
+      add_context_from_internet: attempt.add_context_from_internet,
+      response_json_schema: TRAVEL_LLM_SCHEMA,
+    };
 
     try {
-      console.log('[TravelAgent] InvokeLLM fallback → gpt_5_5');
-      const result = await base44.integrations.Core.InvokeLLM({
-        ...baseOpts,
-        model: 'gpt_5_5',
+      console.log('[TravelAgent] InvokeLLM start', {
+        model: attempt.model,
+        internet: attempt.add_context_from_internet,
+        timeoutMs: attempt.timeoutMs,
+        promptLength: prompt.length,
       });
-      console.log('[TravelAgent] InvokeLLM success (gpt_5_5 fallback)', {
+
+      const result = await withTimeout(
+        base44.integrations.Core.InvokeLLM(callOpts),
+        attempt.timeoutMs,
+        attempt.label,
+      );
+
+      console.log('[TravelAgent] InvokeLLM success', {
+        attempt: attempt.label,
+        keys: result && typeof result === 'object' ? Object.keys(result) : typeof result,
         packageCount: result?.packages?.length,
       });
-      return { result, model: 'gpt_5_5_fallback' };
-    } catch (fallbackErr) {
-      console.error('[TravelAgent] InvokeLLM gpt_5_5 fallback failed:', {
-        message: fallbackErr?.message,
-        status: fallbackErr?.status ?? fallbackErr?.response?.status,
-        data: fallbackErr?.data ?? fallbackErr?.response?.data,
+
+      return { result, model: attempt.label };
+    } catch (err) {
+      lastErr = err;
+      console.error('[TravelAgent] InvokeLLM attempt failed:', {
+        attempt: attempt.label,
+        message: err?.message,
+        status: err?.status ?? err?.response?.status,
+        data: err?.data ?? err?.response?.data,
       });
-      throw fallbackErr;
     }
   }
+
+  throw lastErr || new Error('travel_llm_all_attempts_failed');
 }
 
 function saveToCache(data) {
@@ -501,7 +515,7 @@ export default function TravelAgentChat({ profile }) {
     if (cached?.messages) return cached.messages;
     return [{
       role: 'assistant',
-      content: 'Hej! Jag är din **Anchor Travel Agent**. Beskriv din resa — destination, datum, budget och vad du vill göra. Jag bygger tre skräddarsydda resplaner åt dig!',
+      content: 'Hej! Jag är din **Lago Travel Agent**. Beskriv din resa — destination, datum, budget och vad du vill göra. Jag bygger tre skräddarsydda resplaner åt dig!',
       type: 'text'
     }];
   });
@@ -547,17 +561,21 @@ export default function TravelAgentChat({ profile }) {
       let memoryBlock = '';
       try {
         console.log('[TravelAgent] building memory context');
-        memoryBlock = await buildMemoryPromptContext({
-          profile,
-          query: userMsg,
-          feature: AI_FEATURES.TRAVEL,
-        });
+        memoryBlock = await withTimeout(
+          buildMemoryPromptContext({
+            profile,
+            query: userMsg,
+            feature: AI_FEATURES.TRAVEL,
+          }),
+          8000,
+          'memory_context',
+        );
         console.log('[TravelAgent] memory context ready', { length: memoryBlock.length });
       } catch (memErr) {
         console.error('[TravelAgent] memory context failed (continuing without):', memErr?.message);
       }
 
-      const prompt = `Du är "Anchor Travel Agent", en smart rese-AI med CFO-instinkt.
+      const prompt = `Du är "Lago Travel Agent", en smart rese-AI med CFO-instinkt.
 ${memoryBlock}
 Användaren skriver: "${userMsg}"
 

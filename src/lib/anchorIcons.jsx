@@ -10,7 +10,7 @@ import {
   Building2,
   Users,
   GraduationCap,
-  Anchor,
+  Waves,
   Settings,
   Menu,
   Search,
@@ -132,7 +132,7 @@ export const STATUS_DOT_COLORS = {
 };
 
 export function AnchorLogoMark({ size = 16, className = '' }) {
-  return <Anchor size={size} className={className} strokeWidth={2.2} />;
+  return <Waves size={size} className={className} strokeWidth={2.2} />;
 }
 
 export function NavIcon({ name, size = SIZE_DEFAULT, className = '' }) {

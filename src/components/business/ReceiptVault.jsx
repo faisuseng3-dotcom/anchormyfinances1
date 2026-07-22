@@ -11,7 +11,7 @@ async function exportReceiptsPDF(transactions) {
   const pageW = doc.internal.pageSize.getWidth();
   doc.setFontSize(18);
   doc.setTextColor(30, 30, 30);
-  doc.text('Kvittopärm — Anchor Business', 14, 20);
+  doc.text('Kvittopärm — Lago Business', 14, 20);
   doc.setFontSize(10);
   doc.setTextColor(120, 120, 120);
   doc.text(`Exporterad: ${new Date().toLocaleDateString('sv-SE')}`, 14, 28);

@@ -68,7 +68,7 @@ export default function PWAInstallPrompt() {
               <Smartphone className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm">Installera Anchor</p>
+              <p className="font-semibold text-white text-sm">Installera Lago</p>
               <p className="text-xs text-slate-400 mt-0.5">
                 {deferredPrompt
                   ? 'Lägg till på hemskärmen för en bättre upplevelse – snabbare och utan webbläsare.'

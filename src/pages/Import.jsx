@@ -148,7 +148,7 @@ export default function Import() {
   return (
     <PageShell
       title="Importera från banken"
-      subtitle="Ladda upp CSV — Anchor analyserar allt"
+      subtitle="Ladda upp CSV — Lago analyserar allt"
       backHref={createPageUrl('Dashboard')}
       headerExtra={
         <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-3 leading-relaxed">

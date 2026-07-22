@@ -69,6 +69,6 @@ export function computeScenarioForecast(profile, transactions, modeId, sliders =
 export function scenarioShareLine(forecast, mode) {
   const label = mode?.label || 'Realistisk';
   const bal = forecast?.prognos_30_dagar || forecast?._meta?.day30Balance;
-  if (!bal) return `${label} scenario — öppna Din Framtid i Anchor`;
-  return `${label}: ${bal} om 30 dagar (simulerat i Anchor)`;
+  if (!bal) return `${label} scenario — öppna Din Framtid i Lago`;
+  return `${label}: ${bal} om 30 dagar (simulerat i Lago)`;
 }

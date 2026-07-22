@@ -108,7 +108,7 @@ export default function HomeOfficeModal({ onClose, onConfirm }) {
             <div className="p-4 rounded-2xl space-y-2" style={{ background: '#F4F6F8' }}>
               <p className="text-sm font-bold" style={{ color: '#1A2332' }}>Bekräfta avdraget</p>
               <p className="text-xs leading-relaxed" style={{ color: '#9AA5B4' }}>
-                Anchor lägger till ett schablonavdrag på {deduction.toLocaleString('sv-SE')} kr i din årsprognos. Din skattbar vinst minskar och "Skatt att betala" sjunker direkt med ca {saving.toLocaleString('sv-SE')} kr.
+                Lago lägger till ett schablonavdrag på {deduction.toLocaleString('sv-SE')} kr i din årsprognos. Din skattbar vinst minskar och "Skatt att betala" sjunker direkt med ca {saving.toLocaleString('sv-SE')} kr.
               </p>
             </div>
             <div className="grid grid-cols-3 gap-2">

@@ -25,7 +25,7 @@ export const PLANS = {
     features: [
       'Allt i Gratis',
       'Scenarier & läckagedetektor',
-      'Anchor Academy',
+      'Lago Academy',
       'AI-coach (20 gånger/månad)',
     ],
   },

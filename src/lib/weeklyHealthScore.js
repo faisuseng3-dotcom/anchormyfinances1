@@ -72,5 +72,5 @@ export function calculateWeeklyHealthScore(profile, transactions = []) {
 }
 
 export function healthShareText(score) {
-  return `Min ekonomiska hälsa är ${score} den här veckan — vad är din? (Anchor)`;
+  return `Min ekonomiska hälsa är ${score} den här veckan — vad är din? (Lago)`;
 }

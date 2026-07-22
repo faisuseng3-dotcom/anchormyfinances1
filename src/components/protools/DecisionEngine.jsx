@@ -188,7 +188,7 @@ Svara ENDAST med JSON.`,
               <Award className="w-8 h-8 text-purple-300 mx-auto mb-2" aria-hidden />
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Besluts-certifikat</p>
               <p className="text-lg font-black text-white mb-1">{result.certificate_headline}</p>
-              <p className="text-xs text-slate-400">Analyserat av Anchor · {new Date().toLocaleDateString('sv-SE')}</p>
+              <p className="text-xs text-slate-400">Analyserat av Lago · {new Date().toLocaleDateString('sv-SE')}</p>
               <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-purple-300"
                 style={{ background: 'rgba(139,92,246,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <Check className="w-3.5 h-3.5" /> Verifierat beslut

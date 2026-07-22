@@ -268,7 +268,7 @@ function StepLegalEntity({ onNext }) {
 
 function StepHandshake({ onNext }) {
   const [typing, setTyping] = useState('');
-  const fullText = 'Hej! Jag är Anchor. Ge mig 30 sekunder — så bygger jag din personliga ekonomiavdelning.';
+  const fullText = 'Hej! Jag är Lago. Ge mig 30 sekunder — så bygger jag din personliga ekonomiavdelning.';
 
   useEffect(() => {
     let i = 0;
@@ -293,7 +293,7 @@ function StepHandshake({ onNext }) {
       </motion.div>
 
       <div className="space-y-3 max-w-xs">
-        <p className="anchor-wordmark text-xs uppercase" style={{ color: '#D4AF37' }}>Anchor Business</p>
+        <p className="anchor-wordmark text-xs uppercase" style={{ color: '#D4AF37' }}>Lago Business</p>
         <div className="min-h-[80px] flex items-center justify-center">
           <h1 className="text-xl font-bold leading-snug" style={{ color: '#F0EAD6' }}>
             {typing}
@@ -301,7 +301,7 @@ function StepHandshake({ onNext }) {
           </h1>
         </div>
         <p className="text-sm" style={{ color: 'rgba(155,173,184,0.75)' }}>
-          Anchor analyserar din bransch, SNI-kod och transaktionshistorik — och bygger din vy från grunden.
+          Lago analyserar din bransch, SNI-kod och transaktionshistorik — och bygger din vy från grunden.
         </p>
       </div>
 
@@ -329,7 +329,7 @@ function StepPersona({ onNext }) {
         <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: '#D4AF37' }}>Steg 2 av 5</p>
         <h2 className="text-2xl font-black" style={{ color: '#F0EAD6' }}>Vem är du?</h2>
         <p className="text-sm mt-1" style={{ color: 'rgba(155,173,184,0.75)' }}>
-          Välj din profil — Anchor anpassar AI:ns fokus direkt.
+          Välj din profil — Lago anpassar AI:ns fokus direkt.
         </p>
       </div>
 
@@ -560,7 +560,7 @@ function StepHoroscope({ persona, onComplete }) {
         </motion.div>
         <div className="text-center space-y-2">
           <p className="font-bold" style={{ color: '#F0EAD6' }}>Analyserar din profil…</p>
-          <p className="text-sm" style={{ color: 'rgba(155,173,184,0.7)' }}>Anchor skannar branschkod, transaktionsmönster och förbereder dina avdragskategorier.</p>
+          <p className="text-sm" style={{ color: 'rgba(155,173,184,0.7)' }}>Lago skannar branschkod, transaktionsmönster och förbereder dina avdragskategorier.</p>
         </div>
       </motion.div>
     );
@@ -707,7 +707,7 @@ export default function BusinessOnboarding() {
           style={{ background: 'rgba(212,175,55,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Building2 className="w-4 h-4" style={{ color: '#D4AF37' }} />
         </div>
-        <span className="anchor-wordmark text-xs uppercase" style={{ color: 'rgba(212,175,55,0.7)' }}>Anchor Business</span>
+        <span className="anchor-wordmark text-xs uppercase" style={{ color: 'rgba(212,175,55,0.7)' }}>Lago Business</span>
       </div>
 
       {/* Step content */}

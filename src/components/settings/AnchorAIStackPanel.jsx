@@ -18,7 +18,7 @@ export default function AnchorAIStackPanel() {
   return (
     <SettingsPanel
       icon={Brain}
-      title="Anchor AI Stack"
+      title="Lago AI Stack"
       subtitle="Claude · Gemini · GPT · Lokal ML · Minne"
       open={open}
       onToggle={() => setOpen((v) => !v)}

@@ -380,7 +380,7 @@ Returnera JSON.`;
 
     case 'academy_lesson':
       return `${base}
-Scenario: Anchor Academy 60s lektion. Enkelt språk om grundbegrepp. body max 120 ord. Returnera JSON.`;
+Scenario: Lago Academy 60s lektion. Enkelt språk om grundbegrepp. body max 120 ord. Returnera JSON.`;
 
     case 'pengometer_line':
       return `${base}

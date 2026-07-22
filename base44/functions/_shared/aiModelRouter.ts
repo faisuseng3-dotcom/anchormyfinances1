@@ -1,4 +1,4 @@
-/** Server-side Anchor AI routing (speglar src/lib/aiModelRouter.js). */
+/** Server-side Lago AI routing (speglar src/lib/aiModelRouter.js). */
 
 export const AI_TASKS = {
   coaching: { primary: 'claude_sonnet_4_6', fallback: 'gpt_5_5' },

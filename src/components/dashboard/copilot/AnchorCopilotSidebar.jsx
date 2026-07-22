@@ -65,7 +65,7 @@ export default function AnchorCopilotSidebar({
           <div className="copilot-logo-icon" aria-hidden>
             ⚓
           </div>
-          <span className="copilot-logo-text anchor-nav-brand">Anchor</span>
+          <span className="copilot-logo-text anchor-nav-brand">Lago</span>
         </div>
 
         <div className="copilot-sidebar-section-label anchor-nav-section-label">Meny</div>
@@ -164,7 +164,7 @@ export default function AnchorCopilotSidebar({
         isOpen={addSheetOpen}
         onClose={() => setAddSheetOpen(false)}
         title="Lägg till"
-        subtitle="Välj vad du vill lägga till i Anchor"
+        subtitle="Välj vad du vill lägga till i Lago"
       >
         <div className="space-y-3 pb-2">
           <button
