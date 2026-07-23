@@ -84,7 +84,6 @@ export default function Mer() {
           <ROW icon={Wrench} label="ProTools" sublabel="Avancerade verktyg" onPress={() => navigate(createPageUrl('ProTools'))} />
           <ROW icon={Globe} label="Galaxy" sublabel="Se ekonomiska mönster" onPress={() => navigate(createPageUrl('Insights'))} />
           <ROW icon={Users} label="Social" sublabel="Dela och jämför" onPress={() => navigate(createPageUrl('Social'))} />
-          <ROW icon={Users} label="Squads" sublabel="Spara tillsammans" onPress={() => navigate(createPageUrl('Squads'))} color="rgba(255,255,255,0.75)" />
           <ROW icon={Plane} label="Reseplanering" sublabel="AI-agent för din nästa resa" onPress={() => navigate(createPageUrl('TravelPlanner'))} />
           <ROW icon={BookOpen} label="Lago Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} color="#4fae82" last />
         </SECTION>

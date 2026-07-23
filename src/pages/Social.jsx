@@ -14,7 +14,6 @@ import ProfileAvatar from '@/components/social/ProfileAvatar';
 import PrivacyMatrix from '@/components/social/PrivacyMatrix';
 import SocialFriendCard from '@/components/social/SocialFriendCard';
 import SocialPrivacySummary from '@/components/social/SocialPrivacySummary';
-import SocialSquadsLink from '@/components/social/SocialSquadsLink';
 import SegmentTabs from '@/components/ui/SegmentTabs';
 import { useSocialProfile } from '@/hooks/useSocialProfile';
 import {
@@ -198,8 +197,6 @@ export default function Social() {
       }
       className="!pb-28"
     >
-      <SocialSquadsLink />
-
       <SegmentTabs value={activeTab} onChange={setTab} tabs={TABS} className="-mt-1 mb-4" />
 
       <AnimatePresence mode="wait">

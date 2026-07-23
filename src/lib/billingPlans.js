@@ -40,7 +40,6 @@ export const PLANS = {
       'Allt i Basic',
       'Obegränsad Coach',
       'Din Framtid (FuturePulse)',
-      'Squads & sparmål i grupp',
     ],
   },
   business: {
