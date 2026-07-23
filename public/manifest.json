@@ -4,8 +4,8 @@
   "description": "Koll på inkomst, utgifter och vad du har kvar varje månad.",
   "start_url": "/Dashboard",
   "display": "standalone",
-  "background_color": "#050d28",
-  "theme_color": "#050d28",
+  "background_color": "#0b0f0d",
+  "theme_color": "#0b0f0d",
   "lang": "sv",
   "dir": "ltr",
   "orientation": "portrait",
@@ -16,6 +16,15 @@
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Registrera utgift",
+      "short_name": "Registrera",
+      "description": "Logga en utgift direkt, utan att öppna appen först",
+      "url": "/Dashboard?action=register",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
     }
   ]
 }

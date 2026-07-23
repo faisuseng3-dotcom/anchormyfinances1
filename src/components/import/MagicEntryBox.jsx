@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, X, Send, AlertCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
@@ -86,14 +87,14 @@ Lämna kategori tom — den sätts separat.`,
     onClose?.();
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-end justify-center bg-[#030610]/75 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 backdrop-blur-md p-4"
           onClick={(e) => e.target === e.currentTarget && onClose?.()}
         >
           <motion.div
@@ -109,7 +110,7 @@ Lämna kategori tom — den sätts separat.`,
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-cyan-300/80" />
+                <Zap className="w-4 h-4 text-[#4fae82]/80" />
                 <p className="text-[15px] font-medium text-white">Snabb inmatning</p>
               </div>
               <button type="button" onClick={onClose} className="text-white/40 hover:text-white/70">
@@ -153,7 +154,7 @@ Lämna kategori tom — den sätts separat.`,
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-[20px] p-4 space-y-3 ring-1 ring-inset ring-cyan-400/20 bg-cyan-400/5"
+                className="rounded-[20px] p-4 space-y-3 ring-1 ring-inset ring-[#4fae82]/20 bg-[#4fae82]/5"
               >
                 <div className="flex items-center justify-between">
                   <p className={dashLabel}>Förslag</p>
@@ -202,6 +203,7 @@ Lämna kategori tom — den sätts separat.`,
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

@@ -16,6 +16,7 @@ export default function CopilotBentoDashboard({
   profile,
   transactions,
   onOpenTransactionHub,
+  onOpenMagicEntry,
 }) {
   const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
 
@@ -66,6 +67,11 @@ export default function CopilotBentoDashboard({
         isOpen={quickExpenseOpen}
         onClose={() => setQuickExpenseOpen(false)}
         profile={profile}
+        transactions={transactions}
+        onSwitchToWrite={onOpenMagicEntry ? () => {
+          setQuickExpenseOpen(false);
+          onOpenMagicEntry();
+        } : undefined}
       />
     </div>
   );

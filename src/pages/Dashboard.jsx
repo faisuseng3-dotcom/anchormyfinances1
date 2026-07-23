@@ -85,6 +85,16 @@ export default function Dashboard() {
     }
   }, [location.state?.anchorAction, location.pathname, navigate]);
 
+  // Query-param variant of the same actions — used by the PWA home-screen
+  // shortcut, which launches a plain URL and can't carry router state.
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const action = params.get('action');
+    if (!action) return;
+    if (action === 'register') window.dispatchEvent(new CustomEvent('anchor:open-quick-expense'));
+    navigate(location.pathname, { replace: true });
+  }, [location.search, location.pathname, navigate]);
+
   useEffect(() => {
     base44.analytics.track({ eventName: 'dashboard_viewed' });
     const handler = (e) => {

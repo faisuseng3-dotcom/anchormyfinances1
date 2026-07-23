@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
+import { Type } from 'lucide-react';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
 import AnchorSheet from '@/components/ui-premium/AnchorSheet';
 import { copilotChipClass, copilotPrimaryBtnClass } from '@/lib/copilotTheme';
@@ -18,15 +19,46 @@ const CATEGORIES = [
 const QUICK_AMOUNTS = [89, 150, 250, 500, 1000];
 
 const LAST_CAT_KEY = 'anchor_last_expense_category';
+const RECENT_WINDOW_DAYS = 60;
+const MAX_RECENT = 4;
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
 }
 
-export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
+/** De mest återkommande utgifterna senaste 60 dagarna — snabbaste vägen att logga en vana. */
+function buildRecentPayees(transactions) {
+  const cutoff = Date.now() - RECENT_WINDOW_DAYS * 86400000;
+  const byVendor = {};
+
+  (transactions || []).forEach((tx) => {
+    const isExpense = tx.type === 'expense' || (tx.amount < 0 && tx.type !== 'income');
+    if (!isExpense) return;
+    const d = new Date(tx.created_date).getTime();
+    if (!d || d < cutoff) return;
+    const key = (tx.vendor || tx.label || '').trim();
+    if (!key) return;
+    if (!byVendor[key]) byVendor[key] = { key, count: 0, amounts: [], category: tx.category || 'other' };
+    byVendor[key].count += 1;
+    byVendor[key].amounts.push(Math.abs(tx.amount || 0));
+  });
+
+  return Object.values(byVendor)
+    .filter((p) => p.count >= 2)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, MAX_RECENT)
+    .map((p) => ({
+      ...p,
+      amount: Math.round(p.amounts.reduce((s, a) => s + a, 0) / p.amounts.length),
+    }));
+}
+
+export default function QuickExpenseSheet({ isOpen, onClose, profile, transactions, onSwitchToWrite }) {
   const { createTransaction } = useOptimisticTransactions();
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('food');
+
+  const recentPayees = useMemo(() => buildRecentPayees(transactions), [transactions]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -39,11 +71,11 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
     }
   }, [isOpen]);
 
-  const saveExpense = (cat, amt) => {
+  const saveExpense = (cat, amt, vendorLabel) => {
     const parsed = parseInt(String(amt).replace(/\s/g, ''), 10);
     if (!parsed || parsed <= 0) return;
 
-    const catLabel = CATEGORIES.find((c) => c.id === cat)?.label || 'Utgift';
+    const catLabel = vendorLabel || CATEGORIES.find((c) => c.id === cat)?.label || 'Utgift';
     createTransaction({
       type: 'expense',
       amount: parsed,
@@ -63,6 +95,10 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
     onClose?.();
   };
 
+  const savePayee = (payee) => {
+    saveExpense(payee.category, payee.amount, payee.key);
+  };
+
   const handleCategoryTap = (catId) => {
     setCategory(catId);
     if (amount && parseInt(amount, 10) > 0) {
@@ -78,9 +114,41 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
       onClose={onClose}
       title="Ny utgift"
       subtitle="2 steg — belopp + kategori"
-      maxHeight="min(72dvh, 480px)"
+      maxHeight="min(78dvh, 560px)"
+      headerRight={onSwitchToWrite && (
+        <button
+          type="button"
+          onClick={onSwitchToWrite}
+          className="flex items-center gap-1.5 text-[13px] font-medium text-white/50 hover:text-white/80 transition-colors shrink-0 pt-1"
+        >
+          <Type size={14} />
+          Skriv/tala
+        </button>
+      )}
     >
       <div className="space-y-5 -mx-1">
+        {recentPayees.length > 0 && (
+          <div>
+            <label className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2 block">
+              Vanliga — ett tryck
+            </label>
+            <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none">
+              {recentPayees.map((p) => (
+                <button
+                  key={p.key}
+                  type="button"
+                  onClick={() => savePayee(p)}
+                  className="shrink-0 flex flex-col items-start gap-1 px-3.5 py-2.5 rounded-2xl anchor-pressable"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)' }}
+                >
+                  <span className="text-[13px] font-medium text-white">{p.key}</span>
+                  <span className="text-[12px] text-white/45 tabular-nums">~{p.amount.toLocaleString('sv-SE')} kr</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div>
           <label className="text-[11px] font-semibold uppercase tracking-wide text-[var(--copilot-text-muted)] mb-2 block">
             Belopp
