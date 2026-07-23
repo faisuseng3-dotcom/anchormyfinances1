@@ -37,7 +37,7 @@ export default function WealthOptimizerModal({ isOpen, onConfirm, onClose }) {
           style={{
             background: 'rgba(10,14,26,0.98)',
             boxShadow: 'var(--anchor-shadow-1)',
-            boxShadow: '0 0 60px rgba(99,102,241,0.25), 0 20px 60px rgba(0,0,0,0.6)'
+            boxShadow: '0 0 60px rgba(79, 174, 130, 0.25), 0 20px 60px rgba(0,0,0,0.6)'
           }}
         >
           <div className="h-1 bg-gradient-to-r from-indigo-500 to-purple-600" />

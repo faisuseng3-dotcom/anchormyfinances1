@@ -124,7 +124,7 @@ export default function AnchorAcademyCard({
             className={dashRailCardInner}
             style={{
               background:
-                'linear-gradient(135deg, rgba(167, 139, 250, 0.14) 0%, rgba(255,255,255,0.02) 60%)',
+                'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(255,255,255,0.02) 60%)',
             }}
           />
           <div className={dashRailCardBorder} />

@@ -15,12 +15,12 @@ export default function ProToolsHero({ profile }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl organic-surface overflow-hidden mb-6"
-      style={{ background: 'linear-gradient(135deg, rgba(74,122,255,0.14) 0%, rgba(109,74,255,0.1) 100%)' }}
+      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
     >
       <div className="p-5 flex items-start gap-4">
         <div
           className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-          style={{ background: 'rgba(74,122,255,0.18)', boxShadow: 'var(--anchor-shadow-1)' }}
+          style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <Calculator className="w-5 h-5 text-[var(--copilot-accent-blue)]" />
         </div>

@@ -83,7 +83,7 @@ export default function IncomeStep({ data, onChange, onNext }) {
         type="button"
         onClick={onNext}
         disabled={!isValid}
-        className="anchor-btn anchor-btn--default anchor-btn--pill w-full mt-8 bg-[#22d97a] hover:bg-[#1fc46e] text-[#0a1628] disabled:opacity-50"
+        className="anchor-btn anchor-btn--default anchor-btn--pill w-full mt-8 bg-[#4fae82] hover:bg-[#1fc46e] text-[#0a1628] disabled:opacity-50"
       >
         Fortsätt
       </button>

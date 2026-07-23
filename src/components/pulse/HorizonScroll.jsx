@@ -52,7 +52,7 @@ export default function HorizonScroll({ eventsWithBalance, whatIfAmount = 0 }) {
         {whatIfAmount > 0 && (
           <div className="flex items-center gap-1">
             <div className="w-3 h-0.5 rounded" style={{ background: '#F6AD55', opacity: 0.6, borderTop: '1px dashed #F6AD55' }} />
-            <p className="text-[8px]" style={{ color: 'rgba(246,173,85,0.7)' }}>GHOST</p>
+            <p className="text-[8px]" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>GHOST</p>
           </div>
         )}
       </div>

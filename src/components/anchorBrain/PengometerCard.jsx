@@ -70,7 +70,7 @@ export default function PengometerCard({ profile, transactions, toneMode = 'norm
               <linearGradient id="pengGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#5eead4" />
                 <stop offset="50%" stopColor="#60a5fa" />
-                <stop offset="100%" stopColor="#a78bfa" />
+                <stop offset="100%" stopColor="rgba(255,255,255,0.75)" />
               </linearGradient>
             </defs>
           </svg>

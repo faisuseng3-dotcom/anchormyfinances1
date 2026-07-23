@@ -352,7 +352,7 @@ Svara ENDAST med JSON.`;
         {liveCalc && liveCalc.downPaymentAmount > 0 && currentBuffer > 0 && liveCalc.downPaymentAmount > currentBuffer * 0.3 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+            style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
             <p className="text-indigo-200">
               Kontantinsatsen på <strong>{fmt(liveCalc.downPaymentAmount)} kr</strong> sänker din buffert

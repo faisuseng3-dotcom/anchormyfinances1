@@ -124,7 +124,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
               className={cn(
                 'rounded-2xl px-2 py-3 min-h-[4.5rem] text-center border',
                 mode === m.id
-                  ? 'bg-[var(--copilot-accent-blue)] text-white border-[rgba(74,122,255,0.4)]'
+                  ? 'bg-[var(--copilot-accent-blue)] text-white border-[rgba(79, 174, 130, 0.4)]'
                   : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] ',
               )}
             >

@@ -64,8 +64,8 @@ const TRIGGER_CATEGORIES = [
     label: 'Shopping-stopp',
     iconKey: 'shopping',
     color: 'from-blue-500 to-indigo-600',
-    border: 'rgba(99,102,241,0.3)',
-    bg: 'rgba(99,102,241,0.08)',
+    border: 'rgba(79, 174, 130, 0.3)',
+    bg: 'rgba(79, 174, 130, 0.08)',
     triggers: [
       { id: 'luncbox', label: 'Matlåda-vinsten', iconKey: 'lunchbox', desc: 'Ta med matlåda istället för att äta ute → spara 100 kr.', amount: 100, users: 1420 },
       { id: 'secondhand', label: 'Second Hand-bonus', iconKey: 'secondhand', desc: 'Köp begagnat → spara 50% av det du "tjänade".', amount: 50, users: 677 },

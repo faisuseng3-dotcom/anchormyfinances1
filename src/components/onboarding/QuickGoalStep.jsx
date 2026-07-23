@@ -83,7 +83,7 @@ export default function QuickGoalStep({ data, onChange, onNext, onBack }) {
         className={onboardingChoiceCard(isSelected)}
       >
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#6B9FFF]/12 border border-[#6B9FFF]/20 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-[#4fae82]/12 border border-[#4fae82]/20 flex items-center justify-center flex-shrink-0">
             <Icon className="w-5 h-5 text-[#9FB5FF]" />
           </div>
           <div className="flex-1 min-w-0 text-left">

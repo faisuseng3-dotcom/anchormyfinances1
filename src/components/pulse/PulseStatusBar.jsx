@@ -14,7 +14,7 @@ export default function PulseStatusBar({ currentBalance, totalUpcomingCritical, 
 
   const statusConfig = {
     excellent: { label: 'Utmärkt', color: '#10b981', glow: 'rgba(16,185,129,0.5)', statusKey: 'grön', desc: 'Du har god marginal till alla utgifter' },
-    safe: { label: 'Säker', color: '#6366f1', glow: 'rgba(99,102,241,0.5)', statusKey: 'ok', desc: 'Saldo täcker kommande utgifter' },
+    safe: { label: 'Säker', color: '#6366f1', glow: 'rgba(79, 174, 130, 0.5)', statusKey: 'ok', desc: 'Saldo täcker kommande utgifter' },
     caution: { label: 'Försiktigt', color: '#f59e0b', glow: 'rgba(245,158,11,0.5)', statusKey: 'gul', desc: 'Begränsat spelrum denna månad' },
     danger: { label: 'Fara!', color: '#ef4444', glow: 'rgba(239,68,68,0.5)', statusKey: 'röd', desc: 'Saldot täcker inte alla utgifter' },
   }[status];

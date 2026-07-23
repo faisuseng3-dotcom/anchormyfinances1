@@ -37,9 +37,9 @@ function getWinStatus(pct, daysLeft, daysTotal) {
   const daysPassed = daysTotal - daysLeft;
   const expectedPct = daysPassed / daysTotal;
   if (pct === 0)       return { label: 'Sätt din budget',   color: 'rgba(255,255,255,0.35)', icon: null };
-  if (pct >= 1)        return { label: 'Gränsen nådd',      color: '#f87171',                icon: null };
-  if (pct > expectedPct + 0.15) return { label: 'Håll koll',  color: '#fcd34d',              icon: null };
-  return                        { label: 'Du vinner månaden', color: '#22d97a',               icon: '🟢' };
+  if (pct >= 1)        return { label: 'Gränsen nådd',      color: '#e2857a',                icon: null };
+  if (pct > expectedPct + 0.15) return { label: 'Håll koll',  color: '#d9b25c',              icon: null };
+  return                        { label: 'I fas med budgeten', color: '#4fae82',             icon: null };
 }
 
 export default function BudgetDashboard() {
@@ -116,7 +116,7 @@ export default function BudgetDashboard() {
       <div
         className="rounded-[24px] p-6 mb-4"
         style={{
-          background: 'linear-gradient(145deg, rgba(34,217,122,0.10) 0%, rgba(107,159,255,0.06) 100%)',
+          background: 'linear-gradient(145deg, rgba(79, 174, 130, 0.10) 0%, rgba(79, 174, 130, 0.06) 100%)',
           border: '1px solid rgba(255,255,255,0.07)',
         }}
       >
@@ -144,10 +144,10 @@ export default function BudgetDashboard() {
                 className="h-full rounded-full"
                 style={{
                   background: pct >= 1
-                    ? '#f87171'
+                    ? '#e2857a'
                     : pct >= 0.8
-                      ? 'linear-gradient(90deg, #fcd34d, #f87171)'
-                      : 'linear-gradient(90deg, #22d97a, #6B9FFF)',
+                      ? '#d9b25c'
+                      : '#4fae82',
                 }}
               />
             </div>

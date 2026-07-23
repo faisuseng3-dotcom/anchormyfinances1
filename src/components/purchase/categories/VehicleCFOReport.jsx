@@ -164,7 +164,7 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Liquidity check */}
       {analysis.downPaymentAmount > 0 && analysis.currentBuffer > 0 && (
         <div className="rounded-xl p-4 flex gap-3 items-start"
-          style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+          style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-[11px] font-bold text-indigo-400 mb-0.5">Likviditets-check</p>
@@ -228,7 +228,7 @@ export default function VehicleCFOReport({ analysis }) {
           <p className="text-[10px] text-slate-500 leading-relaxed">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
         </div>
 
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <div className="flex items-start gap-2 mb-2">
             <TrendingUp className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
             <div>

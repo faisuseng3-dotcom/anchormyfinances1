@@ -253,7 +253,7 @@ Svara ENDAST med JSON.`,
                   {/* Goal impact */}
                   {analysis.goal_impact && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
-                      style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                      style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <Target className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
                       <p className="text-slate-300">{analysis.goal_impact}</p>
                     </div>

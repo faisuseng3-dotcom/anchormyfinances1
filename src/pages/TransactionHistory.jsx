@@ -169,7 +169,7 @@ function TransactionRow({ tx, onDelete, onEdit }) {
             <AnchorPressable
               type="button"
               onClick={() => { onEdit(tx); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold min-h-10 bg-[rgba(74,122,255,0.15)] text-[var(--copilot-accent-cyan)] border border-[rgba(74,122,255,0.25)]"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold min-h-10 bg-[rgba(79, 174, 130, 0.15)] text-[var(--copilot-accent-cyan)] border border-[rgba(79, 174, 130, 0.25)]"
             >
               <Edit2 className="w-3.5 h-3.5" /> Redigera
             </AnchorPressable>

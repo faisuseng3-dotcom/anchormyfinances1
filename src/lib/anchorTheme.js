@@ -3,18 +3,17 @@
  * One canvas, typography-led hierarchy, dividers instead of nested boxes.
  */
 
-export const ANCHOR_PAGE_GRADIENT =
-  'linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%)';
+export const ANCHOR_PAGE_GRADIENT = '#0b0f0d';
 
 /** Legacy glass — use only for sheets/modals */
 export function glassSurface(overrides = {}) {
   return {
     background:
-      'linear-gradient(165deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.04) 40%, rgba(4,10,28,0.85) 100%)',
+      'linear-gradient(165deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.04) 40%, rgba(8,11,9,0.85) 100%)',
     backdropFilter: 'blur(24px)',
     WebkitBackdropFilter: 'blur(24px)',
     boxShadow: 'var(--anchor-shadow-1)',
-    boxShadow: '0 24px 56px rgba(2, 6, 20, 0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
+    boxShadow: '0 24px 56px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
     ...overrides,
   };
 }
@@ -22,7 +21,7 @@ export function glassSurface(overrides = {}) {
 /** Single elevated surface per viewport (drawers, modals) */
 export function elevatedSheet(overrides = {}) {
   return {
-    background: 'rgba(12, 18, 38, 0.94)',
+    background: 'rgba(14, 17, 15, 0.94)',
     backdropFilter: 'blur(28px)',
     WebkitBackdropFilter: 'blur(28px)',
     borderTop: '1px solid rgba(255,255,255,0.1)',
@@ -84,7 +83,7 @@ export const anchorIconButtonClass =
   `${anchorButtonBaseClass} anchor-btn--icon rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.12] anchor-pressable`;
 
 export const anchorInputBaseClass =
-  'anchor-input organic-input w-full transition-all focus-visible:shadow-[0_0_0_3px_rgba(74,122,255,0.25)]';
+  'anchor-input organic-input w-full transition-all focus-visible:shadow-[0_0_0_3px_rgba(79, 174, 130, 0.25)]';
 
 export const anchorInputClass = `${anchorInputBaseClass} anchor-input--field`;
 

@@ -164,7 +164,7 @@ Kort svar svenska, max 3 meningar.`,
                   max={100}
                   size={72}
                   stroke={5}
-                  color="#22d97a"
+                  color="#4fae82"
                   label={`${Math.round(principalPct)}%`}
                   sublabel="mot skuld"
                 />
@@ -205,12 +205,12 @@ Kort svar svenska, max 3 meningar.`,
                           <p className="text-[15px] font-medium text-white flex items-center gap-2 flex-wrap">
                             {loan.name}
                             {isHighestPrio && (
-                              <span className="text-[11px] text-[var(--copilot-accent-blue)] font-medium px-2 py-0.5 rounded-full bg-[rgba(74,122,255,0.15)] border border-[rgba(74,122,255,0.25)]">
+                              <span className="text-[11px] text-[var(--copilot-accent-blue)] font-medium px-2 py-0.5 rounded-full bg-[rgba(79, 174, 130, 0.15)] border border-[rgba(79, 174, 130, 0.25)]">
                                 Fokus nu
                               </span>
                             )}
                             {isZeroInterest && (
-                              <span className="text-[11px] text-[var(--copilot-accent-green)] font-medium px-2 py-0.5 rounded-full bg-[rgba(34,217,122,0.12)] border border-[rgba(34,217,122,0.25)]">
+                              <span className="text-[11px] text-[var(--copilot-accent-green)] font-medium px-2 py-0.5 rounded-full bg-[rgba(79, 174, 130, 0.12)] border border-[rgba(79, 174, 130, 0.25)]">
                                 Räntefritt
                               </span>
                             )}

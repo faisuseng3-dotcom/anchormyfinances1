@@ -45,7 +45,7 @@ export default function BudgetCategoryCard({ category, spent, limit, onEdit, ind
       {limit > 0 && (
         <p
           className="text-[11px] mt-2 font-medium"
-          style={{ color: over ? '#f87171' : 'var(--copilot-accent-green)' }}
+          style={{ color: over ? '#e2857a' : 'var(--copilot-accent-green)' }}
         >
           {over
             ? `${Math.abs(remaining).toLocaleString('sv-SE')} kr över`

@@ -37,7 +37,7 @@ function AmountField({ icon: Icon, label, placeholder, value, onChange }) {
   return (
     <div className="space-y-2">
       <label className={onboardingFieldLabel}>
-        <Icon className="w-4 h-4 text-[#6B9FFF]" />
+        <Icon className="w-4 h-4 text-[#4fae82]" />
         {label}
       </label>
       <div className="relative">

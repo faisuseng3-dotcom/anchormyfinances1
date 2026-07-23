@@ -188,8 +188,8 @@ Svara ENDAST med JSON.`,
           </div>
           {totalFound > 0 && (
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring' }}
-              className="px-3 py-1 rounded-full text-xs font-black text-amber-900"
-              style={{ background: 'linear-gradient(135deg, #FCD34D, #F59E0B)' }}>
+              className="px-3 py-1 rounded-full text-xs font-bold"
+              style={{ background: 'var(--color-accent-soft)', color: 'var(--color-accent)' }}>
               <Coins className="w-3.5 h-3.5 inline mr-1" aria-hidden /> {fmt(totalFound)} kr/mån hittat!
             </motion.div>
           )}

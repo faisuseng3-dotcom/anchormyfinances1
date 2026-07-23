@@ -24,8 +24,8 @@ export default function CategorySelector({ selected, onSelect }) {
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
                     isSelected
-                      ? 'bg-[#6B9FFF]/20 border-[#6B9FFF]/40'
-                      : 'bg-[#6B9FFF]/10 border-white/[0.08]'
+                      ? 'bg-[#4fae82]/20 border-[#4fae82]/40'
+                      : 'bg-[#4fae82]/10 border-white/[0.08]'
                   }`}
                 >
                   <Icon className="w-5 h-5 text-[#9FB5FF]" />

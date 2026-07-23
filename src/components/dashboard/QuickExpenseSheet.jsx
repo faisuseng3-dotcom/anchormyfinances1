@@ -93,7 +93,7 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
               placeholder="0"
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ''))}
-              className="w-full h-16 rounded-2xl bg-[var(--copilot-bg-card)] organic-surface text-center text-3xl font-bold text-white tabular-nums outline-none focus:border-[rgba(74,122,255,0.5)]"
+              className="w-full h-16 rounded-2xl bg-[var(--copilot-bg-card)] organic-surface text-center text-3xl font-bold text-white tabular-nums outline-none focus:border-[rgba(79, 174, 130, 0.5)]"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[var(--copilot-text-muted)]">
               kr
@@ -129,7 +129,7 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile }) {
                   onClick={() => handleCategoryTap(cat.id)}
                   className={`flex items-center gap-2.5 p-3.5 rounded-3xl text-left transition-all ${
                     active
-                      ? 'border-[var(--copilot-accent-blue)] bg-[rgba(74,122,255,0.2)]'
+                      ? 'border-[var(--copilot-accent-blue)] bg-[rgba(79, 174, 130, 0.2)]'
                       : ' bg-[var(--copilot-bg-card)] hover:bg-[var(--copilot-bg-card-hover)]'
                   }`}
                   style={active ? undefined : { background: `linear-gradient(135deg, ${tint.bg}, var(--copilot-bg-card))` }}

@@ -20,8 +20,8 @@ export default function EconomicControlCard() {
       className="flex items-center gap-3 px-4 py-3 rounded-2xl"
       style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
     >
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(107,159,255,0.12)' }}>
-        <Shield size={16} className="text-[#6B9FFF]" />
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(79, 174, 130, 0.12)' }}>
+        <Shield size={16} className="text-[#4fae82]" />
       </div>
       <div>
         <h2 className="anchor-card-title mb-1">Ekonomisk kontroll</h2>

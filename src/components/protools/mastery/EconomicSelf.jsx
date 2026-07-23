@@ -24,7 +24,7 @@ const PROFILES = {
     desc: 'Du är försiktig och tänker framåt, men rädslan för att förlora kontroll kan blockera dig från att ta välgrundade risker.',
     tips: ['Bygg en "Peace-of-Mind"-buffert på 3 månader, sen kan du andas', 'Automatisera betalningar så du slipper manuell kontroll', 'Tillåt dig en "fribudget" varje månad utan skuldkänslor'],
     color: '#6366f1',
-    glow: 'rgba(99,102,241,0.3)',
+    glow: 'rgba(79, 174, 130, 0.3)',
   },
   planner: {
     Icon: ClipboardList,

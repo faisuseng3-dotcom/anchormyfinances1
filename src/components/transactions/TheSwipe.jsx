@@ -33,7 +33,7 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
       initial={{ opacity: 0, y: 16, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8 }}
-      className="rounded-3xl border-[rgba(74,122,255,0.35)] bg-[rgba(74,122,255,0.1)] p-4"
+      className="rounded-3xl border-[rgba(79, 174, 130, 0.35)] bg-[rgba(79, 174, 130, 0.1)] p-4"
     >
       <div className="flex items-start gap-3">
         <div className="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
@@ -119,9 +119,9 @@ function CircleVisual({ direction, amount, profile }) {
         <div
           className="w-28 h-28 rounded-full flex flex-col items-center justify-center gap-1"
           style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.25), rgba(79,70,229,0.15))',
-            border: dragTarget === 'spending' ? '2px solid rgba(99,102,241,0.8)' : '2px solid rgba(99,102,241,0.4)',
-            boxShadow: dragTarget === 'spending' ? '0 0 24px rgba(99,102,241,0.5)' : '0 0 12px rgba(99,102,241,0.2)',
+            background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.25), rgba(79,70,229,0.15))',
+            border: dragTarget === 'spending' ? '2px solid rgba(79, 174, 130, 0.8)' : '2px solid rgba(79, 174, 130, 0.4)',
+            boxShadow: dragTarget === 'spending' ? '0 0 24px rgba(79, 174, 130, 0.5)' : '0 0 12px rgba(79, 174, 130, 0.2)',
             transition: 'all 0.2s ease',
           }}
         >

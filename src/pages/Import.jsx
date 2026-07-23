@@ -211,7 +211,7 @@ export default function Import() {
           >
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(34,217,122,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+              style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
             >
               <CheckCircle2 className="w-8 h-8 text-[var(--copilot-accent-green)]" />
             </div>

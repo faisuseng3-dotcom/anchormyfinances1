@@ -7,8 +7,8 @@ export default function StreakBadge({ count = 0, label, variant = 'fire', forceS
 
   const colors = {
     fire: { bg: 'rgba(251,146,60,0.15)', border: 'rgba(251,146,60,0.25)' },
-    save: { bg: 'rgba(34,217,122,0.12)', border: 'rgba(34,217,122,0.2)' },
-    budget: { bg: 'rgba(74,122,255,0.12)', border: 'rgba(74,122,255,0.2)' },
+    save: { bg: 'rgba(79, 174, 130, 0.12)', border: 'rgba(79, 174, 130, 0.2)' },
+    budget: { bg: 'rgba(79, 174, 130, 0.12)', border: 'rgba(79, 174, 130, 0.2)' },
   };
   const c = colors[variant] || colors.fire;
 

@@ -20,7 +20,7 @@ const SECTION = ({ title, children }) => (
   </div>
 );
 
-const ROW = ({ icon: Icon, label, sublabel, onPress, color = '#6B9FFF', last = false }) => (
+const ROW = ({ icon: Icon, label, sublabel, onPress, color = '#4fae82', last = false }) => (
   <button
     type="button"
     onClick={onPress}
@@ -55,10 +55,10 @@ export default function Mer() {
           type="button"
           onClick={() => navigate(createPageUrl('Import'))}
           className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left touch-manipulation"
-          style={{ background: 'rgba(107,159,255,0.1)', border: '1px solid rgba(107,159,255,0.2)' }}
+          style={{ background: 'rgba(79, 174, 130, 0.1)', border: '1px solid rgba(79, 174, 130, 0.2)' }}
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(107,159,255,0.15)' }}>
-            <FileUp size={18} className="text-[#6B9FFF]" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(79, 174, 130, 0.15)' }}>
+            <FileUp size={18} className="text-[#4fae82]" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-semibold text-white">Importera från banken</p>
@@ -84,9 +84,9 @@ export default function Mer() {
           <ROW icon={Wrench} label="ProTools" sublabel="Avancerade verktyg" onPress={() => navigate(createPageUrl('ProTools'))} />
           <ROW icon={Globe} label="Galaxy" sublabel="Se ekonomiska mönster" onPress={() => navigate(createPageUrl('Insights'))} />
           <ROW icon={Users} label="Social" sublabel="Dela och jämför" onPress={() => navigate(createPageUrl('Social'))} />
-          <ROW icon={Users} label="Squads" sublabel="Spara tillsammans" onPress={() => navigate(createPageUrl('Squads'))} color="#a78bfa" />
+          <ROW icon={Users} label="Squads" sublabel="Spara tillsammans" onPress={() => navigate(createPageUrl('Squads'))} color="rgba(255,255,255,0.75)" />
           <ROW icon={Plane} label="Reseplanering" sublabel="AI-agent för din nästa resa" onPress={() => navigate(createPageUrl('TravelPlanner'))} />
-          <ROW icon={BookOpen} label="Lago Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} color="#4fc3f7" last />
+          <ROW icon={BookOpen} label="Lago Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} color="#4fae82" last />
         </SECTION>
 
         <SECTION title="Hjälp oss bli bättre">
@@ -95,7 +95,7 @@ export default function Mer() {
             label="Ge feedback"
             sublabel="Buggar, förslag eller problem"
             onPress={handleFeedback}
-            color="#22d97a"
+            color="#4fae82"
             last
           />
         </SECTION>
@@ -104,7 +104,7 @@ export default function Mer() {
           type="button"
           onClick={() => base44.auth.logout(window.location.origin)}
           className="w-full py-3.5 rounded-2xl text-[15px] font-semibold touch-manipulation"
-          style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.15)', color: '#f87171' }}
+          style={{ background: 'rgba(226, 133, 122, 0.08)', border: '1px solid rgba(226, 133, 122, 0.15)', color: '#e2857a' }}
         >
           Logga ut
         </button>

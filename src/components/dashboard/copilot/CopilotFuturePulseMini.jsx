@@ -6,9 +6,9 @@ import { planeraTabHref } from '@/lib/planeraTabs';
 import { staggerItem } from '@/lib/motionPresets';
 
 const STATUS_DOT = {
-  grön: '#22d97a',
+  grön: '#4fae82',
   gul: '#fbbf24',
-  röd: '#f87171',
+  röd: '#e2857a',
 };
 
 function fmtKr(n) {
@@ -69,8 +69,8 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
           <svg viewBox="0 0 100 100" className="w-full h-16" preserveAspectRatio="none" aria-hidden>
             <defs>
               <linearGradient id="fp-mini-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#4a7aff" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#4a7aff" stopOpacity="0" />
+                <stop offset="0%" stopColor="#4fae82" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#4fae82" stopOpacity="0" />
               </linearGradient>
             </defs>
             {sparkPoints && (
@@ -82,7 +82,7 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
                 <polyline
                   points={sparkPoints}
                   fill="none"
-                  stroke="#4a7aff"
+                  stroke="#4fae82"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -112,7 +112,7 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
             >
               <div
                 className="w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0"
-                style={{ background: 'rgba(74,122,255,0.14)' }}
+                style={{ background: 'rgba(79, 174, 130, 0.14)' }}
               >
                 <CalendarDays className="w-4 h-4 text-[var(--copilot-accent-blue)]" />
               </div>

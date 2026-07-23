@@ -344,7 +344,7 @@ Svara ENDAST med JSON.`,
                   <p className="text-[10px] text-slate-500 mt-1">Lagfart + pantbrev</p>
                 </div>
               )}
-              <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+              <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-[10px] text-indigo-400 mb-1 uppercase tracking-wider">Värdeutveckling 5 år</p>
                 <p className="text-xl font-black text-white">{analysis.value_growth_5y > 0 ? '+' : ''}{analysis.value_growth_5y}%</p>
                 <p className="text-[10px] text-slate-500 mt-1">Uppskattning för {analysis.housing.location}</p>

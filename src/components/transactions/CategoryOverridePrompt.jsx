@@ -30,7 +30,7 @@ export default function CategoryOverridePrompt({ vendor, newCategory, categoryLa
         <div className="flex items-start gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(74,122,255,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+            style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <ScanLine className="w-4 h-4 text-[var(--copilot-accent-blue)]" />
           </div>

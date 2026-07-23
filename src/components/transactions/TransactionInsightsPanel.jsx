@@ -18,8 +18,8 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_COLORS = [
-  '#4a7aff', '#4fc3f7', '#a78bfa', '#22d97a',
-  '#6d4aff', '#f472b6', '#34d9be', '#8fa8d8'
+  '#4fae82', '#4fae82', 'rgba(255,255,255,0.75)', '#4fae82',
+  '#4fae82', 'rgba(255,255,255,0.75)', '#34d9be', 'rgba(255,255,255,0.55)'
 ];
 
 function getMonthKey(dateStr) {
@@ -165,8 +165,8 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
               tickFormatter={v => v >= 1000 ? `${Math.round(v / 1000)}k` : v} />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: 12, color: 'var(--copilot-text-secondary)', paddingTop: 8 }} />
-            <Bar dataKey="Inkomst" fill="#22d97a" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Utgifter" fill="#4a7aff" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Inkomst" fill="#4fae82" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Utgifter" fill="#4fae82" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
 

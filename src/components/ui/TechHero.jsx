@@ -8,9 +8,9 @@ import { techHeroWrap, techHeroMesh, dashLabel } from '@/lib/appSurface';
 export default function TechHero({ label, title, children, accent = 'blue' }) {
   const mesh =
     accent === 'teal'
-      ? 'radial-gradient(ellipse 80% 100% at 100% 0%, rgba(45, 212, 191, 0.18) 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 0% 100%, rgba(99, 102, 241, 0.12) 0%, transparent 50%)'
+      ? 'radial-gradient(ellipse 80% 100% at 100% 0%, rgba(45, 212, 191, 0.18) 0%, transparent 55%), radial-gradient(ellipse 60% 80% at 0% 100%, rgba(79, 174, 130, 0.12) 0%, transparent 50%)'
       : accent === 'violet'
-        ? 'radial-gradient(ellipse 80% 100% at 0% 0%, rgba(167, 139, 250, 0.2) 0%, transparent 55%)'
+        ? 'radial-gradient(ellipse 80% 100% at 0% 0%, rgba(255, 255, 255, 0.2) 0%, transparent 55%)'
         : 'radial-gradient(ellipse 90% 100% at 50% -20%, rgba(96, 165, 250, 0.22) 0%, transparent 60%)';
 
   return (

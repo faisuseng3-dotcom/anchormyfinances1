@@ -22,20 +22,20 @@ import {
 const ACCOUNT_META = {
   buffer: {
     icon: Shield,
-    accent: '#4fc3f7',
-    gradient: 'linear-gradient(135deg, rgba(79,195,247,0.18) 0%, rgba(74,122,255,0.1) 100%)',
+    accent: '#4fae82',
+    gradient: 'linear-gradient(135deg, rgba(79, 174, 130, 0.18) 0%, rgba(79, 174, 130, 0.1) 100%)',
     subtitle: 'Din trygghetsreserv',
   },
   savings: {
     icon: PiggyBank,
-    accent: '#22d97a',
-    gradient: 'linear-gradient(135deg, rgba(34,217,122,0.18) 0%, rgba(74,122,255,0.08) 100%)',
+    accent: '#4fae82',
+    gradient: 'linear-gradient(135deg, rgba(79, 174, 130, 0.18) 0%, rgba(79, 174, 130, 0.08) 100%)',
     subtitle: 'Mot ditt sparmål',
   },
   margin: {
     icon: Wallet,
-    accent: '#4a7aff',
-    gradient: 'linear-gradient(135deg, rgba(74,122,255,0.2) 0%, rgba(109,74,255,0.1) 100%)',
+    accent: '#4fae82',
+    gradient: 'linear-gradient(135deg, rgba(79, 174, 130, 0.2) 0%, rgba(79, 174, 130, 0.1) 100%)',
     subtitle: 'Kvar efter fasta kostnader',
   },
 };
@@ -52,13 +52,13 @@ function TransferRow({ item, index }) {
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
         style={{
-          background: item.incoming ? 'rgba(34,217,122,0.12)' : 'rgba(244,114,182,0.1)',
+          background: item.incoming ? 'rgba(79, 174, 130, 0.12)' : 'rgba(255, 255, 255, 0.1)',
           boxShadow: 'var(--anchor-shadow-1)',
         }}
       >
         <ArrowLeftRight
           className="w-4 h-4"
-          style={{ color: item.incoming ? '#22d97a' : '#f472b6' }}
+          style={{ color: item.incoming ? '#4fae82' : 'rgba(255,255,255,0.75)' }}
         />
       </div>
       <div className="flex-1 min-w-0">
@@ -67,7 +67,7 @@ function TransferRow({ item, index }) {
       </div>
       <p
         className="text-[14px] font-semibold tabular-nums shrink-0"
-        style={{ color: item.incoming ? '#22d97a' : 'var(--copilot-text-secondary)' }}
+        style={{ color: item.incoming ? '#4fae82' : 'var(--copilot-text-secondary)' }}
       >
         {item.signed}{fmtKr(item.amount)}
       </p>
@@ -91,8 +91,8 @@ function MarginBreakdown({ profile }) {
               <span
                 className="text-[11px] font-bold w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
                 style={{
-                  background: row.sign === '+' ? 'rgba(34,217,122,0.15)' : 'rgba(244,114,182,0.12)',
-                  color: row.sign === '+' ? '#22d97a' : '#f472b6',
+                  background: row.sign === '+' ? 'rgba(79, 174, 130, 0.15)' : 'rgba(255, 255, 255, 0.12)',
+                  color: row.sign === '+' ? '#4fae82' : 'rgba(255,255,255,0.75)',
                 }}
               >
                 {row.sign}
@@ -105,8 +105,8 @@ function MarginBreakdown({ profile }) {
           </div>
         ))}
         <div
-          className="flex items-center justify-between gap-3 p-4 rounded-3xl border-[rgba(74,122,255,0.35)]"
-          style={{ background: 'rgba(74,122,255,0.12)' }}
+          className="flex items-center justify-between gap-3 p-4 rounded-3xl border-[rgba(79, 174, 130, 0.35)]"
+          style={{ background: 'rgba(79, 174, 130, 0.12)' }}
         >
           <span className="text-[14px] font-semibold text-white flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-[var(--copilot-accent-green)]" />
@@ -119,8 +119,8 @@ function MarginBreakdown({ profile }) {
       </div>
 
       <div
-        className="mt-5 p-4 rounded-3xl border-[rgba(34,217,122,0.25)]"
-        style={{ background: 'rgba(34,217,122,0.08)' }}
+        className="mt-5 p-4 rounded-3xl border-[rgba(79, 174, 130, 0.25)]"
+        style={{ background: 'rgba(79, 174, 130, 0.08)' }}
       >
         <p className="text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed flex items-start gap-2">
           <Sparkles className="w-4 h-4 text-[var(--copilot-accent-green)] shrink-0 mt-0.5" />
@@ -262,7 +262,7 @@ export default function AccountDetailDrawer({
             className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col border-l  shadow-2xl overflow-hidden"
             style={{
               zIndex: zIndex.sheet + 1,
-              background: 'linear-gradient(180deg, #0a0f6b 0%, #0d1a9e 55%, #1228cc 100%)',
+              background: 'linear-gradient(180deg, #0b0f0d 0%, #0d1a9e 55%, #0b0f0d 100%)',
             }}
             {...panelMotion}
             {...(reduceMotion ? {} : drawerPanelExit)}

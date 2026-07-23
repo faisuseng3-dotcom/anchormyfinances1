@@ -6,7 +6,7 @@ export function onboardingChoiceCard(selected) {
   return cn(
     'w-full p-4 rounded-2xl text-left transition-all border',
     selected
-      ? 'border-[#6B9FFF]/50 bg-[#6B9FFF]/12'
+      ? 'border-[#4fae82]/50 bg-[#4fae82]/12'
       : 'border-white/[0.12] bg-white/[0.04] hover:border-white/25',
   );
 }

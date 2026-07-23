@@ -37,7 +37,7 @@ export default function CopilotEnvelopeGoal({
         animate={{ height: `${fillPct}%` }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          background: 'linear-gradient(180deg, rgba(34,217,122,0.05) 0%, rgba(34,217,122,0.22) 100%)',
+          background: 'linear-gradient(180deg, rgba(79, 174, 130, 0.05) 0%, rgba(79, 174, 130, 0.22) 100%)',
         }}
       />
       <svg
@@ -49,7 +49,7 @@ export default function CopilotEnvelopeGoal({
       >
         <path
           d="M0,12 C80,4 160,20 240,10 C320,0 360,16 400,8 L400,24 L0,24 Z"
-          fill="rgba(34,217,122,0.35)"
+          fill="rgba(79, 174, 130, 0.35)"
         />
       </svg>
 

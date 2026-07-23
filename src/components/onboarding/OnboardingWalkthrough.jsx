@@ -133,7 +133,7 @@ export default function OnboardingWalkthrough({ onFinish }) {
             height={spotlightRect.height}
             rx={20}
             fill="none"
-            stroke="rgba(99,102,241,0.7)"
+            stroke="rgba(79, 174, 130, 0.7)"
             strokeWidth="2"
           />
         )}
@@ -181,7 +181,7 @@ export default function OnboardingWalkthrough({ onFinish }) {
               background: 'linear-gradient(135deg, rgba(26,34,51,0.98), rgba(15,23,42,0.98))',
               boxShadow: 'var(--anchor-shadow-1)',
               borderRadius: 24,
-              boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.15)',
+              boxShadow: '0 8px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(79, 174, 130, 0.15)',
               padding: '20px 20px 18px',
             }}
           >
@@ -207,12 +207,9 @@ export default function OnboardingWalkthrough({ onFinish }) {
                 onClick={next}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-white"
                 style={{
-                  background: isLast
-                    ? 'linear-gradient(135deg, #10b981, #059669)'
-                    : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                  boxShadow: isLast
-                    ? '0 4px 15px rgba(16,185,129,0.3)'
-                    : '0 4px 15px rgba(99,102,241,0.3)',
+                  background: '#4fae82',
+                  color: '#08110c',
+                  boxShadow: '0 4px 15px rgba(79, 174, 130, 0.3)',
                 }}
               >
                 {isLast ? (

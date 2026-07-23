@@ -33,8 +33,8 @@ export default function ScenarioCompare({ profile, transactions }) {
               transition={{ delay: i * 0.08 }}
               className="rounded-2xl px-4 py-4"
               style={{
-                background: isBest ? 'rgba(34,217,122,0.06)' : 'rgba(255,255,255,0.03)',
-                border: `1px solid ${isBest ? 'rgba(34,217,122,0.2)' : 'rgba(255,255,255,0.06)'}`,
+                background: isBest ? 'rgba(79,174,130,0.08)' : 'rgba(255,255,255,0.03)',
+                border: `1px solid ${isBest ? 'rgba(79,174,130,0.2)' : 'rgba(255,255,255,0.06)'}`,
               }}
             >
               <div className="flex items-start justify-between gap-3 mb-3">
@@ -51,7 +51,7 @@ export default function ScenarioCompare({ profile, transactions }) {
                     {s.balanceLabel}
                   </p>
                   {s.delta > 0 && (
-                    <p className="text-[12px] font-semibold mt-0.5" style={{ color: '#22d97a' }}>
+                    <p className="text-[12px] font-semibold mt-0.5" style={{ color: '#4fae82' }}>
                       +{s.delta.toLocaleString('sv-SE')} kr
                     </p>
                   )}

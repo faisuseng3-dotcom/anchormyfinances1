@@ -125,7 +125,7 @@ export default function TransactionForm({ isOpen = true, existingTx, onSuccess, 
             minTouch={false}
             onClick={() => setIsExpense(false)}
             className={`flex-1 py-2.5 min-h-12 rounded-xl text-sm font-semibold active:scale-[0.98] ${
-              !isExpense ? 'bg-[rgba(34,217,122,0.2)] text-[var(--copilot-accent-green)] border border-[rgba(34,217,122,0.35)]' : 'text-[var(--copilot-text-muted)]'
+              !isExpense ? 'bg-[rgba(79, 174, 130, 0.2)] text-[var(--copilot-accent-green)] border border-[rgba(79, 174, 130, 0.35)]' : 'text-[var(--copilot-text-muted)]'
             }`}
           >
             + Inkomst

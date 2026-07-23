@@ -35,6 +35,11 @@ export function buildActionScenarios(profile, transactions) {
 
   const fmt = (n) => `${Math.round(n).toLocaleString('sv-SE')} kr`;
 
+  // Neutral bar for every scenario — ScenarioCompare already highlights the
+  // best option with a tinted card, so the bar itself doesn't need its own
+  // (previously per-scenario rainbow) color.
+  const NEUTRAL_ACCENT = 'rgba(255,255,255,0.32)';
+
   return [
     {
       id: 'continue',
@@ -42,7 +47,7 @@ export function buildActionScenarios(profile, transactions) {
       balance: scenarioA.balance,
       balanceLabel: fmt(scenarioA.balance),
       delta: 0,
-      accent: '#8fa8d8',
+      accent: NEUTRAL_ACCENT,
     },
     {
       id: 'restaurants',
@@ -50,7 +55,7 @@ export function buildActionScenarios(profile, transactions) {
       balance: scenarioB.balance,
       balanceLabel: fmt(scenarioB.balance),
       delta: scenarioB.balance - scenarioA.balance,
-      accent: '#4fc3f7',
+      accent: NEUTRAL_ACCENT,
     },
     {
       id: 'subscriptions',
@@ -60,7 +65,7 @@ export function buildActionScenarios(profile, transactions) {
       balance: scenarioC.balance,
       balanceLabel: fmt(scenarioC.balance),
       delta: scenarioC.balance - scenarioA.balance,
-      accent: '#22d97a',
+      accent: '#4fae82',
       hint: pausedTotal > 0 ? `Sparar ${fmt(pausedTotal)}/mån` : null,
     },
   ];

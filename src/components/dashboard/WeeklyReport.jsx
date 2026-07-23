@@ -26,12 +26,12 @@ export default function WeeklyReport({ profile, transactions }) {
         </div>
         <div>
           <p className="text-[12px] text-white/40">Du sparade</p>
-          <p className="text-[22px] font-bold text-[#22d97a] tabular-nums mt-1">{report.fmt(report.saved)}</p>
+          <p className="text-[22px] font-bold text-[#4fae82] tabular-nums mt-1">{report.fmt(report.saved)}</p>
           <p className="text-[11px] text-white/30">kr</p>
         </div>
         <div>
           <p className="text-[12px] text-white/40">Du ligger</p>
-          <p className={`text-[22px] font-bold tabular-nums mt-1 ${report.goalPct >= 0 ? 'text-[#22d97a]' : 'text-amber-300'}`}>
+          <p className={`text-[22px] font-bold tabular-nums mt-1 ${report.goalPct >= 0 ? 'text-[#4fae82]' : 'text-amber-300'}`}>
             {report.goalPct >= 0 ? '+' : ''}{report.goalPct}%
           </p>
           <p className="text-[11px] text-white/30">mot målet</p>

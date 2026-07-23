@@ -250,7 +250,7 @@ Svara ENDAST med JSON.`,
                         </div>
                       </div>
                     </div>
-                    <div className="rounded-2xl p-4" style={{ background: 'rgba(99,102,241,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                    <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <div>
                         <p className="text-[10px] text-indigo-400 uppercase tracking-wider font-bold">Upgrade-cykeln</p>
                         <p className="text-xl font-black text-white mt-0.5">{analysis.upgrade_cycle || 24} mån</p>

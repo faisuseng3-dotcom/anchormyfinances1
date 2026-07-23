@@ -79,7 +79,7 @@ export default function BottomTabBar() {
                 width: 3,
                 height: 3,
                 borderRadius: '50%',
-                background: '#6B9FFF',
+                background: '#4fae82',
               }} />
             )}
           </button>

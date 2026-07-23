@@ -123,7 +123,7 @@ Svara ENDAST med JSON.`,
         <div className="grid grid-cols-2 gap-3">
           {/* Choice A */}
           <div className="space-y-2">
-            <div className="text-center py-1 rounded-lg text-xs font-bold text-indigo-300" style={{ background: 'rgba(99,102,241,0.15)' }}>VAL A</div>
+            <div className="text-center py-1 rounded-lg text-xs font-bold text-indigo-300" style={{ background: 'rgba(79, 174, 130, 0.15)' }}>VAL A</div>
             <Input value={choiceA} onChange={e => setChoiceA(e.target.value)} placeholder="t.ex. Ny bil" className="h-10 text-sm text-center" />
             <Input type="number" value={costA} onChange={e => setCostA(e.target.value)} placeholder="Kostnad (kr)" className="h-10 text-sm text-center" />
           </div>
@@ -184,7 +184,7 @@ Svara ENDAST med JSON.`,
             </div>
 
             {/* Decision certificate */}
-            <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1))', boxShadow: 'var(--anchor-shadow-1)' }}>
+            <div className="rounded-2xl p-5 text-center" style={{ background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.15), rgba(139,92,246,0.1))', boxShadow: 'var(--anchor-shadow-1)' }}>
               <Award className="w-8 h-8 text-purple-300 mx-auto mb-2" aria-hidden />
               <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">Besluts-certifikat</p>
               <p className="text-lg font-black text-white mb-1">{result.certificate_headline}</p>

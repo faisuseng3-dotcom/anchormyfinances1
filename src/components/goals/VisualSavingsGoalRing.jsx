@@ -23,7 +23,7 @@ export default function VisualSavingsGoalRing({
   pct = 0,
   size = 120,
   stroke = 7,
-  color = '#22d97a',
+  color = '#4fae82',
   trackColor = 'rgba(255,255,255,0.1)',
   imageUrl = null,
   iconId = 'default',
@@ -108,7 +108,7 @@ export default function VisualSavingsGoalRing({
         style={{
           width: innerSize,
           height: innerSize,
-          background: imageUrl ? '#0a1020' : 'linear-gradient(145deg, rgba(34,217,122,0.15), rgba(74,122,255,0.12))',
+          background: imageUrl ? '#0a1020' : 'linear-gradient(145deg, rgba(79, 174, 130, 0.15), rgba(79, 174, 130, 0.12))',
         }}
       >
         {imageUrl ? (

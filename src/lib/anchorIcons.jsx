@@ -122,13 +122,13 @@ export const STREAK_ICON_MAP = {
 
 /** Färgad statuspunkt (grön / gul / röd) */
 export const STATUS_DOT_COLORS = {
-  grön: '#22d97a',
-  gul: '#fcd34d',
-  röd: '#f87171',
-  ok: '#22d97a',
-  warning: '#fcd34d',
-  danger: '#f87171',
-  default: '#8fa8d8',
+  grön: '#4fae82',
+  gul: '#d9b25c',
+  röd: '#e2857a',
+  ok: '#4fae82',
+  warning: '#d9b25c',
+  danger: '#e2857a',
+  default: 'rgba(255,255,255,0.5)',
 };
 
 export function AnchorLogoMark({ size = 16, className = '' }) {

@@ -44,8 +44,8 @@ const PERSONAS = [
     hook: 'Vi hjälper dig med oregelbundna inkomster',
     keyMetric: 'Buffertfokus',
     color: '#A78BFA',
-    bgAccent: 'rgba(167,139,250,0.12)',
-    borderAccent: 'rgba(167,139,250,0.5)',
+    bgAccent: 'rgba(255, 255, 255, 0.12)',
+    borderAccent: 'rgba(255, 255, 255, 0.5)',
     aiSetup: 'Bygger buffert för månader utan uppdrag & jagar avdrag för utrustning och mjukvara.',
   },
   {

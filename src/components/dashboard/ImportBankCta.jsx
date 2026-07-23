@@ -27,7 +27,7 @@ export default function ImportBankCta({ transactionCount = 0, variant = 'card' }
       type="button"
       onClick={() => navigate(createPageUrl('Import'))}
       className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left touch-manipulation active:scale-[0.99] transition-transform"
-      style={{ background: 'rgba(107,159,255,0.08)', border: '1px solid rgba(107,159,255,0.15)' }}
+      style={{ background: 'rgba(79, 174, 130, 0.08)', border: '1px solid rgba(79, 174, 130, 0.15)' }}
     >
       <div className="flex-1 min-w-0">
         <p className="text-[15px] font-semibold text-white">Importera från banken</p>

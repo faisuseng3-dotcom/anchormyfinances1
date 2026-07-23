@@ -45,7 +45,7 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className={`rounded-2xl organic-surface p-6 text-center ${className}`}
-        style={{ background: 'linear-gradient(135deg, rgba(34,217,122,0.12), rgba(74,122,255,0.08))' }}
+        style={{ background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.12), rgba(79, 174, 130, 0.08))' }}
         onClick={handleCelebrate}
       >
         <Sparkles className="w-8 h-8 text-[var(--copilot-accent-green)] mx-auto mb-3" />
@@ -60,7 +60,7 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`rounded-2xl organic-surface overflow-hidden ${className}`}
-      style={{ background: 'linear-gradient(135deg, rgba(74,122,255,0.12) 0%, rgba(34,217,122,0.08) 100%)' }}
+      style={{ background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.12) 0%, rgba(79, 174, 130, 0.08) 100%)' }}
       onClick={handleCelebrate}
     >
       <div className="p-5 flex items-center gap-4">
@@ -69,7 +69,7 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
           max={100}
           size={88}
           stroke={6}
-          color="#22d97a"
+          color="#4fae82"
           label={`${freedomPct}%`}
           sublabel="mot frihet"
         />

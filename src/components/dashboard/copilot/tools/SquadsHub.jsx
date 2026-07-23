@@ -16,7 +16,7 @@ const DEMO_SQUADS = [
     target: 15000,
     current: 8200,
     members: ['Alex', 'Sara', 'Erik', 'Maja'],
-    colors: ['#4a7aff', '#22d97a', '#a78bfa', '#4fc3f7'],
+    colors: ['#4fae82', '#4fae82', 'rgba(255,255,255,0.75)', '#4fae82'],
   },
   {
     id: 'weekend',
@@ -25,7 +25,7 @@ const DEMO_SQUADS = [
     target: 6000,
     current: 4100,
     members: ['Du', 'Linnea'],
-    colors: ['#4a7aff', '#f472b6'],
+    colors: ['#4fae82', 'rgba(255,255,255,0.75)'],
   },
 ];
 
@@ -35,7 +35,7 @@ function AvatarStack({ members, colors }) {
       {members.map((name, i) => (
         <div
           key={name}
-          className="w-9 h-9 rounded-full border-2 border-[#0a0f6b] flex items-center justify-center text-[11px] font-bold text-white"
+          className="w-9 h-9 rounded-full border-2 border-[#0b0f0d] flex items-center justify-center text-[11px] font-bold text-white"
           style={{
             background: colors[i % colors.length],
             marginLeft: i > 0 ? -10 : 0,
@@ -70,7 +70,7 @@ function SquadCard({ squad, index }) {
         <div className="flex items-center gap-3 min-w-0">
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(74,122,255,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+            style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <Icon className="w-5 h-5 text-[var(--copilot-accent-blue)]" />
           </div>
@@ -96,7 +96,7 @@ function SquadCard({ squad, index }) {
         <div className="h-2.5 rounded-full bg-white/[0.08] overflow-hidden">
           <motion.div
             className="h-full rounded-full"
-            style={{ background: 'linear-gradient(90deg, #4a7aff, #22d97a)' }}
+            style={{ background: 'var(--color-accent)' }}
             initial={{ width: 0 }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}

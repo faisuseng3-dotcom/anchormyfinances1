@@ -32,7 +32,7 @@ const DUE_DAYS = [8, 12, 15, 18, 22, 27];
 export const EVENT_COLORS = {
   bill: '#E8856B',
   income: '#34D399',
-  planned: '#6B9FFF',
+  planned: '#4fae82',
 };
 
 export function formatDateKey(date) {

@@ -21,8 +21,8 @@ export default function DayPicker({ value, onChange, label, hint }) {
               onClick={() => onChange(d)}
               className="flex-shrink-0 w-10 h-10 rounded-xl text-sm font-semibold transition-all"
               style={isSelected
-                ? { background: 'linear-gradient(135deg, #6366f1, #7c3aed)', color: '#fff', boxShadow: '0 0 12px rgba(99,102,241,0.5)' }
-                : { background: 'rgba(255,255,255,0.05)', color: '#94a3b8', boxShadow: 'var(--anchor-shadow-1)' }
+                ? { background: 'var(--color-accent)', color: '#08110c' }
+                : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.55)', boxShadow: 'var(--anchor-shadow-1)' }
               }
             >
               {d}

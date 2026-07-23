@@ -301,9 +301,9 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               className="mt-5 rounded-2xl px-5 py-5 text-center"
               style={{
                 background: buyScore.recommendation === 'KÖP'
-                  ? 'rgba(34,217,122,0.08)'
+                  ? 'rgba(79, 174, 130, 0.08)'
                   : buyScore.recommendation === 'AVVAKTA'
-                    ? 'rgba(248,113,113,0.08)'
+                    ? 'rgba(226, 133, 122, 0.08)'
                     : 'rgba(251,191,36,0.08)',
                 border: '1px solid rgba(255,255,255,0.06)',
               }}
@@ -316,8 +316,8 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               <p
                 className="text-[18px] font-bold mt-3 tracking-wide"
                 style={{
-                  color: buyScore.recommendation === 'KÖP' ? '#22d97a'
-                    : buyScore.recommendation === 'AVVAKTA' ? '#f87171' : '#fbbf24',
+                  color: buyScore.recommendation === 'KÖP' ? '#4fae82'
+                    : buyScore.recommendation === 'AVVAKTA' ? '#e2857a' : '#fbbf24',
                 }}
               >
                 {buyScore.recommendation}

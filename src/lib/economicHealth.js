@@ -18,7 +18,7 @@ export function getEconomicHealth(mli = 0) {
       score,
       label: 'Stabil',
       hint: 'Några saker kan optimeras — vi visar vad som hjälper mest.',
-      color: '#6B9FFF',
+      color: '#4fae82',
     };
   }
   if (score >= 30) {
@@ -26,7 +26,7 @@ export function getEconomicHealth(mli = 0) {
       score,
       label: 'Spänd',
       hint: 'Fokusera på det viktigaste den närmaste veckan.',
-      color: '#F6AD55',
+      color: 'rgba(255,255,255,0.75)',
     };
   }
   return {

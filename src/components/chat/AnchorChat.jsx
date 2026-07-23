@@ -12,7 +12,7 @@ import { AI_FEATURES } from '@/lib/anchorMemory/types';
 
 const AnchorIcon = () => (
   <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center"
-    style={{ background: 'linear-gradient(135deg,#6B9FFF,#4FFFB0)' }}>
+    style={{ background: 'linear-gradient(135deg,#4fae82,#4FFFB0)' }}>
     <svg width="12" height="12" viewBox="0 0 32 32" fill="none">
       <path d="M8 22V10h4.2c2.8 0 4.6 1.5 4.6 3.9 0 1.6-.8 2.8-2.1 3.4l3.1 4.7h-2.9l-2.7-4.2H10.2V22H8zm2.2-6h1.9c1.4 0 2.2-.7 2.2-1.8S13.5 12 12 12h-1.8v4z" fill="#040814"/>
       <circle cx="22" cy="16" r="5" stroke="#040814" strokeWidth="2"/>
@@ -151,7 +151,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
                 <div
                   className="px-4 py-2.5 text-[14px] leading-relaxed"
                   style={msg.role === 'user' ? {
-                    background: 'rgba(107,159,255,0.16)',
+                    background: 'rgba(79, 174, 130, 0.16)',
                     color: '#fff',
                     borderRadius: '18px 18px 4px 18px',
                   } : {
@@ -163,7 +163,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
                   {msg.content}
                 </div>
                 {msg.profileUpdated && (
-                  <p className="flex items-center gap-1 text-[11px] text-[#22d97a] mt-1.5 ml-1">
+                  <p className="flex items-center gap-1 text-[11px] text-[#4fae82] mt-1.5 ml-1">
                     <CheckCircle2 size={12} />
                     Profil uppdaterad
                   </p>
@@ -221,7 +221,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
           onClick={() => send()}
           disabled={!input.trim() || loading}
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 disabled:opacity-30 touch-manipulation transition-opacity"
-          style={{ background: '#6B9FFF' }}
+          style={{ background: '#4fae82' }}
         >
           <Send size={16} className="text-[#040814]" />
         </button>

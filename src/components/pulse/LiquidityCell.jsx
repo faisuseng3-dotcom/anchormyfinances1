@@ -11,7 +11,7 @@ export default function LiquidityCell({ safeToSpend }) {
 
   const fillPct  = isEmpty ? 0 : Math.min(100, (safeToSpend / 10000) * 100);
   const color    = isEmpty ? '#FF4466' : isTight ? '#F6AD55' : isOk ? '#0FDEBD' : '#22d3ee';
-  const glow     = isEmpty ? 'rgba(255,68,102,0.5)' : isTight ? 'rgba(246,173,85,0.4)' : 'rgba(15,222,189,0.4)';
+  const glow     = isEmpty ? 'rgba(255,68,102,0.5)' : isTight ? 'rgba(255, 255, 255, 0.4)' : 'rgba(15,222,189,0.4)';
   const label    = isEmpty ? 'STOPP: Prioritera buffert' : isTight ? 'Tight – tänk två gånger' : isOk ? 'OK spelrum – var smart' : 'Grön zon – du kan shoppa!';
 
   return (

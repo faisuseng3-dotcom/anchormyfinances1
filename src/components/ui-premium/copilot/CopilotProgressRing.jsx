@@ -10,7 +10,7 @@ export default function CopilotProgressRing({
   max = 100,
   size = 120,
   stroke = 7,
-  color = '#22d97a',
+  color = '#4fae82',
   trackColor = 'rgba(255,255,255,0.1)',
   label,
   sublabel,

@@ -168,7 +168,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
         <AnchorPressable
           type="button"
           onClick={() => { triggerHaptic('light'); setShowAdd(true); setEditIndex(null); setForm(EMPTY_FORM); }}
-          className="h-12 px-5 rounded-full bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white text-[14px] font-semibold shadow-[0_8px_32px_rgba(74,122,255,0.35)] active:scale-[0.97]"
+          className="h-12 px-5 rounded-full bg-gradient-to-r from-[#4fae82] to-[#4fae82] text-white text-[14px] font-semibold shadow-[0_8px_32px_rgba(79, 174, 130, 0.35)] active:scale-[0.97]"
         >
           <Plus className="w-4 h-4 mr-1.5 inline" />
           Lägg till
@@ -177,7 +177,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
     >
       <div
         className="anchor-premium-hero organic-surface--hero rounded-3xl p-6 mb-8"
-        style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.16) 0%, rgba(74,122,255,0.1) 100%)' }}
+        style={{ background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(79, 174, 130, 0.1) 100%)' }}
       >
         <h2 className="anchor-card-title">Tysta utgifter</h2>
         <p className="text-[36px] font-bold text-white tabular-nums leading-none mt-2">
@@ -300,7 +300,7 @@ export default function SubscriptionsHub({ profile, transactions, updateProfile 
                   type="button"
                   onClick={handleSave}
                   disabled={saving}
-                  className="flex-1 h-12 rounded-full text-[14px] font-semibold bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white active:scale-[0.97] disabled:opacity-40"
+                  className="flex-1 h-12 rounded-full text-[14px] font-semibold bg-gradient-to-r from-[#4fae82] to-[#4fae82] text-white active:scale-[0.97] disabled:opacity-40"
                 >
                   <Check className="w-4 h-4 mr-1.5 inline" />
                   {saving ? 'Sparar…' : 'Spara'}

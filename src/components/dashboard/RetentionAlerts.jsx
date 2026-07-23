@@ -87,8 +87,8 @@ function buildAlerts(profile, transactions) {
 
 const TONE_STYLES = {
   amber: { bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)', color: '#fbbf24' },
-  green: { bg: 'rgba(34,217,122,0.1)', border: 'rgba(34,217,122,0.2)', color: '#22d97a' },
-  blue: { bg: 'rgba(107,159,255,0.1)', border: 'rgba(107,159,255,0.2)', color: '#6B9FFF' },
+  green: { bg: 'rgba(79, 174, 130, 0.1)', border: 'rgba(79, 174, 130, 0.2)', color: '#4fae82' },
+  blue: { bg: 'rgba(79, 174, 130, 0.1)', border: 'rgba(79, 174, 130, 0.2)', color: '#4fae82' },
 };
 
 export default function RetentionAlerts({ profile, transactions }) {

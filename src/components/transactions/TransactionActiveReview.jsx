@@ -169,7 +169,7 @@ export default function TransactionActiveReview({
           type="button"
           onClick={() => { triggerHaptic('success'); advance(true); }}
           className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl font-semibold text-[13px] text-white active:scale-[0.98]"
-          style={{ background: 'rgba(34,217,122,0.2)', boxShadow: 'var(--anchor-shadow-1)' }}
+          style={{ background: 'rgba(79, 174, 130, 0.2)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           Godkänn <Check className="w-4 h-4" />
         </AnchorPressable>
