@@ -2,13 +2,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight } from 'lucide-react';
 import { buildAccountItems, fmtKr } from '@/components/dashboard/copilot/copilotDashboardUtils';
 import { createPageUrl } from '@/utils';
 
 /**
- * Kontoöversikt i huvudflödet — samma data som skrivbordssidomenyn, men
- * synlig även på mobil där sidomenyn aldrig visas.
+ * Konton som horisontellt scrollbara kort — läsbara som riktiga konton
+ * (med mål och progress), inte som en inställningsrad. Densiteten skiljer
+ * sig medvetet från transaktionslistan under.
  */
 export default function DashboardAccountsSummary({ profile }) {
   const navigate = useNavigate();
@@ -23,29 +23,44 @@ export default function DashboardAccountsSummary({ profile }) {
       transition={{ delay: 0.06 }}
     >
       <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Konton</h2>
-      <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-        {items.map((acc, i) => (
-          <button
-            key={acc.id}
-            type="button"
-            onClick={() => navigate(createPageUrl('SavingsGoals'))}
-            className="w-full flex items-center gap-3 px-4 py-3.5 text-left anchor-pressable"
-            style={i > 0 ? { borderTop: '1px solid rgba(255,255,255,0.05)' } : undefined}
-          >
-            <span
-              className="w-2 h-2 rounded-full shrink-0"
-              style={{ background: acc.color }}
-              aria-hidden
-            />
-            <span className="flex-1 min-w-0 text-[14px] font-medium text-white/85 truncate">
-              {acc.name}
-            </span>
-            <span className="text-[14px] font-semibold tabular-nums" style={{ color: acc.amount < 0 ? '#e2857a' : 'rgba(255,255,255,0.92)' }}>
-              {fmtKr(acc.amount, { signed: acc.amount < 0 })}
-            </span>
-            {acc.interactive && <ChevronRight size={14} className="text-white/20 shrink-0" />}
-          </button>
-        ))}
+      <div className="flex gap-3 overflow-x-auto pb-1 -mx-4 px-4 sm:-mx-8 sm:px-8 scrollbar-none" style={{ scrollSnapType: 'x mandatory' }}>
+        {items.map((acc) => {
+          const pct = acc.goalTarget > 0 ? Math.min(100, (acc.amount / acc.goalTarget) * 100) : null;
+          return (
+            <button
+              key={acc.id}
+              type="button"
+              onClick={() => navigate(createPageUrl('SavingsGoals'))}
+              className="shrink-0 w-[160px] text-left rounded-2xl p-4 anchor-pressable"
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                border: '1px solid rgba(255,255,255,0.07)',
+                scrollSnapAlign: 'start',
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full inline-block mb-3"
+                style={{ background: acc.color }}
+                aria-hidden
+              />
+              <p className="text-[13px] font-medium text-white/70 truncate">{acc.name}</p>
+              <p
+                className="text-[18px] font-bold tabular-nums mt-1"
+                style={{ color: acc.amount < 0 ? '#e2857a' : '#ffffff' }}
+              >
+                {fmtKr(acc.amount, { signed: acc.amount < 0 })}
+              </p>
+              {pct != null && (
+                <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${pct}%`, background: 'var(--color-accent)' }}
+                  />
+                </div>
+              )}
+            </button>
+          );
+        })}
       </div>
     </motion.section>
   );

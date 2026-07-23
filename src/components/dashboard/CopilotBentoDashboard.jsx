@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
+import DashboardQuickActions from './DashboardQuickActions';
 import DashboardAccountsSummary from './DashboardAccountsSummary';
 import DashboardRecentActivity from './DashboardRecentActivity';
 import DashboardDiscoveries from './DashboardDiscoveries';
@@ -14,6 +15,7 @@ const DASHBOARD_LAYOUT_ID = 'revolut-balance-hero';
 export default function CopilotBentoDashboard({
   profile,
   transactions,
+  onOpenTransactionHub,
 }) {
   const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
 
@@ -50,21 +52,15 @@ export default function CopilotBentoDashboard({
       </section>
 
       <div className="anchor-dashboard-below">
+        <DashboardQuickActions
+          onAddTransaction={() => setQuickExpenseOpen(true)}
+          onTransfer={onOpenTransactionHub}
+        />
         <DashboardAccountsSummary profile={profile} />
         <DashboardRecentActivity transactions={transactions} />
         <DashboardDiscoveries profile={profile} transactions={transactions} />
         <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
       </div>
-
-      <button
-        type="button"
-        className="copilot-fab"
-        title="Lägg till transaktion"
-        aria-label="Lägg till transaktion"
-        onClick={() => setQuickExpenseOpen(true)}
-      >
-        +
-      </button>
 
       <QuickExpenseSheet
         isOpen={quickExpenseOpen}
