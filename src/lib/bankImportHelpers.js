@@ -14,7 +14,9 @@ export function detectColumn(headers, candidates) {
   return null;
 }
 
-export function normalizeCSVRows(rows, headers, limit = 50) {
+// Skydd mot patologiskt stora filer, inte en realistisk gräns — ett par års
+// dagliga transaktioner ryms gott och väl under detta.
+export function normalizeCSVRows(rows, headers, limit = 1000) {
   const dateCol = detectColumn(headers, BANK_COLUMN_MAPS.date);
   const descCol = detectColumn(headers, BANK_COLUMN_MAPS.description);
   const amtCol = detectColumn(headers, BANK_COLUMN_MAPS.amount);

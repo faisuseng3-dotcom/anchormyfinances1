@@ -28,10 +28,17 @@ export default function Import() {
   const [saving, setSaving] = useState(false);
   const [analyzeLabel, setAnalyzeLabel] = useState('Kategoriserar transaktioner…');
 
+  const IMPORT_ROW_LIMIT = 1000;
+
   const handleFileParsed = async (rows, headers) => {
     setStep('analyzing');
     setAnalyzeLabel('Kategoriserar transaktioner…');
-    await categorizeAndShow(normalizeCSVRows(rows, headers, 50));
+    if (rows.length > IMPORT_ROW_LIMIT) {
+      toast.warning(
+        `Filen har ${rows.length} rader — importerar de första ${IMPORT_ROW_LIMIT}. Kör en ny import för resten.`,
+      );
+    }
+    await categorizeAndShow(normalizeCSVRows(rows, headers, IMPORT_ROW_LIMIT));
   };
 
   const handlePdfFile = async (file) => {

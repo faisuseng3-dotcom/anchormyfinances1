@@ -9,7 +9,7 @@ import { copilotPrimaryBtnClass, copilotSecondaryBtnClass } from '@/lib/copilotT
 import { triggerHaptic } from '@/lib/haptics';
 
 const CATEGORY_LABELS = {
-  food: 'Mat', transport: 'Transport', entertainment: 'Nöje', shopping: 'Shopping',
+  food: 'Mat', transport: 'Transport', entertainment: 'Nöje', shopping: 'Shopping', travel: 'Resa',
   health: 'Hälsa', home: 'Boende', savings: 'Sparande', income: 'Inkomst', other: 'Övrigt',
 };
 
@@ -52,6 +52,16 @@ export default function TransactionActiveReview({
     }
   }, [current, index, total, x, getRowKey]);
 
+  const approveAllRemaining = useCallback(() => {
+    setApproved((prev) => {
+      const next = new Set(prev);
+      rows.forEach((row, i) => next.add(getRowKey(row, i)));
+      return next;
+    });
+    setIndex(total - 1);
+    x.set(0);
+  }, [rows, total, getRowKey, x]);
+
   const handleDragEnd = (_e, info) => {
     if (info.offset.x > SWIPE_THRESHOLD) {
       triggerHaptic('swipe');
@@ -82,6 +92,16 @@ export default function TransactionActiveReview({
           </span>
         )}
       </div>
+
+      {total > 5 && index < total - 1 && (
+        <button
+          type="button"
+          onClick={approveAllRemaining}
+          className="text-[12px] font-medium text-[var(--copilot-text-muted)] hover:text-white/70 transition-colors underline underline-offset-2"
+        >
+          Godkänn alla {total - index} resterande på en gång
+        </button>
+      )}
 
       <div className="relative min-h-[220px] flex items-center justify-center">
         <motion.div
