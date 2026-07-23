@@ -212,7 +212,7 @@ export const PAGE_SEO = {
       'Årsbokslut och verifikat för svenska företag. Gå igenom underlag och stäng året strukturerat.',
   },
   AnchorAnalysis: {
-    title: 'AI-Coach — Lago',
+    title: 'Coach — Lago',
     description:
       'Din personliga ekonomicoach — råd utifrån marginal, mål och humör på svenska.',
   },

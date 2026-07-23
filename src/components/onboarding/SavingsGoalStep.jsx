@@ -80,10 +80,10 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
     >
       <div className="space-y-6">
         <div>
-          <Label className="text-slate-300 text-sm flex items-center gap-2 mb-3">
-            <PiggyBank className="w-4 h-4 text-amber-500" />
+          <label className="text-white/70 text-sm flex items-center gap-2 mb-3">
+            <PiggyBank className="w-4 h-4" style={{ color: '#4fae82' }} />
             Populära sparmål
-          </Label>
+          </label>
           <div className="grid grid-cols-2 gap-2">
             {suggestions.map((s) => (
               <button
@@ -92,12 +92,12 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
                 onClick={() => selectSuggestion(s)}
                 className={`p-3 rounded-xl text-left border transition-all ${
                   data.savingsGoalName === s.name
-                    ? 'border-emerald-500 bg-emerald-500/10'
-                    : 'border-white/10 hover:border-emerald-500/30 dark-card'
+                    ? 'border-[#4fae82]/50 bg-[#4fae82]/10'
+                    : 'border-white/10 hover:border-[#4fae82]/30 dark-card'
                 }`}
               >
                 <p className="font-medium text-sm text-white">{s.name}</p>
-                <p className="text-xs text-slate-400">{formatNumber(s.amount)} kr</p>
+                <p className="text-xs text-white/45">{formatNumber(s.amount)} kr</p>
               </button>
             ))}
           </div>
@@ -106,16 +106,16 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
         <div className="space-y-4">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
+              <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-[#0B0F1A] px-2 text-slate-400">eller eget mål</span>
+              <span className="bg-[#0b0f0d] px-2 text-white/45">eller eget mål</span>
             </div>
           </div>
 
           <div className="space-y-2">
             <label className={onboardingFieldLabel}>
-              <Target className="w-4 h-4 text-[#9FB5FF]" />
+              <Target className="w-4 h-4" style={{ color: '#4fae82' }} />
               Namn på sparmål
             </label>
             <Input
@@ -169,7 +169,8 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
         </Button>
         <Button
           onClick={handleNext}
-          className="flex-1 h-14 rounded-xl bg-emerald-500 hover:bg-emerald-600"
+          className="flex-1 h-14 rounded-xl"
+          style={{ background: '#4fae82', color: '#08110c' }}
         >
           {!data.savingsGoal ? 'Hoppa över' : 'Fortsätt'}
         </Button>

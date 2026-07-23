@@ -14,7 +14,7 @@ const MODES = [
   {
     id: 'personal',
     title: 'Lago Personal',
-    description: 'Privatbudget, AI-coach, resor och köpcheck',
+    description: 'Privatbudget, Coach, resor och köpcheck',
     icon: User,
     accent: 'var(--color-accent)',
   },

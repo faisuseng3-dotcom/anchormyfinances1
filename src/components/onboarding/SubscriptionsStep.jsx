@@ -6,14 +6,16 @@ import { Plus, X, Tv, Car, Heart, Apple, Shield, MoreHorizontal, Music } from 'l
 import OnboardingStep from './OnboardingStep';
 import { anchorInputClass } from '@/lib/anchorTheme';
 
+// Neutral icon treatment for every category — särskiljs via ikonform, inte
+// slumpmässig färg per kategori.
 const categories = [
-  { id: 'entertainment', label: 'Nöje', icon: Music, color: 'bg-purple-100 text-purple-700' },
-  { id: 'transport', label: 'Transport', icon: Car, color: 'bg-blue-100 text-blue-700' },
-  { id: 'health', label: 'Hälsa', icon: Heart, color: 'bg-rose-100 text-rose-700' },
-  { id: 'streaming', label: 'Streaming', icon: Tv, color: 'bg-indigo-100 text-indigo-700' },
-  { id: 'food', label: 'Mat', icon: Apple, color: 'bg-amber-100 text-amber-700' },
-  { id: 'insurance', label: 'Försäkring', icon: Shield, color: 'bg-emerald-100 text-emerald-700' },
-  { id: 'other', label: 'Övrigt', icon: MoreHorizontal, color: 'bg-slate-100 text-slate-700' },
+  { id: 'entertainment', label: 'Nöje', icon: Music },
+  { id: 'transport', label: 'Transport', icon: Car },
+  { id: 'health', label: 'Hälsa', icon: Heart },
+  { id: 'streaming', label: 'Streaming', icon: Tv },
+  { id: 'food', label: 'Mat', icon: Apple },
+  { id: 'insurance', label: 'Försäkring', icon: Shield },
+  { id: 'other', label: 'Övrigt', icon: MoreHorizontal },
 ];
 
 export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
@@ -63,21 +65,21 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
               className="flex items-center justify-between p-4 dark-card"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-lg ${cat.color} flex items-center justify-center`}>
-                  <Icon className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <Icon className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.75)' }} />
                 </div>
                 <div>
                   <p className="font-medium text-white">{sub.name}</p>
-                  <p className="text-sm text-slate-400">{cat.label}</p>
+                  <p className="text-sm text-white/45">{cat.label}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-semibold text-white">{sub.amount} kr</span>
                 <button
                   onClick={() => removeSubscription(i)}
-                  className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <X className="w-4 h-4 text-slate-400" />
+                  <X className="w-4 h-4 text-white/45" />
                 </button>
               </div>
             </div>
@@ -114,9 +116,8 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
                 <Badge
                   key={cat.id}
                   variant={newSub.category === cat.id ? 'default' : 'outline'}
-                  className={`cursor-pointer transition-all ${
-                    newSub.category === cat.id ? 'bg-emerald-500' : ''
-                  }`}
+                  className="cursor-pointer transition-all"
+                  style={newSub.category === cat.id ? { background: '#4fae82', color: '#08110c', borderColor: '#4fae82' } : undefined}
                   onClick={() => setNewSub({ ...newSub, category: cat.id })}
                 >
                   {cat.label}
@@ -133,7 +134,8 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
               </Button>
               <Button
                 onClick={addSubscription}
-                className="flex-1 h-11 rounded-lg bg-emerald-500 hover:bg-emerald-600"
+                className="flex-1 h-11 rounded-lg"
+                style={{ background: '#4fae82', color: '#08110c' }}
               >
                 Lägg till
               </Button>
@@ -142,7 +144,7 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
         ) : (
           <button
             onClick={() => setShowForm(true)}
-            className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:border-emerald-500 hover:text-emerald-400 transition-colors"
+            className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center gap-2 text-white/45 hover:border-[#4fae82]/50 hover:text-[#4fae82] transition-colors"
           >
             <Plus className="w-5 h-5" />
             Lägg till kostnad
@@ -151,9 +153,9 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
 
         {/* Total */}
         {totalCost > 0 && (
-          <div className="p-4 bg-emerald-50 rounded-xl flex justify-between items-center">
-            <span className="text-emerald-700">Totala fasta kostnader</span>
-            <span className="font-semibold text-emerald-700">{totalCost} kr/mån</span>
+          <div className="p-4 rounded-xl flex justify-between items-center" style={{ background: 'rgba(79,174,130,0.1)', border: '1px solid rgba(79,174,130,0.2)' }}>
+            <span style={{ color: '#4fae82' }}>Totala fasta kostnader</span>
+            <span className="font-semibold" style={{ color: '#4fae82' }}>{totalCost} kr/mån</span>
           </div>
         )}
       </div>
@@ -168,7 +170,8 @@ export default function SubscriptionsStep({ data, onChange, onNext, onBack }) {
         </Button>
         <Button
           onClick={onNext}
-          className="flex-1 h-14 rounded-xl bg-emerald-500 hover:bg-emerald-600"
+          className="flex-1 h-14 rounded-xl"
+          style={{ background: '#4fae82', color: '#08110c' }}
         >
           Fortsätt
         </Button>

@@ -166,15 +166,15 @@ Svara ENDAST med JSON.`,
 
         {/* URL */}
         <div>
-          <Label className="text-xs text-slate-400">Annons-URL (Hemnet, Booli, Blocket Bostad)</Label>
+          <Label className="text-xs text-white/45">Annons-URL (Hemnet, Booli, Blocket Bostad)</Label>
           <div className="flex gap-2 mt-1">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
                 placeholder="https://hemnet.se/…" className="pl-9 h-10 text-sm" />
             </div>
             <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              className="bg-[#4fae82] hover:bg-[#4fae82] h-10 flex-shrink-0">
               {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
             </Button>
           </div>
@@ -184,36 +184,36 @@ Svara ENDAST med JSON.`,
         <div className="grid grid-cols-3 gap-2">
           {[{ id: 'brf', label: 'BRF' }, { id: 'house', label: 'Hus' }, { id: 'rental', label: 'Hyresrätt' }].map(t => (
             <button key={t.id} onClick={() => setHousing(h => ({ ...h, type: t.id }))}
-              className={`py-2 rounded-xl text-sm font-medium border transition-all ${housing.type === t.id ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300' : 'border-white/10 text-slate-400 hover:border-white/20'}`}>
+              className={`py-2 rounded-xl text-sm font-medium border transition-all ${housing.type === t.id ? 'border-emerald-500 bg-[#4fae82]/10 text-emerald-300' : 'border-white/10 text-white/45 hover:border-white/20'}`}>
               {t.label}
             </button>
           ))}
         </div>
 
         <div>
-          <Label className="text-xs text-slate-400">Adress / Beskrivning</Label>
+          <Label className="text-xs text-white/45">Adress / Beskrivning</Label>
           <Input value={housing.name} onChange={e => setHousing(h => ({ ...h, name: e.target.value }))}
             placeholder="Storgatan 5, 3 rum i Södermalm" className="mt-1 h-10 text-sm" />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label className="text-xs text-slate-400">Pris (kr)</Label>
+            <Label className="text-xs text-white/45">Pris (kr)</Label>
             <Input type="number" value={housing.price} onChange={e => setHousing(h => ({ ...h, price: e.target.value }))}
               placeholder="4 500 000" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">{housing.type === 'brf' ? 'Månadsavgift (kr)' : 'Driftskostnad (kr)'}</Label>
+            <Label className="text-xs text-white/45">{housing.type === 'brf' ? 'Månadsavgift (kr)' : 'Driftskostnad (kr)'}</Label>
             <Input type="number" value={housing.fee} onChange={e => setHousing(h => ({ ...h, fee: e.target.value }))}
               placeholder="3 500" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Boarea (m²)</Label>
+            <Label className="text-xs text-white/45">Boarea (m²)</Label>
             <Input type="number" value={housing.area} onChange={e => setHousing(h => ({ ...h, area: e.target.value }))}
               placeholder="65" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Område</Label>
+            <Label className="text-xs text-white/45">Område</Label>
             <Input value={housing.location} onChange={e => setHousing(h => ({ ...h, location: e.target.value }))}
               placeholder="Stockholm, Göteborg…" className="mt-1 h-10 text-sm" />
           </div>
@@ -227,17 +227,17 @@ Svara ENDAST med JSON.`,
               <div className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
                 style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div>
-                  <p className="text-[10px] text-slate-500">Månadskostnad</p>
+                  <p className="text-[10px] text-white/40">Månadskostnad</p>
                   <p className="text-sm font-bold text-emerald-400">{fmt(liveCalc.totalMonthly)} kr</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-500">Av inkomst</p>
+                  <p className="text-[10px] text-white/40">Av inkomst</p>
                   <p className={`text-sm font-bold ${liveCalc.incomeShare > 0.4 ? 'text-rose-400' : liveCalc.incomeShare > 0.3 ? 'text-amber-400' : 'text-emerald-400'}`}>
                     {Math.round(liveCalc.incomeShare * 100)}%
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-slate-500">Vid 5% ränta</p>
+                  <p className="text-[10px] text-white/40">Vid 5% ränta</p>
                   <p className={`text-sm font-bold ${liveCalc.afterStress5 < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                     {fmt(liveCalc.afterStress5)} kr
                   </p>
@@ -267,7 +267,7 @@ Svara ENDAST med JSON.`,
       </motion.div>
 
       <Button onClick={handleAnalyze} disabled={!housing.price || !housing.fee || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:opacity-90 font-bold text-white">
+        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90 font-bold text-white">
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : <><Home className="w-4 h-4 mr-2" aria-hidden /> Generera CFO Bostadsrapport</>}
       </Button>
 
@@ -282,7 +282,7 @@ Svara ENDAST med JSON.`,
                   <div className="p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)` }}>
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <p className="text-xs text-slate-500 uppercase tracking-wider mb-1">{analysis.housing.name || 'Bostad'}</p>
+                        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{analysis.housing.name || 'Bostad'}</p>
                         <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
                         <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold"
                           style={{ background: `${vc}22`, color: vc, border: `1px solid ${vc}44` }}>
@@ -291,10 +291,10 @@ Svara ENDAST med JSON.`,
                       </div>
                       <div className="text-center">
                         <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
-                        <div className="text-[10px] text-slate-500">CFO SCORE</div>
+                        <div className="text-[10px] text-white/40">CFO SCORE</div>
                       </div>
                     </div>
-                    <div className="mt-3 p-3 rounded-xl text-sm text-slate-300 leading-relaxed"
+                    <div className="mt-3 p-3 rounded-xl text-sm text-white/70 leading-relaxed"
                       style={{ background: 'rgba(0,0,0,0.3)', border: `1px solid ${vc}33` }}>
                       {analysis.cfo_recommendation}
                     </div>
@@ -305,21 +305,21 @@ Svara ENDAST med JSON.`,
 
             {/* Stress tests */}
             <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5"><FlaskConical className="w-3.5 h-3.5" aria-hidden /> Ränte-stresstest</p>
+              <p className="text-xs font-bold text-white/45 uppercase tracking-wider flex items-center gap-1.5"><FlaskConical className="w-3.5 h-3.5" aria-hidden /> Ränte-stresstest</p>
               {[
                 { label: 'Nuläge (~4.5%)', value: analysis.monthlyLoan },
                 { label: 'Vid 3% ränta', value: analysis.stress3, delta: analysis.stress3 - analysis.monthlyLoan },
                 { label: 'Vid 5% ränta', value: analysis.stress5, delta: analysis.stress5 - analysis.monthlyLoan },
               ].map((s, i) => s.value && (
                 <div key={i} className="flex justify-between items-center text-sm">
-                  <span className="text-slate-400">{s.label}</span>
+                  <span className="text-white/45">{s.label}</span>
                   <div className="text-right">
                     <span className={`font-bold ${i === 2 && !analysis.stress_ok ? 'text-rose-400' : 'text-white'}`}>{fmt(s.value)} kr/mån</span>
                     {s.delta && <span className={`text-xs ml-2 ${s.delta > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>{s.delta > 0 ? '+' : ''}{fmt(s.delta)}</span>}
                   </div>
                 </div>
               ))}
-              <div className={`rounded-lg p-2 text-xs font-medium flex items-center gap-1.5 ${analysis.stress_ok ? 'bg-emerald-500/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}>
+              <div className={`rounded-lg p-2 text-xs font-medium flex items-center gap-1.5 ${analysis.stress_ok ? 'bg-[#4fae82]/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}>
                 {analysis.stress_ok
                   ? <><Check className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Du klarar 5%-ränta med positiv marginal</>
                   : <><AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Vid 5% ränta får du negativt kassaflöde</>}
@@ -329,25 +329,25 @@ Svara ENDAST med JSON.`,
             {/* KALP + hidden costs */}
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                <p className="text-[10px] text-slate-500 mb-1 uppercase tracking-wider">KALP-kalkyl</p>
+                <p className="text-[10px] text-white/40 mb-1 uppercase tracking-wider">KALP-kalkyl</p>
                 <p className={`text-xl font-black flex items-center gap-1.5 ${analysis.kalp_ok ? 'text-emerald-400' : 'text-rose-400'}`}>
                   {analysis.kalp_ok
                     ? <><Check className="w-5 h-5" aria-hidden /> Godkänd</>
                     : <><X className="w-5 h-5" aria-hidden /> Ej godkänd</>}
                 </p>
-                <p className="text-[10px] text-slate-500 mt-1">Kvar efter 70%-regel: {fmt(analysis.kalp)} kr</p>
+                <p className="text-[10px] text-white/40 mt-1">Kvar efter 70%-regel: {fmt(analysis.kalp)} kr</p>
               </div>
               {analysis.housing.type === 'house' && (
                 <div className="rounded-2xl p-4" style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <p className="text-[10px] text-amber-400 mb-1 uppercase tracking-wider">Dolda kostnader</p>
                   <p className="text-xl font-black text-white">{fmt(analysis.hiddenCosts)} kr</p>
-                  <p className="text-[10px] text-slate-500 mt-1">Lagfart + pantbrev</p>
+                  <p className="text-[10px] text-white/40 mt-1">Lagfart + pantbrev</p>
                 </div>
               )}
               <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                <p className="text-[10px] text-indigo-400 mb-1 uppercase tracking-wider">Värdeutveckling 5 år</p>
+                <p className="text-[10px] text-[#4fae82] mb-1 uppercase tracking-wider">Värdeutveckling 5 år</p>
                 <p className="text-xl font-black text-white">{analysis.value_growth_5y > 0 ? '+' : ''}{analysis.value_growth_5y}%</p>
-                <p className="text-[10px] text-slate-500 mt-1">Uppskattning för {analysis.housing.location}</p>
+                <p className="text-[10px] text-white/40 mt-1">Uppskattning för {analysis.housing.location}</p>
               </div>
             </div>
 
@@ -357,7 +357,7 @@ Svara ENDAST med JSON.`,
                 <p className="text-xs font-bold text-rose-400 mb-2 uppercase tracking-wider flex items-center gap-1.5"><AlertTriangle className="w-3.5 h-3.5" aria-hidden /> Riskfaktorer</p>
                 <div className="space-y-1">
                   {analysis.risk_factors.map((r, i) => (
-                    <div key={i} className="flex gap-2 text-xs text-slate-300">
+                    <div key={i} className="flex gap-2 text-xs text-white/70">
                       <span className="text-rose-400">→</span>{r}
                     </div>
                   ))}
@@ -371,7 +371,7 @@ Svara ENDAST med JSON.`,
                 <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-[11px] font-bold text-cyan-400 mb-0.5">CFO-tips du missar</p>
-                  <p className="text-xs text-slate-300">{analysis.hidden_tip}</p>
+                  <p className="text-xs text-white/70">{analysis.hidden_tip}</p>
                 </div>
               </div>
             )}

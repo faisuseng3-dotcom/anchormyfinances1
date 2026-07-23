@@ -51,8 +51,8 @@ const TRIGGER_CATEGORIES = [
     label: 'Hälsa',
     iconKey: 'health',
     color: 'from-emerald-500 to-green-600',
-    border: 'rgba(16,185,129,0.3)',
-    bg: 'rgba(16,185,129,0.08)',
+    border: 'rgba(255,255,255,0.12)',
+    bg: 'rgba(255,255,255,0.04)',
     triggers: [
       { id: 'steps', label: 'Steg-utmaningen', iconKey: 'footsteps', desc: 'Spara 1 kr per 1 000 steg du går.', amount: 10, users: 3241 },
       { id: 'sleep', label: 'Sömntuta', iconKey: 'sleep', desc: 'Spara 20 kr varje natt du sover 7+ timmar.', amount: 20, users: 1872 },
@@ -64,8 +64,8 @@ const TRIGGER_CATEGORIES = [
     label: 'Shopping-stopp',
     iconKey: 'shopping',
     color: 'from-blue-500 to-indigo-600',
-    border: 'rgba(79, 174, 130, 0.3)',
-    bg: 'rgba(79, 174, 130, 0.08)',
+    border: 'rgba(255,255,255,0.12)',
+    bg: 'rgba(255,255,255,0.04)',
     triggers: [
       { id: 'luncbox', label: 'Matlåda-vinsten', iconKey: 'lunchbox', desc: 'Ta med matlåda istället för att äta ute → spara 100 kr.', amount: 100, users: 1420 },
       { id: 'secondhand', label: 'Second Hand-bonus', iconKey: 'secondhand', desc: 'Köp begagnat → spara 50% av det du "tjänade".', amount: 50, users: 677 },
@@ -77,8 +77,8 @@ const TRIGGER_CATEGORIES = [
     label: 'Livsnjut',
     iconKey: 'fun',
     color: 'from-purple-500 to-pink-600',
-    border: 'rgba(168,85,247,0.3)',
-    bg: 'rgba(168,85,247,0.08)',
+    border: 'rgba(255,255,255,0.12)',
+    bg: 'rgba(255,255,255,0.04)',
     triggers: [
       { id: 'rain', label: 'Väder-spararen', iconKey: 'rain', desc: 'Spara 10 kr varje dag det regnar.', amount: 10, users: 561 },
       { id: 'transport', label: 'Transport-hack', iconKey: 'transport', desc: 'Cykla/gå istället för buss → spara 39 kr.', amount: 39, users: 988 },
@@ -90,8 +90,8 @@ const TRIGGER_CATEGORIES = [
     label: 'Custom',
     iconKey: 'custom',
     color: 'from-amber-500 to-orange-600',
-    border: 'rgba(245,158,11,0.3)',
-    bg: 'rgba(245,158,11,0.08)',
+    border: 'rgba(255,255,255,0.12)',
+    bg: 'rgba(255,255,255,0.04)',
     triggers: [
       { id: 'workout', label: 'Träningspass', iconKey: 'workout', desc: 'Spara ett belopp varje gång du tränar.', amount: 50, users: 2830 },
       { id: 'no_purchase', label: 'Shoppa-fritt', iconKey: 'no_purchase', desc: 'Klarar du en dag utan köp? Spara 100 kr.', amount: 100, users: 1654 },
@@ -114,15 +114,15 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
       className="rounded-2xl overflow-hidden"
-      style={{ background: 'rgba(15,23,42,0.95)', boxShadow: 'var(--anchor-shadow-1)' }}
+      style={{ background: '#10140f', boxShadow: 'var(--anchor-shadow-1)' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div>
-          <p className="text-xs font-bold text-purple-300 uppercase tracking-widest">Trigger-bibliotek</p>
-          <p className="text-[11px] text-slate-500">Välj en händelse som utlöser ditt sparande</p>
+          <p className="text-xs font-bold text-[#4fae82] uppercase tracking-widest">Trigger-bibliotek</p>
+          <p className="text-[11px] text-white/40">Välj en händelse som utlöser ditt sparande</p>
         </div>
-        <button onClick={onClose} className="text-slate-500 hover:text-white">
+        <button onClick={onClose} className="text-white/40 hover:text-white">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -131,7 +131,7 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
       <div className="flex gap-1.5 px-4 pb-3 overflow-x-auto">
         {TRIGGER_CATEGORIES.map(c => (
           <button key={c.id} onClick={() => setActiveCategory(c.id)}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${activeCategory === c.id ? `bg-gradient-to-r ${c.color} text-white shadow` : 'bg-white/5 text-slate-400 hover:bg-white/10'}`}>
+            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${activeCategory === c.id ? 'bg-[#4fae82] text-[#08110c] shadow' : 'bg-white/5 text-white/45 hover:bg-white/10'}`}>
             <TriggerIcon iconKey={c.iconKey} />
             {c.label}
           </button>
@@ -146,13 +146,13 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
               const isActive = activeTrigger === t.id;
               return (
                 <button key={t.id} onClick={() => onSelect(t)}
-                  className={`w-full p-3 rounded-xl text-left transition-all flex items-start gap-3 ${isActive ? 'ring-2 ring-purple-500' : 'hover:bg-white/5'}`}
+                  className={`w-full p-3 rounded-xl text-left transition-all flex items-start gap-3 ${isActive ? 'ring-2 ring-[#4fae82]' : 'hover:bg-white/5'}`}
                   style={{ background: isActive ? cat.bg : 'rgba(255,255,255,0.03)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                  <TriggerIcon iconKey={t.iconKey} className="w-4 h-4 text-purple-300 flex-shrink-0 mt-0.5" />
+                  <TriggerIcon iconKey={t.iconKey} className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold text-white">{t.label}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{t.desc}</p>
-                    <p className="text-[10px] text-slate-600 mt-1 inline-flex items-center gap-1"><Users className="w-3 h-3" aria-hidden /> {t.users.toLocaleString('sv-SE')} sparar med denna trigger</p>
+                    <p className="text-[11px] text-white/45 mt-0.5 leading-snug">{t.desc}</p>
+                    <p className="text-[10px] text-white/30 mt-1 inline-flex items-center gap-1"><Users className="w-3 h-3" aria-hidden /> {t.users.toLocaleString('sv-SE')} sparar med denna trigger</p>
                   </div>
                   {t.amount && (
                     <div className="flex-shrink-0 text-right">

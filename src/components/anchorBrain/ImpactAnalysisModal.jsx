@@ -51,18 +51,18 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
             boxShadow: '0 0 60px rgba(239,68,68,0.2), 0 20px 60px rgba(0,0,0,0.6)'
           }}
         >
-          <div className="h-1 bg-gradient-to-r from-rose-500 to-red-600" />
+          <div className="h-1 bg-[#4fae82]" />
           <div className="p-6">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
                 <TrendingDown className="w-5 h-5 text-rose-400" />
                 <h2 className="text-base font-bold text-white">Konsekvensanalys</h2>
               </div>
-              <button onClick={onAccept} className="text-slate-600 hover:text-white transition-colors">
+              <button onClick={onAccept} className="text-white/30 hover:text-white transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-slate-500 mb-5">Impulsköp – 800 kr</p>
+            <p className="text-xs text-white/40 mb-5">Impulsköp – 800 kr</p>
 
             {/* Chart */}
             <ResponsiveContainer width="100%" height={150}>
@@ -84,7 +84,7 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
 
             {/* Impact text */}
             <div className="mt-4 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20">
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-white/70 leading-relaxed">
                 Detta köp tar <span className="text-rose-400 font-bold">800 kr</span> från din månadsmarginal.
                 Din nya marginal: <span className="font-bold text-white">{formatNumber(marginAfter)} kr</span>.
                 {marginAfter < 0 && (
@@ -98,18 +98,18 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/30"
+                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#4fae82]/20 border border-emerald-500/30"
               >
                 <CheckCircle className="w-5 h-5 text-emerald-400" />
                 <p className="text-sm font-semibold text-emerald-300">Köp ångrat! +800 kr återställt.</p>
               </motion.div>
             ) : (
               <div className="flex gap-3 mt-5">
-                <Button onClick={handleUndo} className="flex-1 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-sm">
+                <Button onClick={handleUndo} className="flex-1 rounded-xl bg-[#4fae82] hover:opacity-90 text-white text-sm">
                   <Undo2 className="w-4 h-4 mr-1.5" />
                   Ångra köp
                 </Button>
-                <Button onClick={onAccept} variant="outline" className="flex-1 rounded-2xl-white/10 hover:bg-white/5 text-slate-300 text-sm">
+                <Button onClick={onAccept} variant="outline" className="flex-1 rounded-2xl-white/10 hover:bg-white/5 text-white/70 text-sm">
                   Acceptera
                 </Button>
               </div>

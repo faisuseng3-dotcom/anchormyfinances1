@@ -109,7 +109,7 @@ export default function BasicTravelPlanner({ profile }) {
           ].map((item) => (
             <div key={item.key}>
               <Label className="flex items-center gap-2">
-                <item.Icon className="w-4 h-4 text-slate-400" />
+                <item.Icon className="w-4 h-4 text-white/45" />
                 {item.label}
               </Label>
               <div className="relative mt-1">
@@ -119,7 +119,7 @@ export default function BasicTravelPlanner({ profile }) {
                   placeholder="0"
                   className="pr-12"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/45 text-sm">kr</span>
               </div>
             </div>
           ))}
@@ -134,7 +134,7 @@ export default function BasicTravelPlanner({ profile }) {
         className={`p-6 rounded-3xl-2 ${
           isOverBudget 
             ? 'border-rose-500 bg-rose-500/10' 
-            : 'border-emerald-500 bg-emerald-500/10'
+            : 'border-emerald-500 bg-[#4fae82]/10'
         }`}
       >
         <div className="flex items-start gap-4">
@@ -148,11 +148,11 @@ export default function BasicTravelPlanner({ profile }) {
             <p className="text-3xl font-bold text-white mb-3">{formatNumber(totalCost)} kr</p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-400">Tillgängligt efter fasta kostnader:</span>
+                <span className="text-white/45">Tillgängligt efter fasta kostnader:</span>
                 <span className="text-white font-medium">{formatNumber(availableBalance)} kr</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Kvar efter resan:</span>
+                <span className="text-white/45">Kvar efter resan:</span>
                 <span className={`font-medium ${isOverBudget ? 'text-rose-400' : 'text-emerald-400'}`}>
                   {formatNumber(availableBalance - totalCost)} kr
                 </span>
@@ -173,14 +173,14 @@ export default function BasicTravelPlanner({ profile }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="glass-effect p-5 rounded-3xl border-indigo-500/20"
+          className="glass-effect p-5 rounded-3xl border-[#4fae82]/20"
         >
           <h3 className="font-semibold text-white mb-2 flex items-center gap-2"><Calendar className="w-4 h-4" /> Din sparplan</h3>
-          <p className="text-slate-300 text-sm">
+          <p className="text-white/70 text-sm">
             Med din nuvarande marginal kan du spara ca{' '}
-            <span className="text-indigo-300 font-semibold">{formatNumber(Math.round(monthlySavings))} kr/mån</span>.
+            <span className="text-[#4fae82] font-semibold">{formatNumber(Math.round(monthlySavings))} kr/mån</span>.
           </p>
-          <p className="text-slate-300 text-sm mt-1">
+          <p className="text-white/70 text-sm mt-1">
             Du når {destination || 'ditt resmål'} på ungefär{' '}
             <span className="text-emerald-400 font-bold">
               {Math.ceil(totalCost / monthlySavings)} månader
@@ -195,7 +195,7 @@ export default function BasicTravelPlanner({ profile }) {
           href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30 text-blue-300 text-sm font-medium transition-colors"
+          className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-[#4fae82]/15 hover:bg-[#4fae82]/25 border border-blue-500/30 text-[#4fae82] text-sm font-medium transition-colors"
         >
           <Search className="w-4 h-4" /> Sök boende i {destination} på Booking.com
         </a>
@@ -207,7 +207,7 @@ export default function BasicTravelPlanner({ profile }) {
         className={`w-full h-12 rounded-xl ${
           isOverBudget 
             ? 'bg-rose-500 hover:bg-rose-600' 
-            : 'bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700'
+            : 'bg-[#4fae82] hover:opacity-90'
         }`}
       >
         {saved ? <><Check className="w-4 h-4 mr-1" /> Budget sparad!</> : 'Spara resebudget'}
@@ -219,7 +219,7 @@ export default function BasicTravelPlanner({ profile }) {
           animate={{ opacity: 1, y: 0 }}
           className="glass-effect p-4 rounded-xl text-center space-y-3"
         >
-          <p className="text-sm text-slate-300">
+          <p className="text-sm text-white/70">
             Din {destination}-budget är nu sparad och dras från ditt kvarvarande saldo för {month || 'den valda månaden'}.
           </p>
           {destination && (

@@ -84,7 +84,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
           <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[rgba(79, 174, 130, 0.12)] text-[var(--copilot-accent-cyan)]">
             <FileText className="w-3 h-3" /> CSV
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[rgba(255, 255, 255, 0.12)] text-purple-300">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[rgba(255, 255, 255, 0.12)] text-[#4fae82]">
             <FileType className="w-3 h-3" /> PDF
           </span>
         </div>

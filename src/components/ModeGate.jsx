@@ -69,15 +69,15 @@ export default function ModeGate({ feature, mode, children }) {
       <div className="rounded-2xl p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full"
         style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center">
-          <Lock className="w-8 h-8 text-slate-500" />
+          <Lock className="w-8 h-8 text-white/40" />
         </div>
         <div>
           <p className="text-lg font-bold text-white mb-1">Kräver {neededLabel}-läge</p>
-          <p className="text-sm text-slate-400 leading-relaxed">{upgradeMsg}</p>
+          <p className="text-sm text-white/45 leading-relaxed">{upgradeMsg}</p>
         </div>
         <Link
           to={createPageUrl('Pricing')}
-          className="w-full py-3 rounded-xl text-sm font-bold text-white text-center bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-90"
+          className="w-full py-3 rounded-xl text-sm font-bold text-[#08110c] text-center bg-[#4fae82] hover:opacity-90"
         >
           Uppgradera →
         </Link>

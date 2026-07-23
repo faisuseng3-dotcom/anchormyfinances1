@@ -24,7 +24,7 @@ export const DEEP_VIEWS = [
   { page: 'Import', label: 'Importera data', hub: 'Hem', icon: FileUp },
   { page: 'SecurityInfo', label: 'Säkerhet & data', hub: 'Inställningar', icon: Shield },
   { page: 'Insights', label: 'Insikter', hub: 'Historik', icon: ClipboardList },
-  { page: 'AnchorAnalysis', label: 'AI-Coach', hub: 'Översikt', icon: Wrench },
+  { page: 'AnchorAnalysis', label: 'Coach', hub: 'Översikt', icon: Wrench },
 ];
 
 /** Gamla bokmärken → kanonisk vy. Dolda sidor redirectas bort från navigation. */

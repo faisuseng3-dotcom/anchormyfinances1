@@ -213,7 +213,7 @@ export async function askCoachChat({
   const access = canUseAiCoachClient(profile);
   if (!access.allowed) {
     return {
-      answer: `Du har använt alla ${access.limit} AI-coach-frågor den här månaden. Uppgradera till Pro för obegränsad coach.`,
+      answer: `Du har använt alla ${access.limit} Coach-frågor den här månaden. Uppgradera till Pro för obegränsad coach.`,
       profileUpdated: false,
       limitReached: true,
     };
@@ -256,7 +256,7 @@ export async function askCoachChat({
 
   if (result?.error === 'ai_coach_limit') {
     return {
-      answer: result.message || `Du har använt alla ${access.limit} AI-coach-frågor den här månaden.`,
+      answer: result.message || `Du har använt alla ${access.limit} Coach-frågor den här månaden.`,
       profileUpdated: false,
       limitReached: true,
     };

@@ -155,7 +155,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
           ].map((item) => (
             <div key={item.key}>
               <Label className="flex items-center gap-2">
-                <item.Icon className="w-4 h-4 text-slate-400" />
+                <item.Icon className="w-4 h-4 text-white/45" />
                 {item.label}
               </Label>
               <div className="relative mt-1">
@@ -165,7 +165,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
                   placeholder="0"
                   className="pr-12"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/45 text-sm">kr</span>
               </div>
             </div>
           ))}
@@ -176,7 +176,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
       <Button
         onClick={handleAnalyze}
         disabled={!destination || !days || !month || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
+        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90"
       >
         {loading ? (
           <>
@@ -200,7 +200,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
             animate={{ opacity: 1, y: 0 }}
             className={`p-5 rounded-3xl ${
               marketData.price_trend?.status === 'cheap' 
-                ? 'border-emerald-500/30 bg-emerald-500/10' 
+                ? 'border-emerald-500/30 bg-[#4fae82]/10' 
                 : 'border-amber-500/30 bg-amber-500/10'
             }`}
           >
@@ -212,7 +212,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
               )}
               <div>
                 <h3 className="font-semibold text-white mb-1">Pristrend</h3>
-                <p className="text-sm text-slate-300">{marketData.price_trend?.reason}</p>
+                <p className="text-sm text-white/70">{marketData.price_trend?.reason}</p>
               </div>
             </div>
           </motion.div>
@@ -224,11 +224,11 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
               animate={{ opacity: 1, scale: 1 }}
               className="glass-effect p-6 rounded-2xl text-center"
             >
-              <p className="text-sm text-slate-400 mb-1">Potentiell besparing</p>
-              <p className="text-4xl font-bold bg-gradient-to-r from-emerald-400 to-green-400 bg-clip-text text-transparent">
+              <p className="text-sm text-white/45 mb-1">Potentiell besparing</p>
+              <p className="text-4xl font-bold bg-[#4fae82] bg-clip-text text-transparent">
                 {formatNumber(potentialSavings)} kr
               </p>
-              <div className="mt-3 px-4 py-2 rounded-full bg-emerald-500/20 inline-block">
+              <div className="mt-3 px-4 py-2 rounded-full bg-[#4fae82]/20 inline-block">
                 <span className="text-sm text-emerald-400 font-medium inline-flex items-center gap-1"><Trophy className="w-4 h-4" /> Smart Traveler</span>
               </div>
             </motion.div>
@@ -250,15 +250,15 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <h4 className="font-semibold text-white">{opt.category}</h4>
-                  <span className="px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">
+                  <span className="px-2 py-1 rounded-full bg-[#4fae82]/20 text-emerald-400 text-xs font-medium">
                     -{formatNumber(opt.savings)} kr
                   </span>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <p className="text-slate-400">
-                    <span className="text-slate-500">Nuvarande:</span> {opt.current}
+                  <p className="text-white/45">
+                    <span className="text-white/40">Nuvarande:</span> {opt.current}
                   </p>
-                  <p className="text-slate-300">
+                  <p className="text-white/70">
                     <span className="text-emerald-400 font-medium">Förslag:</span> {opt.suggestion}
                   </p>
                   {opt.rating_improvement && (
@@ -267,7 +267,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
                 </div>
                 <Button
                   size="sm"
-                  className="w-full mt-3 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
+                  className="w-full mt-3 bg-[#4fae82] hover:opacity-90"
                 >
                   Välj detta alternativ
                 </Button>

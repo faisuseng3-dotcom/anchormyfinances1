@@ -25,9 +25,9 @@ const ACCOUNT_TYPES = {
   last: {
     Icon: Lock,
     label: 'Låst konto / ISK',
-    color: 'from-purple-500/20 to-indigo-500/10',
+    color: 'from-[#4fae82]/20 to-[#4fae82]/10',
     border: 'rgba(139,92,246,0.3)',
-    textColor: 'text-purple-300',
+    textColor: 'text-[#4fae82]',
     tagline: 'Fasträntekonto eller ISK/aktier',
     when: 'Mål om 12+ månader',
   },

@@ -50,7 +50,7 @@ export default function BillingPlanSection() {
             )}
             {!aiCoachUnlimited && aiCoachRemaining != null && (
               <p className="text-sm text-white/45 mt-1">
-                AI-coach: {aiCoachRemaining} kvar denna månad
+                Coach: {aiCoachRemaining} kvar denna månad
               </p>
             )}
           </div>

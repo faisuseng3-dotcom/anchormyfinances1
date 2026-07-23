@@ -60,28 +60,28 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
           >
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <Landmark className="w-5 h-5 text-amber-600" />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <Landmark className="w-5 h-5" style={{ color: 'rgba(255,255,255,0.7)' }} />
                 </div>
                 <div>
                   <p className="font-medium text-white">{loan.name}</p>
-                  <p className="text-sm text-slate-400">{loan.interestRate}% ränta</p>
+                  <p className="text-sm text-white/45">{loan.interestRate}% ränta</p>
                 </div>
               </div>
               <button
                 onClick={() => removeLoan(i)}
-                className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-1 hover:bg-white/10 rounded-lg transition-colors"
               >
-                <X className="w-4 h-4 text-slate-400" />
+                <X className="w-4 h-4 text-white/45" />
               </button>
             </div>
             <div className="flex justify-between text-sm">
               <div>
-                <p className="text-slate-400">Totalt</p>
+                <p className="text-white/45">Totalt</p>
                 <p className="font-semibold text-white">{formatNumber(loan.totalAmount)} kr</p>
               </div>
               <div className="text-right">
-                <p className="text-slate-400">Månadskostnad</p>
+                <p className="text-white/45">Månadskostnad</p>
                 <p className="font-semibold text-white">{formatNumber(loan.monthlyPayment)} kr</p>
               </div>
             </div>
@@ -155,7 +155,8 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
               </Button>
               <Button
                 onClick={addLoan}
-                className="flex-1 h-11 rounded-lg bg-emerald-500 hover:bg-emerald-600"
+                className="flex-1 h-11 rounded-lg"
+                style={{ background: '#4fae82', color: '#08110c' }}
               >
                 Lägg till
               </Button>
@@ -164,7 +165,7 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
         ) : (
           <button
             onClick={() => setShowForm(true)}
-            className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center gap-2 text-slate-400 hover:border-emerald-500 hover:text-emerald-400 transition-colors"
+            className="w-full p-4 border-2 border-dashed border-white/10 rounded-xl flex items-center justify-center gap-2 text-white/45 hover:border-[#4fae82]/50 hover:text-[#4fae82] transition-colors"
           >
             <Plus className="w-5 h-5" />
             Lägg till lån
@@ -173,14 +174,14 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
 
         {/* Summary */}
         {totalDebt > 0 && (
-          <div className="p-4 bg-amber-50 rounded-xl space-y-2">
+          <div className="p-4 rounded-xl space-y-2" style={{ background: 'rgba(226,133,122,0.08)', border: '1px solid rgba(226,133,122,0.15)' }}>
             <div className="flex justify-between items-center">
-              <span className="text-amber-700">Total skuld</span>
-              <span className="font-semibold text-amber-700">{formatNumber(totalDebt)} kr</span>
+              <span style={{ color: '#e2857a' }}>Total skuld</span>
+              <span className="font-semibold" style={{ color: '#e2857a' }}>{formatNumber(totalDebt)} kr</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-amber-700">Månadskostnad lån</span>
-              <span className="font-semibold text-amber-700">{formatNumber(totalMonthly)} kr/mån</span>
+              <span style={{ color: '#e2857a' }}>Månadskostnad lån</span>
+              <span className="font-semibold" style={{ color: '#e2857a' }}>{formatNumber(totalMonthly)} kr/mån</span>
             </div>
           </div>
         )}
@@ -196,7 +197,8 @@ export default function LoansStep({ data, onChange, onNext, onBack }) {
         </Button>
         <Button
           onClick={onNext}
-          className="flex-1 h-14 rounded-xl bg-emerald-500 hover:bg-emerald-600"
+          className="flex-1 h-14 rounded-xl"
+          style={{ background: '#4fae82', color: '#08110c' }}
         >
           {(data.loans || []).length === 0 ? 'Hoppa över' : 'Fortsätt'}
         </Button>

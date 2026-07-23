@@ -21,7 +21,7 @@ function checkClientAiCoachLimit(profile) {
   return {
     error: 'ai_coach_limit',
     headline: 'Månadens gräns nådd',
-    message: `Du har använt alla ${access.limit} AI-coach-frågor den här månaden. Uppgradera till Pro för obegränsad coach.`,
+    message: `Du har använt alla ${access.limit} Coach-frågor den här månaden. Uppgradera till Pro för obegränsad coach.`,
     upgrade_plan: 'pro',
     remaining: 0,
   };

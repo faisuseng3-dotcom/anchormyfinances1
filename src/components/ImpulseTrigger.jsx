@@ -33,7 +33,7 @@ function getImpulseNotif(personaName) {
     Knegare: {
       icon: Lightbulb,
       badge: 'PRO INSIKT',
-      badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+      badgeColor: 'bg-[#4fae82]/15 text-[#4fae82] border-[#4fae82]/30',
       accentColor: '#6366F1',
       headline: 'Investeringstips: Alternativkostnad',
       message: '800 kr idag är 1 570 kr om 10 år. Din bil-fond backar 2 dagar.',
@@ -58,7 +58,7 @@ const NEGOTIATOR_NOTIF = {
 const OPPORTUNITY_NOTIF = {
   icon: TrendingUp,
   badge: 'STRATEGEN',
-  badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  badgeColor: 'bg-[#4fae82]/15 text-[#4fae82] border-[#4fae82]/30',
   accentColor: '#A855F7',
   headline: 'Ränte-check: 0% ränta identifierat',
   message: 'Du har 30 000 kr på ett konto med 0% ränta. Flytta till fasträntekonto: +110 kr/mån helt riskfritt. Ska jag initiera flytten?',

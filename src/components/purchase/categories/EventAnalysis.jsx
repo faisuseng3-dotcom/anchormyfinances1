@@ -134,39 +134,39 @@ Svara ENDAST med JSON.`,
 
         {/* URL */}
         <div>
-          <Label className="text-xs text-slate-400">URL (Ticketmaster, Airbnb, Booking…)</Label>
+          <Label className="text-xs text-white/45">URL (Ticketmaster, Airbnb, Booking…)</Label>
           <div className="flex gap-2 mt-1">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
                 placeholder="https://ticketmaster.se/…" className="pl-9 h-10 text-sm" />
             </div>
             <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              className="bg-[#4fae82] hover:bg-[#4fae82] h-10 flex-shrink-0">
               {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
             </Button>
           </div>
         </div>
 
         <div>
-          <Label className="text-xs text-slate-400">Eventnamn</Label>
+          <Label className="text-xs text-white/45">Eventnamn</Label>
           <Input value={event.name} onChange={e => setEvent(ev => ({ ...ev, name: e.target.value }))}
             placeholder="Taylor Swift, Midsommarfest, Berlin-weekend…" className="mt-1 h-10 text-sm" />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label className="text-xs text-slate-400">Biljettpris / kostnad (kr)</Label>
+            <Label className="text-xs text-white/45">Biljettpris / kostnad (kr)</Label>
             <Input type="number" value={event.ticketCost} onChange={e => setEvent(ev => ({ ...ev, ticketCost: e.target.value }))}
               placeholder="1 200" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Stad</Label>
+            <Label className="text-xs text-white/45">Stad</Label>
             <Input value={event.city} onChange={e => setEvent(ev => ({ ...ev, city: e.target.value }))}
               placeholder="Stockholm, Göteborg…" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Datum</Label>
+            <Label className="text-xs text-white/45">Datum</Label>
             <Input value={event.date} onChange={e => setEvent(ev => ({ ...ev, date: e.target.value }))}
               placeholder="15 aug 2026" className="mt-1 h-10 text-sm" />
           </div>
@@ -174,7 +174,7 @@ Svara ENDAST med JSON.`,
 
         {/* Travel toggle */}
         <button onClick={() => setEvent(ev => ({ ...ev, travelNeeded: !ev.travelNeeded }))}
-          className={`w-full py-3 px-4 rounded-xl flex items-center gap-3 border transition-all text-sm ${event.travelNeeded ? 'border-amber-500 bg-amber-500/10 text-amber-300' : 'border-white/10 text-slate-400 hover:border-white/20'}`}>
+          className={`w-full py-3 px-4 rounded-xl flex items-center gap-3 border transition-all text-sm ${event.travelNeeded ? 'border-amber-500 bg-amber-500/10 text-amber-300' : 'border-white/10 text-white/45 hover:border-white/20'}`}>
           <Train className="w-4 h-4" />
           <span className="flex items-center gap-1.5">{event.travelNeeded ? <><Check className="w-3.5 h-3.5" aria-hidden /> Resa ingår (tåg + hotell beräknas)</> : 'Klicka om du behöver resa dit'}</span>
         </button>
@@ -186,17 +186,17 @@ Svara ENDAST med JSON.`,
               className="rounded-xl p-3 space-y-2"
               style={{ background: 'rgba(245,158,11,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="flex justify-between"><span className="text-slate-500">Biljett</span><span className="text-white font-medium">{fmt(liveCalc.ticket)} kr</span></div>
-                {liveCalc.travelCost > 0 && <div className="flex justify-between"><span className="text-slate-500">Tåg/transport</span><span className="text-white font-medium">~{fmt(liveCalc.travelCost)} kr</span></div>}
-                {liveCalc.hotelCost > 0 && <div className="flex justify-between"><span className="text-slate-500">Hotell (1 natt)</span><span className="text-white font-medium">~{fmt(liveCalc.hotelCost)} kr</span></div>}
-                <div className="flex justify-between"><span className="text-slate-500">Mat & övrigt</span><span className="text-white font-medium">~{fmt(liveCalc.foodCost)} kr</span></div>
+                <div className="flex justify-between"><span className="text-white/40">Biljett</span><span className="text-white font-medium">{fmt(liveCalc.ticket)} kr</span></div>
+                {liveCalc.travelCost > 0 && <div className="flex justify-between"><span className="text-white/40">Tåg/transport</span><span className="text-white font-medium">~{fmt(liveCalc.travelCost)} kr</span></div>}
+                {liveCalc.hotelCost > 0 && <div className="flex justify-between"><span className="text-white/40">Hotell (1 natt)</span><span className="text-white font-medium">~{fmt(liveCalc.hotelCost)} kr</span></div>}
+                <div className="flex justify-between"><span className="text-white/40">Mat & övrigt</span><span className="text-white font-medium">~{fmt(liveCalc.foodCost)} kr</span></div>
               </div>
               <div className="border-t border-white/10 pt-2 flex justify-between items-center">
-                <span className="text-xs text-slate-400 font-semibold">Totalt</span>
+                <span className="text-xs text-white/45 font-semibold">Totalt</span>
                 <span className="text-amber-400 font-bold">{fmt(liveCalc.totalCost)} kr</span>
               </div>
               {savingsGoal > 0 && (
-                <p className="text-[10px] text-slate-500">
+                <p className="text-[10px] text-white/40">
                   = {Math.round(liveCalc.savingsPct)}% av ditt sparmål "{savingsGoalName}"
                 </p>
               )}
@@ -206,7 +206,7 @@ Svara ENDAST med JSON.`,
       </motion.div>
 
       <Button onClick={handleAnalyze} disabled={!event.name || !event.ticketCost || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 font-bold text-white">
+        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90 font-bold text-white">
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Analyserar upplevelse…</> : <><PartyPopper className="w-4 h-4 mr-2" aria-hidden /> Generera Value Pulse Rapport</>}
       </Button>
 
@@ -221,18 +221,18 @@ Svara ENDAST med JSON.`,
                   <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)`, border: `1px solid ${vc}44` }}>
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-xs text-slate-500 mb-1">{analysis.event.name}</p>
+                        <p className="text-xs text-white/40 mb-1">{analysis.event.name}</p>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-lg font-black"
                           style={{ color: vc }}>{analysis.cfo_verdict}</div>
-                        <p className="text-sm text-slate-300 mt-2 leading-relaxed italic">"{analysis.value_pulse}"</p>
+                        <p className="text-sm text-white/70 mt-2 leading-relaxed italic">"{analysis.value_pulse}"</p>
                       </div>
                       <div className="text-center ml-4">
                         <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
-                        <div className="text-[10px] text-slate-500">VÄRDE</div>
+                        <div className="text-[10px] text-white/40">VÄRDE</div>
                       </div>
                     </div>
                     {analysis.mood_match && (
-                      <div className="mt-3 rounded-lg p-2 text-xs bg-emerald-500/10 text-emerald-300 flex items-center gap-1.5">
+                      <div className="mt-3 rounded-lg p-2 text-xs bg-[#4fae82]/10 text-emerald-300 flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Matchar din livsstilsprofil – detta är bra för ditt mående!
                       </div>
                     )}
@@ -240,13 +240,13 @@ Svara ENDAST med JSON.`,
 
                   {/* Total cost breakdown */}
                   <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5"><Receipt className="w-3.5 h-3.5" aria-hidden /> Totalbilden</p>
+                    <p className="text-xs font-bold text-white/45 uppercase tracking-wider mb-3 flex items-center gap-1.5"><Receipt className="w-3.5 h-3.5" aria-hidden /> Totalbilden</p>
                     <div className="flex justify-between items-center mb-2">
-                      <span className="text-sm text-slate-400">Total uppskattad kostnad</span>
+                      <span className="text-sm text-white/45">Total uppskattad kostnad</span>
                       <span className="text-xl font-black text-white">{fmt(analysis.total_real_cost || analysis.totalCost)} kr</span>
                     </div>
                     {analysis.travel_breakdown && event.travelNeeded && (
-                      <p className="text-xs text-slate-400 mt-1">{analysis.travel_breakdown}</p>
+                      <p className="text-xs text-white/45 mt-1">{analysis.travel_breakdown}</p>
                     )}
                   </div>
 
@@ -254,8 +254,8 @@ Svara ENDAST med JSON.`,
                   {analysis.goal_impact && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
                       style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                      <Target className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
-                      <p className="text-slate-300">{analysis.goal_impact}</p>
+                      <Target className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" aria-hidden />
+                      <p className="text-white/70">{analysis.goal_impact}</p>
                     </div>
                   )}
 
@@ -264,7 +264,7 @@ Svara ENDAST med JSON.`,
                     <div className="rounded-xl p-3 flex gap-2 text-xs"
                       style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <Lightbulb className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden />
-                      <p className="text-slate-300">{analysis.smart_tip}</p>
+                      <p className="text-white/70">{analysis.smart_tip}</p>
                     </div>
                   )}
                 </>

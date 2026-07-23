@@ -70,7 +70,7 @@ function MonthlyBitePie({ cost, margin }) {
           <span className="text-xs font-bold text-white">{Math.round(pct * 100)}%</span>
         </div>
       </div>
-      <p className="text-[10px] text-slate-500 mt-1 text-center">av din lön</p>
+      <p className="text-[10px] text-white/40 mt-1 text-center">av din lön</p>
     </div>
   );
 }
@@ -93,9 +93,9 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Top Summary Bar */}
       <div className="rounded-2xl p-4 text-center"
         style={{ background: 'rgba(255,255,255,0.03)', boxShadow: 'var(--anchor-shadow-1)' }}>
-        <p className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Total månadskostnad</p>
+        <p className="text-xs text-white/40 mb-1 uppercase tracking-wider">Total månadskostnad</p>
         <p className="text-3xl font-black text-white">{fmt(analysis.totalMonthlyCost)} kr/mån</p>
-        <p className="text-xs text-slate-500 mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
+        <p className="text-xs text-white/40 mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
       </div>
 
       {/* Header: CFO Score + Verdict */}
@@ -103,11 +103,11 @@ export default function VehicleCFOReport({ analysis }) {
         <div className="p-4" style={{ background: `linear-gradient(135deg, ${verdictColor}11 0%, rgba(0,0,0,0) 100%)` }}>
           <div className="flex items-center justify-between">
             <div className="flex-1">
-              <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold mb-1">
+              <p className="text-xs text-white/40 uppercase tracking-wider font-semibold mb-1">
                 {analysis.vehicleName || 'Fordon'}
               </p>
               <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-white/40 mt-0.5">
                 Insats: {analysis.downPaymentPct}% = {fmt(analysis.downPaymentAmount)} kr · Lån: {fmt(analysis.loanAmount)} kr · {analysis.interestRate}%
               </p>
               <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold"
@@ -120,13 +120,13 @@ export default function VehicleCFOReport({ analysis }) {
         </div>
 
         <div className="px-4 pb-4">
-          <div className="rounded-xl p-3 text-sm text-slate-300 leading-relaxed"
+          <div className="rounded-xl p-3 text-sm text-white/70 leading-relaxed"
             style={{ background: 'rgba(0,0,0,0.3)', boxShadow: 'var(--anchor-shadow-1)' }}>
-            <span className="text-[10px] font-bold tracking-widest uppercase text-slate-500 block mb-1">
+            <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 block mb-1">
               {analysis.cfo_score >= 7
                 ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-amber-400" aria-hidden /> Gold Verdict</span>
                 : analysis.cfo_score >= 5
-                ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-slate-400" aria-hidden /> Silver Verdict</span>
+                ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-white/45" aria-hidden /> Silver Verdict</span>
                 : <span className="inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-rose-400" aria-hidden /> Risk Alert</span>}
             </span>
             {analysis.cfo_recommendation}
@@ -165,13 +165,13 @@ export default function VehicleCFOReport({ analysis }) {
       {analysis.downPaymentAmount > 0 && analysis.currentBuffer > 0 && (
         <div className="rounded-xl p-4 flex gap-3 items-start"
           style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <Shield className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-[11px] font-bold text-indigo-400 mb-0.5">Likviditets-check</p>
-            <p className="text-xs text-slate-300">
+            <p className="text-[11px] font-bold text-[#4fae82] mb-0.5">Likviditets-check</p>
+            <p className="text-xs text-white/70">
               Kontantinsatsen på {fmt(analysis.downPaymentAmount)} kr sänker din trygghet från{' '}
               <strong className="text-white">{analysis.bufferMonths.toFixed(1)} månader</strong> till{' '}
-              <strong className={analysis.newBufferMonths < 1 ? 'text-rose-300' : analysis.newBufferMonths < 2 ? 'text-amber-300' : 'text-indigo-200'}>
+              <strong className={analysis.newBufferMonths < 1 ? 'text-rose-300' : analysis.newBufferMonths < 2 ? 'text-amber-300' : 'text-[#4fae82]'}>
                 {analysis.newBufferMonths.toFixed(1)} månader
               </strong>.
               {analysis.newBufferMonths < 1 && (
@@ -190,15 +190,15 @@ export default function VehicleCFOReport({ analysis }) {
         </div>
         <div className="rounded-2xl p-3 flex flex-col justify-center"
           style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-[10px] text-slate-500 mb-0.5">Total ränta</p>
+          <p className="text-[10px] text-white/40 mb-0.5">Total ränta</p>
           <p className="text-base font-black text-amber-400">{fmt(analysis.totalInterest)}</p>
-          <p className="text-[10px] text-slate-600">kr att betala extra</p>
+          <p className="text-[10px] text-white/30">kr att betala extra</p>
         </div>
         <div className="rounded-2xl p-3 flex flex-col justify-center"
           style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-[10px] text-slate-500 mb-0.5">Totalpris</p>
+          <p className="text-[10px] text-white/40 mb-0.5">Totalpris</p>
           <p className="text-base font-black text-white">{fmt(analysis.totalPaid)}</p>
-          <p className="text-[10px] text-slate-600">kr inkl. insats</p>
+          <p className="text-[10px] text-white/30">kr inkl. insats</p>
         </div>
       </div>
 
@@ -225,31 +225,31 @@ export default function VehicleCFOReport({ analysis }) {
               <p className="text-xl font-black text-white mt-0.5">-{fmt(analysis.depreciation)} kr</p>
             </div>
           </div>
-          <p className="text-[10px] text-slate-500 leading-relaxed">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
+          <p className="text-[10px] text-white/40 leading-relaxed">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
         </div>
 
         <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <div className="flex items-start gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+            <TrendingUp className="w-5 h-5 text-[#4fae82] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] font-bold text-indigo-400 uppercase tracking-wider">Alternativkostnad</p>
+              <p className="text-[11px] font-bold text-[#4fae82] uppercase tracking-wider">Alternativkostnad</p>
               <p className="text-xl font-black text-white mt-0.5">+{fmt(analysis.opportunityCost)} kr</p>
             </div>
           </div>
-          <p className="text-[10px] text-slate-500 leading-relaxed">Vad kontantinsatsen gett på börsen (7%/år).</p>
+          <p className="text-[10px] text-white/40 leading-relaxed">Vad kontantinsatsen gett på börsen (7%/år).</p>
         </div>
       </div>
 
       {/* Trade-off */}
       <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-        <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 inline-flex items-center gap-1"><Utensils className="w-3.5 h-3.5" aria-hidden /> Trade-off kalkylatorn</p>
-        <div className="space-y-2 text-xs text-slate-300">
+        <p className="text-xs font-bold text-white/45 uppercase tracking-wider mb-2 inline-flex items-center gap-1"><Utensils className="w-3.5 h-3.5" aria-hidden /> Trade-off kalkylatorn</p>
+        <div className="space-y-2 text-xs text-white/70">
           <div className="flex justify-between items-center">
             <span className="inline-flex items-center gap-1"><Salad className="w-3.5 h-3.5" aria-hidden /> Luncher ute (130 kr/st)</span>
             <span className="font-bold text-white">{fmt(analysis.lunchEquivalent)} st</span>
           </div>
           <div className="h-px bg-white/5" />
-          <p className="text-slate-400 leading-relaxed italic">{analysis.contextual_story}</p>
+          <p className="text-white/45 leading-relaxed italic">{analysis.contextual_story}</p>
         </div>
       </div>
 
@@ -257,7 +257,7 @@ export default function VehicleCFOReport({ analysis }) {
       {analysis.opportunity_investment && (
         <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 inline-flex items-center gap-1"><LineChart className="w-3.5 h-3.5" aria-hidden /> Alternativet – Indexfond</p>
-          <p className="text-xs text-slate-300">{analysis.opportunity_investment}</p>
+          <p className="text-xs text-white/70">{analysis.opportunity_investment}</p>
           <p className="text-sm font-bold text-emerald-400 mt-2">
             {fmt(analysis.downPaymentAmount)} kr → {fmt(analysis.opportunityFinalValue)} kr
           </p>
@@ -271,7 +271,7 @@ export default function VehicleCFOReport({ analysis }) {
           <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-[11px] font-bold text-cyan-400 mb-0.5">Smartare alternativ</p>
-            <p className="text-xs text-slate-300">{analysis.better_alternative}</p>
+            <p className="text-xs text-white/70">{analysis.better_alternative}</p>
           </div>
         </div>
       )}

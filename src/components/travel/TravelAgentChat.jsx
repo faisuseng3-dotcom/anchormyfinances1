@@ -165,30 +165,32 @@ const DEST_IMAGES = {
   berlin: 'https://images.unsplash.com/photo-1560969184-10fe8719e047?w=800&q=80',
 };
 
+// Tre alternativ jämförs sida vid sida — särskiljs via ikon/etikett, inte
+// en egen färg per alternativ. Endast accentfärgen används, konsekvent.
 const VIBE_THEMES = {
   experience: {
     Icon: Backpack,
     vibe: 'Maxad Upplevelse',
-    gradient: 'from-orange-600 to-rose-600',
-    glow: 'rgba(234,88,12,0.3)',
+    gradient: 'from-white/10 to-white/[0.02]',
+    glow: 'rgba(255,255,255,0.08)',
     tag: 'Maxad Upplevelse',
-    tagColor: 'bg-orange-500/20 text-orange-300 border-orange-500/40',
+    tagColor: 'bg-white/10 text-white/70 border-white/20',
   },
   balance: {
     Icon: Building2,
     vibe: 'Bästa Balansen',
-    gradient: 'from-blue-600 to-indigo-600',
-    glow: 'rgba(59,130,246,0.3)',
+    gradient: 'from-white/10 to-white/[0.02]',
+    glow: 'rgba(255,255,255,0.08)',
     tag: 'Mest Prisvärd',
-    tagColor: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+    tagColor: 'bg-white/10 text-white/70 border-white/20',
   },
   safety: {
     Icon: Wine,
     vibe: 'Säkrast Marginal',
-    gradient: 'from-purple-600 to-pink-600',
-    glow: 'rgba(147,51,234,0.3)',
+    gradient: 'from-[#4fae82]/25 to-[#4fae82]/[0.03]',
+    glow: 'rgba(79,174,130,0.3)',
     tag: 'Säkrast Marginal',
-    tagColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+    tagColor: 'bg-[#4fae82]/20 text-[#4fae82] border-[#4fae82]/40',
   },
 };
 
@@ -312,15 +314,15 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
           />
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="flex items-center gap-1.5 text-slate-400"><span className="w-2 h-2 rounded-full bg-indigo-500 inline-block"/>Boende</span>
+              <span className="flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full bg-[#4fae82] inline-block"/>Boende</span>
               <span className="text-white font-medium">{formatNumber(pkg.accommodationCost)} kr</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="flex items-center gap-1.5 text-slate-400"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"/>Aktiviteter</span>
+              <span className="flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"/>Aktiviteter</span>
               <span className="text-white font-medium">{formatNumber(pkg.activitiesCost)} kr</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="flex items-center gap-1.5 text-slate-400"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"/>Marginal</span>
+              <span className="flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full bg-[#4fae82] inline-block"/>Marginal</span>
               <span className={`font-medium ${pkg.margin < 500 ? 'text-rose-400' : 'text-emerald-400'}`}>{formatNumber(pkg.margin)} kr</span>
             </div>
           </div>
@@ -328,18 +330,18 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
 
         {/* Details */}
         <div className="space-y-1.5 text-xs border-t border-white/5 pt-3">
-          <div className="flex items-start gap-2 text-slate-300">
-            <Hotel className="w-3.5 h-3.5 text-indigo-400 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-2 text-white/70">
+            <Hotel className="w-3.5 h-3.5 text-[#4fae82] mt-0.5 flex-shrink-0" />
             <span>{pkg.accommodation}</span>
           </div>
-          <div className="flex items-start gap-2 text-slate-300">
+          <div className="flex items-start gap-2 text-white/70">
             <Zap className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
             <span>{pkg.activities}</span>
           </div>
         </div>
 
         {/* AI comment */}
-        <div className="text-xs italic text-slate-400 bg-white/5 rounded-xl px-3 py-2">
+        <div className="text-xs italic text-white/45 bg-white/5 rounded-xl px-3 py-2">
           <span className="inline-flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> {pkg.aiComment}</span>
         </div>
 
@@ -364,7 +366,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={handleBook}
-              className="h-10 px-3 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/40 text-blue-300 text-xs font-bold flex items-center gap-1.5 flex-shrink-0"
+              className="h-10 px-3 rounded-xl bg-[#4fae82]/15 hover:bg-[#4fae82]/25 border border-[#4fae82]/30 text-[#4fae82] text-xs font-bold flex items-center gap-1.5 flex-shrink-0"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               Boka
@@ -395,7 +397,7 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
         <div className="flex gap-1.5">
           {packages.map((_, i) => (
             <button key={i} onClick={() => setActiveIndex(i)}
-              className={`h-1.5 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-indigo-400' : 'w-1.5 bg-white/20'}`}
+              className={`h-1.5 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-[#4fae82]' : 'w-1.5 bg-white/20'}`}
             />
           ))}
         </div>
@@ -426,7 +428,7 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
 
       {/* Comparison mini-table */}
       <div className="rounded-3xl border-white/8 overflow-hidden">
-        <div className="grid grid-cols-4 text-xs bg-white/5 px-3 py-2 text-slate-400 font-medium">
+        <div className="grid grid-cols-4 text-xs bg-white/5 px-3 py-2 text-white/45 font-medium">
           <span>Alternativ</span>
           <span className="text-center">Boende</span>
           <span className="text-center">Aktiviteter</span>
@@ -441,12 +443,12 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
               key={i}
               onClick={() => { setActiveIndex(i); onSelect(pkg); }}
               className={`grid grid-cols-4 text-xs px-3 py-2.5 cursor-pointer transition-all border-t border-white/5 ${
-                selectedPkg?.id === pkg.id ? 'bg-indigo-500/10' : 'hover:bg-white/5'
+                selectedPkg?.id === pkg.id ? 'bg-[#4fae82]/10' : 'hover:bg-white/5'
               }`}
             >
               <span className="text-white font-medium flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> Alt {i+1}</span>
-              <span className="text-center text-slate-300">{formatNumber(pkg.accommodationCost)}</span>
-              <span className="text-center text-slate-300">{formatNumber(pkg.activitiesCost)}</span>
+              <span className="text-center text-white/70">{formatNumber(pkg.accommodationCost)}</span>
+              <span className="text-center text-white/70">{formatNumber(pkg.activitiesCost)}</span>
               <span className={`text-center font-medium ${pocketMoney < 150 ? 'text-rose-400' : 'text-emerald-400'}`}>
                 {formatNumber(pocketMoney)} kr
               </span>
@@ -469,7 +471,7 @@ function CFOBubble({ budgetCheck }) {
       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-xs font-semibold ${
         tight
           ? 'bg-rose-500/15 border-rose-500/40 text-rose-300'
-          : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300'
+          : 'bg-[#4fae82]/15 border-emerald-500/40 text-emerald-300'
       }`}
       style={{ boxShadow: tight ? '0 0 12px rgba(239,68,68,0.2)' : '0 0 12px rgba(16,185,129,0.2)' }}
     >
@@ -487,11 +489,11 @@ function ThinkingBubble() {
   const icons = [Plane, Hotel, Wallet];
   return (
     <div className="flex gap-3">
-      <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-blue-500/20">
+      <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
         <Loader2 className="w-4 h-4 text-white animate-spin" />
       </div>
       <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3">
-        <div className="flex items-center gap-2 text-sm text-slate-400 mb-2">Analyserar din resa...</div>
+        <div className="flex items-center gap-2 text-sm text-white/45 mb-2">Analyserar din resa...</div>
         <div className="flex gap-3">
           {icons.map((IconComp, i) => (
             <motion.div
@@ -500,7 +502,7 @@ function ThinkingBubble() {
               transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
               className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center"
             >
-              <IconComp className="w-4 h-4 text-indigo-400" />
+              <IconComp className="w-4 h-4 text-[#4fae82]" />
             </motion.div>
           ))}
         </div>
@@ -699,7 +701,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
     if (msg.role === 'user') {
       return (
         <div key={i} className="flex justify-end">
-          <div className="bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm shadow-lg shadow-indigo-500/20">
+          <div className="bg-[#4fae82] text-[#08110c] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm shadow-lg">
             {msg.content}
           </div>
         </div>
@@ -709,7 +711,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
     if (msg.type === 'text') {
       return (
         <div key={i} className="flex gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-lg shadow-blue-500/20">
+          <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
             <Plane className="w-4 h-4 text-white" />
           </div>
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-slate-200 leading-relaxed">
@@ -725,19 +727,19 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       const a = msg.analysis;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
-          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-lg shadow-blue-500/20">
+          <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
             <Plane className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1">
-            <div className="text-[10px] text-indigo-400 font-medium mb-1.5 tracking-wide">Steg 1 · Reseanalys</div>
+            <div className="text-[10px] text-[#4fae82] font-medium mb-1.5 tracking-wide">Steg 1 · Reseanalys</div>
             <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 space-y-2">
               <div className="grid grid-cols-2 gap-2">
-                {a?.destination && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-slate-500 mb-0.5">Destination</div><div className="text-white font-semibold">{a.destination}</div></div>}
-                {a?.dates && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-slate-500 mb-0.5">Datum</div><div className="text-white font-semibold">{a.dates}</div></div>}
-                {a?.totalBudget && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-slate-500 mb-0.5">Total budget</div><div className="text-white font-semibold">{formatNumber(a.totalBudget)} kr</div></div>}
-                {a?.activityBudget && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-slate-500 mb-0.5">Aktivitetsbudget</div><div className="text-white font-semibold">{formatNumber(a.activityBudget)} kr</div></div>}
+                {a?.destination && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Destination</div><div className="text-white font-semibold">{a.destination}</div></div>}
+                {a?.dates && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Datum</div><div className="text-white font-semibold">{a.dates}</div></div>}
+                {a?.totalBudget && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Total budget</div><div className="text-white font-semibold">{formatNumber(a.totalBudget)} kr</div></div>}
+                {a?.activityBudget && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Aktivitetsbudget</div><div className="text-white font-semibold">{formatNumber(a.activityBudget)} kr</div></div>}
               </div>
-              {msg.content && <p className="text-sm text-slate-300 pt-1 border-t border-white/5">{msg.content}</p>}
+              {msg.content && <p className="text-sm text-white/70 pt-1 border-t border-white/5">{msg.content}</p>}
             </div>
           </div>
         </motion.div>
@@ -748,22 +750,22 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       if (!msg.timeline?.dates?.length) return null;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11">
-          <div className="text-[10px] text-indigo-400 font-medium mb-1.5 tracking-wide">Steg 2 · Reseplan</div>
+          <div className="text-[10px] text-[#4fae82] font-medium mb-1.5 tracking-wide">Steg 2 · Reseplan</div>
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-3">
-              <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+              <Calendar className="w-3.5 h-3.5 text-[#4fae82]" />
               <span className="text-sm font-semibold text-white">{msg.timeline.destination}</span>
             </div>
             <div className="flex gap-1.5 overflow-x-auto pb-1">
               {msg.timeline.dates.map((d, di) => (
                 <div key={di} className={`flex-shrink-0 rounded-xl px-3 py-2.5 text-center min-w-[72px] ${
                   d.highlight
-                    ? 'bg-indigo-500/30 border border-indigo-400/50 shadow-sm shadow-indigo-500/20'
+                    ? 'bg-[#4fae82]/30 border border-[#4fae82]/50 shadow-sm'
                     : 'bg-white/5 border border-white/8'
                 }`}>
-                  <div className="text-slate-400 text-[10px]">{d.label}</div>
+                  <div className="text-white/45 text-[10px]">{d.label}</div>
                   <div className="text-white font-medium text-xs mt-0.5">{d.event}</div>
-                  {d.highlight && <Star className="w-3 h-3 mt-1 text-indigo-300 fill-indigo-300" />}
+                  {d.highlight && <Star className="w-3 h-3 mt-1 text-[#4fae82] fill-[#4fae82]" />}
                 </div>
               ))}
             </div>
@@ -775,7 +777,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
     if (msg.type === 'packages') {
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11 space-y-3">
-          <div className="text-[10px] text-indigo-400 font-medium tracking-wide">Dina 3 resvägar</div>
+          <div className="text-[10px] text-[#4fae82] font-medium tracking-wide">Dina 3 resvägar</div>
           <DiscoveryCarousel
             packages={msg.packages || []}
             selectedPkg={selectedPkg}
@@ -792,7 +794,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
               >
                 <Button
                   onClick={handleSaveGoal}
-                  className="w-full h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 font-bold text-sm shadow-lg shadow-indigo-500/30"
+                  className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90 font-bold text-sm"
                 >
                   <Sparkles className="w-4 h-4" /> Skapa sparmål — {selectedPkg.name} · {formatNumber(selectedPkg.totalCost)} kr
                 </Button>
@@ -808,8 +810,8 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       const tight = msg.budgetCheck.marginPerDay < 200;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11">
-          <div className="text-[10px] text-indigo-400 font-medium mb-1.5 tracking-wide">Steg 3 · Budget-koll</div>
-          <div className={`rounded-2xl p-4 border ${tight ? 'bg-rose-500/8 border-rose-500/25' : 'bg-emerald-500/8 border-emerald-500/25'}`}>
+          <div className="text-[10px] text-[#4fae82] font-medium mb-1.5 tracking-wide">Steg 3 · Budget-koll</div>
+          <div className={`rounded-2xl p-4 border ${tight ? 'bg-rose-500/8 border-rose-500/25' : 'bg-[#4fae82]/8 border-emerald-500/25'}`}>
             <div className="flex items-center gap-2 mb-3">
               <div className={`w-2 h-2 rounded-full ${tight ? 'bg-rose-400' : 'bg-emerald-400'}`}
                 style={{ boxShadow: tight ? '0 0 6px rgba(239,68,68,0.8)' : '0 0 6px rgba(16,185,129,0.8)' }}
@@ -819,7 +821,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
             <div className="grid grid-cols-3 gap-2 mb-3">
               {msg.budgetCheck.breakdown?.map((item, bi) => (
                 <div key={bi} className="bg-white/8 rounded-xl p-2 text-center">
-                  <div className="text-[10px] text-slate-400">{item.label}</div>
+                  <div className="text-[10px] text-white/45">{item.label}</div>
                   <div className="text-white font-bold text-sm">{formatNumber(item.amount)} kr</div>
                 </div>
               ))}
@@ -869,7 +871,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
                       animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], y: [-4, 0, -4] }}
                       transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
                     >
-                      <FloatIcon className="w-4 h-4 text-indigo-400" />
+                      <FloatIcon className="w-4 h-4 text-[#4fae82]" />
                     </motion.div>
                   ))}
                 </div>
@@ -881,19 +883,19 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
               placeholder="Beskriv din resa... t.ex. 'Solsemester i Spanien i juli, 7 nätter, ca 8 000 kr' eller 'Städresa till Berlin i maj'"
               rows={2}
-              className="w-full resize-none bg-white/8 backdrop-blur-xl border border-white/15 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/70 focus:ring-1 focus:ring-indigo-500/20 transition-all"
+              className="w-full resize-none bg-white/8 backdrop-blur-xl border border-white/15 rounded-2xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#4fae82]/70 focus:ring-1 focus:ring-[#4fae82]/20 transition-all"
               style={{ backdropFilter: 'blur(20px)' }}
             />
           </div>
           <Button
             onClick={handleSend}
             disabled={!input.trim() || loading}
-            className="h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 flex-shrink-0 shadow-lg shadow-indigo-500/30 disabled:opacity-40"
+            className="h-12 w-12 rounded-xl bg-[#4fae82] hover:opacity-90 flex-shrink-0 disabled:opacity-40"
           >
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-[10px] text-slate-600 mt-1.5 px-1">↵ Enter för att skicka · Shift+Enter för ny rad</p>
+        <p className="text-[10px] text-white/30 mt-1.5 px-1">↵ Enter för att skicka · Shift+Enter för ny rad</p>
       </div>
     </div>
   );

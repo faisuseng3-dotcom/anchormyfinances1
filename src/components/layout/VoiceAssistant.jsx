@@ -249,8 +249,8 @@ export default function VoiceAssistant({ isOpen, onClose }) {
         >
           <div className="p-6 pb-4 border-b border-white/[0.08] flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#0D7377]/25 ring-1 ring-[#0FDEBD]/30 flex items-center justify-center">
-                <Radio className="w-5 h-5 text-[#0FDEBD]" />
+              <div className="w-10 h-10 rounded-2xl bg-[#4fae82]/25 ring-1 ring-[#4fae82]/30 flex items-center justify-center">
+                <Radio className="w-5 h-5 text-[#4fae82]" />
               </div>
               <div>
                 <h2 className="font-semibold text-white">Röstrådgivare</h2>
@@ -273,7 +273,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
             {messages.length === 0 && (
               <div className="text-center py-8">
                 <div className="w-16 h-16 rounded-2xl bg-white/[0.06] ring-1 ring-white/10 flex items-center justify-center mx-auto mb-4">
-                  <Mic className="w-8 h-8 text-[#0FDEBD]" />
+                  <Mic className="w-8 h-8 text-[#4fae82]" />
                 </div>
                 <h3 className="font-semibold text-white mb-2">Prata med Lago</h3>
                 <p className="text-sm text-white/50 max-w-xs mx-auto">
@@ -292,7 +292,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 ${
                     message.role === 'user'
-                      ? 'bg-[#0D7377] text-white'
+                      ? 'bg-[#4fae82] text-white'
                       : 'bg-white/[0.06] ring-1 ring-white/10 text-white/90'
                   }`}
                 >
@@ -333,7 +333,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                 animate={{ opacity: 1 }}
                 className="flex justify-end"
               >
-                <div className="bg-[#0D7377]/20 ring-1 ring-[#0FDEBD]/20 rounded-2xl px-4 py-3 max-w-[80%]">
+                <div className="bg-[#4fae82]/20 ring-1 ring-[#4fae82]/20 rounded-2xl px-4 py-3 max-w-[80%]">
                   <p className="text-sm text-white/80">{transcript}</p>
                 </div>
               </motion.div>
@@ -372,16 +372,16 @@ export default function VoiceAssistant({ isOpen, onClose }) {
                     repeat: isListening ? Infinity : 0
                   }}
                   className={`absolute inset-0 rounded-full ${
-                    isListening ? 'bg-[#0FDEBD]/50' : 'bg-[#0D7377]/60'
+                    isListening ? 'bg-[#4fae82]/50' : 'bg-[#4fae82]/60'
                   } blur-xl`}
                 />
                 <motion.div
                   whileTap={{ scale: 0.95 }}
                   className={`relative w-16 h-16 rounded-full flex items-center justify-center ${
                     isListening
-                      ? 'bg-gradient-to-br from-rose-500 to-rose-600'
-                      : 'bg-gradient-to-br from-[#0D7377] to-[#0a4f52]'
-                  } shadow-lg ring-2 ring-[#0FDEBD]/30`}
+                      ? 'bg-[#4fae82]'
+                      : 'bg-[#4fae82]'
+                  } shadow-lg ring-2 ring-[#4fae82]/30`}
                 >
                   {isProcessing ? (
                     <Loader2 className="w-7 h-7 text-white animate-spin" />
@@ -406,7 +406,7 @@ export default function VoiceAssistant({ isOpen, onClose }) {
             </div>
 
             {!recognitionRef.current && (
-              <p className="text-xs text-center text-amber-600 mt-3">
+              <p className="text-xs text-center text-[#d9b25c] mt-3">
                 Röststyrning stöds inte i din webbläsare
               </p>
             )}

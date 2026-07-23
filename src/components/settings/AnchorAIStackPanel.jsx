@@ -5,10 +5,10 @@ import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
 import SettingsPanel from './SettingsPanel';
 
 const BADGE_STYLES = {
-  Primär: 'bg-violet-500/20 text-violet-200 ring-violet-400/25',
-  Specialist: 'bg-cyan-500/15 text-cyan-200 ring-cyan-400/20',
-  'On-device': 'bg-emerald-500/15 text-emerald-200 ring-emerald-400/20',
-  Infrastruktur: 'bg-amber-500/15 text-amber-200 ring-amber-400/20',
+  Primär: 'bg-[#4fae82]/15 text-[#4fae82] ring-[#4fae82]/25',
+  Specialist: 'bg-white/10 text-white/70 ring-white/15',
+  'On-device': 'bg-white/10 text-white/70 ring-white/15',
+  Infrastruktur: 'bg-white/10 text-white/70 ring-white/15',
   Sekundär: 'bg-white/10 text-white/70 ring-white/15',
 };
 

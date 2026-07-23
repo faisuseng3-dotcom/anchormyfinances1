@@ -54,7 +54,7 @@ export default function BookingModal({ pkg, onClose }) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Hero strip */}
-          <div className="relative h-32 bg-gradient-to-br from-indigo-600 to-blue-700 flex items-center justify-center">
+          <div className="relative h-32 bg-[#4fae82] flex items-center justify-center">
             <Plane className="w-10 h-10 text-white/30 absolute right-6 bottom-4 rotate-12" />
             <div className="text-center z-10 px-4">
               <div className="text-white font-black text-xl">{pkg.name}</div>
@@ -67,11 +67,11 @@ export default function BookingModal({ pkg, onClose }) {
 
           <div className="p-5 space-y-4">
             {/* Price match confirmation */}
-            <div className="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/25 rounded-2xl px-4 py-3">
+            <div className="flex items-center gap-3 bg-[#4fae82]/10 border border-emerald-500/25 rounded-2xl px-4 py-3">
               <Shield className="w-4 h-4 text-emerald-400 flex-shrink-0" />
               <div>
                 <div className="text-xs font-bold text-emerald-300">Prismatch bekräftad</div>
-                <div className="text-xs text-slate-400 mt-0.5">
+                <div className="text-xs text-white/45 mt-0.5">
                   {pkg.totalCost?.toLocaleString('sv-SE')} kr ryms i din budget med {pkg.margin?.toLocaleString('sv-SE')} kr marginal
                 </div>
               </div>
@@ -80,16 +80,16 @@ export default function BookingModal({ pkg, onClose }) {
             {/* Exit notice */}
             <div className="text-center space-y-1">
               <p className="text-sm text-white font-semibold">
-                Du skickas nu till <span className="text-indigo-300">{provider}</span>
+                Du skickas nu till <span className="text-[#4fae82]">{provider}</span>
               </p>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-white/45 leading-relaxed">
                 Din reseplan väntar här när du är klar!<br/>
                 Stäng fliken för att komma tillbaka till Lago.
               </p>
             </div>
 
             {/* Affiliate disclosure */}
-            <p className="text-[10px] text-slate-600 text-center">
+            <p className="text-[10px] text-white/30 text-center">
               Lago kan få provision om du bokar via denna länk. Priset påverkas inte.
             </p>
 
@@ -97,7 +97,7 @@ export default function BookingModal({ pkg, onClose }) {
             {!confirmed ? (
               <Button
                 onClick={handleBook}
-                className="w-full h-12 rounded-2xl bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-400 hover:to-blue-500 font-bold text-sm shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2"
+                className="w-full h-12 rounded-2xl bg-[#4fae82] hover:opacity-90 font-bold text-sm shadow-lg  flex items-center justify-center gap-2"
               >
                 Fortsätt till {provider}
                 <ArrowRight className="w-4 h-4" />
@@ -106,14 +106,14 @@ export default function BookingModal({ pkg, onClose }) {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="w-full h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center gap-2 text-emerald-300 font-semibold text-sm"
+                className="w-full h-12 rounded-2xl bg-[#4fae82]/20 border border-emerald-500/40 flex items-center justify-center gap-2 text-emerald-300 font-semibold text-sm"
               >
                 <ExternalLink className="w-4 h-4" />
                 Öppnar {provider}...
               </motion.div>
             )}
 
-            <button onClick={onClose} className="w-full text-xs text-slate-500 hover:text-slate-400 py-1">
+            <button onClick={onClose} className="w-full text-xs text-white/40 hover:text-white/45 py-1">
               Avbryt — gå tillbaka
             </button>
           </div>

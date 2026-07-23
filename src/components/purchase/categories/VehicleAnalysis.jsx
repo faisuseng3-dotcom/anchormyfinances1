@@ -194,10 +194,10 @@ Svara ENDAST med JSON.`;
     ? (liveCalc.totalMonthlyCost / margin) > 0.3 ? 'high' : (liveCalc.totalMonthlyCost / margin) > 0.2 ? 'mid' : 'low'
     : 'low';
   const btnClass = btnRisk === 'high'
-    ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:opacity-90'
+    ? 'bg-[#4fae82] hover:opacity-90'
     : btnRisk === 'mid'
-    ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-90'
-    : 'bg-gradient-to-r from-blue-500 to-cyan-500 hover:opacity-90';
+    ? 'bg-[#4fae82] hover:opacity-90'
+    : 'bg-[#4fae82] hover:opacity-90';
 
   const price = parseFloat(vehicle.price) || 0;
   const loanAmount = price - (downPaymentPct / 100) * price;
@@ -214,15 +214,15 @@ Svara ENDAST med JSON.`;
 
         {/* URL */}
         <div>
-          <Label className="text-xs text-slate-400">Annons-URL (Blocket, Riddermark…)</Label>
+          <Label className="text-xs text-white/45">Annons-URL (Blocket, Riddermark…)</Label>
           <div className="flex gap-2 mt-1">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
                 placeholder="https://blocket.se/…" className="pl-9 h-10 text-sm" />
             </div>
             <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              className="bg-[#4fae82] hover:bg-[#4fae82] h-10 flex-shrink-0">
               {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
             </Button>
           </div>
@@ -230,13 +230,13 @@ Svara ENDAST med JSON.`;
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label className="text-xs text-slate-400">Modell</Label>
+            <Label className="text-xs text-white/45">Modell</Label>
             <Input value={vehicle.name}
               onChange={e => setVehicle({ ...vehicle, name: e.target.value })}
               placeholder="Volvo XC60…" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Pris (kr)</Label>
+            <Label className="text-xs text-white/45">Pris (kr)</Label>
             <Input type="number" value={vehicle.price}
               onChange={e => setVehicle({ ...vehicle, price: e.target.value })}
               placeholder="450 000" className="mt-1 h-10 text-sm" />
@@ -246,16 +246,16 @@ Svara ENDAST med JSON.`;
         {/* Down payment */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Label className="text-xs text-slate-400">Kontantinsats</Label>
+            <Label className="text-xs text-white/45">Kontantinsats</Label>
             <span className="text-sm font-bold text-white">{downPaymentPct}%
-              {price > 0 && <span className="text-slate-400 font-normal ml-1">= {fmt((downPaymentPct / 100) * price)} kr</span>}
+              {price > 0 && <span className="text-white/45 font-normal ml-1">= {fmt((downPaymentPct / 100) * price)} kr</span>}
             </span>
           </div>
           <Slider min={10} max={50} step={5}
             value={[downPaymentPct]}
             onValueChange={([v]) => setDownPaymentPct(v)}
             className="w-full" />
-          <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+          <div className="flex justify-between text-[10px] text-white/30 mt-1">
             <span>10% (min)</span><span>50%</span>
           </div>
           {downPaymentPct < 20 && (
@@ -267,14 +267,14 @@ Svara ENDAST med JSON.`;
         {price > 0 && (
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs text-slate-400">Lånebelopp (beräknat)</Label>
-              <div className="mt-1 h-10 rounded-xl flex items-center px-3 text-sm font-semibold text-blue-300"
+              <Label className="text-xs text-white/45">Lånebelopp (beräknat)</Label>
+              <div className="mt-1 h-10 rounded-xl flex items-center px-3 text-sm font-semibold text-[#4fae82]"
                 style={{ background: 'rgba(59,130,246,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 {fmt(loanAmount)} kr
               </div>
             </div>
             <div>
-              <Label className="text-xs text-slate-400">Ränta (%)</Label>
+              <Label className="text-xs text-white/45">Ränta (%)</Label>
               <Input type="number" step="0.05" value={interestRate}
                 onChange={e => setInterestRate(parseFloat(e.target.value) || 6.95)}
                 className="mt-1 h-10 text-sm" />
@@ -285,16 +285,16 @@ Svara ENDAST med JSON.`;
         {/* Months slider */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Label className="text-xs text-slate-400">Avbetalningstid</Label>
+            <Label className="text-xs text-white/45">Avbetalningstid</Label>
             <span className="text-sm font-bold text-white">{months} månader</span>
           </div>
           <input type="range" min="12" max="96" step="12"
             value={months}
             onChange={e => setVehicle({ ...vehicle, months: e.target.value })}
-            className="w-full accent-indigo-500 cursor-pointer"
+            className="w-full accent-[#4fae82] cursor-pointer"
             style={{ height: '4px' }}
           />
-          <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+          <div className="flex justify-between text-[10px] text-white/30 mt-1">
             {[12, 24, 36, 48, 60, 72, 84, 96].map(m => <span key={m}>{m}</span>)}
           </div>
         </div>
@@ -307,15 +307,15 @@ Svara ENDAST med JSON.`;
               className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
               style={{ background: 'rgba(59,130,246,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div>
-                <p className="text-[10px] text-slate-500">Månadskostnad</p>
+                <p className="text-[10px] text-white/40">Månadskostnad</p>
                 <p className="text-sm font-bold text-blue-400">{fmt(liveCalc.totalMonthlyCost)} kr</p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500">Total ränta</p>
+                <p className="text-[10px] text-white/40">Total ränta</p>
                 <p className="text-sm font-bold text-amber-400">{fmt(liveCalc.totalInterest)} kr</p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500">Av marginalen</p>
+                <p className="text-[10px] text-white/40">Av marginalen</p>
                 <p className={`text-sm font-bold ${liveCalc.totalMonthlyCost / margin > 0.3 ? 'text-rose-400' : liveCalc.totalMonthlyCost / margin > 0.2 ? 'text-amber-400' : 'text-emerald-400'}`}>
                   {Math.round((liveCalc.totalMonthlyCost / margin) * 100)}%
                 </p>
@@ -353,11 +353,11 @@ Svara ENDAST med JSON.`;
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
             style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-            <Shield className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" aria-hidden />
-            <p className="text-indigo-200">
+            <Shield className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" aria-hidden />
+            <p className="text-[#4fae82]">
               Kontantinsatsen på <strong>{fmt(liveCalc.downPaymentAmount)} kr</strong> sänker din buffert
               från <strong>{bufferMonths.toFixed(1)} mån</strong> till{' '}
-              <strong className={currentBuffer - liveCalc.downPaymentAmount < totalFixed ? 'text-rose-300' : 'text-indigo-200'}>
+              <strong className={currentBuffer - liveCalc.downPaymentAmount < totalFixed ? 'text-rose-300' : 'text-[#4fae82]'}>
                 {Math.max(0, ((currentBuffer - liveCalc.downPaymentAmount) / totalFixed)).toFixed(1)} mån
               </strong> trygghet.
             </p>

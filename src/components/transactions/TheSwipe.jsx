@@ -125,9 +125,9 @@ function CircleVisual({ direction, amount, profile }) {
             transition: 'all 0.2s ease',
           }}
         >
-          <Wallet className="w-6 h-6 text-indigo-400" />
+          <Wallet className="w-6 h-6 text-[#4fae82]" />
           <p className="text-white font-bold text-sm">{fmt(availableBalance)}</p>
-          <p className="text-indigo-400 text-[10px] font-semibold">kr</p>
+          <p className="text-[#4fae82] text-[10px] font-semibold">kr</p>
         </div>
         <p className="text-slate-400 text-xs font-medium">Tillgängligt</p>
       </motion.div>

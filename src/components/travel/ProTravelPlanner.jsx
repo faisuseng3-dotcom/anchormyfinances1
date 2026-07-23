@@ -149,7 +149,7 @@ Beräkna:
           <div>
             <Label className="flex items-center justify-between">
               <span>Total resekostnad</span>
-              <span className="text-indigo-400 font-medium">{formatNumber(travelCost)} kr</span>
+              <span className="text-[#4fae82] font-medium">{formatNumber(travelCost)} kr</span>
             </Label>
             <Slider
               value={[travelCost]}
@@ -159,7 +159,7 @@ Beräkna:
               step={1000}
               className="mt-3"
             />
-            <div className="flex justify-between text-xs text-slate-500 mt-1">
+            <div className="flex justify-between text-xs text-white/40 mt-1">
               <span>5 000 kr</span>
               <span>50 000 kr</span>
             </div>
@@ -175,7 +175,7 @@ Beräkna:
         className="dark-card p-6 rounded-2xl"
       >
         <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-indigo-400" />
+          <TrendingUp className="w-5 h-5 text-[#4fae82]" />
           12-månaders kassaflödesprognos
         </h3>
         <ResponsiveContainer width="100%" height={250}>
@@ -226,12 +226,12 @@ Beräkna:
         </ResponsiveContainer>
         <div className="flex items-center justify-center gap-6 mt-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-indigo-500 rounded-full" />
-            <span className="text-slate-400">Utan resa</span>
+            <div className="w-3 h-3 bg-[#4fae82] rounded-full" />
+            <span className="text-white/45">Utan resa</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-emerald-500 rounded-full" />
-            <span className="text-slate-400">Med resa</span>
+            <div className="w-3 h-3 bg-[#4fae82] rounded-full" />
+            <span className="text-white/45">Med resa</span>
           </div>
         </div>
       </motion.div>
@@ -246,7 +246,7 @@ Beräkna:
             ? 'border-rose-500 bg-rose-500/10' 
             : isRisky 
             ? 'border-amber-500 bg-amber-500/10'
-            : 'border-emerald-500 bg-emerald-500/10'
+            : 'border-emerald-500 bg-[#4fae82]/10'
         }`}
       >
         <div className="flex items-start gap-4">
@@ -283,7 +283,7 @@ Beräkna:
       <Button
         onClick={handleStrategicAnalysis}
         disabled={!destination || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700"
+        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90"
       >
         {loading ? (
           <>
@@ -314,7 +314,7 @@ Beräkna:
             <p className="text-2xl font-bold text-blue-400 mb-2">
               +{simulation.goal_delay_months} månader
             </p>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-white/45">
               Denna resa fördröjer ditt {profile.savingsGoalName || 'sparmål'} med {simulation.goal_delay_months} månader.
             </p>
           </div>
@@ -322,23 +322,23 @@ Beräkna:
           {/* Risk Analysis */}
           <div className="dark-card p-5 rounded-xl">
             <h4 className="font-semibold text-white mb-2">Riskanalys</h4>
-            <p className="text-sm text-slate-300">{simulation.risk_analysis}</p>
+            <p className="text-sm text-white/70">{simulation.risk_analysis}</p>
           </div>
 
           {/* Strategic Recommendation */}
           <div className={`p-5 rounded-2xl ${
             simulation.is_safe 
-              ? 'border-emerald-500/30 bg-emerald-500/10' 
+              ? 'border-emerald-500/30 bg-[#4fae82]/10' 
               : 'border-rose-500/30 bg-rose-500/10'
           }`}>
             <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
               {simulation.is_safe ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />} CFO-rekommendation
             </h4>
-            <p className="text-sm text-slate-300 mb-3">{simulation.strategic_recommendation}</p>
+            <p className="text-sm text-white/70 mb-3">{simulation.strategic_recommendation}</p>
             {simulation.alternative_scenario && (
               <div className="mt-3 pt-3 border-t border-white/10">
-                <p className="text-xs text-slate-400 mb-1">Alternativt scenario:</p>
-                <p className="text-sm text-slate-300">{simulation.alternative_scenario}</p>
+                <p className="text-xs text-white/45 mb-1">Alternativt scenario:</p>
+                <p className="text-sm text-white/70">{simulation.alternative_scenario}</p>
               </div>
             )}
           </div>
@@ -346,20 +346,20 @@ Beräkna:
           {/* Trade-off Confirmation */}
           {!simulation.is_safe ? (
             <div className="dark-card p-5 rounded-xl text-center">
-              <p className="text-sm text-slate-400 mb-3">
+              <p className="text-sm text-white/45 mb-3">
                 Är du okej med denna trade-off?
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" className="rounded-xl">
                   Nej, justera
                 </Button>
-                <Button className="rounded-xl bg-gradient-to-r from-amber-500 to-orange-600">
+                <Button className="rounded-xl bg-[#4fae82]">
                   Ja, jag accepterar
                 </Button>
               </div>
             </div>
           ) : (
-            <Button className="w-full h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700">
+            <Button className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90">
               <Check className="w-4 h-4 mr-1" /> Godkänn strategisk reseinvestering
             </Button>
           )}

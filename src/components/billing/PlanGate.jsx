@@ -8,7 +8,7 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 const FEATURE_COPY = {
   ai_coach_unlimited: {
-    title: 'Obegränsad AI-coach',
+    title: 'Obegränsad Coach',
     description: 'Du har nått månadens gratisgräns. Uppgradera till Pro för obegränsad coach.',
     minPlan: 'pro',
   },
@@ -73,14 +73,14 @@ export default function PlanGate({ feature, children, compact = false }) {
           <p className="text-lg font-bold text-white mb-1">{copy.title}</p>
           <p className="text-sm text-slate-400 leading-relaxed">
             {isAiCoachFeature && aiCoachRemaining === 0
-              ? `Du har använt alla ${PLANS[plan]?.aiCoachLimit ?? 5} AI-coach-frågor den här månaden.`
+              ? `Du har använt alla ${PLANS[plan]?.aiCoachLimit ?? 5} Coach-frågor den här månaden.`
               : copy.description}
           </p>
         </div>
         <Link to={createPageUrl('Pricing')} className="w-full no-underline">
           <AnchorPressable
             type="button"
-            className="w-full py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-purple-600"
+            className="w-full py-3 rounded-xl text-sm font-bold text-[#08110c] bg-[#4fae82]"
           >
             Uppgradera till {neededLabel} →
           </AnchorPressable>

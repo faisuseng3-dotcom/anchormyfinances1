@@ -60,7 +60,7 @@ export const AI_TASKS = {
     label: 'Coaching & empati',
     primary: 'claude_sonnet_4_6',
     fallback: 'gpt_5_5',
-    uses: ['AI-coach', 'Emotionell incheckning', 'Lago Academy', 'Avdragsrådgivning'],
+    uses: ['Coach', 'Emotionell incheckning', 'Lago Academy', 'Avdragsrådgivning'],
   },
   pattern_forecast: {
     id: 'pattern_forecast',

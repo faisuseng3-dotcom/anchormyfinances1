@@ -8,7 +8,7 @@ import { createPageUrl } from '@/utils';
 const sections = [
   {
     icon: Shield,
-    color: 'from-emerald-500 to-teal-600',
+    color: '#4fae82',
     title: 'Ingen bankdata krävs',
     points: [
       'Vi begär aldrig ditt BankID, kortnummer eller inloggningsuppgifter till din bank.',
@@ -18,7 +18,7 @@ const sections = [
   },
   {
     icon: Lock,
-    color: 'from-indigo-500 to-purple-600',
+    color: '#4fae82',
     title: 'Krypterad & säker datalagring',
     points: [
       'All data krypteras i transit (TLS) och i vila (AES-256).',
@@ -28,7 +28,7 @@ const sections = [
   },
   {
     icon: Eye,
-    color: 'from-blue-500 to-cyan-600',
+    color: '#4fae82',
     title: 'Du äger din data',
     points: [
       'Du har alltid tillgång till all data du registrerat.',
@@ -38,7 +38,7 @@ const sections = [
   },
   {
     icon: Trash2,
-    color: 'from-rose-500 to-pink-600',
+    color: '#4fae82',
     title: 'Permanent radering',
     points: [
       'Du kan begära permanent radering av ditt konto och all data.',
@@ -52,22 +52,22 @@ export default function SecurityInfo() {
   return (
     <div className="h-full anchor-scroll-panel pb-24">
       <div className="px-6 pt-8 pb-4">
-        <Link to={createPageUrl('Settings')} className="flex items-center gap-2 text-slate-400 mb-6">
+        <Link to={createPageUrl('Settings')} className="flex items-center gap-2 text-white/45 mb-6">
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm">Tillbaka till Inställningar</span>
         </Link>
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-[#4fae82]/20 flex items-center justify-center">
               <Shield className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
-              <p className="text-slate-500 text-xs uppercase tracking-widest font-semibold">Trust Center</p>
+              <p className="text-white/40 text-xs uppercase tracking-widest font-semibold">Trust Center</p>
               <h1 className="text-2xl font-bold text-white">Säkerhet & Data</h1>
             </div>
           </div>
-          <p className="text-slate-400 text-sm mt-3 leading-relaxed">
+          <p className="text-white/45 text-sm mt-3 leading-relaxed">
             LAGO är byggt på tillit. Här är exakt hur din data hanteras – transparent och ärligt.
           </p>
         </motion.div>
@@ -84,8 +84,8 @@ export default function SecurityInfo() {
             style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center shadow-lg`}>
-                <Icon className="w-5 h-5 text-white" />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'rgba(79,174,130,0.15)' }}>
+                <Icon className="w-5 h-5" style={{ color: color }} />
               </div>
               <h2 className="text-base font-bold text-white">{title}</h2>
             </div>
@@ -93,7 +93,7 @@ export default function SecurityInfo() {
               {points.map((point, j) => (
                 <div key={j} className="flex items-start gap-2.5">
                   <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-slate-300 leading-relaxed">{point}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{point}</p>
                 </div>
               ))}
             </div>
@@ -109,7 +109,7 @@ export default function SecurityInfo() {
         >
           <Database className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
           <p className="text-sm font-semibold text-white mb-1">Frågor om din data?</p>
-          <p className="text-xs text-slate-400 leading-relaxed">
+          <p className="text-xs text-white/45 leading-relaxed">
             Vi följer GDPR och EU:s dataskyddslagar fullt ut.
             Din integritet är en grundrättighet – inte en bonus.
           </p>

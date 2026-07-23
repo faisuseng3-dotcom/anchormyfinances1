@@ -133,20 +133,20 @@ Svara ENDAST med JSON.`,
         className="rounded-2xl p-5 space-y-4"
         style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
         <h3 className="font-semibold text-white flex items-center gap-2">
-          <Laptop className="w-5 h-5 text-purple-400" /> Elektronikköp
+          <Laptop className="w-5 h-5 text-[#4fae82]" /> Elektronikköp
         </h3>
 
         {/* URL */}
         <div>
-          <Label className="text-xs text-slate-400">URL (Webhallen, Elgiganten, Amazon…)</Label>
+          <Label className="text-xs text-white/45">URL (Webhallen, Elgiganten, Amazon…)</Label>
           <div className="flex gap-2 mt-1">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
                 placeholder="https://webhallen.com/…" className="pl-9 h-10 text-sm" />
             </div>
             <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
-              className="bg-indigo-600 hover:bg-indigo-700 h-10 flex-shrink-0">
+              className="bg-[#4fae82] hover:bg-[#4fae82] h-10 flex-shrink-0">
               {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
             </Button>
           </div>
@@ -154,22 +154,22 @@ Svara ENDAST med JSON.`,
 
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2">
-            <Label className="text-xs text-slate-400">Produkt</Label>
+            <Label className="text-xs text-white/45">Produkt</Label>
             <Input value={device.name} onChange={e => setDevice(d => ({ ...d, name: e.target.value }))}
               placeholder="iPhone 16 Pro, MacBook Air M3…" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Pris (kr)</Label>
+            <Label className="text-xs text-white/45">Pris (kr)</Label>
             <Input type="number" value={device.price} onChange={e => setDevice(d => ({ ...d, price: e.target.value }))}
               placeholder="14 000" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-slate-400">Planerad användning (år)</Label>
+            <Label className="text-xs text-white/45">Planerad användning (år)</Label>
             <Input type="number" min="1" max="10" value={device.usageYears} onChange={e => setDevice(d => ({ ...d, usageYears: e.target.value }))}
               placeholder="2" className="mt-1 h-10 text-sm" />
           </div>
           <div className="col-span-2">
-            <Label className="text-xs text-slate-400">Vad ska du använda den till?</Label>
+            <Label className="text-xs text-white/45">Vad ska du använda den till?</Label>
             <Input value={device.usage} onChange={e => setDevice(d => ({ ...d, usage: e.target.value }))}
               placeholder="Frilans, studier, gaming, foto…" className="mt-1 h-10 text-sm" />
           </div>
@@ -182,15 +182,15 @@ Svara ENDAST med JSON.`,
               className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
               style={{ background: 'rgba(139,92,246,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div>
-                <p className="text-[10px] text-slate-500">Kostnad/dag</p>
-                <p className="text-sm font-bold text-purple-400">{fmt(liveCalc.costPerDay)} kr</p>
+                <p className="text-[10px] text-white/40">Kostnad/dag</p>
+                <p className="text-sm font-bold text-[#4fae82]">{fmt(liveCalc.costPerDay)} kr</p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500">Kostnad/mån</p>
-                <p className="text-sm font-bold text-purple-400">{fmt(liveCalc.costPerMonth)} kr</p>
+                <p className="text-[10px] text-white/40">Kostnad/mån</p>
+                <p className="text-sm font-bold text-[#4fae82]">{fmt(liveCalc.costPerMonth)} kr</p>
               </div>
               <div>
-                <p className="text-[10px] text-slate-500">Av sparmål</p>
+                <p className="text-[10px] text-white/40">Av sparmål</p>
                 <p className={`text-sm font-bold ${liveCalc.savingsPct > 50 ? 'text-rose-400' : liveCalc.savingsPct > 20 ? 'text-amber-400' : 'text-emerald-400'}`}>
                   {Math.round(liveCalc.savingsPct)}%
                 </p>
@@ -201,7 +201,7 @@ Svara ENDAST med JSON.`,
       </motion.div>
 
       <Button onClick={handleAnalyze} disabled={!device.name || !device.price || loading}
-        className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 hover:opacity-90 font-bold text-white">
+        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90 font-bold text-white">
         {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Bygger CFO-rapport…</> : <><Laptop className="w-4 h-4 mr-2" aria-hidden /> Generera Elektronik CFO-rapport</>}
       </Button>
 
@@ -217,7 +217,7 @@ Svara ENDAST med JSON.`,
                   <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)`, border: `1px solid ${vc}44` }}>
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-xs text-slate-500 mb-1">{analysis.device.name}</p>
+                        <p className="text-xs text-white/40 mb-1">{analysis.device.name}</p>
                         <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
                         <div className="mt-2 inline-flex px-3 py-1 rounded-full text-sm font-bold"
                           style={{ background: `${vc}22`, color: vc, border: `1px solid ${vc}44` }}>
@@ -226,16 +226,16 @@ Svara ENDAST med JSON.`,
                       </div>
                       <div className="text-center">
                         <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
-                        <div className="text-[10px] text-slate-500">CFO SCORE</div>
+                        <div className="text-[10px] text-white/40">CFO SCORE</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Cost per use story */}
                   <div className="rounded-xl p-4 text-center" style={{ background: 'rgba(139,92,246,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                    <p className="text-xs text-slate-500 mb-1">Kostnad per användning ({analysis.device.usageYears} år = {analysis.days} dagar)</p>
-                    <p className="text-3xl font-black text-purple-400">{fmt(analysis.costPerDay)} kr/dag</p>
-                    <p className="text-xs text-slate-400 mt-1 italic">{analysis.cost_per_use_story}</p>
+                    <p className="text-xs text-white/40 mb-1">Kostnad per användning ({analysis.device.usageYears} år = {analysis.days} dagar)</p>
+                    <p className="text-3xl font-black text-[#4fae82]">{fmt(analysis.costPerDay)} kr/dag</p>
+                    <p className="text-xs text-white/45 mt-1 italic">{analysis.cost_per_use_story}</p>
                   </div>
 
                   {/* Depreciation */}
@@ -246,15 +246,15 @@ Svara ENDAST med JSON.`,
                         <div>
                           <p className="text-[10px] text-rose-400 uppercase tracking-wider font-bold">Värdeminskning år 1</p>
                           <p className="text-xl font-black text-white mt-0.5">-{analysis.depreciation_pct || 40}%</p>
-                          <p className="text-[10px] text-slate-500 mt-0.5">≈ -{fmt(depreciationVal)} kr</p>
+                          <p className="text-[10px] text-white/40 mt-0.5">≈ -{fmt(depreciationVal)} kr</p>
                         </div>
                       </div>
                     </div>
                     <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <div>
-                        <p className="text-[10px] text-indigo-400 uppercase tracking-wider font-bold">Upgrade-cykeln</p>
+                        <p className="text-[10px] text-[#4fae82] uppercase tracking-wider font-bold">Upgrade-cykeln</p>
                         <p className="text-xl font-black text-white mt-0.5">{analysis.upgrade_cycle || 24} mån</p>
-                        <p className="text-[10px] text-slate-500 mt-0.5">Vänta tills köpet är rimligt</p>
+                        <p className="text-[10px] text-white/40 mt-0.5">Vänta tills köpet är rimligt</p>
                       </div>
                     </div>
                   </div>
@@ -262,8 +262,8 @@ Svara ENDAST med JSON.`,
                   {/* Need analysis */}
                   {analysis.need_analysis && (
                     <div className="rounded-xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                      <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5"><Brain className="w-3.5 h-3.5" aria-hidden /> Behovs-analys</p>
-                      <p className="text-sm text-slate-300 leading-relaxed">{analysis.need_analysis}</p>
+                      <p className="text-xs font-bold text-white/45 uppercase tracking-wider mb-2 flex items-center gap-1.5"><Brain className="w-3.5 h-3.5" aria-hidden /> Behovs-analys</p>
+                      <p className="text-sm text-white/70 leading-relaxed">{analysis.need_analysis}</p>
                     </div>
                   )}
 
@@ -271,7 +271,7 @@ Svara ENDAST med JSON.`,
                   {analysis.goal_trade_off && (
                     <div className="rounded-xl p-3 flex gap-2 text-xs" style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
                       <TrendingUp className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" aria-hidden />
-                      <p className="text-slate-300">{analysis.goal_trade_off}</p>
+                      <p className="text-white/70">{analysis.goal_trade_off}</p>
                     </div>
                   )}
 
@@ -281,7 +281,7 @@ Svara ENDAST med JSON.`,
                       <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-[11px] font-bold text-cyan-400 mb-0.5">Smartare alternativ</p>
-                        <p className="text-slate-300">{analysis.alternative}</p>
+                        <p className="text-white/70">{analysis.alternative}</p>
                       </div>
                     </div>
                   )}
@@ -292,7 +292,7 @@ Svara ENDAST med JSON.`,
                       <Clock className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-[11px] font-bold text-amber-400 mb-0.5">Bästa köptidpunkt</p>
-                        <p className="text-slate-300">{analysis.best_time_to_buy}</p>
+                        <p className="text-white/70">{analysis.best_time_to_buy}</p>
                       </div>
                     </div>
                   )}

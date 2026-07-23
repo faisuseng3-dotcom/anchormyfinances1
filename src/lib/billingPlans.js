@@ -12,7 +12,7 @@ export const PLANS = {
       'Översikt & pengometer',
       'Transaktionshistorik',
       'Budget per kategori',
-      'AI-coach (5 gånger/månad)',
+      'Coach (5 gånger/månad)',
     ],
   },
   basic: {
@@ -26,7 +26,7 @@ export const PLANS = {
       'Allt i Gratis',
       'Scenarier & läckagedetektor',
       'Lago Academy',
-      'AI-coach (20 gånger/månad)',
+      'Coach (20 gånger/månad)',
     ],
   },
   pro: {
@@ -38,7 +38,7 @@ export const PLANS = {
     aiCoachLimit: null,
     features: [
       'Allt i Basic',
-      'Obegränsad AI-coach',
+      'Obegränsad Coach',
       'Din Framtid (FuturePulse)',
       'Squads & sparmål i grupp',
     ],

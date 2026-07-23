@@ -86,7 +86,7 @@ export default function GoalVisualPicker({
           onClick={() => setTab('icon')}
           className={`flex-1 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
             tab === 'icon'
-              ? 'bg-purple-500/20 text-purple-300 ring-1 ring-purple-500/40'
+              ? 'bg-[#4fae82]/20 text-[#4fae82] ring-1 ring-[#4fae82]/40'
               : 'bg-white/5 text-white/50 hover:text-white/80'
           }`}
         >
@@ -162,11 +162,11 @@ export default function GoalVisualPicker({
               onClick={() => selectIcon(id)}
               className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${
                 iconId === id && visualType === 'icon'
-                  ? 'bg-purple-500/30 ring-2 ring-purple-400 scale-105'
+                  ? 'bg-[#4fae82]/30 ring-2 ring-[#4fae82] scale-105'
                   : 'bg-white/5 hover:bg-white/10'
               }`}
             >
-              <Icon className="w-8 h-8 text-purple-200" strokeWidth={1.6} />
+              <Icon className="w-8 h-8 text-[#4fae82]" strokeWidth={1.6} />
             </button>
           ))}
         </div>

@@ -8,31 +8,31 @@ const BADGE_CONFIGS = {
     Icon: Star,
     title: 'Första tusenlappen!',
     description: 'Du sparade första 1000 kr',
-    color: 'from-yellow-500 to-amber-600'
+    color: '#4fae82'
   },
   debt_destroyer: {
     Icon: Flame,
     title: 'Skuld-Slayer!',
     description: 'Du betalade av ett helt lån',
-    color: 'from-red-500 to-pink-600'
+    color: '#4fae82'
   },
   streak_master: {
     Icon: Flame,
     title: 'Streak Master!',
     description: '7 dagars inloggningsstreak',
-    color: 'from-orange-500 to-red-600'
+    color: '#4fae82'
   },
   expense_tracker: {
     Icon: Target,
     title: 'Spenderbjörn!',
     description: 'Du registrerade 20 utgifter',
-    color: 'from-cyan-500 to-blue-600'
+    color: '#4fae82'
   },
   buffer_builder: {
     Icon: Shield,
     title: 'Buffer Builder!',
     description: 'Din buffert är 3+ månaders lön',
-    color: 'from-purple-500 to-indigo-600'
+    color: '#4fae82'
   }
 };
 
@@ -85,7 +85,7 @@ export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
                 rotate: { duration: 3, repeat: Infinity, ease: 'linear' },
                 scale: { duration: 2, repeat: Infinity }
               }}
-              className={`w-32 h-32 mx-auto rounded-full bg-gradient-to-br ${badge.color} shadow-2xl flex items-center justify-center mb-6`}
+              className="w-32 h-32 mx-auto rounded-full shadow-2xl flex items-center justify-center mb-6" style={{ background: badge.color }}
             >
               <badge.Icon className="w-14 h-14 text-white" />
             </motion.div>
@@ -104,7 +104,7 @@ export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-slate-300 text-lg mb-8"
+              className="text-white/70 text-lg mb-8"
             >
               {badge.description}
             </motion.p>
@@ -114,7 +114,7 @@ export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5 }}
-              className="text-xs text-slate-500"
+              className="text-xs text-white/40"
             >
               Tryck för att stänga
             </motion.p>

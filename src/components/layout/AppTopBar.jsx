@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useAuth } from '@/lib/AuthContext';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
@@ -8,6 +8,7 @@ import { useCopilotNav } from '@/components/layout/CopilotNavContext';
 import { calculateWeeklyHealthScore } from '@/lib/weeklyHealthScore';
 import { formatTopbarDate } from '@/components/dashboard/copilot/copilotDashboardUtils';
 import { NavIcon } from '@/lib/anchorIcons';
+import HealthScoreDetail from '@/components/dashboard/HealthScoreDetail';
 
 const RING_R = 14;
 
@@ -17,6 +18,7 @@ export default function AppTopBar() {
   const { profile } = useFinancialProfile();
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 500 });
   const { openSidebar } = useCopilotNav();
+  const [showHealthDetail, setShowHealthDetail] = useState(false);
 
   const displayUser = isAlex ? { full_name: 'Alex Lindqvist' } : user;
   const firstName = displayUser?.full_name?.split(' ')[0];
@@ -45,7 +47,12 @@ export default function AppTopBar() {
         <span className="copilot-topbar-greeting">{greeting}</span>
       </div>
       <div className="copilot-topbar-right">
-        <button type="button" className="copilot-health-badge" title={health.hint}>
+        <button
+          type="button"
+          className="copilot-health-badge"
+          title={health.hint}
+          onClick={() => setShowHealthDetail(true)}
+        >
           <div className="copilot-health-score-ring">
             <svg viewBox="0 0 34 34" width="34" height="34" aria-hidden>
               <circle cx="17" cy="17" r={RING_R} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2.5" />
@@ -68,6 +75,11 @@ export default function AppTopBar() {
           <span className="copilot-health-label">{health.label}</span>
           <ArrowUpRight size={14} className="text-[var(--copilot-text-muted)] ml-0.5" />
         </button>
+        <HealthScoreDetail
+          isOpen={showHealthDetail}
+          onClose={() => setShowHealthDetail(false)}
+          health={health}
+        />
         <button type="button" className="copilot-icon-btn" title="Notiser" aria-label="Notiser">
           <NavIcon name="bell" size={16} />
         </button>

@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { sheetBackdrop, sheetPanel } from '@/lib/motionPresets';
 import { zIndex } from '@/lib/designTokens';
@@ -29,7 +30,7 @@ export default function AnchorSheet({
   className,
   z = zIndex.sheet,
 }) {
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -78,6 +79,7 @@ export default function AnchorSheet({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

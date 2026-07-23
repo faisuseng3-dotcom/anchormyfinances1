@@ -105,7 +105,7 @@ function ChallengeRow({ challenge, transactions }) {
             <span
               className={`text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 ${
                 done
-                  ? 'bg-emerald-500/15 text-emerald-300'
+                  ? 'bg-[#4fae82]/15 text-emerald-300'
                   : 'bg-[var(--color-accent)]/15 text-[var(--color-accent)]'
               }`}
             >
@@ -168,7 +168,7 @@ export default function GamificationSection({ profile, transactions = [] }) {
           <div className="flex flex-wrap gap-3">
             {badges.map((b) => (
               <div key={b} className="flex flex-col items-center gap-1">
-                <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] flex items-center justify-center bg-emerald-500/10 ring-1 ring-emerald-400/20 anchor-elev-1">
+                <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] flex items-center justify-center bg-[#4fae82]/10 ring-1 ring-emerald-400/20 anchor-elev-1">
                   <Star className="w-5 h-5 text-emerald-300" />
                 </div>
                 <p className="text-xs text-center max-w-12 leading-tight text-white/45">{b.replace(/_/g, ' ')}</p>
@@ -233,7 +233,7 @@ function SelfLeaderboard({ transactions }) {
         <div
           className={`rounded-[var(--anchor-radius-md)] p-3 ring-1 ${
             better
-              ? 'bg-emerald-500/10 ring-emerald-400/20'
+              ? 'bg-[#4fae82]/10 ring-emerald-400/20'
               : 'bg-rose-500/10 ring-rose-400/20'
           }`}
         >
