@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
-import { isGuestMode } from '@/components/guestStorage';
+import { isGuestMode, setGuestMode } from '@/components/guestStorage';
 import { resolvePostAuthPath, fetchOnboardingProfile, isOnboardingComplete, isPersonalWizardComplete } from '@/lib/authFlow';
 import { getDashboardPath, isBusinessMode, isBusinessOnboarded, ensureOnboardingMode } from '@/lib/onboardingRouter';
 import { isBusinessUserType } from '@/lib/onboardingWizard';
-import { loginPathWithReturn } from '@/lib/authRoutes';
+import { loginPathWithReturn, GUEST_MODE_ONLY } from '@/lib/authRoutes';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 
 /** Kräver inloggning (gästläge tillåts fortfarande). */
 export function RequireAuth({ children }) {
   const { isAuthenticated, isLoadingAuth } = useAuth();
   const location = useLocation();
+
+  if (!isLoadingAuth && !isAuthenticated && GUEST_MODE_ONLY && !isGuestMode()) {
+    setGuestMode(true);
+  }
 
   if (isLoadingAuth) return <DashboardSkeleton />;
   if (!isAuthenticated && !isGuestMode()) {
@@ -55,8 +59,12 @@ export function RequireOnboardingAccess({ children }) {
     if (isLoadingAuth) return;
 
     if (!isAuthenticated && !isGuestMode()) {
-      setRedirectTo(loginPathWithReturn('/Onboarding', ''));
-      return;
+      if (GUEST_MODE_ONLY) {
+        setGuestMode(true);
+      } else {
+        setRedirectTo(loginPathWithReturn('/Onboarding', ''));
+        return;
+      }
     }
 
     if (isGuestMode()) {
@@ -89,9 +97,13 @@ export function RequireBusinessOnboardingAccess({ children }) {
   useEffect(() => {
     if (isLoadingAuth) return;
 
-    if (!isAuthenticated) {
-      setRedirectTo(loginPathWithReturn('/BusinessOnboarding', ''));
-      return;
+    if (!isAuthenticated && !isGuestMode()) {
+      if (GUEST_MODE_ONLY) {
+        setGuestMode(true);
+      } else {
+        setRedirectTo(loginPathWithReturn('/BusinessOnboarding', ''));
+        return;
+      }
     }
 
     if (!isBusinessMode()) {

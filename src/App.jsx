@@ -23,7 +23,7 @@ import ResetPassword from './pages/ResetPassword';
 import { DemoProvider } from '@/components/demo/DemoMode';
 import DashboardSkeleton from '@/components/loading/DashboardSkeleton';
 import { LEGACY_REDIRECTS } from '@/lib/appStructure';
-import { isPublicPath, loginPathWithReturn } from '@/lib/authRoutes';
+import { isPublicPath, loginPathWithReturn, GUEST_MODE_ONLY } from '@/lib/authRoutes';
 import {
   RequireAuth,
   RequireGuestForSignup,
@@ -45,6 +45,12 @@ const SIGNUP_PAGE = 'CreateAccount';
 const ONBOARDING_PAGE = 'Onboarding';
 
 function wrapPage(path, Page) {
+  // Inloggning tillfälligt avstängd (GUEST_MODE_ONLY i authRoutes.js) — dessa
+  // sidor finns kvar men är inte nåbara förrän flaggan slås av igen.
+  if (GUEST_MODE_ONLY && (AUTH_GUEST_PAGES.has(path) || path === SIGNUP_PAGE)) {
+    return <Navigate to="/Dashboard" replace />;
+  }
+
   if (AUTH_GUEST_PAGES.has(path)) {
     return (
       <RequireGuestForAuth>
