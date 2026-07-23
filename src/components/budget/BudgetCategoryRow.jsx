@@ -8,9 +8,9 @@ import { CategoryIcon } from '@/lib/anchorIcons';
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 function getStatus(pct) {
-  if (pct >= 1)   return { color: '#f87171', bg: 'rgba(248,113,113,0.12)' };
-  if (pct >= 0.8) return { color: '#fcd34d', bg: 'rgba(252,211,77,0.10)' };
-  return              { color: '#22d97a', bg: 'rgba(34,217,122,0.08)' };
+  if (pct >= 1)   return { color: '#e2857a', bg: 'rgba(226,133,122,0.12)' };
+  if (pct >= 0.8) return { color: '#d9b25c', bg: 'rgba(217,178,92,0.10)' };
+  return              { color: '#4fae82', bg: 'rgba(79,174,130,0.10)' };
 }
 
 export default function BudgetCategoryRow({ category, spent, limit, onEdit, prevSpent = 0 }) {
@@ -39,7 +39,7 @@ export default function BudgetCategoryRow({ category, spent, limit, onEdit, prev
             <span className="text-[14px] font-semibold text-white">{meta.label}</span>
             <div className="flex items-center gap-2">
               {trend !== null && Math.abs(trend) > 50 && (
-                <span className="text-[11px]" style={{ color: trend > 0 ? '#f87171' : '#22d97a' }}>
+                <span className="text-[11px]" style={{ color: trend > 0 ? '#e2857a' : '#4fae82' }}>
                   {trend > 0 ? '↑' : '↓'}{fmt(Math.abs(trend))} kr
                 </span>
               )}
@@ -49,7 +49,7 @@ export default function BudgetCategoryRow({ category, spent, limit, onEdit, prev
           <div className="flex items-baseline gap-1.5 mt-0.5">
             {limit > 0 ? (
               over
-                ? <span className="text-[12px] font-medium" style={{ color: '#f87171' }}>{fmt(spent - limit)} kr över gränsen</span>
+                ? <span className="text-[12px] font-medium" style={{ color: '#e2857a' }}>{fmt(spent - limit)} kr över gränsen</span>
                 : <span className="text-[12px] text-white/45"><span className="text-white font-medium">{fmt(left)} kr</span> kvar av {fmt(limit)} kr</span>
             ) : (
               <span className="text-[12px] text-white/35">Tryck för att sätta gräns</span>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Bell } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { isGuestMode } from '@/components/guestStorage';
 
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 
@@ -17,6 +18,13 @@ export default function PushNotificationManager() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
+    // Gäster har bara lokal, engångsdata — att be dem aktivera notiser
+    // är ett löfte appen inte kan hålla i det läget.
+    if (isGuestMode()) {
+      setStatus('unsupported');
+      return;
+    }
+
     if (!('Notification' in window) || !('serviceWorker' in navigator)) {
       setStatus('unsupported');
       return;
@@ -28,8 +36,8 @@ export default function PushNotificationManager() {
     } else if (perm === 'denied') {
       setStatus('denied');
     } else {
-      // Visa banner efter 3 sekunder om användaren inte svarat
-      const timer = setTimeout(() => setShowBanner(true), 3000);
+      // Visa banner efter en stund, inte direkt vid varje sessionsstart
+      const timer = setTimeout(() => setShowBanner(true), 20000);
       return () => clearTimeout(timer);
     }
   }, []);
@@ -92,10 +100,10 @@ export default function PushNotificationManager() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 60 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="fixed bottom-24 left-4 right-4 z-50 rounded-2xl p-4 flex items-center gap-3"
+          className="fixed bottom-24 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl p-4 flex items-center gap-3 border"
           style={{
-            background: 'var(--color-card)',
-            boxShadow: 'var(--anchor-shadow-1)',
+            background: '#10140f',
+            borderColor: 'rgba(255,255,255,0.08)',
             boxShadow: '0 8px 32px rgba(0,0,0,0.35)'
           }}
         >
@@ -135,8 +143,8 @@ export default function PushNotificationManager() {
           key="requesting"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed bottom-24 left-4 right-4 z-50 rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: 'var(--color-card)', boxShadow: 'var(--anchor-shadow-1)' }}
+          className="fixed bottom-24 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl p-4 flex items-center gap-3"
+          style={{ background: '#10140f', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <div className="w-5 h-5 rounded-full border-2 animate-spin flex-shrink-0"
             style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />

@@ -19,7 +19,8 @@ export default function AppTopBar() {
   const { openSidebar } = useCopilotNav();
 
   const displayUser = isAlex ? { full_name: 'Alex Lindqvist' } : user;
-  const firstName = displayUser?.full_name?.split(' ')[0] || 'du';
+  const firstName = displayUser?.full_name?.split(' ')[0];
+  const greeting = firstName ? `Hej ${firstName}` : 'Välkommen tillbaka';
 
   const health = useMemo(
     () => calculateWeeklyHealthScore(profile, transactions),
@@ -41,7 +42,7 @@ export default function AppTopBar() {
           <NavIcon name="menu" size={18} />
         </button>
         <span className="copilot-topbar-date">{formatTopbarDate()}</span>
-        <span className="copilot-topbar-greeting">Hej {firstName}</span>
+        <span className="copilot-topbar-greeting">{greeting}</span>
       </div>
       <div className="copilot-topbar-right">
         <button type="button" className="copilot-health-badge" title={health.hint}>

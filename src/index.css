@@ -6,33 +6,38 @@
 
 @layer base {
   :root {
-    /* ── Lago Premium tokens (ui-ux-pro-max) ── */
-    --anchor-page-gradient: linear-gradient(145deg, #0e1fa8 0%, #050d28 100%);
+    /* ── Lago design tokens ──
+       One neutral, near-black surface. One accent (Lago green, ties to the
+       wordmark/landing page). No secondary gradient hues — every other
+       "color" below is that same accent at different opacities, or a
+       semantic state color (success/danger/warning) used sparingly. */
+    --anchor-page-gradient: var(--color-background-primary);
     /* Copilot aliases → anchor tokens */
     --copilot-bg-deep: var(--color-background-primary);
-    --copilot-bg-mid: var(--color-accent);
+    --copilot-bg-mid: var(--color-background-primary);
     --copilot-bg-card: var(--color-surface);
-    --copilot-bg-card-hover: rgba(255, 255, 255, 0.11);
-    --copilot-accent-green: var(--color-success);
-    --copilot-accent-cyan: #4fc3f7;
+    --copilot-bg-card-hover: rgba(255, 255, 255, 0.08);
+    --copilot-accent-green: var(--color-accent);
+    --copilot-accent-cyan: var(--color-accent);
     --copilot-accent-blue: var(--color-accent);
     --copilot-text-primary: var(--color-text-primary);
     --copilot-text-secondary: var(--color-text-secondary);
     --copilot-text-muted: var(--color-text-muted);
     --copilot-border: transparent;
-    --color-background-primary: #040814;
-    --color-background-secondary: rgba(8, 14, 30, 0.88);
-    --color-surface: rgba(255, 255, 255, 0.07);
-    --color-surface-raised: rgba(14, 20, 42, 0.72);
-    --color-card: rgba(255, 255, 255, 0.05);
-    --color-accent: #4a7aff;
-    --color-accent-hover: #3a6aef;
-    --color-text-primary: rgba(255, 255, 255, 0.94);
-    --color-text-secondary: rgba(255, 255, 255, 0.72);
-    --color-text-muted: rgba(255, 255, 255, 0.42);
-    --color-success: #6ee7b7;
-    --color-danger: #fca5a5;
-    --color-warning: #fcd34d;
+    --color-background-primary: #0b0f0d;
+    --color-background-secondary: rgba(14, 18, 16, 0.9);
+    --color-surface: rgba(255, 255, 255, 0.05);
+    --color-surface-raised: rgba(255, 255, 255, 0.045);
+    --color-card: rgba(255, 255, 255, 0.04);
+    --color-accent: #4fae82;
+    --color-accent-hover: #5cc191;
+    --color-accent-soft: rgba(79, 174, 130, 0.14);
+    --color-text-primary: rgba(255, 255, 255, 0.95);
+    --color-text-secondary: rgba(255, 255, 255, 0.62);
+    --color-text-muted: rgba(255, 255, 255, 0.38);
+    --color-success: #4fae82;
+    --color-danger: #e2857a;
+    --color-warning: #d9b25c;
     --anchor-radius-sm: 16px;
     --anchor-radius-md: 20px;
     --anchor-radius-lg: 24px;
@@ -137,7 +142,7 @@
     touch-action: manipulation;
     height: 100%;
     max-height: 100%;
-    background: #040814;
+    background: var(--color-background-primary);
   }
 
   body {
@@ -532,12 +537,12 @@
   }
 
   .anchor-sheet-panel {
-    background: rgba(8, 14, 100, 0.97);
+    background: #10140f;
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: var(--anchor-radius-xl) var(--anchor-radius-xl) 0 0;
-    box-shadow: 0 -12px 48px rgba(74, 122, 255, 0.18), var(--anchor-shadow-4);
+    box-shadow: 0 -12px 48px rgba(0, 0, 0, 0.3), var(--anchor-shadow-4);
   }
 
   .copilot-subpage {
@@ -653,16 +658,16 @@
 
   .anchor-sts-amount {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-    font-weight: 900;
-    font-size: clamp(5.5rem, 22vw, 6.75rem);
-    line-height: 0.88;
-    letter-spacing: -0.06em;
+    font-weight: 700;
+    font-size: clamp(2.75rem, 11vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
     color: #FFFFFF;
     text-shadow: none;
     background: none;
     -webkit-text-fill-color: #FFFFFF;
     margin: 0;
-    margin-top: 40px;
+    margin-top: 20px;
     padding: 0;
     border: none;
     box-shadow: none;
@@ -697,7 +702,7 @@
 
   .anchor-sts--balance .anchor-sts-amount {
     text-align: center;
-    margin-top: 56px;
+    margin-top: 20px;
   }
 
   .anchor-sts-subline {
@@ -907,9 +912,9 @@
   .dark-card {
     background: linear-gradient(
       165deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.04) 38%,
-      rgba(6, 14, 32, 0.78) 100%
+      rgba(255, 255, 255, 0.07) 0%,
+      rgba(255, 255, 255, 0.03) 38%,
+      rgba(10, 13, 11, 0.78) 100%
     );
     backdrop-filter: blur(22px);
     -webkit-backdrop-filter: blur(22px);
@@ -980,7 +985,7 @@
     pointer-events: none;
     background: radial-gradient(
       ellipse 90% 100% at 80% -10%,
-      rgba(127, 160, 255, 0.18) 0%,
+      var(--color-accent-soft) 0%,
       transparent 55%
     );
   }

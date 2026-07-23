@@ -119,7 +119,7 @@ export function buildAccountItems(profile) {
       id: 'buffer',
       name: 'Buffert',
       amount: buffer,
-      color: '#4fc3f7',
+      color: '#4fae82',
       goalTarget: fixed * 3,
       interactive: true,
     });
@@ -129,7 +129,7 @@ export function buildAccountItems(profile) {
       id: 'savings',
       name: profile.savingsGoalName || 'Sparkonto',
       amount: saved,
-      color: '#22d97a',
+      color: '#4fae82',
       goalTarget: profile.savingsGoal || 0,
       interactive: true,
     });
@@ -140,7 +140,7 @@ export function buildAccountItems(profile) {
       id: 'margin',
       name: 'Månadsmarginal',
       amount: margin,
-      color: '#4a7aff',
+      color: '#4fae82',
       goalTarget: null,
       interactive: true,
     });
@@ -150,7 +150,7 @@ export function buildAccountItems(profile) {
       id: 'debt',
       name: 'Skulder',
       amount: -loanDebt,
-      color: '#f87171',
+      color: '#e2857a',
       goalTarget: null,
       interactive: false,
     });

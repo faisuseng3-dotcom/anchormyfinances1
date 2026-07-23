@@ -1,22 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 .anchor-copilot-shell {
-  --copilot-bg-deep: #0a0f6b;
-  --copilot-bg-mid: #1228cc;
-  --copilot-bg-card: rgba(255, 255, 255, 0.07);
-  --copilot-bg-card-hover: rgba(255, 255, 255, 0.11);
-  --copilot-bg-sidebar: rgba(8, 14, 100, 0.95);
-  --copilot-accent-green: #22d97a;
-  --copilot-accent-cyan: #4fc3f7;
-  --copilot-accent-blue: #4a7aff;
+  --copilot-bg-deep: #0b0f0d;
+  --copilot-bg-mid: #0b0f0d;
+  --copilot-bg-card: rgba(255, 255, 255, 0.05);
+  --copilot-bg-card-hover: rgba(255, 255, 255, 0.08);
+  --copilot-bg-sidebar: #0d120f;
+  --copilot-accent-green: #4fae82;
+  --copilot-accent-cyan: #4fae82;
+  --copilot-accent-blue: #4fae82;
   --copilot-text-primary: #ffffff;
-  --copilot-text-secondary: #8fa8d8;
-  --copilot-text-muted: #5a78c0;
+  --copilot-text-secondary: rgba(255, 255, 255, 0.62);
+  --copilot-text-muted: rgba(255, 255, 255, 0.38);
   --copilot-border: rgba(255, 255, 255, 0.08);
   --copilot-sidebar-w: 220px;
 
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%);
+  background: var(--copilot-bg-deep);
   height: 100%;
   max-height: 100%;
   min-height: 0;
@@ -113,7 +113,7 @@
 
 .anchor-copilot-shell .copilot-nav-item.active {
   color: var(--copilot-text-primary);
-  background: rgba(74, 122, 255, 0.12);
+  background: rgba(79, 174, 130, 0.12);
   border-left: 3px solid var(--copilot-accent-blue);
   padding-left: 17px;
 }
@@ -270,7 +270,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--copilot-accent-blue), #7c3aed);
+  background: var(--copilot-accent-blue);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -441,14 +441,13 @@
 }
 
 .copilot-bento-dashboard--open .anchor-dashboard-hero {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  min-height: min(52dvh, 420px);
-  padding: 12px 20px 28px;
+  min-height: min(30dvh, 260px);
+  padding: 20px 20px 8px;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
@@ -458,7 +457,7 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
   padding-bottom: 32px;
 }
 
@@ -520,7 +519,7 @@
 }
 
 .anchor-copilot-shell .copilot-mood-btn.active {
-  background: rgba(74, 122, 255, 0.25);
+  background: rgba(79, 174, 130, 0.25);
   
   color: var(--copilot-text-primary);
 }
@@ -847,7 +846,7 @@
 
 .anchor-copilot-shell .copilot-scenario.highlight {
   
-  background: rgba(74, 122, 255, 0.08);
+  background: rgba(79, 174, 130, 0.08);
 }
 
 .anchor-copilot-shell .copilot-scenario-label {
@@ -983,7 +982,7 @@
 }
 
 .anchor-copilot-shell .copilot-coach-bubble {
-  background: rgba(74, 122, 255, 0.12);
+  background: rgba(79, 174, 130, 0.12);
   border: none;
   box-shadow: var(--organic-shadow-soft), var(--organic-shadow-inset);
   border-radius: 24px;
@@ -1017,7 +1016,7 @@
 }
 
 .anchor-copilot-shell .copilot-coach-field:focus {
-  box-shadow: 0 0 0 3px rgba(74, 122, 255, 0.25), var(--organic-shadow-soft);
+  box-shadow: 0 0 0 3px rgba(79, 174, 130, 0.25), var(--organic-shadow-soft);
 }
 
 .anchor-copilot-shell .copilot-coach-send {
@@ -1065,15 +1064,15 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--copilot-accent-blue), #6d4aff);
+  background: var(--copilot-accent-blue);
   border: none;
-  color: white;
+  color: #08110c;
   font-size: 22px;
   font-weight: 600;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui, sans-serif;
   letter-spacing: -0.01em;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(74, 122, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(79, 174, 130, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1084,7 +1083,7 @@
 
 .anchor-copilot-shell .copilot-fab:hover {
   transform: scale(1.08);
-  box-shadow: 0 6px 28px rgba(74, 122, 255, 0.5);
+  box-shadow: 0 6px 28px rgba(79, 174, 130, 0.5);
 }
 
 .anchor-copilot-shell .copilot-tag {
@@ -1101,13 +1100,13 @@
 }
 
 .anchor-copilot-shell .copilot-tag.blue {
-  background: rgba(74, 122, 255, 0.12);
+  background: rgba(79, 174, 130, 0.12);
   color: var(--copilot-accent-blue);
   
 }
 
 .anchor-copilot-shell .copilot-lesson-card {
-  background: rgba(74, 122, 255, 0.08);
+  background: rgba(79, 174, 130, 0.08);
   border: none;
   box-shadow: var(--organic-shadow-soft), var(--organic-shadow-inset);
   border-radius: 20px;
@@ -1122,7 +1121,7 @@
 }
 
 .anchor-copilot-shell .copilot-lesson-card:hover {
-  background: rgba(74, 122, 255, 0.14);
+  background: rgba(79, 174, 130, 0.14);
 }
 
 .anchor-copilot-shell .copilot-lesson-card.secondary {
@@ -1151,7 +1150,7 @@
   font-size: 10px;
   padding: 2px 8px;
   border-radius: 16px;
-  background: rgba(74, 122, 255, 0.15);
+  background: rgba(79, 174, 130, 0.15);
   color: var(--copilot-accent-blue);
   font-weight: 600;
 }

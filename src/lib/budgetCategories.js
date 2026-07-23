@@ -20,21 +20,25 @@ export const TRACKED_BUDGET_CATEGORIES = [
   'other',
 ];
 
+// Kategorier särskiljs via ikonform + etikett, inte färg — en enda neutral
+// ikonton och accentfärgen reserveras för budgetstatus (under/nära/över).
+const NEUTRAL_ICON = 'rgba(255,255,255,0.75)';
+
 export const BUDGET_CATEGORY_META = {
-  food: { label: 'Mat', Icon: ShoppingCart, color: '#F6AD55' },
-  transport: { label: 'Transport', Icon: Car, color: '#7FA0FF' },
-  entertainment: { label: 'Nöje', Icon: Film, color: '#A78BFA' },
-  travel: { label: 'Resa', Icon: Plane, color: '#5B8CFF' },
-  health: { label: 'Hälsa', Icon: Heart, color: '#9AE6B4' },
-  home: { label: 'Bostad', Icon: Home, color: '#FF8A9A' },
-  shopping: { label: 'Shopping', Icon: ShoppingBag, color: '#F06292' },
-  other: { label: 'Övrigt', Icon: Package, color: '#94A3B8' },
+  food: { label: 'Mat', Icon: ShoppingCart, color: NEUTRAL_ICON },
+  transport: { label: 'Transport', Icon: Car, color: NEUTRAL_ICON },
+  entertainment: { label: 'Nöje', Icon: Film, color: NEUTRAL_ICON },
+  travel: { label: 'Resa', Icon: Plane, color: NEUTRAL_ICON },
+  health: { label: 'Hälsa', Icon: Heart, color: NEUTRAL_ICON },
+  home: { label: 'Bostad', Icon: Home, color: NEUTRAL_ICON },
+  shopping: { label: 'Shopping', Icon: ShoppingBag, color: NEUTRAL_ICON },
+  other: { label: 'Övrigt', Icon: Package, color: NEUTRAL_ICON },
 };
 
 export function getBudgetBarColor(pct) {
-  if (pct >= 1) return '#FF8A9A';
-  if (pct >= 0.8) return '#FCD34D';
-  return '#6B9FFF';
+  if (pct >= 1) return '#e2857a';
+  if (pct >= 0.8) return '#d9b25c';
+  return '#4fae82';
 }
 
 export function getBudgetStatusText(pct, remaining) {

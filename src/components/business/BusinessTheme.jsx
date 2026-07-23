@@ -1,38 +1,35 @@
 import { useEffect } from 'react';
 import { useModeContext } from '@/components/modes/ModeContext';
 
-// Injects business CSS variables when mode === 'business'
+// Personal mode uses the base tokens defined in index.css :root — nothing to
+// inject. Business mode gets one deliberate variation (gold accent, same
+// neutral-black family) to read as a distinct tier without introducing a
+// second unrelated color system.
+const BUSINESS_OVERRIDES = {
+  '--color-background-primary': '#0d0f0c',
+  '--color-background-secondary': 'rgba(16, 18, 15, 0.9)',
+  '--color-surface': 'rgba(255, 255, 255, 0.05)',
+  '--color-card': 'rgba(255, 255, 255, 0.04)',
+  '--color-accent': '#c9a24b',
+  '--color-accent-hover': '#d9b25c',
+  '--color-success': '#4fae82',
+  '--color-danger': '#e2857a',
+  '--color-warning': '#c9a24b',
+  '--color-text-primary': 'rgba(255, 255, 255, 0.95)',
+  '--color-text-secondary': 'rgba(255, 255, 255, 0.62)',
+  '--color-text-muted': 'rgba(255, 255, 255, 0.38)',
+};
+
 export default function BusinessTheme() {
   const { isBusiness } = useModeContext();
 
   useEffect(() => {
     const root = document.documentElement;
+    const keys = Object.keys(BUSINESS_OVERRIDES);
     if (isBusiness) {
-      root.style.setProperty('--color-background-primary', '#0D1B2A');
-      root.style.setProperty('--color-background-secondary', '#0f2030');
-      root.style.setProperty('--color-surface', '#162535');
-      root.style.setProperty('--color-card', '#1A2B3C');
-      root.style.setProperty('--color-accent', '#D4AF37');
-      root.style.setProperty('--color-accent-hover', '#B8962E');
-      root.style.setProperty('--color-success', '#34A86A');
-      root.style.setProperty('--color-danger', '#C94040');
-      root.style.setProperty('--color-warning', '#D4AF37');
-      root.style.setProperty('--color-text-primary', '#F0EAD6');
-      root.style.setProperty('--color-text-secondary', '#9BADB8');
-      root.style.setProperty('--color-text-muted', '#5A7285');
+      keys.forEach((key) => root.style.setProperty(key, BUSINESS_OVERRIDES[key]));
     } else {
-      root.style.setProperty('--color-background-primary', '#0F1724');
-      root.style.setProperty('--color-background-secondary', '#141E2E');
-      root.style.setProperty('--color-surface', '#1C2B3F');
-      root.style.setProperty('--color-card', '#1E2D42');
-      root.style.setProperty('--color-accent', '#4B7CF3');
-      root.style.setProperty('--color-accent-hover', '#3A6ADE');
-      root.style.setProperty('--color-success', '#3DAA7A');
-      root.style.setProperty('--color-danger', '#D95F5F');
-      root.style.setProperty('--color-warning', '#C8923A');
-      root.style.setProperty('--color-text-primary', '#EDF0F5');
-      root.style.setProperty('--color-text-secondary', '#8B97A8');
-      root.style.setProperty('--color-text-muted', '#5C6B7D');
+      keys.forEach((key) => root.style.removeProperty(key));
     }
   }, [isBusiness]);
 

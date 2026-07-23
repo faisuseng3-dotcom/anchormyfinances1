@@ -109,11 +109,19 @@ export default function Dashboard() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6 text-center">
-        <div>
-          <p className="text-xl font-bold mb-2" style={{ color: 'var(--color-text-primary)' }}>Välkommen till Lago</p>
-          <button onClick={() => navigate(getOnboardingPath('personal'))}
-          className="mt-4 px-8 py-3 rounded-full text-white font-semibold" style={{ background: 'var(--color-accent)' }}>
+      <div className="min-h-full flex items-center justify-center p-6 text-center">
+        <div className="max-w-xs">
+          <p className="text-[22px] font-semibold tracking-tight mb-2" style={{ color: 'var(--color-text-primary)', fontFamily: 'Georgia, serif' }}>
+            Välkommen till Lago
+          </p>
+          <p className="text-[14px] leading-relaxed mb-8" style={{ color: 'var(--color-text-secondary)' }}>
+            Två minuter räcker för att se vad du faktiskt har kvar att röra dig med den här månaden.
+          </p>
+          <button
+            onClick={() => navigate(getOnboardingPath('personal'))}
+            className="w-full px-8 py-3.5 rounded-full font-semibold transition-transform active:scale-[0.97]"
+            style={{ background: 'var(--color-accent)', color: '#08110c' }}
+          >
             Kom igång
           </button>
         </div>

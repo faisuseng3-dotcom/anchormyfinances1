@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
+import DashboardAccountsSummary from './DashboardAccountsSummary';
+import DashboardRecentActivity from './DashboardRecentActivity';
 import DashboardDiscoveries from './DashboardDiscoveries';
 import ImportBankCta from './ImportBankCta';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
@@ -48,6 +50,8 @@ export default function CopilotBentoDashboard({
       </section>
 
       <div className="anchor-dashboard-below">
+        <DashboardAccountsSummary profile={profile} />
+        <DashboardRecentActivity transactions={transactions} />
         <DashboardDiscoveries profile={profile} transactions={transactions} />
         <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
       </div>

@@ -4,8 +4,7 @@
 
 import { getMonthlyMargin } from '@/lib/financialUtils';
 
-export const COPILOT_GRADIENT =
-  'linear-gradient(145deg, #0a0f6b 0%, #1228cc 50%, #0d1a9e 100%)';
+export const COPILOT_GRADIENT = '#0b0f0d';
 
 /** Organic premium radii — ui-ux-pro-max / MASTER.md */
 export const ORGANIC_RADIUS = {
@@ -23,34 +22,42 @@ export const ORGANIC_SHADOW = {
 };
 
 export const copilotColors = {
-  bgDeep: '#0a0f6b',
-  bgMid: '#1228cc',
-  card: 'rgba(255,255,255,0.07)',
-  cardHover: 'rgba(255,255,255,0.11)',
-  accentGreen: '#22d97a',
-  accentCyan: '#4fc3f7',
-  accentBlue: '#4a7aff',
+  bgDeep: '#0b0f0d',
+  bgMid: '#0b0f0d',
+  card: 'rgba(255,255,255,0.05)',
+  cardHover: 'rgba(255,255,255,0.08)',
+  accentGreen: '#4fae82',
+  accentCyan: '#4fae82',
+  accentBlue: '#4fae82',
   textPrimary: '#ffffff',
-  textSecondary: '#8fa8d8',
-  textMuted: '#5a78c0',
+  textSecondary: 'rgba(255,255,255,0.62)',
+  textMuted: 'rgba(255,255,255,0.38)',
   border: 'rgba(255,255,255,0.08)',
-  danger: '#f87171',
+  danger: '#e2857a',
 };
 
-/** Category tint backgrounds — icons via anchorIcons CategoryIcon */
+/**
+ * Category tint backgrounds — icons via anchorIcons CategoryIcon.
+ * Expense categories share one neutral tint (differentiated by icon shape +
+ * label, not hue). The accent color is reserved for money moving in
+ * (income/savings) — the one place a color actually carries meaning.
+ */
+const NEUTRAL_TINT = { bg: 'rgba(255,255,255,0.06)', accent: 'rgba(255,255,255,0.75)' };
+const POSITIVE_TINT = { bg: 'rgba(79,174,130,0.14)', accent: '#4fae82' };
+
 export const CATEGORY_TINTS = {
-  food: { bg: 'rgba(74,122,255,0.12)', accent: '#4a7aff' },
-  transport: { bg: 'rgba(79,195,247,0.12)', accent: '#4fc3f7' },
-  entertainment: { bg: 'rgba(167,139,250,0.12)', accent: '#a78bfa' },
-  travel: { bg: 'rgba(74,122,255,0.1)', accent: '#4a7aff' },
-  health: { bg: 'rgba(34,217,122,0.12)', accent: '#22d97a' },
-  home: { bg: 'rgba(79,195,247,0.1)', accent: '#4fc3f7' },
-  shopping: { bg: 'rgba(244,114,182,0.12)', accent: '#f472b6' },
-  income: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a' },
-  savings: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a' },
-  savings_deposit: { bg: 'rgba(34,217,122,0.14)', accent: '#22d97a' },
-  subscription: { bg: 'rgba(74,122,255,0.12)', accent: '#4a7aff' },
-  other: { bg: 'rgba(255,255,255,0.06)', accent: '#8fa8d8' },
+  food: NEUTRAL_TINT,
+  transport: NEUTRAL_TINT,
+  entertainment: NEUTRAL_TINT,
+  travel: NEUTRAL_TINT,
+  health: NEUTRAL_TINT,
+  home: NEUTRAL_TINT,
+  shopping: NEUTRAL_TINT,
+  income: POSITIVE_TINT,
+  savings: POSITIVE_TINT,
+  savings_deposit: POSITIVE_TINT,
+  subscription: NEUTRAL_TINT,
+  other: NEUTRAL_TINT,
 };
 
 export function getCategoryTint(category) {
@@ -74,12 +81,12 @@ export const copilotChipClass = (active) =>
   [
     'anchor-btn anchor-btn--compact anchor-btn--pill organic-pill transition-all duration-200 active:scale-[0.97] inline-flex items-center justify-center',
     active
-      ? 'bg-[var(--copilot-accent-blue)] text-white shadow-[0_4px_20px_rgba(74,122,255,0.35)]'
+      ? 'bg-[var(--copilot-accent-blue)] text-[#08110c] shadow-[0_4px_20px_rgba(79,174,130,0.35)]'
       : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] hover:bg-[var(--copilot-bg-card-hover)]',
   ].join(' ');
 
 export const copilotPrimaryBtnClass =
-  'anchor-btn anchor-btn--default anchor-btn--pill w-full inline-flex items-center justify-center bg-gradient-to-r from-[#4a7aff] to-[#6d4aff] text-white disabled:opacity-40 shadow-[0_8px_32px_rgba(74,122,255,0.4)] transition-transform active:scale-[0.97]';
+  'anchor-btn anchor-btn--default anchor-btn--pill w-full inline-flex items-center justify-center bg-[#4fae82] text-[#08110c] disabled:opacity-40 shadow-[0_8px_32px_rgba(79,174,130,0.35)] transition-transform active:scale-[0.97]';
 
 export const copilotSecondaryBtnClass =
   'anchor-btn anchor-btn--default anchor-btn--pill w-full inline-flex items-center justify-center bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] hover:bg-[var(--copilot-bg-card-hover)] hover:text-white shadow-[var(--anchor-shadow-1)] transition-all active:scale-[0.97]';

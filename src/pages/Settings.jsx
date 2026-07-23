@@ -183,8 +183,30 @@ export default function Settings() {
     queryClient.invalidateQueries({ queryKey: ['financialProfile'] });
   };
 
-  if (isLoading || !formData) {
+  if (isLoading) {
     return <PageShellSkeleton sections={4} />;
+  }
+
+  if (!profile || !formData) {
+    return (
+      <div className="min-h-full flex items-center justify-center p-6 text-center">
+        <div>
+          <p className="text-lg font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>
+            Ingen profil att visa än
+          </p>
+          <p className="text-sm mb-6" style={{ color: 'var(--color-text-secondary)' }}>
+            Slutför uppstarten för att låsa upp inställningar.
+          </p>
+          <Link
+            to={createPageUrl('Onboarding')}
+            className="inline-flex px-6 py-3 rounded-full text-sm font-semibold"
+            style={{ background: 'var(--color-accent)', color: '#08110c' }}
+          >
+            Kom igång
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const krSuffix = <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/40">kr</span>;
