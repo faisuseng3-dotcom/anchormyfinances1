@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
 import DashboardQuickActions from './DashboardQuickActions';
+import SubscriptionDueToday from './SubscriptionDueToday';
 import DashboardAccountsSummary from './DashboardAccountsSummary';
 import DashboardRecentActivity from './DashboardRecentActivity';
 import DashboardDiscoveries from './DashboardDiscoveries';
@@ -57,6 +58,7 @@ export default function CopilotBentoDashboard({
           onAddTransaction={() => setQuickExpenseOpen(true)}
           onTransfer={onOpenTransactionHub}
         />
+        <SubscriptionDueToday profile={profile} />
         <DashboardAccountsSummary profile={profile} />
         <DashboardRecentActivity transactions={transactions} />
         <DashboardDiscoveries profile={profile} transactions={transactions} />

@@ -34,7 +34,7 @@ const SOURCE_CONFIDENCE = {
   unknown: 0.35,
 };
 
-function clampCategory(cat) {
+export function clampCategory(cat) {
   if (!cat) return 'other';
   const c = String(cat).toLowerCase().trim();
   if (c === 'insurance' || c === 'utilities' || c === 'subscriptions') return 'other';
