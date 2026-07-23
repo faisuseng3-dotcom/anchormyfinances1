@@ -10,29 +10,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, MessageSquare, X, Scissors, Zap, TrendingUp } from 'lucide-react';
 import PageShell, { GlassSection } from '@/components/layout/PageShell';
 import CopilotDebtFreedomHero from '@/components/ui-premium/copilot/CopilotDebtFreedomHero';
-import CopilotProgressRing from '@/components/ui-premium/copilot/CopilotProgressRing';
 import { copilotSecondaryBtnClass, copilotPrimaryBtnClass } from '@/lib/copilotTheme';
 import { staggerItem } from '@/lib/motionPresets';
 import ContextualLessonLink from '@/components/anchorBrain/ContextualLessonLink';
 import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 import { triggerHaptic } from '@/lib/haptics';
 import { toast } from 'sonner';
+import { estimateMonthsToDebtFree } from '@/lib/loanMath';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-
-function estimateMonthsToDebtFree(loans) {
-  if (!loans?.length) return 0;
-  let maxMonths = 0;
-  loans.forEach((loan) => {
-    const balance = loan.totalAmount || 0;
-    const payment = loan.monthlyPayment || 0;
-    const interest = balance * ((loan.interestRate || 0) / 100 / 12);
-    const principal = Math.max(0, payment - interest);
-    if (principal <= 0 || balance <= 0) return;
-    maxMonths = Math.max(maxMonths, Math.ceil(balance / principal));
-  });
-  return maxMonths;
-}
 
 export default function Loans() {
   const [debtEraserResult, setDebtEraserResult] = useState(null);
@@ -132,7 +118,7 @@ Kort svar svenska, max 3 meningar.`,
       ) : (
         <>
           <motion.div {...staggerItem(0)}>
-            <CopilotDebtFreedomHero loans={loans} className="mb-6" />
+            <CopilotDebtFreedomHero loans={loans} extraPayment={extraPayment} className="mb-6" />
           </motion.div>
 
           <motion.div {...staggerItem(1)}>
@@ -158,35 +144,44 @@ Kort svar svenska, max 3 meningar.`,
 
           <motion.div {...staggerItem(3)}>
             <GlassSection title="Varje betalning räknas">
-              <div className="flex items-center gap-4">
-                <CopilotProgressRing
-                  value={principalPct}
-                  max={100}
-                  size={72}
-                  stroke={5}
-                  color="#4fae82"
-                  label={`${Math.round(principalPct)}%`}
-                  sublabel="mot skuld"
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] text-[var(--copilot-text-secondary)] leading-relaxed">
-                    {principalMonthly > 0 ? (
-                      <>
-                        <span className="text-white font-semibold tabular-nums">{fmt(principalMonthly)} kr</span>
-                        {' '}av din månadsbetalning minskar skulden direkt.
-                      </>
-                    ) : (
-                      'Hela betalningen går mot skuldfrihet — inga räntekostnader.'
-                    )}
-                  </p>
-                  {totalInterestMonthly > 0 && (
-                    <p className="text-[12px] text-[var(--copilot-text-muted)] mt-2 flex items-center gap-1.5">
-                      <TrendingUp className="w-3.5 h-3.5 text-[var(--copilot-accent-green)]" />
-                      Extra betalningar sparar upp till {fmt(totalInterestYearly)} kr/år.
-                    </p>
-                  )}
+              <p className="text-[15px] text-[var(--copilot-text-secondary)] leading-relaxed mb-3">
+                {principalMonthly > 0 ? (
+                  <>
+                    <span className="text-white font-semibold tabular-nums">{fmt(principalMonthly)} kr</span>
+                    {' '}av din månadsbetalning minskar skulden direkt.
+                  </>
+                ) : (
+                  'Hela betalningen går mot skuldfrihet — inga räntekostnader.'
+                )}
+              </p>
+              {totalMonthly > 0 && (
+                <div
+                  className="flex h-2.5 rounded-full overflow-hidden mb-2"
+                  role="img"
+                  aria-label={`${Math.round(principalPct)}% av betalningen går till amortering, resten till ränta`}
+                >
+                  <div style={{ width: `${principalPct}%`, background: '#4fae82' }} />
+                  <div style={{ width: `${100 - principalPct}%`, background: 'rgba(255,255,255,0.12)' }} />
                 </div>
+              )}
+              <div className="flex items-center gap-4 text-[12px] text-[var(--copilot-text-muted)]">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#4fae82' }} />
+                  Amortering {Math.round(principalPct)}%
+                </span>
+                {totalInterestMonthly > 0 && (
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full shrink-0 bg-white/20" />
+                    Ränta {Math.round(100 - principalPct)}%
+                  </span>
+                )}
               </div>
+              {totalInterestMonthly > 0 && (
+                <p className="text-[12px] text-[var(--copilot-text-muted)] mt-3 flex items-center gap-1.5">
+                  <TrendingUp className="w-3.5 h-3.5 text-[var(--copilot-accent-green)]" />
+                  Extra betalningar sparar upp till {fmt(totalInterestYearly)} kr/år.
+                </p>
+              )}
             </GlassSection>
           </motion.div>
 

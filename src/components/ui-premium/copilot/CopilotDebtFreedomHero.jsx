@@ -1,32 +1,28 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Flag, Sparkles } from 'lucide-react';
+import { Flag, Sparkles, TrendingUp } from 'lucide-react';
 import CopilotProgressRing from './CopilotProgressRing';
 import { triggerHaptic } from '@/lib/haptics';
+import { estimateMonthsToDebtFree, monthsToDebtFreeWithExtra, pickBoostLoanIndex } from '@/lib/loanMath';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
-function estimateMonthsToDebtFree(loans) {
-  if (!loans?.length) return 0;
-  let maxMonths = 0;
-  loans.forEach((loan) => {
-    const balance = loan.totalAmount || 0;
-    const payment = loan.monthlyPayment || 0;
-    const interest = balance * ((loan.interestRate || 0) / 100 / 12);
-    const principal = Math.max(0, payment - interest);
-    if (principal <= 0 || balance <= 0) return;
-    maxMonths = Math.max(maxMonths, Math.ceil(balance / principal));
-  });
-  return maxMonths;
-}
-
 /**
  * Motiverande skuldfrihetsplan — framåtblick, inte skuldbeläggning.
+ * `extraPayment` (om satt) driver spaken: "öka med X kr/mån och bli skuldfri Y mån tidigare."
  */
-export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
+export default function CopilotDebtFreedomHero({ loans = [], extraPayment = 0, className = '' }) {
   const totalDebt = loans.reduce((s, l) => s + (l.totalAmount || 0), 0);
   const totalMonthly = loans.reduce((s, l) => s + (l.monthlyPayment || 0), 0);
   const monthsLeft = useMemo(() => estimateMonthsToDebtFree(loans), [loans]);
+
+  const monthsSaved = useMemo(() => {
+    if (!(extraPayment > 0) || !loans.length) return 0;
+    const boostIndex = pickBoostLoanIndex(loans);
+    if (boostIndex < 0) return 0;
+    const monthsWithExtra = monthsToDebtFreeWithExtra(loans, boostIndex, extraPayment);
+    return Math.max(0, monthsLeft - monthsWithExtra);
+  }, [loans, extraPayment, monthsLeft]);
 
   const freedomPct = useMemo(() => {
     if (totalDebt <= 0) return 100;
@@ -85,8 +81,14 @@ export default function CopilotDebtFreedomHero({ loans = [], className = '' }) {
             )}
           </p>
           <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-2 leading-relaxed">
-            {fmt(totalMonthly)} kr/mån tar dig närmare målet. Varje extra krona fyller ringen.
+            {fmt(totalMonthly)} kr/mån tar dig närmare målet.
           </p>
+          {monthsSaved > 0 && (
+            <p className="text-[13px] text-[var(--copilot-accent-green)] mt-1.5 leading-relaxed flex items-start gap-1.5">
+              <TrendingUp className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+              Öka med {fmt(extraPayment)} kr/mån och bli skuldfri {monthsSaved} mån tidigare.
+            </p>
+          )}
         </div>
       </div>
     </motion.div>
