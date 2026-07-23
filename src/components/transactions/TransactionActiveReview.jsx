@@ -200,8 +200,17 @@ export default function TransactionActiveReview({
           <button type="button" onClick={onCancel} className={copilotSecondaryBtnClass}>
             Avbryt
           </button>
-          <button type="button" onClick={onConfirm} disabled={isLoading} className={copilotPrimaryBtnClass}>
-            {isLoading ? 'Sparar…' : `Spara alla ${total} transaktioner`}
+          <button
+            type="button"
+            onClick={() => onConfirm(Array.from(approved))}
+            disabled={isLoading || approvedCount === 0}
+            className={copilotPrimaryBtnClass}
+          >
+            {isLoading
+              ? 'Sparar…'
+              : approvedCount === 0
+                ? 'Inga transaktioner godkända'
+                : `Spara ${approvedCount} godkända transaktion${approvedCount === 1 ? '' : 'er'}`}
           </button>
         </div>
       )}

@@ -129,10 +129,12 @@ export default function Import() {
     setStep('preview');
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = async (approvedIndices) => {
     setSaving(true);
-    await base44.entities.Transaction.bulkCreate(rowsToTransactions(parsedRows));
-    toast.success(`${parsedRows.length} transaktioner importerade!`);
+    const approvedSet = new Set(approvedIndices);
+    const rowsToSave = parsedRows.filter((_, i) => approvedSet.has(i));
+    await base44.entities.Transaction.bulkCreate(rowsToTransactions(rowsToSave));
+    toast.success(`${rowsToSave.length} transaktioner importerade!`);
     setSaving(false);
     setStep('done');
   };
