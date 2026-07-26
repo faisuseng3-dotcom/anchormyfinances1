@@ -146,7 +146,7 @@ export function CategoryIcon({ category = 'other', size = SIZE_DEFAULT, classNam
     <Icon
       size={size}
       className={className}
-      strokeWidth={2}
+      strokeWidth={1.5}
       style={color ? { color } : undefined}
       aria-hidden
     />
