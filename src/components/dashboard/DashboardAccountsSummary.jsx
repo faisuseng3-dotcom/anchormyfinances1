@@ -6,10 +6,14 @@ import { buildAccountItems, fmtKr } from '@/components/dashboard/copilot/copilot
 import { createPageUrl } from '@/utils';
 import { triggerHaptic } from '@/lib/haptics';
 
+const CARD_RADIUS = 16;
+
+// Bakre korten visar bara en smal kant (ingen text) — annars korsar
+// etiketterna varandra och blir oläsliga när de skymtar igenom.
 const FAN = [
-  { rotate: 0, x: 0, y: 0, scale: 1, brightness: 1, z: 3 },
-  { rotate: -7, x: -16, y: 10, scale: 0.97, brightness: 0.72, z: 2 },
-  { rotate: 8, x: 18, y: 14, scale: 0.94, brightness: 0.55, z: 1 },
+  { z: 3, y: 0, scale: 1 },
+  { z: 2, y: 10, scale: 0.96, band: 22 },
+  { z: 1, y: 20, scale: 0.92, band: 12 },
 ];
 
 /**
@@ -67,10 +71,12 @@ export default function DashboardAccountsSummary({ profile }) {
                   background: `linear-gradient(135deg, ${acc.color}29, rgba(255,255,255,0.03) 70%)`,
                   border: '1px solid rgba(255,255,255,0.08)',
                   zIndex: t.z,
-                  filter: `brightness(${t.brightness})`,
                   boxShadow: isFront ? '0 16px 34px -14px rgba(0,0,0,0.55)' : 'none',
+                  clipPath: t.band
+                    ? `inset(calc(100% - ${t.band}px) 0 0 0 round ${CARD_RADIUS}px)`
+                    : undefined,
                 }}
-                animate={{ rotate: t.rotate, x: t.x, y: t.y, scale: t.scale }}
+                animate={{ y: t.y, scale: t.scale }}
                 transition={{ type: 'spring', stiffness: 260, damping: 24 }}
               >
                 <span
