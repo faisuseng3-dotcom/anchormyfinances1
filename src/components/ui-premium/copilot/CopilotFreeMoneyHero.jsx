@@ -3,6 +3,7 @@ import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useFreeMoney } from '@/hooks/useFreeMoney';
 import { buildHeroContext } from '@/lib/dashboardHeroContext';
+import { useCountUp } from '@/hooks/useCountUp';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -32,19 +33,31 @@ export default function CopilotFreeMoneyHero({
     ? (context.trendPositive ? `Du ligger ${context.trendLine}` : context.trendLine)
     : context.paydayLine || context.budgetLine || null;
 
+  const isBalanceHero = layout === 'balance';
+  const displayedFree = useCountUp(free, isBalanceHero ? 900 : 0);
+
   const rootClass = [
     'anchor-sts',
-    layout === 'balance' ? 'anchor-sts--balance' : '',
+    isBalanceHero ? 'anchor-sts--balance' : '',
     className,
   ].filter(Boolean).join(' ');
+
+  const amount = (
+    <p className="anchor-sts-amount">
+      {fmt(isBalanceHero ? displayedFree : free)}
+      <span className="anchor-sts-currency">kr</span>
+    </p>
+  );
 
   return (
     <section className={rootClass}>
       <p className="anchor-sts-label">Säkert att spendera</p>
-      <p className="anchor-sts-amount">
-        {fmt(free)}
-        <span className="anchor-sts-currency">kr</span>
-      </p>
+      {isBalanceHero ? (
+        <div className="anchor-sts-glow-wrap">
+          <div className="anchor-sts-glow" aria-hidden="true" />
+          {amount}
+        </div>
+      ) : amount}
       {subline && (
         <p className="anchor-sts-subline">{subline}</p>
       )}

@@ -675,6 +675,35 @@
     font-feature-settings: 'tnum' 1;
   }
 
+  .anchor-sts-glow-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  .anchor-sts-glow {
+    position: absolute;
+    inset: -40px -60px;
+    background: radial-gradient(ellipse at center, rgba(79, 174, 130, 0.22), transparent 70%);
+    filter: blur(10px);
+    z-index: 0;
+    pointer-events: none;
+    animation: anchor-sts-breathe 3.4s ease-in-out infinite;
+  }
+
+  .anchor-sts-glow-wrap .anchor-sts-amount {
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes anchor-sts-breathe {
+    0%, 100% { opacity: 0.55; transform: scale(0.96); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .anchor-sts-glow { animation: none; opacity: 0.7; }
+  }
+
   .anchor-sts-currency {
     font-family: inherit;
     font-size: 0.3em;
