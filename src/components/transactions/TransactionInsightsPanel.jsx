@@ -8,6 +8,7 @@ import {
 } from 'recharts';
 import { GlassSection } from '@/components/layout/PageShell';
 import { copilotPrimaryBtnClass } from '@/lib/copilotTheme';
+import { useCountUp } from '@/hooks/useCountUp';
 import SavingsBudgetConflictAlert from '@/components/insights/SavingsBudgetConflictAlert';
 import LeakageDetector from '@/components/dashboard/LeakageDetector';
 
@@ -19,7 +20,7 @@ const CATEGORY_LABELS = {
 
 const CATEGORY_COLORS = [
   '#4fae82', '#4fae82', 'rgba(255,255,255,0.75)', '#4fae82',
-  '#4fae82', 'rgba(255,255,255,0.75)', '#34d9be', 'rgba(255,255,255,0.55)'
+  '#4fae82', 'rgba(255,255,255,0.75)', 'rgba(255,255,255,0.4)', 'rgba(255,255,255,0.55)'
 ];
 
 function getMonthKey(dateStr) {
@@ -86,6 +87,7 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
 
   const topCategory = pieData[0];
   const totalExpenses = pieData.reduce((s, d) => s + d.value, 0);
+  const displayedTotalExpenses = useCountUp(totalExpenses, 800);
   const lastMonth = barData.slice(-1)[0];
   const netPositive = lastMonth && lastMonth.Inkomst >= lastMonth.Utgifter;
 
@@ -133,7 +135,7 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
             </ResponsiveContainer>
 
             <p className="text-center text-[28px] font-semibold text-white tabular-nums -mt-1">
-              {totalExpenses.toLocaleString('sv-SE')} kr
+              {displayedTotalExpenses.toLocaleString('sv-SE')} kr
             </p>
             <p className="text-center text-[13px] text-[var(--copilot-text-muted)] mb-4">investerat i din vardag</p>
 
@@ -166,7 +168,7 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: 12, color: 'var(--copilot-text-secondary)', paddingTop: 8 }} />
             <Bar dataKey="Inkomst" fill="#4fae82" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Utgifter" fill="#4fae82" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Utgifter" fill="rgba(255,255,255,0.28)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
 

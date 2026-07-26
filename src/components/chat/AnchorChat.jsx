@@ -10,16 +10,6 @@ import { COACH_SUGGESTIONS } from '@/lib/coachSuggestions';
 import { getRecentConversations, MEMORY_UX_NOTICE, isMemoryEnabled } from '@/lib/anchorMemory';
 import { AI_FEATURES } from '@/lib/anchorMemory/types';
 
-const AnchorIcon = () => (
-  <div className="w-7 h-7 rounded-full shrink-0 flex items-center justify-center"
-    style={{ background: 'linear-gradient(135deg,#4fae82,#4FFFB0)' }}>
-    <svg width="12" height="12" viewBox="0 0 32 32" fill="none">
-      <path d="M8 22V10h4.2c2.8 0 4.6 1.5 4.6 3.9 0 1.6-.8 2.8-2.1 3.4l3.1 4.7h-2.9l-2.7-4.2H10.2V22H8zm2.2-6h1.9c1.4 0 2.2-.7 2.2-1.8S13.5 12 12 12h-1.8v4z" fill="#040814"/>
-      <circle cx="22" cy="16" r="5" stroke="#040814" strokeWidth="2"/>
-    </svg>
-  </div>
-);
-
 export default function AnchorChat({ hideSuggestions = false }) {
   const { profile, transactions } = useAdvisorContext();
   const { updateProfile } = useFinancialProfile();
@@ -144,9 +134,8 @@ export default function AnchorChat({ hideSuggestions = false }) {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18 }}
-              className={`flex items-end gap-2 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              className={`flex items-end ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              {msg.role === 'assistant' && <AnchorIcon />}
               <div className="max-w-[82%]">
                 <div
                   className="px-4 py-2.5 text-[14px] leading-relaxed"
@@ -174,14 +163,14 @@ export default function AnchorChat({ hideSuggestions = false }) {
 
           {loading && (
             <motion.div key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              className="flex items-end gap-2">
-              <AnchorIcon />
+              className="flex items-end justify-start">
               <div className="px-4 py-3 rounded-[18px] rounded-bl-[4px]"
                 style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <div className="flex gap-1">
                   {[0, 1, 2].map((j) => (
-                    <motion.span key={j} className="w-1.5 h-1.5 rounded-full bg-white/40"
-                      animate={{ opacity: [0.3, 1, 0.3] }}
+                    <motion.span key={j} className="w-1.5 h-1.5 rounded-full"
+                      style={{ background: 'var(--color-accent)' }}
+                      animate={{ opacity: [0.25, 1, 0.25] }}
                       transition={{ duration: 1.1, delay: j * 0.18, repeat: Infinity }} />
                   ))}
                 </div>

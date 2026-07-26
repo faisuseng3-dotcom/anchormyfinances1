@@ -14,6 +14,7 @@ import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Flame, Trophy } from 'lucide-react';
+import { useCountUp } from '@/hooks/useCountUp';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -104,6 +105,7 @@ export default function BudgetDashboard() {
   };
 
   const hasAnyBudget = totalBudgeted > 0;
+  const displayedLeft = useCountUp(totalLeft, 900);
 
   return (
     <PageShell
@@ -126,10 +128,13 @@ export default function BudgetDashboard() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/40 mb-2">
               Kvar att spendera
             </p>
-            <p className="text-[64px] sm:text-[76px] font-black text-white tabular-nums leading-none tracking-tight">
-              {fmt(totalLeft)}
-              <span className="text-[28px] sm:text-[32px] font-semibold text-white/40 ml-1">kr</span>
-            </p>
+            <div className="anchor-sts-glow-wrap">
+              <div className="anchor-sts-glow" aria-hidden="true" />
+              <p className="relative z-10 text-[64px] sm:text-[76px] font-black text-white tabular-nums leading-none tracking-tight">
+                {fmt(displayedLeft)}
+                <span className="text-[28px] sm:text-[32px] font-semibold text-white/40 ml-1">kr</span>
+              </p>
+            </div>
             <p className="text-[13px] text-white/40 mt-2">
               av {fmt(totalBudgeted)} kr · {fmt(dailyLeft)} kr/dag
             </p>
