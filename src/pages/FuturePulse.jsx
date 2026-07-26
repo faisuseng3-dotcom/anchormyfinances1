@@ -3,7 +3,7 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import PageShell from '@/components/layout/PageShell';
 import PlanCalendar from '@/components/planner/PlanCalendar';
-import ScenarioCompare from '@/components/future/ScenarioCompare';
+import FutureConversation from '@/components/future/FutureConversation';
 import { createPageUrl } from '@/utils';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { usePlannedEvents } from '@/hooks/usePlannedEvents';
@@ -49,11 +49,11 @@ export default function FuturePulse() {
   return (
     <PageShell
       title="Framtid"
-      subtitle="Tre scenarier — vad händer om du fortsätter eller ändrar något?"
+      subtitle="Prata med din framtida ekonomi — fråga vad som helst."
       backHref={createPageUrl('Dashboard')}
     >
       <PlanGate feature="future_pulse">
-        <ScenarioCompare profile={profile} transactions={transactions} />
+        <FutureConversation profile={profile} transactions={transactions} />
       </PlanGate>
     </PageShell>
   );

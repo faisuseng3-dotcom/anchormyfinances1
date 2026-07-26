@@ -108,6 +108,7 @@ export const SCENARIO_TASK_MAP = {
   analysis_coach: 'coaching',
   voice_expense_parse: 'voice_fast',
   voice_quick_answer: 'voice_fast',
+  future_whatif_classify: 'pattern_forecast',
 };
 
 export const AI_STACK_LAYERS = [
