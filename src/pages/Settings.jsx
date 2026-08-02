@@ -40,6 +40,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import GoalVisualPicker from '@/components/goals/GoalVisualPicker';
 import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 import { toast } from 'sonner';
+import { useCountUp } from '@/hooks/useCountUp';
 
 const categories = [
   { id: 'entertainment', label: 'Nöje' },
@@ -66,15 +67,23 @@ function FieldRow({ label, icon: Icon, children }) {
 function SettingsHero({ formData, formatNumber }) {
   const subCount = formData.subscriptions?.length || 0;
   const loanCount = formData.loans?.length || 0;
+  const displayedIncome = useCountUp(formData.income || 0, 800);
 
   return (
     <div className="anchor-premium-hero">
       <div className="relative z-10 anchor-hero-asymmetric">
         <div className="min-w-0">
           <p className="anchor-type-body-sm text-white/45">Din profil</p>
-          <p className="anchor-type-headline text-[20px] mt-1 tabular-nums">
-            {formatNumber(formData.income) || '0'} kr/mån
-          </p>
+          <div className="relative inline-block">
+            <div
+              className="absolute inset-[-10px_-16px] rounded-full pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse at center, rgba(79,174,130,0.22), transparent 70%)', filter: 'blur(6px)' }}
+              aria-hidden="true"
+            />
+            <p className="relative anchor-type-headline text-[20px] mt-1 tabular-nums">
+              {formatNumber(displayedIncome) || '0'} kr/mån
+            </p>
+          </div>
           <p className="anchor-type-body-sm mt-2">
             Buffert {formatNumber(formData.buffer) || '0'} kr · {subCount} abonnemang · {loanCount} lån
           </p>

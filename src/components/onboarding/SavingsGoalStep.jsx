@@ -7,6 +7,24 @@ import GoalVisualPicker from '@/components/goals/GoalVisualPicker';
 import { validateSavingsGoal } from '@/lib/savingsGoalValidation';
 import { anchorInputAmountClass, anchorInputClass, anchorInputSuffixClass } from '@/lib/anchorTheme';
 import { onboardingFieldLabel } from './onboardingUi';
+import { useCountUp } from '@/hooks/useCountUp';
+
+const MONTH_LABELS = [
+  'januari', 'februari', 'mars', 'april', 'maj', 'juni',
+  'juli', 'augusti', 'september', 'oktober', 'november', 'december',
+];
+
+function estimateMonthsToGoal(data) {
+  const margin = Math.max(
+    0,
+    (data.income || 0) - (data.housingCost || 0) -
+      (data.loans || []).reduce((s, l) => s + (l.monthlyPayment || 0), 0),
+  );
+  const suggestedMonthly = Math.max(500, Math.round(margin * 0.3));
+  const goal = data.savingsGoal || 0;
+  if (!goal || suggestedMonthly <= 0) return null;
+  return { months: Math.ceil(goal / suggestedMonthly), suggestedMonthly };
+}
 
 const suggestions = [
   { name: 'Semester i Thailand', amount: 25000, iconId: 'travel' },
@@ -17,6 +35,8 @@ const suggestions = [
 
 export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
   const [error, setError] = useState(null);
+  const estimate = estimateMonthsToGoal(data);
+  const displayedMonths = useCountUp(estimate?.months ?? 0, 700);
 
   const formatNumber = (value) => {
     return value ? value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : '';
@@ -139,6 +159,26 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
               <span className={`absolute right-4 top-1/2 -translate-y-1/2 ${anchorInputSuffixClass}`}>kr</span>
             </div>
           </div>
+
+          {estimate && (
+            <div className="text-center py-2 relative">
+              <div
+                className="absolute inset-0 m-auto w-40 h-20 rounded-full opacity-70 pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse at center, rgba(79,174,130,0.22), transparent 70%)', filter: 'blur(8px)' }}
+                aria-hidden="true"
+              />
+              <p className="relative text-[32px] font-black text-white tabular-nums leading-none">
+                {displayedMonths} <span className="text-[18px] font-bold text-white/50">mån</span>
+              </p>
+              <p className="relative text-[12px] text-white/40 mt-2">
+                Ungefär {(() => {
+                  const d = new Date();
+                  d.setMonth(d.getMonth() + (estimate.months || 0));
+                  return `${MONTH_LABELS[d.getMonth()]} ${d.getFullYear()}`;
+                })()} — räknat på {formatNumber(estimate.suggestedMonthly)} kr/mån
+              </p>
+            </div>
+          )}
 
           {data.savingsGoal > 0 && (
             <div>
