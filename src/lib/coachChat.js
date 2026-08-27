@@ -7,6 +7,7 @@ import { canUseAiCoachClient, currentMonthKey } from '@/lib/billingPlans';
 import { BUDGET_CATEGORY_META } from '@/lib/budgetCategories';
 import { getMonthlyMargin } from '@/lib/financialUtils';
 import { tryLocalCoachAction } from '@/lib/coachLocalActions';
+import { routeCoachDecision } from '@/lib/coachDecisionRouter';
 
 export const COACH_OFF_TOPIC =
   'Jag är Lagos ekonomicoach och svarar bara på frågor om din privatekonomi — budget, sparande, lån, prenumerationer, inkomst och utgifter. Ställ en ekonomifråga så hjälper jag dig.';
@@ -89,7 +90,15 @@ function applyLoanChanges(loans, changes = []) {
   return list;
 }
 
-/** Konvertera platt coach_chat-svar till profil-patch. */
+/**
+ * Konvertera platt coach_chat-svar till profil-patch.
+ * OBS: income/housingCost/buffer/savingsGoal sätts medvetet INTE här längre
+ * — det är grundläggande fält som AI:t inte ska kunna ändra fritt från en
+ * chattext utan tydlig bekräftelse. Explicita kommandon ("sätt min inkomst
+ * till X") hanteras redan säkert och deterministiskt av tryLocalCoachAction
+ * i coachLocalActions.js. Endast budgetkategorier (lägre risk, redan
+ * dubbelbevakade av samma lokala regelmotor) får sättas härifrån.
+ */
 export function coachChatResultToProfilePatch(result = {}) {
   const patch = {};
   const budgetLimits = {};
@@ -101,14 +110,6 @@ export function coachChatResultToProfilePatch(result = {}) {
   });
 
   if (Object.keys(budgetLimits).length) patch.budgetLimits = budgetLimits;
-  if (result.income != null && !Number.isNaN(Number(result.income))) patch.income = Number(result.income);
-  if (result.housing_cost != null && !Number.isNaN(Number(result.housing_cost))) {
-    patch.housingCost = Number(result.housing_cost);
-  }
-  if (result.buffer != null && !Number.isNaN(Number(result.buffer))) patch.buffer = Number(result.buffer);
-  if (result.savings_goal != null && !Number.isNaN(Number(result.savings_goal))) {
-    patch.savingsGoal = Number(result.savings_goal);
-  }
 
   return Object.keys(patch).length ? patch : null;
 }
@@ -229,6 +230,14 @@ export async function askCoachChat({
     });
     await incrementCoachUsage(profile, updateProfile);
     return applied;
+  }
+
+  // Köpfrågor och "vad händer om"-frågor räknas alltid deterministiskt av
+  // financialEngine/scenario-motorn — aldrig av AI. Inget LLM-anrop här.
+  const decision = routeCoachDecision(question, profile, transactions);
+  if (decision.handled) {
+    await incrementCoachUsage(profile, updateProfile);
+    return { answer: decision.answer, actions: decision.actions, profileUpdated: false };
   }
 
   let result;

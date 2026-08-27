@@ -96,6 +96,58 @@ function getTotalFixedCosts(profile) {
   return fixedItems + housing + subs + loans;
 }
 
+// ── financialEngine mirror (samma formler som src/lib/financialEngine.js —
+// kan inte importeras här eftersom Deno-funktionen inte delar modulgraf med
+// klienten, se buildAdvisorContext.js för originalet) ──────────────────────
+function getAvailableToSpend(profile, transactions) {
+  const buffer = profile.buffer || 0;
+  const now = new Date();
+  const dayOfMonth = now.getDate();
+  let remainingFixed = 0;
+  const housingDay = profile.housingDueDay || 27;
+  if (housingDay > dayOfMonth) remainingFixed += profile.housingCost || 0;
+  (profile.loans || []).forEach((l, i) => { if ((5 + i) > dayOfMonth) remainingFixed += l.monthlyPayment || 0; });
+  (profile.subscriptions || []).forEach((s, i) => { const day = s.billingDay || (10 + i); if (day > dayOfMonth) remainingFixed += s.amount || 0; });
+
+  const cutoff = new Date(now.getTime() - 30 * 24 * 3600 * 1000);
+  const expenseTypes = new Set(['expense', 'savings_deposit', 'transfer_to_savings']);
+  const last30 = (transactions || []).filter((t) => expenseTypes.has(t.type) && new Date(t.created_date || t.date || 0) >= cutoff);
+  const avgDailySpend = last30.reduce((s, t) => s + Math.abs(t.amount || 0), 0) / 30;
+  const daysLeft = Math.max(0, 30 - dayOfMonth);
+  const projectedVariableSpend = avgDailySpend * daysLeft;
+
+  const monthlyTarget = profile.savingsGoalMonthlyTarget > 0 ? profile.savingsGoalMonthlyTarget : 0;
+  const savingsReservation = Math.round(monthlyTarget * daysLeft / 30);
+
+  return Math.max(0, Math.round(buffer - remainingFixed - projectedVariableSpend - savingsReservation - 500));
+}
+
+function getSavingsGoalProjectionServer(profile) {
+  if (!profile.savingsGoal || profile.savingsGoal <= 0) return null;
+  const current = profile.savingsCurrentBalance || 0;
+  const remaining = Math.max(0, profile.savingsGoal - current);
+  const margin = (profile.income || 0) - getTotalFixedCosts(profile);
+  const rate = profile.savingsGoalMonthlyTarget > 0 ? profile.savingsGoalMonthlyTarget : Math.max(0, Math.round(margin * 0.3));
+  const monthsToGoal = rate > 0 ? Math.ceil(remaining / rate) : null;
+  let targetDateLabel = null;
+  if (monthsToGoal != null) {
+    const d = new Date();
+    d.setMonth(d.getMonth() + monthsToGoal);
+    targetDateLabel = d.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' });
+  }
+  return {
+    goalName: profile.savingsGoalName || 'sparmål',
+    current,
+    target: profile.savingsGoal,
+    remaining,
+    monthlyRate: rate,
+    monthsToGoal,
+    targetDateLabel,
+    pctComplete: Math.min(100, Math.round((current / profile.savingsGoal) * 100)),
+  };
+}
+// ─────────────────────────────────────────────────────────────────────────
+
 function buildSnapshot(profile, transactions) {
   const income = profile.income || 0;
   const fixed = getTotalFixedCosts(profile);
@@ -142,6 +194,7 @@ function buildSnapshot(profile, transactions) {
     spent_last_7_days_kr: Math.round(spentLast7),
     spent_percent_of_margin: margin > 0 ? Math.round((spentThisMonth / margin) * 100) : 0,
     remaining_this_month_kr: Math.round(margin - spentThisMonth),
+    available_to_spend_kr: getAvailableToSpend(profile, transactions),
     suggested_daily_spend_kr: margin > 0 ? Math.round(Math.max(0, margin - spentThisMonth) / daysLeft) : 0,
     top_spending_categories: topCategories,
     subscriptions: (profile.subscriptions || []).map((s) => ({
@@ -169,6 +222,7 @@ function buildSnapshot(profile, transactions) {
         (profile.subscriptions || []).reduce((s: number, x: { amount?: number }) => s + (x.amount || 0), 0),
       ),
     },
+    savings_goal_projection: getSavingsGoalProjectionServer(profile),
   };
 }
 
@@ -251,10 +305,6 @@ const SCHEMAS = {
       budget_home: { type: 'number' },
       budget_shopping: { type: 'number' },
       budget_other: { type: 'number' },
-      income: { type: 'number' },
-      housing_cost: { type: 'number' },
-      buffer: { type: 'number' },
-      savings_goal: { type: 'number' },
     },
     required: ['off_topic', 'answer'],
   },
@@ -365,8 +415,9 @@ Returnera JSON.`;
 DU ÄR I COACH-CHATTEN. Svara om ALLT som rör användarens ekonomi (budget, lån, prenumerationer, sparande, marginal).
 OFF-TOPIC: Om frågan INTE handlar om ekonomi — sätt off_topic: true och svara kort att du bara hjälper med privatekonomi.
 
-ÄNDRINGAR: Om användaren ber dig ändra något, fyll i relevanta fält (budget_food, budget_transport, income, housing_cost m.m.) OCH bekräfta i answer.
+ÄNDRINGAR AV BUDGET: Om användaren tydligt ber dig ändra en budgetkategori, fyll i relevanta fält (budget_food, budget_transport m.m.) OCH bekräfta i answer.
 Budgetnycklar: food=mat, transport, entertainment=nöje, travel=resa, health=hälsa, home=bostad, shopping, other=övrigt.
+ÄNDRINGAR AV INKOMST/BOENDE/BUFFERT/SPARMÅL: Du kan INTE ändra dessa härifrån (inget fält för det finns). Be användaren skriva ett tydligt kommando ("sätt min inkomst till 35000 kr") eller gå till Inställningar.
 
 ${extras.history ? `SAMTAL:\n${extras.history}\n` : ''}
 Användarens senaste meddelande: "${extras.question || ''}"

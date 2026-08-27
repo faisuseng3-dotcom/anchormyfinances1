@@ -4,9 +4,51 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { runInsightEngine } from '@/lib/insightEngine';
+import { getGoalInsight, getMonthlyMargin } from '@/lib/financialEngine';
 
 const MAX_SHOWN = 2;
 const MIN_TRANSACTIONS_FOR_PATTERN = 10;
+const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
+
+/** Sparmålsinsikt i samma format som runInsightEngine — bara när målet
+ * tydligt riskerar att missas eller kan nås märkbart tidigare. */
+function buildGoalDiscovery(profile) {
+  if (!profile?.savingsGoal || profile.savingsGoal <= 0) return null;
+
+  const rate = profile.savingsGoalMonthlyTarget > 0
+    ? profile.savingsGoalMonthlyTarget
+    : Math.max(0, Math.round(getMonthlyMargin(profile) * 0.3));
+  const goal = { current: profile.savingsCurrentBalance || 0, target: profile.savingsGoal, goalName: profile.savingsGoalName || 'sparmålet' };
+  const insight = getGoalInsight(goal, rate, {
+    deadlineDate: profile.savingsGoalDeadline || null,
+    marginAvailable: getMonthlyMargin(profile),
+  });
+  if (!insight) return null;
+
+  if (insight.status === 'at_risk') {
+    return {
+      id: 'goal_at_risk',
+      severity: 3,
+      title: `${insight.goalName} riskerar att missa måldatumet`,
+      description: `Med nuvarande takt (${fmt(insight.monthlyRate)} kr/mån) når du målet ${insight.targetDateLabel || 'senare än planerat'} — det är efter ${new Date(profile.savingsGoalDeadline).toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' })}.`,
+      consequence: `Om du sparar ${fmt(insight.suggestedExtra)} kr mer/mån kommer du närmare måldatumet.`,
+      action: 'Sparmål',
+      actionLink: '/SavingsGoals',
+    };
+  }
+  if (insight.status === 'reachable_earlier' && insight.monthsEarlier >= 1) {
+    return {
+      id: 'goal_reachable_earlier',
+      severity: 2,
+      title: `${insight.goalName} kan nås tidigare`,
+      description: `Du behöver bara cirka ${fmt(insight.suggestedExtra)} kr extra/mån för att nå målet ${insight.monthsEarlier} månad${insight.monthsEarlier === 1 ? '' : 'er'} tidigare.`,
+      consequence: `Nuvarande måldatum: ${insight.targetDateLabel}.`,
+      action: 'Sparmål',
+      actionLink: '/SavingsGoals',
+    };
+  }
+  return null;
+}
 
 function DiscoveryCard({ insight }) {
   const [open, setOpen] = useState(false);
@@ -42,10 +84,12 @@ function DiscoveryCard({ insight }) {
 }
 
 export default function DashboardDiscoveries({ profile, transactions }) {
-  const insights = useMemo(
-    () => runInsightEngine(profile, transactions || []).slice(0, MAX_SHOWN),
-    [profile, transactions],
-  );
+  const insights = useMemo(() => {
+    const spending = runInsightEngine(profile, transactions || []);
+    const goalDiscovery = buildGoalDiscovery(profile);
+    const combined = goalDiscovery ? [...spending, goalDiscovery] : spending;
+    return combined.sort((a, b) => b.severity - a.severity).slice(0, MAX_SHOWN);
+  }, [profile, transactions]);
 
   const hasEnoughData = (transactions?.length || 0) >= MIN_TRANSACTIONS_FOR_PATTERN;
 

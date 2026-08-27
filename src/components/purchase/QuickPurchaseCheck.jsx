@@ -3,19 +3,9 @@ import React, { useState } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useTransactions } from '@/hooks/useTransactions';
 import { getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
+import { extractPriceKr } from '@/lib/purchaseTextParsing';
 import { anchorInputClass, anchorPrimaryButtonClass } from '@/lib/anchorTheme';
 import PurchaseVerdictCard from '@/components/purchase/PurchaseVerdictCard';
-
-/** Extraherar ett kr-belopp ur fritext, t.ex. "en TV för 8000 kr" → 8000. Ingen
- * AI behövs för det här — ren, deterministisk textmatchning. */
-function extractPriceKr(text) {
-  if (!text) return null;
-  const match = text.match(/(\d[\d\s.,]{0,9})\s*(kr\b|:-)/i);
-  if (!match) return null;
-  const raw = match[1].trim().replace(/[,.](\d{2})$/, '');
-  const value = parseInt(raw.replace(/[^\d]/g, ''), 10);
-  return Number.isFinite(value) && value > 0 ? value : null;
-}
 
 export default function QuickPurchaseCheck({ profile }) {
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });

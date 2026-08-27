@@ -141,7 +141,12 @@ function calcIncreaseSavings(profile, transactions, params) {
   if (profile?.savingsGoal > 0) {
     const current = profile.savingsCurrentBalance || 0;
     const remaining = Math.max(0, profile.savingsGoal - current);
-    const existingRate = profile.savingsGoalMonthlyTarget || monthly;
+    // Samma antagande som financialEngine.getSavingsGoalProjection när inget
+    // uttryckligt månadsmål är satt — annars blandas "nuvarande takt" ihop
+    // med den extra summan som just testas.
+    const existingRate = profile.savingsGoalMonthlyTarget > 0
+      ? profile.savingsGoalMonthlyTarget
+      : Math.max(0, Math.round(getMonthlyMargin(profile) * 0.3));
     const monthsNow = existingRate > 0 ? Math.ceil(remaining / existingRate) : null;
     const monthsWithExtra = Math.ceil(remaining / (existingRate + monthly));
     if (monthsNow) {

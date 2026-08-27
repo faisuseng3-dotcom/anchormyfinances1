@@ -6,6 +6,7 @@ import {
   getMonthlyMargin,
   getFixedCostBreakdown,
 } from '@/lib/financialUtils';
+import { getSafeToSpend, getSavingsGoalProjection } from '@/lib/financialEngine';
 import { enrichAdvisorSnapshot, getToneInstructions } from '@/lib/anchorBrain';
 
 const EXPENSE_TYPES = new Set(['expense', 'savings_deposit', 'transfer_to_savings']);
@@ -66,6 +67,7 @@ export function buildAdvisorSnapshot(profile, transactions = []) {
     spent_last_7_days_kr: Math.round(spentLast7Days),
     spent_percent_of_margin: Math.round(spentPctOfMargin),
     remaining_this_month_kr: Math.round(margin - spentThisMonth),
+    available_to_spend_kr: getSafeToSpend(profile, transactions).amount,
     suggested_daily_spend_kr: dailySafeSpend,
     top_spending_categories: topCategories,
     fixed_cost_breakdown: getFixedCostBreakdown(profile).map(({ label, amount }) => ({
@@ -83,6 +85,7 @@ export function buildAdvisorSnapshot(profile, transactions = []) {
       category: s.category,
     })),
     budget_limits: profile.budgetLimits || {},
+    savings_goal_projection: getSavingsGoalProjection(profile),
   };
 
   return enrichAdvisorSnapshot(profile, transactions, base);

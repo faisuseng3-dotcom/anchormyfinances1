@@ -1,30 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-
-const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-
-const VERDICT_META = {
-  green: { emoji: '🟢', label: 'DU HAR RÅD', color: '#4fae82' },
-  yellow: { emoji: '🟡', label: 'DU KAN KÖPA DEN — MEN JAG SKULLE VÄNTA', color: '#F59E0B' },
-  red: { emoji: '🔴', label: 'JAG SKULLE INTE KÖPA DEN JUST NU', color: '#e2857a' },
-};
-
-function consequenceLine(impact) {
-  if (!impact) return '';
-  const { verdict, bufferBefore, bufferAfter, monthsToRebuild, goalDelayMonths } = impact;
-
-  if (verdict === 'green') {
-    return 'Köpet ryms inom vad du tryggt kan spendera den här månaden — det rör varken bufferten eller sparmålet.';
-  }
-  if (verdict === 'yellow') {
-    let line = `Köpet påverkar ditt sparande. Bufferten går från ${fmt(bufferBefore)} kr till ${fmt(bufferAfter)} kr.`;
-    if (goalDelayMonths > 0) line += ` Sparmålet skjuts upp ungefär ${goalDelayMonths} månad${goalDelayMonths === 1 ? '' : 'er'}.`;
-    return line;
-  }
-  let line = `Köpet skulle göra att din buffert hamnar under din säkerhetsgräns (${fmt(bufferBefore)} kr → ${fmt(bufferAfter)} kr).`;
-  if (monthsToRebuild > 0) line += ` Det tar ungefär ${monthsToRebuild} månad${monthsToRebuild === 1 ? '' : 'er'} att bygga upp den igen.`;
-  return line;
-}
+import { VERDICT_META, purchaseConsequenceLine, fmtKr as fmt } from '@/lib/purchaseNarratives';
 
 /**
  * Gemensam köp-verdikt: 🟢/🟡/🔴 + konsekvens + "bästa datum att köpa".
@@ -51,7 +27,7 @@ export default function PurchaseVerdictCard({ price, priceLabel, impact, bestDat
           </p>
         </div>
       </div>
-      <p className="text-[14px] text-white/75 leading-relaxed">{consequenceLine(impact)}</p>
+      <p className="text-[14px] text-white/75 leading-relaxed">{purchaseConsequenceLine(impact)}</p>
       {impact.verdict !== 'green' && (
         bestDate?.found ? (
           <div className="pt-2 border-t border-white/10">

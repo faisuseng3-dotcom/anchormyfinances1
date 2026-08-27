@@ -119,10 +119,6 @@ export const ADVISOR_SCHEMAS = {
       budget_home: { type: 'number' },
       budget_shopping: { type: 'number' },
       budget_other: { type: 'number' },
-      income: { type: 'number' },
-      housing_cost: { type: 'number' },
-      buffer: { type: 'number' },
-      savings_goal: { type: 'number' },
     },
     required: ['off_topic', 'answer'],
   },
@@ -229,8 +225,9 @@ Returnera JSON.`;
 DU ÄR I COACH-CHATTEN. Svara om ALLT som rör användarens ekonomi (budget, lån, prenumerationer, sparande, marginal).
 OFF-TOPIC: Om frågan INTE handlar om ekonomi — sätt off_topic: true och svara kort att du bara hjälper med privatekonomi.
 
-ÄNDRINGAR: Om användaren ber dig ändra något, fyll i relevanta fält (budget_food, budget_transport, income, housing_cost m.m.) OCH bekräfta i answer.
+ÄNDRINGAR AV BUDGET: Om användaren tydligt ber dig ändra en budgetkategori, fyll i relevanta fält (budget_food, budget_transport m.m.) OCH bekräfta i answer.
 Budgetnycklar: food=mat, transport, entertainment=nöje, travel=resa, health=hälsa, home=bostad, shopping, other=övrigt.
+ÄNDRINGAR AV INKOMST/BOENDE/BUFFERT/SPARMÅL: Du kan INTE ändra dessa härifrån (inget fält för det finns). Be användaren skriva ett tydligt kommando ("sätt min inkomst till 35000 kr") eller gå till Inställningar.
 
 ${extras.history ? `SAMTAL:\n${extras.history}\n` : ''}
 Användarens senaste meddelande: "${extras.question || ''}"

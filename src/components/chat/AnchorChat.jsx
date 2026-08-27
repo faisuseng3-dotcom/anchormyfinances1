@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Send, CheckCircle2, ArrowRight } from 'lucide-react';
 import { useAdvisorContext } from '@/hooks/useAdvisorContext';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useAppMemoryContext } from '@/hooks/useAppMemoryContext';
@@ -76,7 +77,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
 
     try {
       const history = buildHistory(messages, userMsg);
-      const { answer, profileUpdated } = await askCoachChat({
+      const { answer, profileUpdated, actions } = await askCoachChat({
         question: userText,
         profile,
         transactions,
@@ -91,6 +92,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
           role: 'assistant',
           content: answer,
           profileUpdated,
+          actions,
         },
       ]);
     } catch (err) {
@@ -147,6 +149,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
                     background: 'rgba(255,255,255,0.06)',
                     color: 'rgba(255,255,255,0.82)',
                     borderRadius: '18px 18px 18px 4px',
+                    whiteSpace: 'pre-line',
                   }}
                 >
                   {msg.content}
@@ -156,6 +159,21 @@ export default function AnchorChat({ hideSuggestions = false }) {
                     <CheckCircle2 size={12} />
                     Profil uppdaterad
                   </p>
+                )}
+                {msg.actions?.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2 ml-1">
+                    {msg.actions.map((action) => (
+                      <Link
+                        key={action.href}
+                        to={action.href}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium text-[#4fae82] no-underline"
+                        style={{ background: 'rgba(79, 174, 130, 0.12)', border: '1px solid rgba(79, 174, 130, 0.3)' }}
+                      >
+                        {action.label}
+                        <ArrowRight size={12} />
+                      </Link>
+                    ))}
+                  </div>
                 )}
               </div>
             </motion.div>

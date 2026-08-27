@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import CopilotEnvelopeGoal from '@/components/ui-premium/copilot/CopilotEnvelopeGoal';
+import GoalProjectionRow from '@/components/goals/GoalProjectionRow';
 import DreamBuilder from '@/components/goals/DreamBuilder';
 import { buildSavingsGoals } from '../copilotDashboardUtils';
 import { copilotPrimaryBtnClass } from '@/lib/copilotTheme';
@@ -62,15 +63,17 @@ export default function SavingsGoalsHub({ profile, updateProfile }) {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {goals.map((goal) => (
-            <CopilotEnvelopeGoal
-              key={goal.name}
-              name={goal.name}
-              current={goal.current}
-              target={goal.target}
-              imageUrl={goal.imageUrl}
-              iconId={goal.goalType || 'default'}
-              visualType={goal.visualType || 'icon'}
-            />
+            <div key={goal.name}>
+              <CopilotEnvelopeGoal
+                name={goal.name}
+                current={goal.current}
+                target={goal.target}
+                imageUrl={goal.imageUrl}
+                iconId={goal.goalType || 'default'}
+                visualType={goal.visualType || 'icon'}
+              />
+              {goal.isPrimary && <GoalProjectionRow profile={profile} />}
+            </div>
           ))}
         </div>
       )}
