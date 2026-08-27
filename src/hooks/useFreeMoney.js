@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
-import { computeFreeMoney } from '@/lib/copilotTheme';
+import { getSafeToSpend } from '@/lib/financialEngine';
 import { getMonthlyMargin } from '@/lib/financialUtils';
 
 /**
- * Reaktiv "fria pengar" — synkas via React Query när transaktioner ändras (inkl. optimistiskt).
+ * Reaktiv "tryggt att spendera" — synkas via React Query när transaktioner ändras (inkl. optimistiskt).
  */
 export function useFreeMoney(options = {}) {
   const { profile } = useFinancialProfile(options);
@@ -16,10 +16,11 @@ export function useFreeMoney(options = {}) {
   });
 
   const margin = useMemo(() => getMonthlyMargin(profile), [profile]);
-  const freeMoney = useMemo(
-    () => computeFreeMoney(profile, transactions),
+  const safeToSpend = useMemo(
+    () => getSafeToSpend(profile, transactions),
     [profile, transactions],
   );
+  const freeMoney = safeToSpend.amount;
 
   /** Simulera effekt av en ny/ändrad transaktion innan spar. */
   const projectFreeMoney = useMemo(
@@ -42,6 +43,7 @@ export function useFreeMoney(options = {}) {
     transactions,
     margin,
     freeMoney,
+    safeToSpend,
     projectFreeMoney,
     isLoading,
   };

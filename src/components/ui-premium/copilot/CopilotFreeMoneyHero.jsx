@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useFreeMoney } from '@/hooks/useFreeMoney';
@@ -17,9 +18,10 @@ export default function CopilotFreeMoneyHero({
   className = '',
   layout = 'default',
 }) {
+  const [showBreakdown, setShowBreakdown] = useState(false);
   const { profile } = useFinancialProfile();
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
-  const { freeMoney: baseFree } = useFreeMoney();
+  const { freeMoney: baseFree, safeToSpend } = useFreeMoney();
 
   const free = previewAmount != null && isExpensePreview
     ? Math.max(0, baseFree - Math.abs(Number(previewAmount) || 0))
@@ -60,6 +62,37 @@ export default function CopilotFreeMoneyHero({
       ) : amount}
       {subline && (
         <p className="anchor-sts-subline">{subline}</p>
+      )}
+      {isBalanceHero && previewAmount == null && safeToSpend?.isReady && safeToSpend.breakdown.length > 0 && (
+        <div className="anchor-sts-breakdown-wrap">
+          <button
+            type="button"
+            onClick={() => setShowBreakdown((v) => !v)}
+            className="anchor-sts-breakdown-toggle inline-flex items-center gap-1 text-[13px] text-white/45 hover:text-white/70 transition-colors"
+          >
+            Visa beräkning
+            <ChevronDown
+              className="w-3.5 h-3.5 transition-transform"
+              style={{ transform: showBreakdown ? 'rotate(180deg)' : 'none' }}
+            />
+          </button>
+          {showBreakdown && (
+            <dl className="anchor-sts-breakdown-list mt-3 w-full max-w-[280px] mx-auto text-left">
+              {safeToSpend.breakdown.map((row) => (
+                <div key={row.label} className="flex items-center justify-between py-1.5 text-[14px] border-b border-white/[0.06] last:border-0">
+                  <dt className="text-white/55">{row.label}</dt>
+                  <dd className={row.value < 0 ? 'text-white/70' : 'text-white/85'}>
+                    {row.value < 0 ? '−' : ''}{fmt(Math.abs(row.value))} kr
+                  </dd>
+                </div>
+              ))}
+              <div className="flex items-center justify-between pt-2 mt-1 text-[14px] font-semibold">
+                <dt className="text-white/85">Tryggt att spendera</dt>
+                <dd className="text-white">{fmt(safeToSpend.amount)} kr</dd>
+              </div>
+            </dl>
+          )}
+        </div>
       )}
     </section>
   );

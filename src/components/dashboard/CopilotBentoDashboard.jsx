@@ -6,6 +6,7 @@ import SubscriptionDueToday from './SubscriptionDueToday';
 import DashboardAccountsSummary from './DashboardAccountsSummary';
 import DashboardRecentActivity from './DashboardRecentActivity';
 import DashboardDiscoveries from './DashboardDiscoveries';
+import LagoRecommends from './LagoRecommends';
 import ImportBankCta from './ImportBankCta';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
 import { recordSafeToSpendView } from '@/lib/northStar';
@@ -62,6 +63,7 @@ export default function CopilotBentoDashboard({
         <DashboardAccountsSummary profile={profile} />
         <DashboardRecentActivity transactions={transactions} />
         <DashboardDiscoveries profile={profile} transactions={transactions} />
+        <LagoRecommends profile={profile} transactions={transactions} />
         <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
       </div>
 

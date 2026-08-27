@@ -1,53 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { TrendingDown, TrendingUp, AlertTriangle, Shield, Zap, Medal, Waves, Utensils, Salad, Clock, LineChart } from 'lucide-react';
+import { TrendingDown, TrendingUp, AlertTriangle, Shield, Zap, Waves, Utensils, Salad, Clock, LineChart } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import PurchaseVerdictCard from '@/components/purchase/PurchaseVerdictCard';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-
-function SafetyGauge({ score }) {
-  const clampedScore = Math.max(1, Math.min(10, score || 5));
-  const pct = (clampedScore - 1) / 9;
-  const angle = -180 + pct * 180;
-  const color = pct > 0.65 ? '#10B981' : pct > 0.4 ? '#F59E0B' : '#EF4444';
-  const label = pct > 0.65 ? 'Säkert köp' : pct > 0.4 ? 'Måttlig risk' : 'Ekonomisk fara';
-  const r = 60, cx = 80, cy = 72;
-  const toRad = (d) => (d * Math.PI) / 180;
-
-  const tracks = [
-    { start: -180, end: -120, color: '#EF4444' },
-    { start: -120, end: -60, color: '#F59E0B' },
-    { start: -60, end: 0, color: '#10B981' },
-  ];
-
-  function describeArc(startDeg, endDeg) {
-    const start = { x: cx + r * Math.cos(toRad(startDeg)), y: cy + r * Math.sin(toRad(startDeg)) };
-    const end = { x: cx + r * Math.cos(toRad(endDeg)), y: cy + r * Math.sin(toRad(endDeg)) };
-    const largeArc = endDeg - startDeg > 180 ? 1 : 0;
-    return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
-  }
-
-  return (
-    <div className="flex flex-col items-center">
-      <svg width="160" height="90" viewBox="0 0 160 90">
-        {tracks.map((t) => (
-          <path key={t.start} d={describeArc(t.start, t.end)} fill="none"
-            stroke={t.color} strokeWidth="10" strokeOpacity="0.25" strokeLinecap="round" />
-        ))}
-        <path d={describeArc(-180, angle)} fill="none"
-          stroke={color} strokeWidth="10" strokeOpacity="0.9" strokeLinecap="round" />
-        <line x1={cx} y1={cy} x2={cx + (r - 10) * Math.cos(toRad(angle))} y2={cy + (r - 10) * Math.sin(toRad(angle))}
-          stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r="5" fill={color} />
-        <text x={cx} y={cy - 20} textAnchor="middle" fill="white" fontSize="22" fontWeight="bold">
-          {clampedScore.toFixed(1)}
-        </text>
-        <text x={cx} y={cy - 6} textAnchor="middle" fill="#9CA3AF" fontSize="8">CFO SCORE</text>
-      </svg>
-      <span className="text-xs font-semibold mt-1" style={{ color }}>{label}</span>
-    </div>
-  );
-}
 
 function MonthlyBitePie({ cost, margin }) {
   const pct = Math.min(cost / margin, 1);
@@ -75,15 +32,7 @@ function MonthlyBitePie({ cost, margin }) {
   );
 }
 
-const VERDICT_COLOR = {
-  'Köp tryggt': '#10B981',
-  'Köp varsamt': '#6366F1',
-  'Vänta': '#F59E0B',
-  'Undvik': '#EF4444',
-};
-
 export default function VehicleCFOReport({ analysis }) {
-  const verdictColor = VERDICT_COLOR[analysis.cfo_verdict] || '#6366F1';
   const isDebtTrap = analysis.months >= 84;
   const isLongLoan = analysis.months >= 60 && !isDebtTrap;
 
@@ -98,40 +47,22 @@ export default function VehicleCFOReport({ analysis }) {
         <p className="text-xs text-white/40 mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
       </div>
 
-      {/* Header: CFO Score + Verdict */}
-      <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${verdictColor}44` }}>
-        <div className="p-4" style={{ background: `linear-gradient(135deg, ${verdictColor}11 0%, rgba(0,0,0,0) 100%)` }}>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <p className="text-xs text-white/40 uppercase tracking-wider font-semibold mb-1">
-                {analysis.vehicleName || 'Fordon'}
-              </p>
-              <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
-              <p className="text-xs text-white/40 mt-0.5">
-                Insats: {analysis.downPaymentPct}% = {fmt(analysis.downPaymentAmount)} kr · Lån: {fmt(analysis.loanAmount)} kr · {analysis.interestRate}%
-              </p>
-              <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold"
-                style={{ background: `${verdictColor}22`, color: verdictColor, border: `1px solid ${verdictColor}44` }}>
-                {analysis.cfo_verdict}
-              </div>
-            </div>
-            <SafetyGauge score={analysis.cfo_score} />
-          </div>
-        </div>
-
-        <div className="px-4 pb-4">
-          <div className="rounded-xl p-3 text-sm text-white/70 leading-relaxed"
+      {/* Header: fordon + deterministisk köpverdikt */}
+      <div>
+        <p className="text-xs text-white/40 uppercase tracking-wider font-semibold mb-1">
+          {analysis.vehicleName || 'Fordon'}
+        </p>
+        <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
+        <p className="text-xs text-white/40 mt-0.5 mb-3">
+          Insats: {analysis.downPaymentPct}% = {fmt(analysis.downPaymentAmount)} kr · Lån: {fmt(analysis.loanAmount)} kr · {analysis.interestRate}%
+        </p>
+        <PurchaseVerdictCard price={analysis.downPaymentAmount} priceLabel="Kontantinsats" impact={analysis.impact} bestDate={analysis.bestDate} />
+        {analysis.cfo_recommendation && (
+          <div className="rounded-xl p-3 mt-3 text-sm text-white/70 leading-relaxed"
             style={{ background: 'rgba(0,0,0,0.3)', boxShadow: 'var(--anchor-shadow-1)' }}>
-            <span className="text-[10px] font-bold tracking-widest uppercase text-white/40 block mb-1">
-              {analysis.cfo_score >= 7
-                ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-amber-400" aria-hidden /> Gold Verdict</span>
-                : analysis.cfo_score >= 5
-                ? <span className="inline-flex items-center gap-1"><Medal className="w-3 h-3 text-white/45" aria-hidden /> Silver Verdict</span>
-                : <span className="inline-flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-rose-400" aria-hidden /> Risk Alert</span>}
-            </span>
             {analysis.cfo_recommendation}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Debt Trap Warning */}

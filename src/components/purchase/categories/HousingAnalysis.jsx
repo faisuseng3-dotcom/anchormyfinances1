@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
+import { useTransactions } from '@/hooks/useTransactions';
+import { getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
+import PurchaseVerdictCard from '@/components/purchase/PurchaseVerdictCard';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -17,6 +20,7 @@ function stressMonthly(loanAmount, currentRate, deltaRate, months) {
 }
 
 export default function HousingAnalysis({ mode, profile }) {
+  const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
   const [housing, setHousing] = useState({ type: 'brf', name: '', price: '', monthly: '', fee: '', area: '', location: '' });
   const [urlInput, setUrlInput] = useState('');
   const [urlLoading, setUrlLoading] = useState(false);
@@ -57,8 +61,10 @@ export default function HousingAnalysis({ mode, profile }) {
     const stress5 = stressMonthly(loanAmount, rate, 5 - rate, months);
     const afterStress5 = margin - stress5 - fee;
     const kalp = income * 0.7 - totalMonthly; // 70% of income rule
+    const stressOk = afterStress5 >= 0;
+    const kalpOk = kalp >= 0;
 
-    setLiveCalc({ loanAmount, downPayment, monthlyLoan, totalMonthly, incomeShare, stress3, stress5, afterStress5, kalp, lagfart, pantbrev, hiddenCosts });
+    setLiveCalc({ loanAmount, downPayment, monthlyLoan, totalMonthly, incomeShare, stress3, stress5, afterStress5, kalp, lagfart, pantbrev, hiddenCosts, stressOk, kalpOk });
   }, [housing.price, housing.monthly, housing.fee, housing.type, income, margin]);
 
   const handleUrlAutofill = async () => {
@@ -115,28 +121,18 @@ ${liveCalc ? `Total månadskostnad (est.): ${fmt(liveCalc.totalMonthly)} kr
 Kassaflöde vid 5% ränta: ${fmt(liveCalc.afterStress5)} kr/mån
 Dolda kostnader (lagfart+pantbrev): ${fmt(liveCalc.hiddenCosts)} kr` : ''}
 
-Ge:
-1. cfo_verdict: "Trygg investering" | "Köp med försiktighet" | "Vänta" | "Undvik"
-2. cfo_score: 1-10
-3. cfo_recommendation: 2-3 meningar om bostadsköpet. SVENSKA.
-4. stress_ok: true/false - Klarar köparen 5% ränta?
-5. kalp_ok: true/false - Klarar KALP-kalkylen (inkomst × 0.7)?
-6. price_per_sqm: Prisper m² vs snitt i området (uppskatta baserat på stad)
-7. value_growth_5y: Uppskattad värdeutveckling i % över 5 år baserat på ${housing.location}
-8. risk_factors: array med max 3 riskfaktorer som korta strängar
-9. hidden_tip: En konkret sak köparen missar. SVENSKA.
+Ge ENDAST narrativ text — appen räknar redan ut stresstest, KALP och köpverdikt själv:
+1. cfo_recommendation: 2-3 meningar om bostadsköpet. SVENSKA.
+2. value_growth_5y: Uppskattad värdeutveckling i % över 5 år baserat på ${housing.location} — märk tydligt som en grov uppskattning, inte en prognos.
+3. risk_factors: array med max 3 riskfaktorer som korta strängar
+4. hidden_tip: En konkret sak köparen missar. SVENSKA.
 
 Svara ENDAST med JSON.`,
       add_context_from_internet: true,
       response_json_schema: {
         type: 'object',
         properties: {
-          cfo_verdict: { type: 'string' },
-          cfo_score: { type: 'number' },
           cfo_recommendation: { type: 'string' },
-          stress_ok: { type: 'boolean' },
-          kalp_ok: { type: 'boolean' },
-          price_per_sqm: { type: 'number' },
           value_growth_5y: { type: 'number' },
           risk_factors: { type: 'array', items: { type: 'string' } },
           hidden_tip: { type: 'string' },
@@ -144,15 +140,14 @@ Svara ENDAST med JSON.`,
       }
     });
 
-    setAnalysis({ ...liveCalc, ...ai, price, monthly: fee || monthly, housing });
+    setAnalysis({
+      ...liveCalc, ...ai, price, monthly: fee || monthly, housing,
+      // Kontantinsatsen (15%) är det som lämnar bufferten nu — det är den
+      // deterministiska motorn räknar köpkonsekvens på.
+      impact: getPurchaseImpact(profile, transactions, liveCalc?.downPayment || price * 0.15),
+      bestDate: getBestPurchaseDate(profile, transactions, liveCalc?.downPayment || price * 0.15),
+    });
     setLoading(false);
-  };
-
-  const VERDICT_COLOR = {
-    'Trygg investering': '#10B981',
-    'Köp med försiktighet': '#6366F1',
-    'Vänta': '#F59E0B',
-    'Undvik': '#EF4444',
   };
 
   return (
@@ -274,34 +269,18 @@ Svara ENDAST med JSON.`,
       <AnimatePresence>
         {analysis && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            {/* Verdict header */}
-            {(() => {
-              const vc = VERDICT_COLOR[analysis.cfo_verdict] || '#6366F1';
-              return (
-                <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${vc}44` }}>
-                  <div className="p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)` }}>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{analysis.housing.name || 'Bostad'}</p>
-                        <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
-                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold"
-                          style={{ background: `${vc}22`, color: vc, border: `1px solid ${vc}44` }}>
-                          {analysis.cfo_verdict}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
-                        <div className="text-[10px] text-white/40">CFO SCORE</div>
-                      </div>
-                    </div>
-                    <div className="mt-3 p-3 rounded-xl text-sm text-white/70 leading-relaxed"
-                      style={{ background: 'rgba(0,0,0,0.3)', border: `1px solid ${vc}33` }}>
-                      {analysis.cfo_recommendation}
-                    </div>
-                  </div>
+            {/* Verdict header: bostad + deterministisk köpverdikt */}
+            <div>
+              <p className="text-xs text-white/40 uppercase tracking-wider mb-1">{analysis.housing.name || 'Bostad'}</p>
+              <h2 className="text-xl font-black text-white mb-3">{fmt(analysis.price)} kr</h2>
+              <PurchaseVerdictCard price={analysis.downPayment} priceLabel="Kontantinsats (15%)" impact={analysis.impact} bestDate={analysis.bestDate} />
+              {analysis.cfo_recommendation && (
+                <div className="mt-3 p-3 rounded-xl text-sm text-white/70 leading-relaxed"
+                  style={{ background: 'rgba(0,0,0,0.3)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  {analysis.cfo_recommendation}
                 </div>
-              );
-            })()}
+              )}
+            </div>
 
             {/* Stress tests */}
             <div className="rounded-2xl p-4 space-y-3" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
@@ -314,13 +293,13 @@ Svara ENDAST med JSON.`,
                 <div key={i} className="flex justify-between items-center text-sm">
                   <span className="text-white/45">{s.label}</span>
                   <div className="text-right">
-                    <span className={`font-bold ${i === 2 && !analysis.stress_ok ? 'text-rose-400' : 'text-white'}`}>{fmt(s.value)} kr/mån</span>
+                    <span className={`font-bold ${i === 2 && !analysis.stressOk ? 'text-rose-400' : 'text-white'}`}>{fmt(s.value)} kr/mån</span>
                     {s.delta && <span className={`text-xs ml-2 ${s.delta > 0 ? 'text-rose-400' : 'text-emerald-400'}`}>{s.delta > 0 ? '+' : ''}{fmt(s.delta)}</span>}
                   </div>
                 </div>
               ))}
-              <div className={`rounded-lg p-2 text-xs font-medium flex items-center gap-1.5 ${analysis.stress_ok ? 'bg-[#4fae82]/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}>
-                {analysis.stress_ok
+              <div className={`rounded-lg p-2 text-xs font-medium flex items-center gap-1.5 ${analysis.stressOk ? 'bg-[#4fae82]/10 text-emerald-300' : 'bg-rose-500/10 text-rose-300'}`}>
+                {analysis.stressOk
                   ? <><Check className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Du klarar 5%-ränta med positiv marginal</>
                   : <><AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Vid 5% ränta får du negativt kassaflöde</>}
               </div>
@@ -330,8 +309,8 @@ Svara ENDAST med JSON.`,
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <p className="text-[10px] text-white/40 mb-1 uppercase tracking-wider">KALP-kalkyl</p>
-                <p className={`text-xl font-black flex items-center gap-1.5 ${analysis.kalp_ok ? 'text-emerald-400' : 'text-rose-400'}`}>
-                  {analysis.kalp_ok
+                <p className={`text-xl font-black flex items-center gap-1.5 ${analysis.kalpOk ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  {analysis.kalpOk
                     ? <><Check className="w-5 h-5" aria-hidden /> Godkänd</>
                     : <><X className="w-5 h-5" aria-hidden /> Ej godkänd</>}
                 </p>

@@ -7,6 +7,7 @@ import PlanGate from '@/components/billing/PlanGate';
 import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
 import CategorySelector from '@/components/purchase/CategorySelector';
 import PurchaseAnalyzer from '@/components/purchase/PurchaseAnalyzer';
+import QuickPurchaseCheck from '@/components/purchase/QuickPurchaseCheck';
 import PurchaseHero from '@/components/purchase/PurchaseHero';
 import VehicleAnalysis from '@/components/purchase/categories/VehicleAnalysis';
 import HousingAnalysis from '@/components/purchase/categories/HousingAnalysis';
@@ -32,6 +33,12 @@ export default function PurchaseSimulator() {
     >
       <PlanGate feature="purchase_simulator">
         <PurchaseHero profile={profile} />
+
+        <DashboardSection nested title="Kan jag köpa det här?" subtitle="Skriv vad du funderar på att köpa">
+          <QuickPurchaseCheck profile={profile} />
+        </DashboardSection>
+
+        <DashboardDivider className="my-6" />
 
         <DashboardSection nested title="Snabbkoll" subtitle="Länk eller bild från annons">
           <PurchaseAnalyzer profile={profile} />

@@ -6,10 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
+import { useTransactions } from '@/hooks/useTransactions';
+import { getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
+import PurchaseVerdictCard from '@/components/purchase/PurchaseVerdictCard';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 export default function ElectronicsAnalysis({ mode, profile }) {
+  const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
   const [device, setDevice] = useState({ name: '', price: '', usage: '', usageYears: '2' });
   const [urlInput, setUrlInput] = useState('');
   const [urlLoading, setUrlLoading] = useState(false);
@@ -37,13 +41,14 @@ export default function ElectronicsAnalysis({ mode, profile }) {
     // Depreciation: electronics lose ~40% yr1, ~20% yr2
     const residualValue = price * (years <= 1 ? 0.6 : years <= 2 ? 0.4 : 0.25);
     const totalDepreciation = price - residualValue;
+    const depreciationPct = Math.round((totalDepreciation / price) * 100);
 
     // Savings goal impact
     const savingsPct = savingsGoal > 0 ? (price / savingsGoal) * 100 : 0;
     const bufferPct = buffer > 0 ? (price / buffer) * 100 : 0;
     const monthsToSave = margin > 0 ? price / (margin * 0.2) : 99;
 
-    setLiveCalc({ costPerDay, costPerMonth, residualValue, totalDepreciation, savingsPct, bufferPct, monthsToSave, days });
+    setLiveCalc({ costPerDay, costPerMonth, residualValue, totalDepreciation, depreciationPct, savingsPct, bufferPct, monthsToSave, days });
   }, [device.price, device.usageYears, buffer, savingsGoal, margin]);
 
   const handleUrlAutofill = async () => {
@@ -87,26 +92,20 @@ Användarens inkomst: ${fmt(income)} kr/mån
 Sparmål "${savingsGoalName}": ${fmt(savingsGoal)} kr (köpet = ${Math.round(liveCalc?.savingsPct || 0)}% av målet)
 Buffert: ${fmt(buffer)} kr
 
-Ge:
-1. cfo_verdict: "Smart investering" | "Köp med eftertanke" | "Vänta" | "Skippa"
-2. cfo_score: 1-10
-3. need_analysis: En konkret analys om behovet är äkta eller ett impulsköp. SVENSKA.
-4. depreciation_pct: Uppskattad värdeminskning i % efter 1 år för denna typ av produkt (t.ex. 40 för smartphones)
-5. alternative: Konkret billigare alternativ (refurbished / annan modell). SVENSKA.
-6. cost_per_use_story: Kreativ beskrivning av "kostnaden per dag" (t.ex. "Som en kopp kaffe varje dag"). SVENSKA.
-7. goal_trade_off: Vad sparmålet hade blivit om pengarna investerades istället. SVENSKA. 
-8. upgrade_cycle: Hur länge bör man vänta innan detta köp är rimligt (månader)?
-9. best_time_to_buy: Tips om när priset brukar sjunka (rea, release-cykler). SVENSKA.
+Ge ENDAST narrativ text — ingen poäng eller verdikt, det räknar appen ut själv:
+1. need_analysis: En konkret analys om behovet är äkta eller ett impulsköp. SVENSKA.
+2. alternative: Konkret billigare alternativ (refurbished / annan modell). SVENSKA.
+3. cost_per_use_story: Kreativ beskrivning av "kostnaden per dag" (t.ex. "Som en kopp kaffe varje dag"). SVENSKA.
+4. goal_trade_off: Vad sparmålet hade blivit om pengarna investerades istället. SVENSKA.
+5. upgrade_cycle: Hur länge bör man vänta innan detta köp är rimligt (månader)?
+6. best_time_to_buy: Tips om när priset brukar sjunka (rea, release-cykler). SVENSKA.
 
 Svara ENDAST med JSON.`,
       add_context_from_internet: true,
       response_json_schema: {
         type: 'object',
         properties: {
-          cfo_verdict: { type: 'string' },
-          cfo_score: { type: 'number' },
           need_analysis: { type: 'string' },
-          depreciation_pct: { type: 'number' },
           alternative: { type: 'string' },
           cost_per_use_story: { type: 'string' },
           goal_trade_off: { type: 'string' },
@@ -116,15 +115,16 @@ Svara ENDAST med JSON.`,
       }
     });
 
-    setAnalysis({ ...liveCalc, ...ai, price: parseFloat(device.price), device });
+    const frozenPrice = parseFloat(device.price) || 0;
+    setAnalysis({
+      ...liveCalc,
+      ...ai,
+      price: frozenPrice,
+      device,
+      impact: getPurchaseImpact(profile, transactions, frozenPrice),
+      bestDate: getBestPurchaseDate(profile, transactions, frozenPrice),
+    });
     setLoading(false);
-  };
-
-  const VERDICT_COLOR = {
-    'Smart investering': '#10B981',
-    'Köp med eftertanke': '#6366F1',
-    'Vänta': '#F59E0B',
-    'Skippa': '#EF4444',
   };
 
   return (
@@ -209,26 +209,15 @@ Svara ENDAST med JSON.`,
         {analysis && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
             {(() => {
-              const vc = VERDICT_COLOR[analysis.cfo_verdict] || '#6366F1';
-              const depreciationVal = analysis.price * ((analysis.depreciation_pct || 40) / 100);
+              const depreciationPct = analysis.depreciationPct ?? analysis.depreciation_pct ?? 40;
+              const depreciationVal = analysis.totalDepreciation ?? (analysis.price * (depreciationPct / 100));
               return (
                 <>
-                  {/* Header verdict */}
-                  <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)`, border: `1px solid ${vc}44` }}>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-xs text-white/40 mb-1">{analysis.device.name}</p>
-                        <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
-                        <div className="mt-2 inline-flex px-3 py-1 rounded-full text-sm font-bold"
-                          style={{ background: `${vc}22`, color: vc, border: `1px solid ${vc}44` }}>
-                          {analysis.cfo_verdict}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
-                        <div className="text-[10px] text-white/40">CFO SCORE</div>
-                      </div>
-                    </div>
+                  {/* Header: produktnamn + deterministisk köpverdikt */}
+                  <div>
+                    <p className="text-xs text-white/40 mb-1">{analysis.device.name}</p>
+                    <h2 className="text-xl font-black text-white mb-3">{fmt(analysis.price)} kr</h2>
+                    <PurchaseVerdictCard price={analysis.price} impact={analysis.impact} bestDate={analysis.bestDate} />
                   </div>
 
                   {/* Cost per use story */}
@@ -245,7 +234,7 @@ Svara ENDAST med JSON.`,
                         <TrendingDown className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="text-[10px] text-rose-400 uppercase tracking-wider font-bold">Värdeminskning år 1</p>
-                          <p className="text-xl font-black text-white mt-0.5">-{analysis.depreciation_pct || 40}%</p>
+                          <p className="text-xl font-black text-white mt-0.5">-{depreciationPct}%</p>
                           <p className="text-[10px] text-white/40 mt-0.5">≈ -{fmt(depreciationVal)} kr</p>
                         </div>
                       </div>

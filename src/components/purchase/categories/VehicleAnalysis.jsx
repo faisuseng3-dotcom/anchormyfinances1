@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { base44 } from '@/api/base44Client';
+import { useTransactions } from '@/hooks/useTransactions';
+import { getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
 import VehicleCFOReport from './VehicleCFOReport';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
@@ -80,6 +82,7 @@ function calcLocal(price, months, downPaymentPct, interestRate) {
 }
 
 export default function VehicleAnalysis({ mode, profile }) {
+  const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
   const [vehicle, setVehicle] = useState({ name: '', price: '', months: '60' });
   const [downPaymentPct, setDownPaymentPct] = useState(20);
   const [interestRate, setInterestRate] = useState(6.95);
@@ -152,14 +155,11 @@ Buffert nu: ${fmt(currentBuffer)} kr (${bufferMonths.toFixed(1)} mån trygghet)
 Buffert efter kontantinsats: ${fmt(currentBuffer - local.downPaymentAmount)} kr (${newBufferMonths.toFixed(1)} mån trygghet)
 Är man "under vatten" vid halvtid: ${local.isUnderwater ? 'JA – skulden överstiger bilens värde' : 'NEJ'}
 
-Ge:
-1. cfo_score: 1-10 (heltal). 10 = perfekt ekonomisk beslut, 1 = ekonomisk katastrof.
-2. cfo_verdict: "Köp tryggt" | "Köp varsamt" | "Vänta" | "Undvik"
-3. cfo_recommendation: 2-3 meningar, anpassad till situationen. SVENSKA. Kommentera kontantinsatsen, räntan och buffertpåverkan.
-4. contextual_story: En mening som förklarar vad totalkostnaden "motsvarar" kreativt. SVENSKA.
-5. risk_level: "low" | "medium" | "high"
-6. better_alternative: En kort beskrivning av ett ekonomiskt smartare alternativ. SVENSKA.
-7. opportunity_investment: Vad kontantinsatsen ${fmt(local.downPaymentAmount)} kr hade blivit i en indexfond när lånet är slutbetalt. SVENSKA.
+Ge ENDAST narrativ text — ingen poäng eller verdikt, det räknar appen ut själv:
+1. cfo_recommendation: 2-3 meningar, anpassad till situationen. SVENSKA. Kommentera kontantinsatsen, räntan och buffertpåverkan.
+2. contextual_story: En mening som förklarar vad totalkostnaden "motsvarar" kreativt. SVENSKA.
+3. better_alternative: En kort beskrivning av ett ekonomiskt smartare alternativ. SVENSKA.
+4. opportunity_investment: Vad kontantinsatsen ${fmt(local.downPaymentAmount)} kr hade blivit i en indexfond när lånet är slutbetalt. SVENSKA.
 
 Svara ENDAST med JSON.`;
 
@@ -169,11 +169,8 @@ Svara ENDAST med JSON.`;
       response_json_schema: {
         type: 'object',
         properties: {
-          cfo_score: { type: 'number' },
-          cfo_verdict: { type: 'string' },
           cfo_recommendation: { type: 'string' },
           contextual_story: { type: 'string' },
-          risk_level: { type: 'string' },
           better_alternative: { type: 'string' },
           opportunity_investment: { type: 'string' },
         }
@@ -185,6 +182,10 @@ Svara ENDAST med JSON.`;
       vehicleName: vehicle.name, margin,
       downPaymentPct, interestRate,
       currentBuffer, bufferMonths, newBufferMonths,
+      // Kontantinsatsen är det som faktiskt lämnar bufferten nu — det är den
+      // deterministiska motorn räknar köpkonsekvens på, inte hela bilpriset.
+      impact: getPurchaseImpact(profile, transactions, local.downPaymentAmount),
+      bestDate: getBestPurchaseDate(profile, transactions, local.downPaymentAmount),
     });
     setLoading(false);
   };

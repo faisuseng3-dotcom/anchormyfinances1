@@ -6,10 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { base44 } from '@/api/base44Client';
+import { useTransactions } from '@/hooks/useTransactions';
+import { getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
+import PurchaseVerdictCard from '@/components/purchase/PurchaseVerdictCard';
 
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 export default function EventAnalysis({ mode, profile }) {
+  const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
   const [event, setEvent] = useState({ name: '', ticketCost: '', city: '', date: '', travelNeeded: false });
   const [urlInput, setUrlInput] = useState('');
   const [urlLoading, setUrlLoading] = useState(false);
@@ -85,25 +89,19 @@ Sparmål "${savingsGoalName}": ${fmt(savingsGoal)} kr
 Andel av buffert: ${Math.round(liveCalc?.bufferPct || 0)}%
 Andel av sparmål: ${Math.round(liveCalc?.savingsPct || 0)}%
 
-Ge:
-1. cfo_verdict: "Kör på!" | "Planera smart" | "Vänta lite" | "Skippa"
-2. cfo_score: 1-10 (10 = självklart värt det)
-3. value_pulse: En mening om upplevelsevärdet. Känn och kreativ. SVENSKA.
-4. total_real_cost: Uppskattad total kostnad inkl. allt (kr) baserat på stad och eventtyp
-5. travel_breakdown: Om resa: kort breakdown av tåg, hotell, mat. SVENSKA.
-6. goal_impact: En mening om hur detta påverkar sparmålet. SVENSKA.
-7. smart_tip: Ett konkret tips för att göra upplevelsen billigare utan att sänka glädjen. SVENSKA.
-8. mood_match: true/false - Matchar eventet användarens livsstilsmål?
+Ge ENDAST narrativ text — appen räknar redan ut totalkostnad och köpverdikt själv:
+1. value_pulse: En mening om upplevelsevärdet. Känn och kreativ. SVENSKA.
+2. travel_breakdown: Om resa: kort breakdown av tåg, hotell, mat. SVENSKA.
+3. goal_impact: En mening om hur detta påverkar sparmålet. SVENSKA.
+4. smart_tip: Ett konkret tips för att göra upplevelsen billigare utan att sänka glädjen. SVENSKA.
+5. mood_match: true/false - Matchar eventet användarens livsstilsmål?
 
 Svara ENDAST med JSON.`,
       add_context_from_internet: true,
       response_json_schema: {
         type: 'object',
         properties: {
-          cfo_verdict: { type: 'string' },
-          cfo_score: { type: 'number' },
           value_pulse: { type: 'string' },
-          total_real_cost: { type: 'number' },
           travel_breakdown: { type: 'string' },
           goal_impact: { type: 'string' },
           smart_tip: { type: 'string' },
@@ -112,15 +110,12 @@ Svara ENDAST med JSON.`,
       }
     });
 
-    setAnalysis({ ...liveCalc, ...ai, event });
+    setAnalysis({
+      ...liveCalc, ...ai, event,
+      impact: getPurchaseImpact(profile, transactions, liveCalc?.totalCost || 0),
+      bestDate: getBestPurchaseDate(profile, transactions, liveCalc?.totalCost || 0),
+    });
     setLoading(false);
-  };
-
-  const VERDICT_COLOR = {
-    'Kör på!': '#10B981',
-    'Planera smart': '#6366F1',
-    'Vänta lite': '#F59E0B',
-    'Skippa': '#EF4444',
   };
 
   return (
@@ -214,23 +209,15 @@ Svara ENDAST med JSON.`,
         {analysis && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
             {(() => {
-              const vc = VERDICT_COLOR[analysis.cfo_verdict] || '#F59E0B';
               return (
                 <>
-                  {/* Verdict */}
-                  <div className="rounded-2xl p-4" style={{ background: `linear-gradient(135deg, ${vc}11 0%, transparent 100%)`, border: `1px solid ${vc}44` }}>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <p className="text-xs text-white/40 mb-1">{analysis.event.name}</p>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-lg font-black"
-                          style={{ color: vc }}>{analysis.cfo_verdict}</div>
-                        <p className="text-sm text-white/70 mt-2 leading-relaxed italic">"{analysis.value_pulse}"</p>
-                      </div>
-                      <div className="text-center ml-4">
-                        <div className="text-4xl font-black" style={{ color: vc }}>{analysis.cfo_score}</div>
-                        <div className="text-[10px] text-white/40">VÄRDE</div>
-                      </div>
-                    </div>
+                  {/* Verdict: deterministisk köpverdikt + AI:s narrativa värdebeskrivning */}
+                  <div>
+                    <p className="text-xs text-white/40 mb-2">{analysis.event.name}</p>
+                    <PurchaseVerdictCard price={analysis.totalCost} impact={analysis.impact} bestDate={analysis.bestDate} />
+                    {analysis.value_pulse && (
+                      <p className="text-sm text-white/70 mt-2 leading-relaxed italic">"{analysis.value_pulse}"</p>
+                    )}
                     {analysis.mood_match && (
                       <div className="mt-3 rounded-lg p-2 text-xs bg-[#4fae82]/10 text-emerald-300 flex items-center gap-1.5">
                         <Check className="w-3.5 h-3.5 flex-shrink-0" aria-hidden /> Matchar din livsstilsprofil – detta är bra för ditt mående!
@@ -243,7 +230,7 @@ Svara ENDAST med JSON.`,
                     <p className="text-xs font-bold text-white/45 uppercase tracking-wider mb-3 flex items-center gap-1.5"><Receipt className="w-3.5 h-3.5" aria-hidden /> Totalbilden</p>
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-sm text-white/45">Total uppskattad kostnad</span>
-                      <span className="text-xl font-black text-white">{fmt(analysis.total_real_cost || analysis.totalCost)} kr</span>
+                      <span className="text-xl font-black text-white">{fmt(analysis.totalCost)} kr</span>
                     </div>
                     {analysis.travel_breakdown && event.travelNeeded && (
                       <p className="text-xs text-white/45 mt-1">{analysis.travel_breakdown}</p>

@@ -14,6 +14,30 @@ import {
 import { recordAIExchange, saveSemanticMemory } from '@/lib/anchorMemory';
 import { AI_FEATURES, MEMORY_TYPES } from '@/lib/anchorMemory/types';
 import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
+import { useTransactions } from '@/hooks/useTransactions';
+import { getMonthlyMargin, getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
+
+/** AI:n får bara tolka fritext/bild till ett pris och en produktbeskrivning —
+ * själva köpkonsekvensen (budgetpåverkan, sparmålspåverkan, verdikt) räknas
+ * alltid lokalt av financialEngine, aldrig av AI-svaret. */
+const VERDICT_FROM_ENGINE = { green: 'Köp', yellow: 'Vänta', red: 'Hitta billigare' };
+
+function applyEngineVerdict(payload, profile, transactions) {
+  const price = Number(payload?.price) || 0;
+  const margin = getMonthlyMargin(profile);
+  const impact = getPurchaseImpact(profile, transactions, price);
+  const bestDate = getBestPurchaseDate(profile, transactions, price);
+  return {
+    ...payload,
+    price,
+    margin,
+    budgetImpact: Math.min(100, Math.round((price / Math.max(1, margin)) * 100)),
+    daysDelayedGoal: Math.round((impact.goalDelayMonths || 0) * 30),
+    verdict: VERDICT_FROM_ENGINE[impact.verdict] || 'Vänta',
+    _impact: impact,
+    _bestDate: bestDate,
+  };
+}
 
 const fmt = (v) => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
@@ -74,6 +98,7 @@ function getCooldownEnd(hours) {
 }
 
 export default function PurchaseAnalyzer({ profile }) {
+  const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
   const [url, setUrl] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -130,7 +155,7 @@ export default function PurchaseAnalyzer({ profile }) {
         fileUrls,
       });
       const payload = res?.data || res;
-      setResult({ ...payload, margin });
+      setResult(applyEngineVerdict(payload, profile, transactions));
       const productName = payload?.productName || url || 'köp';
       const userMsg = `Jag funderar på att köpa ${productName}`;
       const aiReply = payload?.aiInsight || payload?.verdictReason || payload?.verdict || '';
@@ -178,7 +203,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
         },
         file_urls: fileUrls.length > 0 ? fileUrls : null,
       });
-      setResult({ ...fallback, model: 'direct_fallback', margin });
+      setResult(applyEngineVerdict({ ...fallback, model: 'direct_fallback' }, profile, transactions));
       const productName = fallback?.productName || url || 'köp';
       void recordAIExchange({
         profile,
@@ -413,6 +438,19 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               <p className={`${sectionSubtitleClass} mt-2`}>{result.verdictReason}</p>
               <p className="text-[14px] text-white/75 leading-relaxed mt-2">{result.aiInsight}</p>
             </div>
+
+            {result.verdict !== 'Köp' && result._bestDate?.found && (
+              <>
+                <DashboardDivider className="my-5" />
+                <div>
+                  <p className={sectionMetaClass}>Bättre datum att köpa</p>
+                  <p className="text-[15px] font-semibold text-white mt-1">{result._bestDate.dateLabel}</p>
+                  <p className="text-[13px] text-white/55 mt-1">
+                    Då har din buffert hunnit återhämta sig till minst {fmt(result._bestDate.balanceThen)} kr.
+                  </p>
+                </div>
+              </>
+            )}
 
             {showShield && (
               <>
