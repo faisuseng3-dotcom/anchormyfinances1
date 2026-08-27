@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const LETTERS = ['A', 'n', 'c', 'h', 'o', 'r'];
+const LETTERS = ['L', 'a', 'g', 'o'];
 
 const containerVariants = {
   hidden: {},

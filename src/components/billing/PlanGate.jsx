@@ -27,6 +27,11 @@ const FEATURE_COPY = {
     description: 'Kvitton, moms och verifikat kräver Business-planen.',
     minPlan: 'business',
   },
+  purchase_simulator: {
+    title: 'Kan jag köpa det här?',
+    description: 'Köpsimulatorn ingår i Pro och Business.',
+    minPlan: 'pro',
+  },
 };
 
 export default function PlanGate({ feature, children, compact = false }) {

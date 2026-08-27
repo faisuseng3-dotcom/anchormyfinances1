@@ -65,6 +65,7 @@ export const FEATURE_MIN_PLAN = {
   future_pulse: 'pro',
   squads: 'pro',
   business_dashboard: 'business',
+  purchase_simulator: 'pro',
 };
 
 const PLAN_RANK = Object.fromEntries(PLAN_ORDER.map((id, i) => [id, i]));

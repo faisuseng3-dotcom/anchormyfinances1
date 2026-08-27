@@ -3,7 +3,7 @@ import { pageSeoFor } from '@/lib/pageSeo';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
-import ModeGate from '@/components/ModeGate';
+import PlanGate from '@/components/billing/PlanGate';
 import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
 import CategorySelector from '@/components/purchase/CategorySelector';
 import PurchaseAnalyzer from '@/components/purchase/PurchaseAnalyzer';
@@ -30,7 +30,7 @@ export default function PurchaseSimulator() {
       subtitle="Simulera större köp"
       backHref={createPageUrl('Dashboard')}
     >
-      <ModeGate feature="purchase_simulator" mode={currentMode}>
+      <PlanGate feature="purchase_simulator">
         <PurchaseHero profile={profile} />
 
         <DashboardSection nested title="Snabbkoll" subtitle="Länk eller bild från annons">
@@ -60,7 +60,7 @@ export default function PurchaseSimulator() {
             {selectedCategory === 'event' && <EventAnalysis mode={currentMode} profile={profile} />}
           </>
         )}
-      </ModeGate>
+      </PlanGate>
     </PageShell>
   );
 }
