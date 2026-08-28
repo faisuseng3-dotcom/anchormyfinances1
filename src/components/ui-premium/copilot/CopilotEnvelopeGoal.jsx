@@ -16,9 +16,11 @@ export default function CopilotEnvelopeGoal({
   iconId = 'default',
   visualType = 'icon',
   className = '',
+  featured = false,
 }) {
   const pct = target > 0 ? Math.min(100, (current / target) * 100) : 0;
   const fillPct = Math.max(8, pct);
+  const ringSize = featured ? 108 : 80;
 
   return (
     <motion.div
@@ -53,21 +55,21 @@ export default function CopilotEnvelopeGoal({
         />
       </svg>
 
-      <div className="relative z-10 p-5 flex items-center gap-4">
+      <div className={`relative z-10 flex items-center gap-4 ${featured ? 'p-6' : 'p-5'}`}>
         <VisualSavingsGoalRing
           pct={pct}
-          size={80}
-          stroke={5}
+          size={ringSize}
+          stroke={featured ? 6 : 5}
           imageUrl={visualType === 'image' ? imageUrl : null}
           iconId={iconId}
           showMilestones
         />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-[var(--color-text-primary)] truncate">{name}</p>
-          <p className="text-[12px] text-[var(--color-text-muted)] mt-0.5 tabular-nums">
+          <p className={`font-semibold text-[var(--color-text-primary)] truncate ${featured ? 'text-[18px]' : 'text-[15px]'}`}>{name}</p>
+          <p className={`text-[var(--color-text-muted)] mt-0.5 tabular-nums ${featured ? 'text-[14px]' : 'text-[12px]'}`}>
             {fmt(current)} / {fmt(target)} kr
           </p>
-          <div className="mt-3 h-1.5 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
+          <div className={`rounded-full bg-[var(--color-background-secondary)] overflow-hidden ${featured ? 'mt-4 h-2' : 'mt-3 h-1.5'}`}>
             <motion.div
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, var(--copilot-accent-blue), var(--copilot-accent-green))' }}
@@ -77,7 +79,7 @@ export default function CopilotEnvelopeGoal({
             />
           </div>
         </div>
-        <span className="text-[17px] font-bold text-[var(--copilot-accent-green)] tabular-nums shrink-0">
+        <span className={`font-bold text-[var(--copilot-accent-green)] tabular-nums shrink-0 ${featured ? 'text-[24px]' : 'text-[17px]'}`}>
           {Math.round(pct)}%
         </span>
       </div>

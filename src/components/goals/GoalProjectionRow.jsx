@@ -36,37 +36,41 @@ export default function GoalProjectionRow({ profile }) {
   };
 
   return (
-    <div className="rounded-2xl p-4 mt-2 organic-surface space-y-2">
-      <p className="text-[13px] text-[var(--color-text-secondary)]">
-        Beräknad måldatum: <span className="text-[var(--color-text-primary)] font-semibold">{projection.targetDateLabel}</span>
-        {projection.isRateAssumed && ' (uppskattat sparande)'}
-      </p>
-
-      {whatIf?.monthsEarlier > 0 && (
+    <div className="rounded-2xl p-4 mt-2 organic-surface">
+      <div className="space-y-1.5">
         <p className="text-[13px] text-[var(--color-text-secondary)]">
-          Om du sparar {fmt(suggestedExtra)} kr mer/mån når du målet {whatIf.monthsEarlier} månad{whatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.
+          Beräknad måldatum: <span className="text-[var(--color-text-primary)] font-semibold">{projection.targetDateLabel}</span>
+          {projection.isRateAssumed && ' (uppskattat sparande)'}
         </p>
-      )}
 
-      <Link
-        to={createPageUrl('FuturePulse')}
-        className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
-      >
-        Utforska i Framtid
-        <ArrowRight className="w-3.5 h-3.5" />
-      </Link>
+        {whatIf?.monthsEarlier > 0 && (
+          <p className="text-[13px] text-[var(--color-text-secondary)]">
+            Om du sparar {fmt(suggestedExtra)} kr mer/mån når du målet {whatIf.monthsEarlier} månad{whatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.
+          </p>
+        )}
+      </div>
 
-      <button
-        type="button"
-        onClick={() => setShowDeadlinePicker((v) => !v)}
-        className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-accent)]"
-      >
-        Vill du nå målet till ett visst datum?
-        <ChevronDown className="w-3.5 h-3.5 transition-transform" style={{ transform: showDeadlinePicker ? 'rotate(180deg)' : 'none' }} />
-      </button>
+      <div className="mt-3 pt-3 border-t border-[var(--color-border)] flex flex-wrap items-center gap-x-5 gap-y-2">
+        <Link
+          to={createPageUrl('FuturePulse')}
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
+        >
+          Utforska i Framtid
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setShowDeadlinePicker((v) => !v)}
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-accent)]"
+        >
+          Sätt ett måldatum
+          <ChevronDown className="w-3.5 h-3.5 transition-transform" style={{ transform: showDeadlinePicker ? 'rotate(180deg)' : 'none' }} />
+        </button>
+      </div>
 
       {showDeadlinePicker && (
-        <div className="pt-1 space-y-2">
+        <div className="mt-3 pt-3 border-t border-[var(--color-border)] space-y-2">
           <div className="flex gap-2">
             <input
               type="month"

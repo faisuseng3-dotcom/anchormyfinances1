@@ -10,8 +10,8 @@ export default function CopilotProgressRing({
   max = 100,
   size = 120,
   stroke = 7,
-  color = '#4fae82',
-  trackColor = 'rgba(255,255,255,0.1)',
+  color = 'var(--color-success)',
+  trackColor = 'var(--color-border)',
   label,
   sublabel,
   children,
@@ -44,7 +44,7 @@ export default function CopilotProgressRing({
         {children || (
           <>
             {label != null && (
-              <span className="text-[22px] font-bold text-white tabular-nums leading-none tracking-tight">
+              <span className="text-[22px] font-bold text-[var(--color-text-primary)] tabular-nums leading-none tracking-tight">
                 {label}
               </span>
             )}

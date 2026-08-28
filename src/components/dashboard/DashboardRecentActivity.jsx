@@ -31,7 +31,21 @@ export default function DashboardRecentActivity({ transactions = [] }) {
     [transactions],
   );
 
-  if (!recent.length) return null;
+  if (!recent.length) {
+    return (
+      <section>
+        <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Senaste aktivitet</h2>
+        <div
+          className="rounded-2xl p-5 text-center"
+          style={{ border: '1px dashed var(--color-border)' }}
+        >
+          <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed">
+            Inga transaktioner registrerade än — tryck på "Registrera" ovan för att lägga till den första.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>

@@ -132,7 +132,7 @@ export default function FutureConversation({ profile, transactions }) {
 
       <div className="space-y-4">
         <AnimatePresence initial={false}>
-          {thread.map((item) => (
+          {thread.map((item, index) => (
             <FutureAnswerCard
               key={item.id}
               question={item.question}
@@ -140,6 +140,7 @@ export default function FutureConversation({ profile, transactions }) {
               intent={item.intent}
               amountKr={item.amountKr}
               profile={profile}
+              defaultExpanded={index === 0}
             />
           ))}
         </AnimatePresence>

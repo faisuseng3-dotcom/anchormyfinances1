@@ -5,9 +5,9 @@ import { createPageUrl } from '@/utils';
 import PageShell from '@/components/layout/PageShell';
 import PlanGate from '@/components/billing/PlanGate';
 import { DashboardDivider, DashboardSection } from '@/components/dashboard/DashboardChrome';
+import { ChevronDown } from 'lucide-react';
 import CategorySelector from '@/components/purchase/CategorySelector';
 import PurchaseAnalyzer from '@/components/purchase/PurchaseAnalyzer';
-import QuickPurchaseCheck from '@/components/purchase/QuickPurchaseCheck';
 import PurchaseHero from '@/components/purchase/PurchaseHero';
 import VehicleAnalysis from '@/components/purchase/categories/VehicleAnalysis';
 import HousingAnalysis from '@/components/purchase/categories/HousingAnalysis';
@@ -18,6 +18,7 @@ import PageShellSkeleton from '@/components/loading/PageShellSkeleton';
 
 export default function PurchaseSimulator() {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [showCategories, setShowCategories] = useState(false);
   const { profile, isLoading } = useFinancialProfile();
   const currentMode = profile?.mode || 'basic';
 
@@ -34,22 +35,28 @@ export default function PurchaseSimulator() {
       <PlanGate feature="purchase_simulator">
         <PurchaseHero profile={profile} />
 
-        <DashboardSection nested title="Kan jag köpa det här?" subtitle="Skriv vad du funderar på att köpa">
-          <QuickPurchaseCheck profile={profile} />
-        </DashboardSection>
-
-        <DashboardDivider className="my-6" />
-
-        <DashboardSection nested title="Snabbkoll" subtitle="Länk eller bild från annons">
+        <DashboardSection nested title="Kan jag köpa det här?" subtitle="Skriv, klistra in en länk eller ladda upp en bild">
           <PurchaseAnalyzer profile={profile} />
         </DashboardSection>
 
         <DashboardDivider className="my-6" />
 
         {!selectedCategory ? (
-          <DashboardSection nested title="Större köp" subtitle="Fordons-, bostads- och eventanalys">
-            <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
-          </DashboardSection>
+          <>
+            <button
+              type="button"
+              onClick={() => setShowCategories((v) => !v)}
+              className="flex items-center gap-1.5 text-[14px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+            >
+              Eller gör en djupare analys — fordon, boende, elektronik, event
+              <ChevronDown className="w-4 h-4 transition-transform" style={{ transform: showCategories ? 'rotate(180deg)' : 'none' }} />
+            </button>
+            {showCategories && (
+              <div className="mt-4">
+                <CategorySelector selected={selectedCategory} onSelect={setSelectedCategory} />
+              </div>
+            )}
+          </>
         ) : (
           <>
             <button

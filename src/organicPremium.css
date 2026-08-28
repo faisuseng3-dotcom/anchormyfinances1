@@ -38,6 +38,10 @@
   background: var(--copilot-bg-card-hover);
 }
 
+.copilot-surface-card:active {
+  transform: scale(0.98);
+}
+
 .organic-surface--sm {
   border-radius: var(--organic-radius-md) !important;
   box-shadow: var(--organic-shadow-soft);

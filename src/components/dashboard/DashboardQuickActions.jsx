@@ -19,20 +19,19 @@ export default function DashboardQuickActions({ onAddTransaction, onTransfer }) 
   ];
 
   return (
-    <section className="grid grid-cols-4 gap-2">
+    <section className="grid grid-cols-4 gap-1">
       {actions.map((a) => (
         <button
           key={a.id}
           type="button"
           onClick={a.onClick}
-          className="flex flex-col items-center gap-2 py-3 rounded-2xl anchor-pressable"
-          style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
+          className="flex flex-col items-center gap-1.5 py-1 anchor-pressable"
         >
           <span
-            className="w-10 h-10 rounded-full flex items-center justify-center"
+            className="w-9 h-9 rounded-full flex items-center justify-center"
             style={{ background: 'var(--color-accent-soft)' }}
           >
-            <a.icon size={18} style={{ color: 'var(--color-accent)' }} />
+            <a.icon size={16} style={{ color: 'var(--color-accent)' }} />
           </span>
           <span className="text-[11px] font-medium text-[var(--color-text-secondary)]">{a.label}</span>
         </button>

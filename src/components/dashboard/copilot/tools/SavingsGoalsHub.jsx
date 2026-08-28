@@ -30,6 +30,9 @@ export default function SavingsGoalsHub({ profile, updateProfile }) {
     setCreateOpen(false);
   };
 
+  const primaryGoal = goals.find((g) => g.isPrimary) || null;
+  const otherGoals = goals.filter((g) => g !== primaryGoal);
+
   return (
     <CopilotToolShell
       title="Sparmål"
@@ -61,20 +64,42 @@ export default function SavingsGoalsHub({ profile, updateProfile }) {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {goals.map((goal) => (
-            <div key={goal.name}>
+        <div className="space-y-6">
+          {primaryGoal && (
+            <div>
               <CopilotEnvelopeGoal
-                name={goal.name}
-                current={goal.current}
-                target={goal.target}
-                imageUrl={goal.imageUrl}
-                iconId={goal.goalType || 'default'}
-                visualType={goal.visualType || 'icon'}
+                name={primaryGoal.name}
+                current={primaryGoal.current}
+                target={primaryGoal.target}
+                imageUrl={primaryGoal.imageUrl}
+                iconId={primaryGoal.goalType || 'default'}
+                visualType={primaryGoal.visualType || 'icon'}
+                featured
               />
-              {goal.isPrimary && <GoalProjectionRow profile={profile} />}
+              <GoalProjectionRow profile={profile} />
             </div>
-          ))}
+          )}
+
+          {otherGoals.length > 0 && (
+            <div>
+              {primaryGoal && (
+                <h2 className="anchor-dash-heading anchor-dash-heading--section mb-3">Övriga mål</h2>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {otherGoals.map((goal) => (
+                  <CopilotEnvelopeGoal
+                    key={goal.name}
+                    name={goal.name}
+                    current={goal.current}
+                    target={goal.target}
+                    imageUrl={goal.imageUrl}
+                    iconId={goal.goalType || 'default'}
+                    visualType={goal.visualType || 'icon'}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

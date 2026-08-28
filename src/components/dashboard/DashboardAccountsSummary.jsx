@@ -30,7 +30,21 @@ export default function DashboardAccountsSummary({ profile }) {
     setOrder((prev) => (prev.length === items.length ? prev : items.map((_, i) => i)));
   }, [items.length]);
 
-  if (!items.length) return null;
+  if (!items.length) {
+    return (
+      <section>
+        <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Konton</h2>
+        <div
+          className="rounded-2xl p-5 text-center"
+          style={{ border: '1px dashed var(--color-border)' }}
+        >
+          <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed">
+            Inga konton ännu — lägg till buffert eller sparande i menyn för att se dem här.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   const bringToFront = (itemIndex) => {
     triggerHaptic('light');

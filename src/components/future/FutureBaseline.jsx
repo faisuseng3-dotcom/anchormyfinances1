@@ -16,22 +16,27 @@ export default function FutureBaseline({ profile, transactions }) {
   if (!safeToSpend.isReady) return null;
 
   return (
-    <div className="rounded-[24px] p-5 sm:p-6 mb-6" style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}>
+    <div className="rounded-[24px] p-6 sm:p-7 mb-6 text-center" style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}>
       <p className="text-[12px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Fortsätt som nu</p>
-      <h2 className="text-[19px] font-bold text-[var(--color-text-primary)] mb-3">Så här ser din ekonomi ut om inget förändras</h2>
-      <div className="flex flex-wrap gap-x-6 gap-y-4">
-        <div className="flex-1 min-w-[140px]">
-          <p className="text-[11px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Tryggt att spendera</p>
-          <p className="text-[22px] font-extrabold text-[var(--color-text-primary)] tabular-nums">{fmt(safeToSpend.amount)} kr</p>
-        </div>
-        {goal && (
-          <div className="flex-1 min-w-[140px]">
-            <p className="text-[11px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Beräknat måldatum, {goal.goalName}</p>
-            <p className="text-[22px] font-extrabold text-[var(--color-text-primary)] tabular-nums">{goal.targetDateLabel || '—'}</p>
-          </div>
-        )}
-      </div>
-      <p className="text-[12.5px] text-[var(--color-text-secondary)] mt-4 leading-relaxed">
+      <p className="text-[13px] text-[var(--color-text-secondary)] mb-4">Så här ser din ekonomi ut om inget förändras</p>
+
+      <p className="text-[13px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Tryggt att spendera</p>
+      <p
+        className="font-black tabular-nums leading-none tracking-tight text-[var(--color-text-primary)]"
+        style={{ fontSize: 'clamp(2.25rem, 8vw, 3.25rem)' }}
+      >
+        {fmt(safeToSpend.amount)}
+        <span className="text-[0.35em] font-semibold text-[var(--color-text-secondary)] ml-1">kr</span>
+      </p>
+
+      {goal && (
+        <p className="text-[14px] text-[var(--color-text-secondary)] mt-4">
+          Beräknat måldatum för {goal.goalName}:{' '}
+          <span className="font-semibold text-[var(--color-text-primary)]">{goal.targetDateLabel || '—'}</span>
+        </p>
+      )}
+
+      <p className="text-[12.5px] text-[var(--color-text-muted)] mt-4 leading-relaxed max-w-[420px] mx-auto">
         Beräknat utifrån din senaste ekonomiska historik{goal?.isRateAssumed ? ' och ett uppskattat sparande' : ''} — inte en garanti, men en rimlig riktning om du fortsätter ungefär som idag.
       </p>
     </div>

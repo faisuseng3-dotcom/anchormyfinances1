@@ -34,17 +34,17 @@ export default function ConfirmPlanChangeSheet({ isOpen, onClose, title = 'Din n
     <AnchorSheet isOpen={isOpen} onClose={onClose} title={title}>
       <div className="space-y-4 pb-2">
         {change && (
-          <div className="rounded-2xl p-4 bg-white/[0.04] border border-white/[0.07]">
-            <p className="text-[13px] text-white/50 mb-1">{change.label}</p>
-            <p className="text-[18px] font-bold text-white">
-              {fmt(change.before)} {change.suffix || 'kr'} <span className="text-white/40 mx-1">→</span> {fmt(change.after)} {change.suffix || 'kr'}
+          <div className="rounded-2xl p-4 bg-[var(--color-background-secondary)] border border-[var(--color-border)]">
+            <p className="text-[13px] text-[var(--color-text-secondary)] mb-1">{change.label}</p>
+            <p className="text-[18px] font-bold text-[var(--color-text-primary)]">
+              {fmt(change.before)} {change.suffix || 'kr'} <span className="text-[var(--color-text-muted)] mx-1">→</span> {fmt(change.after)} {change.suffix || 'kr'}
             </p>
           </div>
         )}
         {impactLine && (
           <div>
-            <p className="text-[12px] uppercase tracking-wide text-white/35 mb-1">Beräknad effekt</p>
-            <p className="text-[14px] text-white/75 leading-relaxed">{impactLine}</p>
+            <p className="text-[12px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Beräknad effekt</p>
+            <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">{impactLine}</p>
           </div>
         )}
         <div className="flex gap-2 pt-2">

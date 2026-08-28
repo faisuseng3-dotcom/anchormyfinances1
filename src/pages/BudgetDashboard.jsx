@@ -80,6 +80,25 @@ export default function BudgetDashboard() {
     return spent;
   }, [transactions, prev, prevEnd]);
 
+  // Kategorier med mest akut status (över gränsen, nära gränsen) ska synas
+  // först — annars måste man läsa alla 8 rader för att hitta den som
+  // faktiskt behöver uppmärksamhet.
+  const categorySeverity = (cat, limits, spentMap) => {
+    const limit = limits[cat] || 0;
+    const spent = spentMap[cat] || 0;
+    if (limit <= 0) return 3;
+    if (spent > limit) return 0;
+    if (spent / limit >= 0.8) return 1;
+    return 2;
+  };
+
+  const sortedCategories = useMemo(() => {
+    const limits = profile?.budgetLimits || {};
+    return [...TRACKED_BUDGET_CATEGORIES].sort(
+      (a, b) => categorySeverity(a, limits, monthlySpent) - categorySeverity(b, limits, monthlySpent),
+    );
+  }, [profile?.budgetLimits, monthlySpent]);
+
   const budgetLimits  = profile?.budgetLimits || {};
   const totalBudgeted = Object.values(budgetLimits).reduce((s, v) => s + v, 0);
   const totalSpent    = TRACKED_BUDGET_CATEGORIES.reduce((s, c) => s + (monthlySpent[c] || 0), 0);
@@ -169,7 +188,7 @@ export default function BudgetDashboard() {
               </span>
               {streak > 0 && (
                 <span className="flex items-center gap-1 text-[12px] text-[var(--color-text-secondary)]">
-                  <Flame size={12} className="text-orange-400" />
+                  <Flame size={12} className="text-[var(--color-warning)]" />
                   {streak} dagar i rad
                 </span>
               )}
@@ -188,7 +207,7 @@ export default function BudgetDashboard() {
 
       {/* ── Kategorierna ─────────────────────────────────────────── */}
       <motion.div {...entry(1)} className="space-y-2">
-        {TRACKED_BUDGET_CATEGORIES.map((cat) => (
+        {sortedCategories.map((cat) => (
           <BudgetCategoryRow
             key={cat}
             category={cat}

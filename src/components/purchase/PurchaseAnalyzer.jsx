@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link2, Upload, Loader2, ShoppingBag, AlertTriangle, X } from 'lucide-react';
+import { Link2, Upload, Loader2, Sparkles, AlertTriangle, X, ChevronDown } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   anchorInputClass,
@@ -16,6 +16,8 @@ import { AI_FEATURES, MEMORY_TYPES } from '@/lib/anchorMemory/types';
 import { DashboardDivider } from '@/components/dashboard/DashboardChrome';
 import { useTransactions } from '@/hooks/useTransactions';
 import { getMonthlyMargin, getPurchaseImpact, getBestPurchaseDate } from '@/lib/financialEngine';
+import { extractPriceKr } from '@/lib/purchaseTextParsing';
+import PurchaseVerdictCard from '@/components/purchase/PurchaseVerdictCard';
 
 /** AI:n får bara tolka fritext/bild till ett pris och en produktbeskrivning —
  * själva köpkonsekvensen (budgetpåverkan, sparmålspåverkan, verdikt) räknas
@@ -97,16 +99,24 @@ function getCooldownEnd(hours) {
   return end.toISOString();
 }
 
+const URL_PATTERN = /^https?:\/\//i;
+
 export default function PurchaseAnalyzer({ profile }) {
   const { transactions = [] } = useTransactions({ personalOnly: true, limit: 1000 });
-  const [url, setUrl] = useState('');
+  const [input, setInput] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [loadingMsg, setLoadingMsg] = useState('');
   const [result, setResult] = useState(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const [shieldChoice, setShieldChoice] = useState(null);
   const [wishlistSaved, setWishlistSaved] = useState(false);
+  // Snabbsvar för fritext med ett pris ("en TV för 8000 kr") — ren lokal
+  // uträkning, ingen AI inblandad. Skiljs från `result` (AI-analysen av
+  // länk/bild) så bara ett av de två svaren visas åt gången.
+  const [quickResult, setQuickResult] = useState(null);
+  const [quickNotFound, setQuickNotFound] = useState(false);
   const fileRef = useRef();
 
   const handleImageChange = (e) => {
@@ -114,24 +124,21 @@ export default function PurchaseAnalyzer({ profile }) {
     if (!f) return;
     setImageFile(f);
     setImagePreview(URL.createObjectURL(f));
-    setUrl('');
   };
 
-  const handleAnalyze = async () => {
-    if (!url && !imageFile) return;
+  const runAiAnalysis = async (url) => {
     setLoading(true);
     setResult(null);
+    setQuickResult(null);
+    setQuickNotFound(false);
     setShieldChoice(null);
     setWishlistSaved(false);
+    setDetailsOpen(false);
 
-    const steps = [
-      'Läser annonsen…',
-      'Jämför pris…',
-      'Räknar på din budget…',
-    ];
+    const steps = ['Läser annonsen…', 'Jämför pris…', 'Räknar på din budget…'];
     for (const msg of steps) {
       setLoadingMsg(msg);
-      await new Promise(r => setTimeout(r, 700));
+      await new Promise((r) => setTimeout(r, 700));
     }
 
     const income = profile?.income || 30000;
@@ -216,6 +223,36 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
     }
   };
 
+  const handleCheck = () => {
+    const trimmed = input.trim();
+
+    if (imageFile) {
+      runAiAnalysis(null);
+      return;
+    }
+    if (!trimmed) return;
+    if (URL_PATTERN.test(trimmed)) {
+      runAiAnalysis(trimmed);
+      return;
+    }
+
+    // Fritext med ett pris — svara direkt, ingen AI behövs.
+    const price = extractPriceKr(trimmed);
+    setResult(null);
+    setDetailsOpen(false);
+    if (price) {
+      setQuickResult({
+        price,
+        impact: getPurchaseImpact(profile, transactions, price),
+        bestDate: getBestPurchaseDate(profile, transactions, price),
+      });
+      setQuickNotFound(false);
+    } else {
+      setQuickResult(null);
+      setQuickNotFound(true);
+    }
+  };
+
   const saveToWishlist = () => {
     if (!result) return;
     const cooldownHours = profile?.impulseCooldownHours || 48;
@@ -223,7 +260,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
       id: `${Date.now()}`,
       productName: result.productName,
       price: result.price,
-      sourceUrl: url || null,
+      sourceUrl: URL_PATTERN.test(input.trim()) ? input.trim() : null,
       cooldownEnd: getCooldownEnd(cooldownHours),
       createdAt: new Date().toISOString(),
     };
@@ -247,13 +284,13 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
           <div className="relative flex-1">
             <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)] pointer-events-none" />
             <input
-              placeholder="https://blocket.se/…"
-              value={url}
+              placeholder="En TV för 8000 kr… eller klistra in en länk"
+              value={input}
               onChange={(e) => {
-                setUrl(e.target.value);
-                setImageFile(null);
-                setImagePreview(null);
+                setInput(e.target.value);
+                setQuickNotFound(false);
               }}
+              onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
               className={`${anchorInputClass} pl-9`}
             />
           </div>
@@ -287,8 +324,8 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
 
         <button
           type="button"
-          onClick={handleAnalyze}
-          disabled={(!url && !imageFile) || loading}
+          onClick={handleCheck}
+          disabled={(!input.trim() && !imageFile) || loading}
           className={`${anchorPrimaryButtonClass} w-full disabled:opacity-50`}
         >
           {loading ? (
@@ -297,210 +334,241 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
             </>
           ) : (
             <>
-              <ShoppingBag className="w-4 h-4" /> Räkna på köpet
+              <Sparkles className="w-4 h-4" /> Kan jag köpa det här?
             </>
           )}
         </button>
+
+        {quickNotFound && (
+          <p className="text-[13px] text-[var(--color-text-secondary)]">
+            Jag hittade inget pris i texten — skriv t.ex. "en TV för 8000 kr", eller klistra in en länk/bild för en djupare analys.
+          </p>
+        )}
       </div>
 
-      {/* Result */}
+      {/* Snabbsvar — fritext med pris, ingen AI */}
+      <AnimatePresence>
+        {quickResult && (
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+            <PurchaseVerdictCard price={quickResult.price} impact={quickResult.impact} bestDate={quickResult.bestDate} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* AI-svar — länk eller bild */}
       <AnimatePresence>
         {result && (
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative rounded-[26px] shadow-[var(--anchor-shadow-1)] bg-white border border-[var(--color-border)] px-4 py-4 space-y-3 overflow-hidden"
+            className="space-y-3"
           >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[17px] font-semibold text-[var(--color-text-primary)]">{result.productName}</p>
-                <p className={sectionMetaClass}>{result.priceAssessment}</p>
+            {/* Verdikt — alltid synlig */}
+            <div className="relative rounded-[26px] shadow-[var(--anchor-shadow-1)] bg-white border border-[var(--color-border)] px-4 py-4 space-y-3 overflow-hidden">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[17px] font-semibold text-[var(--color-text-primary)]">{result.productName}</p>
+                  <p className={sectionMetaClass}>{result.priceAssessment}</p>
+                </div>
+                <p className="text-[20px] font-semibold text-[var(--color-text-primary)] tabular-nums shrink-0">
+                  {fmt(result.price)} kr
+                </p>
               </div>
-              <p className="text-[20px] font-semibold text-[var(--color-text-primary)] tabular-nums shrink-0">
-                {fmt(result.price)} kr
-              </p>
-            </div>
 
-            {/* Köp-score */}
-            <div
-              className="mt-5 rounded-2xl px-5 py-5 text-center"
-              style={{
-                background: buyScore.recommendation === 'KÖP'
-                  ? 'var(--color-success-soft)'
-                  : buyScore.recommendation === 'AVVAKTA'
-                    ? 'var(--color-danger-soft)'
-                    : 'var(--color-warning-soft)',
-                border: '1px solid var(--color-border)',
-              }}
-            >
-              <h2 className="anchor-card-title">Köp-score</h2>
-              <p className="text-[56px] font-bold text-[var(--color-text-primary)] tabular-nums leading-none mt-2">
-                {buyScore.score}
-                <span className="text-[22px] text-[var(--color-text-muted)] font-medium">/100</span>
-              </p>
-              <p
-                className="text-[18px] font-bold mt-3 tracking-wide"
+              <div
+                className="mt-5 rounded-2xl px-5 py-5 text-center"
                 style={{
-                  color: buyScore.recommendation === 'KÖP' ? 'var(--color-success)'
-                    : buyScore.recommendation === 'AVVAKTA' ? 'var(--color-danger)' : 'var(--color-warning)',
+                  background: buyScore.recommendation === 'KÖP'
+                    ? 'var(--color-success-soft)'
+                    : buyScore.recommendation === 'AVVAKTA'
+                      ? 'var(--color-danger-soft)'
+                      : 'var(--color-warning-soft)',
+                  border: '1px solid var(--color-border)',
                 }}
               >
-                {buyScore.recommendation}
-              </p>
-              <ul className="mt-4 space-y-1.5 text-left max-w-xs mx-auto">
-                {buyScore.reasons.map((r) => (
-                  <li key={r} className="flex items-start gap-2 text-[13px] text-[var(--color-text-secondary)]">
-                    <span className="text-[var(--color-text-muted)] mt-0.5">•</span>
-                    {r}
-                  </li>
-                ))}
-              </ul>
+                <h2 className="anchor-card-title">Köp-score</h2>
+                <p className="text-[56px] font-bold text-[var(--color-text-primary)] tabular-nums leading-none mt-2">
+                  {buyScore.score}
+                  <span className="text-[22px] text-[var(--color-text-muted)] font-medium">/100</span>
+                </p>
+                <p
+                  className="text-[18px] font-bold mt-3 tracking-wide"
+                  style={{
+                    color: buyScore.recommendation === 'KÖP' ? 'var(--color-success)'
+                      : buyScore.recommendation === 'AVVAKTA' ? 'var(--color-danger)' : 'var(--color-warning)',
+                  }}
+                >
+                  {buyScore.recommendation}
+                </p>
+                <ul className="mt-4 space-y-1.5 text-left max-w-xs mx-auto">
+                  {buyScore.reasons.map((r) => (
+                    <li key={r} className="flex items-start gap-2 text-[13px] text-[var(--color-text-secondary)]">
+                      <span className="text-[var(--color-text-muted)] mt-0.5">•</span>
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setDetailsOpen((v) => !v)}
+                className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-accent)] hover:opacity-80"
+              >
+                {detailsOpen ? 'Dölj detaljer' : 'Visa detaljer'}
+                <ChevronDown className="w-3.5 h-3.5 transition-transform" style={{ transform: detailsOpen ? 'rotate(180deg)' : 'none' }} />
+              </button>
             </div>
 
-            <div className="mt-4">
-              <div className="flex justify-between mb-1">
-                <span className={sectionMetaClass}>Av din marginal</span>
-                <span className={sectionMetaClass}>{result.budgetImpact} %</span>
-              </div>
-              <div className="h-1 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${Math.min(result.budgetImpact, 100)}%` }}
-                  transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="h-full rounded-full bg-[var(--color-accent)]"
-                />
-              </div>
-            </div>
-
-            <DashboardDivider className="my-5" />
-
-            <p className="text-[13px] font-medium text-[var(--color-text-secondary)] mb-3">Före och efter köpet</p>
-            <div className="space-y-3">
-              {[
-                { label: 'Innan köp', value: result.margin, max: result.margin },
-                {
-                  label: 'Efter köp',
-                  value: Math.max(result.margin - result.price, 0),
-                  max: result.margin,
-                },
-              ].map((bar) => (
-                <div key={bar.label}>
+            {/* Detaljer — bakom "Visa detaljer" */}
+            {detailsOpen && (
+              <div className="relative rounded-[26px] shadow-[var(--anchor-shadow-1)] bg-white border border-[var(--color-border)] px-4 py-4 space-y-3 overflow-hidden">
+                <div>
                   <div className="flex justify-between mb-1">
-                    <span className={sectionMetaClass}>{bar.label}</span>
-                    <span className="text-[15px] font-medium text-[var(--color-text-primary)] tabular-nums">
-                      {fmt(bar.value)} kr kvar
-                    </span>
+                    <span className={sectionMetaClass}>Av din marginal</span>
+                    <span className={sectionMetaClass}>{result.budgetImpact} %</span>
                   </div>
                   <div className="h-1 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
-                      animate={{ width: `${bar.max ? Math.min((bar.value / bar.max) * 100, 100) : 0}%` }}
-                      transition={{ duration: 0.8 }}
-                      className="h-full rounded-full bg-[var(--color-accent)]/60"
+                      animate={{ width: `${Math.min(result.budgetImpact, 100)}%` }}
+                      transition={{ duration: 0.8, ease: 'easeOut' }}
+                      className="h-full rounded-full bg-[var(--color-accent)]"
                     />
                   </div>
                 </div>
-              ))}
-            </div>
 
-            <DashboardDivider className="my-5" />
-
-            <div className="flex gap-6">
-              <div>
-                <p className={sectionMetaClass}>Till sparmål</p>
-                <p className="text-[17px] font-semibold text-[var(--color-text-primary)] tabular-nums mt-0.5">
-                  +{result.daysDelayedGoal} dagar
-                </p>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={sectionMetaClass}>I stället för</p>
-                <p className="text-[14px] text-[var(--color-text-secondary)] mt-0.5 leading-snug">{result.opportunityCost}</p>
-              </div>
-            </div>
-
-            {result.maintenanceCost > 0 && (
-              <>
                 <DashboardDivider className="my-5" />
-                <div className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-[var(--color-warning)] flex-shrink-0 mt-0.5" />
-                  <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">
-                    {result.maintenanceNote}{' '}
-                    <span className="text-[var(--color-text-primary)] font-medium">+{fmt(result.maintenanceCost)} kr/år</span>
-                  </p>
-                </div>
-              </>
-            )}
 
-            <DashboardDivider className="my-5" />
-
-            <div>
-              <p className={`text-[15px] font-semibold ${vs.text}`}>{vs.label}</p>
-              <p className={`${sectionSubtitleClass} mt-2`}>{result.verdictReason}</p>
-              <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed mt-2">{result.aiInsight}</p>
-            </div>
-
-            {result.verdict !== 'Köp' && result._bestDate?.found && (
-              <>
-                <DashboardDivider className="my-5" />
-                <div>
-                  <p className={sectionMetaClass}>Bättre datum att köpa</p>
-                  <p className="text-[15px] font-semibold text-[var(--color-text-primary)] mt-1">{result._bestDate.dateLabel}</p>
-                  <p className="text-[13px] text-[var(--color-text-secondary)] mt-1">
-                    Då har din buffert hunnit återhämta sig till minst {fmt(result._bestDate.balanceThen)} kr.
-                  </p>
-                </div>
-              </>
-            )}
-
-            {showShield && (
-              <>
-                <DashboardDivider className="my-5" />
+                <p className="text-[13px] font-medium text-[var(--color-text-secondary)] mb-3">Före och efter köpet</p>
                 <div className="space-y-3">
-                  <p className="text-[15px] font-semibold text-[var(--color-warning)]">Impulse Shield</p>
-                  <p className="text-[14px] text-[var(--color-text-secondary)]">{risk.reason}</p>
-                  <p className="text-[13px] text-[var(--color-text-secondary)]">
-                    Detta köp försenar ditt mål med cirka {result.daysDelayedGoal} dagar.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      onClick={saveToWishlist}
-                      className={`${anchorPrimaryButtonClass} h-10 px-4 text-[13px]`}
-                    >
-                      Vänta {profile?.impulseCooldownHours || 48}h
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShieldChoice('cheaper')}
-                      className={`${anchorSecondaryButtonClass} h-10 px-3 text-[13px]`}
-                    >
-                      Hitta billigare
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShieldChoice('buy')}
-                      className={`${anchorSecondaryButtonClass} h-10 px-3 text-[13px]`}
-                    >
-                      Köp ändå
-                    </button>
-                  </div>
-                  {wishlistSaved && (
-                    <p className="text-[13px] text-[var(--color-success)]">
-                      Sparad i wishlist med cooldown. Du kan kolla senare när impulsen lagt sig.
-                    </p>
-                  )}
-                  {shieldChoice === 'cheaper' && (
-                    <p className="text-[13px] text-[var(--color-text-secondary)]">
-                      Tips: sök samma modell begagnad eller med prisbevakning innan köp.
-                    </p>
-                  )}
-                  {shieldChoice === 'buy' && (
-                    <p className="text-[13px] text-[var(--color-warning)]">
-                      Okej, men håll koll på månadsutrymmet så sparmålet inte glider.
-                    </p>
-                  )}
+                  {[
+                    { label: 'Innan köp', value: result.margin, max: result.margin },
+                    {
+                      label: 'Efter köp',
+                      value: Math.max(result.margin - result.price, 0),
+                      max: result.margin,
+                    },
+                  ].map((bar) => (
+                    <div key={bar.label}>
+                      <div className="flex justify-between mb-1">
+                        <span className={sectionMetaClass}>{bar.label}</span>
+                        <span className="text-[15px] font-medium text-[var(--color-text-primary)] tabular-nums">
+                          {fmt(bar.value)} kr kvar
+                        </span>
+                      </div>
+                      <div className="h-1 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${bar.max ? Math.min((bar.value / bar.max) * 100, 100) : 0}%` }}
+                          transition={{ duration: 0.8 }}
+                          className="h-full rounded-full bg-[var(--color-accent)]/60"
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </>
+
+                <DashboardDivider className="my-5" />
+
+                <div className="flex gap-6">
+                  <div>
+                    <p className={sectionMetaClass}>Till sparmål</p>
+                    <p className="text-[17px] font-semibold text-[var(--color-text-primary)] tabular-nums mt-0.5">
+                      +{result.daysDelayedGoal} dagar
+                    </p>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={sectionMetaClass}>I stället för</p>
+                    <p className="text-[14px] text-[var(--color-text-secondary)] mt-0.5 leading-snug">{result.opportunityCost}</p>
+                  </div>
+                </div>
+
+                {result.maintenanceCost > 0 && (
+                  <>
+                    <DashboardDivider className="my-5" />
+                    <div className="flex items-start gap-2">
+                      <AlertTriangle className="w-4 h-4 text-[var(--color-warning)] flex-shrink-0 mt-0.5" />
+                      <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">
+                        {result.maintenanceNote}{' '}
+                        <span className="text-[var(--color-text-primary)] font-medium">+{fmt(result.maintenanceCost)} kr/år</span>
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                <DashboardDivider className="my-5" />
+
+                <div>
+                  <p className={`text-[15px] font-semibold ${vs.text}`}>{vs.label}</p>
+                  <p className={`${sectionSubtitleClass} mt-2`}>{result.verdictReason}</p>
+                  <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed mt-2">{result.aiInsight}</p>
+                </div>
+
+                {result.verdict !== 'Köp' && result._bestDate?.found && (
+                  <>
+                    <DashboardDivider className="my-5" />
+                    <div>
+                      <p className={sectionMetaClass}>Bättre datum att köpa</p>
+                      <p className="text-[15px] font-semibold text-[var(--color-text-primary)] mt-1">{result._bestDate.dateLabel}</p>
+                      <p className="text-[13px] text-[var(--color-text-secondary)] mt-1">
+                        Då har din buffert hunnit återhämta sig till minst {fmt(result._bestDate.balanceThen)} kr.
+                      </p>
+                    </div>
+                  </>
+                )}
+
+                {showShield && (
+                  <>
+                    <DashboardDivider className="my-5" />
+                    <div className="space-y-3">
+                      <p className="text-[15px] font-semibold text-[var(--color-warning)]">Impulse Shield</p>
+                      <p className="text-[14px] text-[var(--color-text-secondary)]">{risk.reason}</p>
+                      <p className="text-[13px] text-[var(--color-text-secondary)]">
+                        Detta köp försenar ditt mål med cirka {result.daysDelayedGoal} dagar.
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={saveToWishlist}
+                          className={`${anchorPrimaryButtonClass} h-10 px-4 text-[13px]`}
+                        >
+                          Vänta {profile?.impulseCooldownHours || 48}h
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShieldChoice('cheaper')}
+                          className={`${anchorSecondaryButtonClass} h-10 px-3 text-[13px]`}
+                        >
+                          Hitta billigare
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setShieldChoice('buy')}
+                          className={`${anchorSecondaryButtonClass} h-10 px-3 text-[13px]`}
+                        >
+                          Köp ändå
+                        </button>
+                      </div>
+                      {wishlistSaved && (
+                        <p className="text-[13px] text-[var(--color-success)]">
+                          Sparad i wishlist med cooldown. Du kan kolla senare när impulsen lagt sig.
+                        </p>
+                      )}
+                      {shieldChoice === 'cheaper' && (
+                        <p className="text-[13px] text-[var(--color-text-secondary)]">
+                          Tips: sök samma modell begagnad eller med prisbevakning innan köp.
+                        </p>
+                      )}
+                      {shieldChoice === 'buy' && (
+                        <p className="text-[13px] text-[var(--color-warning)]">
+                          Okej, men håll koll på månadsutrymmet så sparmålet inte glider.
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
             )}
           </motion.div>
         )}

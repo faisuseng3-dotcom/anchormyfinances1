@@ -6,8 +6,7 @@ import DashboardQuickActions from './DashboardQuickActions';
 import SubscriptionDueToday from './SubscriptionDueToday';
 import DashboardAccountsSummary from './DashboardAccountsSummary';
 import DashboardRecentActivity from './DashboardRecentActivity';
-import DashboardDiscoveries from './DashboardDiscoveries';
-import LagoRecommends from './LagoRecommends';
+import LagoInsights from './LagoInsights';
 import ImportBankCta from './ImportBankCta';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
 import { recordSafeToSpendView } from '@/lib/northStar';
@@ -69,18 +68,15 @@ export default function CopilotBentoDashboard({
           <SubscriptionDueToday profile={profile} />
         </motion.div>
         <motion.div {...entry(3)}>
-          <DashboardAccountsSummary profile={profile} />
+          <LagoInsights profile={profile} transactions={transactions} />
         </motion.div>
         <motion.div {...entry(4)}>
-          <DashboardRecentActivity transactions={transactions} />
+          <DashboardAccountsSummary profile={profile} />
         </motion.div>
         <motion.div {...entry(5)}>
-          <DashboardDiscoveries profile={profile} transactions={transactions} />
+          <DashboardRecentActivity transactions={transactions} />
         </motion.div>
         <motion.div {...entry(6)}>
-          <LagoRecommends profile={profile} transactions={transactions} />
-        </motion.div>
-        <motion.div {...entry(7)}>
           <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
         </motion.div>
       </div>

@@ -6,9 +6,15 @@ import { planeraTabHref } from '@/lib/planeraTabs';
 import { staggerItem } from '@/lib/motionPresets';
 
 const STATUS_DOT = {
-  grön: '#4fae82',
-  gul: '#fbbf24',
-  röd: '#e2857a',
+  grön: 'var(--color-success)',
+  gul: 'var(--color-warning)',
+  röd: 'var(--color-danger)',
+};
+
+const STATUS_SOFT = {
+  grön: 'var(--color-success-soft)',
+  gul: 'var(--color-warning-soft)',
+  röd: 'var(--color-danger-soft)',
 };
 
 function fmtKr(n) {
@@ -44,14 +50,14 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="min-w-0">
           <h2 className="anchor-card-title">Din framtid</h2>
-          <p className="text-[18px] font-bold text-white mt-1 tracking-tight">
+          <p className="text-[18px] font-bold text-[var(--copilot-text-primary)] mt-1 tracking-tight">
             {saldo30} om 30 dagar
           </p>
         </div>
         <span
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold shrink-0"
           style={{
-            background: `${STATUS_DOT[statusKey] || STATUS_DOT.grön}22`,
+            background: STATUS_SOFT[statusKey] || STATUS_SOFT.grön,
             color: STATUS_DOT[statusKey] || STATUS_DOT.grön,
             boxShadow: 'var(--organic-shadow-soft)',
           }}
@@ -65,12 +71,12 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
       </div>
 
       {sparkPoints && (
-        <div className="mb-4 rounded-[20px] overflow-hidden bg-white/[0.04] p-3">
+        <div className="mb-4 rounded-[20px] overflow-hidden bg-[var(--color-background-secondary)] p-3">
           <svg viewBox="0 0 100 100" className="w-full h-16" preserveAspectRatio="none" aria-hidden>
             <defs>
               <linearGradient id="fp-mini-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#4fae82" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#4fae82" stopOpacity="0" />
+                <stop offset="0%" stopColor="#2563EB" stopOpacity="0.25" />
+                <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
               </linearGradient>
             </defs>
             {sparkPoints && (
@@ -82,7 +88,7 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
                 <polyline
                   points={sparkPoints}
                   fill="none"
-                  stroke="#4fae82"
+                  stroke="#2563EB"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -108,16 +114,16 @@ export default function CopilotFuturePulseMini({ forecast, className = '' }) {
           events.slice(0, 3).map((ev, i) => (
             <div
               key={`${ev.händelse}-${i}`}
-              className="flex items-center gap-3 p-3 rounded-[16px] bg-white/[0.04] active:scale-[0.98] transition-transform"
+              className="flex items-center gap-3 p-3 rounded-[16px] bg-[var(--color-background-secondary)] active:scale-[0.98] transition-transform"
             >
               <div
                 className="w-9 h-9 rounded-[12px] flex items-center justify-center shrink-0"
-                style={{ background: 'rgba(79, 174, 130, 0.14)' }}
+                style={{ background: 'var(--color-accent-soft)' }}
               >
                 <CalendarDays className="w-4 h-4 text-[var(--copilot-accent-blue)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-medium text-white truncate">{ev.händelse}</p>
+                <p className="text-[13px] font-medium text-[var(--copilot-text-primary)] truncate">{ev.händelse}</p>
                 <p className="text-[11px] text-[var(--copilot-text-muted)] mt-0.5">
                   {ev.tidsfönster || 'Kommande'}
                   {ev.belopp ? ` · ${fmtKr(ev.belopp)}` : ''}

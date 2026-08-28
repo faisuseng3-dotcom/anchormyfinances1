@@ -1,6 +1,6 @@
 /**
  * Delad, deterministisk fritext-tolkning för köpfrågor — används av både
- * Purchase Simulators snabbkoll (QuickPurchaseCheck.jsx) och Coachens
+ * Köpchecks snabbsvar (PurchaseAnalyzer.jsx) och Coachens
  * köpfråge-routing (coachDecisionRouter.js). Ingen AI behövs för det här.
  */
 
