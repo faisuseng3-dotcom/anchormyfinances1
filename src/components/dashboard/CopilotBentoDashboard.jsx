@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import QuickExpenseSheet from './QuickExpenseSheet';
 import CopilotFreeMoneyHero from '@/components/ui-premium/copilot/CopilotFreeMoneyHero';
 import DashboardQuickActions from './DashboardQuickActions';
@@ -11,6 +12,7 @@ import ImportBankCta from './ImportBankCta';
 import { useProactiveWeekPush } from '@/hooks/useProactiveWeekPush';
 import { recordSafeToSpendView } from '@/lib/northStar';
 import { base44 } from '@/api/base44Client';
+import { dashboardEntryItem } from '@/lib/motionPresets';
 
 const DASHBOARD_LAYOUT_ID = 'revolut-balance-hero';
 
@@ -21,6 +23,8 @@ export default function CopilotBentoDashboard({
   onOpenMagicEntry,
 }) {
   const [quickExpenseOpen, setQuickExpenseOpen] = useState(false);
+  const reduced = useReducedMotion();
+  const entry = (i) => dashboardEntryItem(i, { reduced });
 
   useProactiveWeekPush(profile);
 
@@ -50,21 +54,35 @@ export default function CopilotBentoDashboard({
       className="copilot-bento-dashboard copilot-bento-dashboard--open min-h-full flex flex-col flex-1 w-full"
       data-dashboard-layout={DASHBOARD_LAYOUT_ID}
     >
-      <section className="anchor-dashboard-hero" aria-label="Säkert att spendera">
+      <motion.section {...entry(0)} className="anchor-dashboard-hero" aria-label="Säkert att spendera">
         <CopilotFreeMoneyHero layout="balance" />
-      </section>
+      </motion.section>
 
       <div className="anchor-dashboard-below">
-        <DashboardQuickActions
-          onAddTransaction={() => setQuickExpenseOpen(true)}
-          onTransfer={onOpenTransactionHub}
-        />
-        <SubscriptionDueToday profile={profile} />
-        <DashboardAccountsSummary profile={profile} />
-        <DashboardRecentActivity transactions={transactions} />
-        <DashboardDiscoveries profile={profile} transactions={transactions} />
-        <LagoRecommends profile={profile} transactions={transactions} />
-        <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
+        <motion.div {...entry(1)}>
+          <DashboardQuickActions
+            onAddTransaction={() => setQuickExpenseOpen(true)}
+            onTransfer={onOpenTransactionHub}
+          />
+        </motion.div>
+        <motion.div {...entry(2)}>
+          <SubscriptionDueToday profile={profile} />
+        </motion.div>
+        <motion.div {...entry(3)}>
+          <DashboardAccountsSummary profile={profile} />
+        </motion.div>
+        <motion.div {...entry(4)}>
+          <DashboardRecentActivity transactions={transactions} />
+        </motion.div>
+        <motion.div {...entry(5)}>
+          <DashboardDiscoveries profile={profile} transactions={transactions} />
+        </motion.div>
+        <motion.div {...entry(6)}>
+          <LagoRecommends profile={profile} transactions={transactions} />
+        </motion.div>
+        <motion.div {...entry(7)}>
+          <ImportBankCta transactionCount={(transactions || []).length} variant="link" />
+        </motion.div>
       </div>
 
       <QuickExpenseSheet

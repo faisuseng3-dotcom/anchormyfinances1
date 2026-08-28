@@ -39,6 +39,34 @@ export const staggerItem = (i = 0) => ({
   transition: { delay: i * 0.04, duration: 0.32, ease: [0.22, 1, 0.36, 1] },
 });
 
+/**
+ * Pure fade/appear entry — no translation, only opacity (+ a barely-there
+ * scale). Used for the Dashboard's page-build-in sequence: each element
+ * appears exactly where it already sits, nothing slides or flies in.
+ * Tune the whole feel from these two constants.
+ */
+export const DASHBOARD_ENTRY_STAGGER = 0.07;
+export const DASHBOARD_ENTRY_DURATION = 0.3;
+
+export const dashboardEntryItem = (i = 0, { reduced = false } = {}) => {
+  if (reduced) {
+    return {
+      initial: { opacity: 1, scale: 1 },
+      animate: { opacity: 1, scale: 1 },
+      transition: { duration: 0 },
+    };
+  }
+  return {
+    initial: { opacity: 0, scale: 0.98 },
+    animate: { opacity: 1, scale: 1 },
+    transition: {
+      delay: i * DASHBOARD_ENTRY_STAGGER,
+      duration: DASHBOARD_ENTRY_DURATION,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  };
+};
+
 export const sheetBackdrop = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },

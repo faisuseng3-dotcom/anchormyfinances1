@@ -1,6 +1,5 @@
 // @ts-nocheck
 import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { getMonthlyMargin, getBufferRunwayMonths, calcLiquidityForecast, whatIfExtraSavings } from '@/lib/financialEngine';
 import { applySavingsTransfer } from '@/lib/planActions';
@@ -55,12 +54,7 @@ export default function LagoRecommends({ profile, transactions }) {
   };
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.16 }}
-      className="pt-2"
-    >
+    <section className="pt-2">
       <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Lago rekommenderar</h2>
       <div className="rounded-2xl p-4 organic-surface bg-white/[0.03] border border-white/[0.06]">
         <div className="flex items-start gap-2.5">
@@ -106,6 +100,6 @@ export default function LagoRecommends({ profile, transactions }) {
           : `${fmt(rec.toGoal)} kr flyttas från buffert till ${rec.goalName || 'sparmålet'}.`}
         onConfirm={handleConfirm}
       />
-    </motion.section>
+    </section>
   );
 }

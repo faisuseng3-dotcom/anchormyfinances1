@@ -47,11 +47,7 @@ export default function DashboardAccountsSummary({ profile }) {
   const visibleStack = order.slice(0, 3);
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.06 }}
-    >
+    <section>
       <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Konton</h2>
       <div className="flex flex-col items-center">
         <div className="relative w-full max-w-[230px]" style={{ height: 150 }}>
@@ -112,6 +108,6 @@ export default function DashboardAccountsSummary({ profile }) {
           </div>
         )}
       </div>
-    </motion.section>
+    </section>
   );
 }

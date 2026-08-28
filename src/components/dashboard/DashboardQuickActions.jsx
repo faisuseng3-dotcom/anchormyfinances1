@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Plus, ArrowLeftRight, ShoppingBag, Upload } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 
@@ -20,12 +19,7 @@ export default function DashboardQuickActions({ onAddTransaction, onTransfer }) 
   ];
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.03 }}
-      className="grid grid-cols-4 gap-2"
-    >
+    <section className="grid grid-cols-4 gap-2">
       {actions.map((a) => (
         <button
           key={a.id}
@@ -43,6 +37,6 @@ export default function DashboardQuickActions({ onAddTransaction, onTransfer }) 
           <span className="text-[11px] font-medium text-white/70">{a.label}</span>
         </button>
       ))}
-    </motion.section>
+    </section>
   );
 }

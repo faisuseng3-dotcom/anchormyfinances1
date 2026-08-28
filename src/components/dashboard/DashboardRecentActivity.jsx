@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 import TintIconCard from '@/components/ui-premium/copilot/TintIconCard';
 import { createPageUrl } from '@/utils';
@@ -35,11 +34,7 @@ export default function DashboardRecentActivity({ transactions = [] }) {
   if (!recent.length) return null;
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.09 }}
-    >
+    <section>
       <div className="flex items-center justify-between mb-4">
         <h2 className="anchor-dash-heading anchor-dash-heading--section">Senaste aktivitet</h2>
         <button
@@ -66,6 +61,6 @@ export default function DashboardRecentActivity({ transactions = [] }) {
           );
         })}
       </div>
-    </motion.section>
+    </section>
   );
 }

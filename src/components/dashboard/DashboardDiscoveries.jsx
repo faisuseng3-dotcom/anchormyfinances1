@@ -1,6 +1,5 @@
 // @ts-nocheck
 import React, { useMemo, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
 import { runInsightEngine } from '@/lib/insightEngine';
@@ -96,12 +95,7 @@ export default function DashboardDiscoveries({ profile, transactions }) {
   if (insights.length === 0 && hasEnoughData) return null;
 
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.12 }}
-      className="pt-2"
-    >
+    <section className="pt-2">
       <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Lago har upptäckt</h2>
       {insights.length > 0 ? (
         <ul className="space-y-3">
@@ -114,6 +108,6 @@ export default function DashboardDiscoveries({ profile, transactions }) {
           Jag behöver ungefär en månads transaktioner innan jag kan identifiera ett tydligt utgiftsmönster.
         </p>
       )}
-    </motion.section>
+    </section>
   );
 }
