@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
@@ -31,13 +30,10 @@ export default function FutureInsightCards({ insights, onSelect }) {
         Andra saker som påverkar din framtid mest just nu:
       </p>
       <div className="grid gap-2.5 sm:grid-cols-3">
-        {insights.map((insight, i) => (
-          <motion.button
+        {insights.map((insight) => (
+          <button
             key={insight.id}
             type="button"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
             onClick={() => onSelect(insight.question)}
             className="text-left rounded-2xl p-4 anchor-pressable"
             style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
@@ -50,7 +46,7 @@ export default function FutureInsightCards({ insights, onSelect }) {
             <p className="text-[11.5px] text-[var(--color-accent)] mt-1">
               {fmt(insight.fiveYearInvested)} kr investerat om 5 år
             </p>
-          </motion.button>
+          </button>
         ))}
       </div>
     </div>

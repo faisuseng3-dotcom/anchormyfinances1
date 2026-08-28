@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ArrowUp, Loader2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { classifyQuestionLocally, classifyQuestionWithLLM } from '@/lib/futureQuestions/intentClassifier';
 import { computeScenario } from '@/lib/futureQuestions/scenarioMath';
 import { buildProactiveInsights } from '@/lib/futureQuestions/proactiveInsights';
+import { dashboardEntryItem } from '@/lib/motionPresets';
 import FutureBaseline from './FutureBaseline';
 import FutureInsightCards from './FutureInsightCards';
 import FutureAnswerCard from './FutureAnswerCard';
@@ -24,6 +25,8 @@ export default function FutureConversation({ profile, transactions }) {
   const [error, setError] = useState(null);
 
   const insights = useMemo(() => buildProactiveInsights(profile, transactions), [profile, transactions]);
+  const reduced = useReducedMotion();
+  const entry = (i) => dashboardEntryItem(i, { reduced });
 
   const runQuestion = async (rawQuestion) => {
     const q = rawQuestion.trim();
@@ -68,9 +71,11 @@ export default function FutureConversation({ profile, transactions }) {
 
   return (
     <div className="space-y-6">
-      <FutureBaseline profile={profile} transactions={transactions} />
+      <motion.div {...entry(0)}>
+        <FutureBaseline profile={profile} transactions={transactions} />
+      </motion.div>
 
-      <form onSubmit={handleSubmit} className="relative">
+      <motion.form {...entry(1)} onSubmit={handleSubmit} className="relative">
         <input
           type="text"
           value={question}
@@ -92,9 +97,9 @@ export default function FutureConversation({ profile, transactions }) {
             <ArrowUp className="w-4 h-4 text-[#08110c]" />
           )}
         </button>
-      </form>
+      </motion.form>
 
-      <div className="flex flex-wrap gap-2">
+      <motion.div {...entry(2)} className="flex flex-wrap gap-2">
         {SUGGESTIONS.map((s) => (
           <button
             key={s}
@@ -107,7 +112,7 @@ export default function FutureConversation({ profile, transactions }) {
             {s}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {error && (
         <motion.p
@@ -119,7 +124,11 @@ export default function FutureConversation({ profile, transactions }) {
         </motion.p>
       )}
 
-      {thread.length === 0 && <FutureInsightCards insights={insights} onSelect={runQuestion} />}
+      {thread.length === 0 && (
+        <motion.div {...entry(3)}>
+          <FutureInsightCards insights={insights} onSelect={runQuestion} />
+        </motion.div>
+      )}
 
       <div className="space-y-4">
         <AnimatePresence initial={false}>

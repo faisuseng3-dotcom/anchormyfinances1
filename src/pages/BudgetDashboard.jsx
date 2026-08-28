@@ -12,9 +12,10 @@ import BudgetCategoryRow from '@/components/budget/BudgetCategoryRow';
 import SetBudgetModal from '@/components/budget/SetBudgetModal';
 import { calcUnderBudgetStreak } from '@/lib/budgetStreak';
 import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Flame, Trophy } from 'lucide-react';
 import { useCountUp } from '@/hooks/useCountUp';
+import { dashboardEntryItem } from '@/lib/motionPresets';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -106,6 +107,8 @@ export default function BudgetDashboard() {
 
   const hasAnyBudget = totalBudgeted > 0;
   const displayedLeft = useCountUp(totalLeft, 900);
+  const reduced = useReducedMotion();
+  const entry = (i) => dashboardEntryItem(i, { reduced });
 
   return (
     <PageShell
@@ -115,7 +118,8 @@ export default function BudgetDashboard() {
     >
 
       {/* ── Hero: Vinn månaden ───────────────────────────────────── */}
-      <div
+      <motion.div
+        {...entry(0)}
         className="rounded-[24px] p-6 mb-4"
         style={{
           background: 'linear-gradient(145deg, rgba(79, 174, 130, 0.10) 0%, rgba(79, 174, 130, 0.06) 100%)',
@@ -179,32 +183,26 @@ export default function BudgetDashboard() {
             </p>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* ── Kategorierna ─────────────────────────────────────────── */}
-      <div className="space-y-2">
-        {TRACKED_BUDGET_CATEGORIES.map((cat, i) => (
-          <motion.div
+      <motion.div {...entry(1)} className="space-y-2">
+        {TRACKED_BUDGET_CATEGORIES.map((cat) => (
+          <BudgetCategoryRow
             key={cat}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.04 }}
-          >
-            <BudgetCategoryRow
-              category={cat}
-              spent={monthlySpent[cat] || 0}
-              limit={budgetLimits[cat] || 0}
-              prevSpent={prevMonthSpent[cat] || 0}
-              onEdit={setEditCategory}
-            />
-          </motion.div>
+            category={cat}
+            spent={monthlySpent[cat] || 0}
+            limit={budgetLimits[cat] || 0}
+            prevSpent={prevMonthSpent[cat] || 0}
+            onEdit={setEditCategory}
+          />
         ))}
-      </div>
+      </motion.div>
 
       {/* ── Footer hint ──────────────────────────────────────────── */}
-      <p className="text-[12px] text-white/25 text-center mt-4">
+      <motion.p {...entry(2)} className="text-[12px] text-white/25 text-center mt-4">
         Tryck på en kategori för att sätta eller ändra gräns
-      </p>
+      </motion.p>
 
       {editCategory && (
         <SetBudgetModal
