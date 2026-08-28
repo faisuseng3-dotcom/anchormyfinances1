@@ -124,7 +124,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
   return (
     <div className="flex flex-col" style={{ height: '100%' }}>
       {isMemoryEnabled(profile) && (
-        <p className="px-4 pt-3 text-[12px] text-white/40 leading-relaxed shrink-0">
+        <p className="px-4 pt-3 text-[12px] text-[var(--color-text-muted)] leading-relaxed shrink-0">
           {MEMORY_UX_NOTICE}
         </p>
       )}
@@ -142,12 +142,12 @@ export default function AnchorChat({ hideSuggestions = false }) {
                 <div
                   className="px-4 py-2.5 text-[14px] leading-relaxed"
                   style={msg.role === 'user' ? {
-                    background: 'rgba(79, 174, 130, 0.16)',
-                    color: '#fff',
+                    background: 'var(--color-background-secondary)',
+                    color: 'var(--color-text-primary)',
                     borderRadius: '18px 18px 4px 18px',
                   } : {
-                    background: 'rgba(255,255,255,0.06)',
-                    color: 'rgba(255,255,255,0.82)',
+                    background: 'var(--color-accent-soft)',
+                    color: 'var(--color-text-primary)',
                     borderRadius: '18px 18px 18px 4px',
                     whiteSpace: 'pre-line',
                   }}
@@ -155,7 +155,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
                   {msg.content}
                 </div>
                 {msg.profileUpdated && (
-                  <p className="flex items-center gap-1 text-[11px] text-[#4fae82] mt-1.5 ml-1">
+                  <p className="flex items-center gap-1 text-[11px] text-[var(--color-success)] mt-1.5 ml-1">
                     <CheckCircle2 size={12} />
                     Profil uppdaterad
                   </p>
@@ -166,8 +166,8 @@ export default function AnchorChat({ hideSuggestions = false }) {
                       <Link
                         key={action.href}
                         to={action.href}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium text-[#4fae82] no-underline"
-                        style={{ background: 'rgba(79, 174, 130, 0.12)', border: '1px solid rgba(79, 174, 130, 0.3)' }}
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-[12px] font-medium text-[var(--color-accent)] no-underline"
+                        style={{ background: 'var(--color-accent-soft)', border: '1px solid rgba(37,99,235,0.25)' }}
                       >
                         {action.label}
                         <ArrowRight size={12} />
@@ -183,7 +183,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
             <motion.div key="typing" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               className="flex items-end justify-start">
               <div className="px-4 py-3 rounded-[18px] rounded-bl-[4px]"
-                style={{ background: 'rgba(255,255,255,0.06)' }}>
+                style={{ background: 'var(--color-accent-soft)' }}>
                 <div className="flex gap-1">
                   {[0, 1, 2].map((j) => (
                     <motion.span key={j} className="w-1.5 h-1.5 rounded-full"
@@ -201,8 +201,7 @@ export default function AnchorChat({ hideSuggestions = false }) {
           <div className="flex flex-col gap-2 pt-1">
             {COACH_SUGGESTIONS.filter((s) => !s.navigate).map((s) => (
               <button key={s.id} type="button" onClick={() => send(s.prompt)}
-                className="w-full text-left px-4 py-3 rounded-2xl text-[13px] text-white/70 touch-manipulation"
-                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                className="w-full text-left px-4 py-3 rounded-2xl text-[13px] text-[var(--color-text-secondary)] touch-manipulation bg-white border border-[var(--color-border)]">
                 {s.label}
               </button>
             ))}
@@ -213,24 +212,24 @@ export default function AnchorChat({ hideSuggestions = false }) {
       </div>
 
       <div className="flex items-center gap-2 px-4 py-3 shrink-0"
-        style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+        style={{ borderTop: '1px solid var(--color-border)' }}>
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && send()}
           placeholder="Fråga eller be mig ändra något…"
-          className="flex-1 h-11 rounded-full px-4 text-[14px] text-white outline-none placeholder-white/25"
-          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.1)' }}
+          className="flex-1 h-11 rounded-full px-4 text-[14px] text-[var(--color-text-primary)] outline-none placeholder-[var(--color-text-muted)] bg-white"
+          style={{ border: '1px solid var(--color-border)' }}
         />
         <button
           type="button"
           onClick={() => send()}
           disabled={!input.trim() || loading}
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 disabled:opacity-30 touch-manipulation transition-opacity"
-          style={{ background: '#4fae82' }}
+          style={{ background: 'var(--color-accent)' }}
         >
-          <Send size={16} className="text-[#040814]" />
+          <Send size={16} className="text-white" />
         </button>
       </div>
     </div>

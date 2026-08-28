@@ -36,21 +36,21 @@ export default function GoalProjectionRow({ profile }) {
   };
 
   return (
-    <div className="rounded-2xl p-4 mt-2 organic-surface bg-white/[0.03] border border-white/[0.06] space-y-2">
-      <p className="text-[13px] text-white/55">
-        Beräknad måldatum: <span className="text-white font-semibold">{projection.targetDateLabel}</span>
+    <div className="rounded-2xl p-4 mt-2 organic-surface space-y-2">
+      <p className="text-[13px] text-[var(--color-text-secondary)]">
+        Beräknad måldatum: <span className="text-[var(--color-text-primary)] font-semibold">{projection.targetDateLabel}</span>
         {projection.isRateAssumed && ' (uppskattat sparande)'}
       </p>
 
       {whatIf?.monthsEarlier > 0 && (
-        <p className="text-[13px] text-white/55">
+        <p className="text-[13px] text-[var(--color-text-secondary)]">
           Om du sparar {fmt(suggestedExtra)} kr mer/mån når du målet {whatIf.monthsEarlier} månad{whatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.
         </p>
       )}
 
       <Link
         to={createPageUrl('FuturePulse')}
-        className="inline-flex items-center gap-1 text-[13px] font-medium text-white/60 hover:text-white no-underline"
+        className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
       >
         Utforska i Framtid
         <ArrowRight className="w-3.5 h-3.5" />
@@ -72,13 +72,13 @@ export default function GoalProjectionRow({ profile }) {
               type="month"
               value={deadline}
               onChange={(e) => { setDeadline(e.target.value); setRequiredResult(null); }}
-              className="flex-1 h-10 rounded-xl px-3 text-[14px] text-white bg-white/[0.06] border border-white/10"
+              className="flex-1 h-10 rounded-xl px-3 text-[14px] text-[var(--color-text-primary)] bg-[var(--color-background-secondary)] border border-[var(--color-border)]"
             />
             <button
               type="button"
               onClick={handleCheckDeadline}
               disabled={!deadline}
-              className="px-4 rounded-xl text-[13px] font-semibold text-[#08110c] bg-[#4fae82] disabled:opacity-40"
+              className="px-4 rounded-xl text-[13px] font-semibold text-white bg-[var(--color-accent)] disabled:opacity-40"
             >
               Räkna
             </button>
@@ -86,19 +86,19 @@ export default function GoalProjectionRow({ profile }) {
 
           {requiredResult && (
             requiredResult.isRealistic ? (
-              <p className="text-[13px] text-white/70">
+              <p className="text-[13px] text-[var(--color-text-secondary)]">
                 Du behöver spara cirka {fmt(requiredResult.requiredMonthly)} kr/mån för att nå målet till {requiredResult.deadlineLabel}.
               </p>
             ) : (
               <div className="space-y-1.5">
-                <p className="text-[13px] text-white/70">
+                <p className="text-[13px] text-[var(--color-text-secondary)]">
                   Det kräver cirka {fmt(requiredResult.requiredMonthly)} kr/mån, vilket är mer än ditt nuvarande sparande på {fmt(projection.monthlyRate)} kr/mån. Här är tre alternativ.
                 </p>
-                <p className="text-[12px] text-white/50">1. Spara mer — {fmt(requiredResult.alternatives.saveMore.monthlyRate)} kr/mån.</p>
+                <p className="text-[12px] text-[var(--color-text-muted)]">1. Spara mer — {fmt(requiredResult.alternatives.saveMore.monthlyRate)} kr/mån.</p>
                 {requiredResult.alternatives.laterDate && (
-                  <p className="text-[12px] text-white/50">2. Flytta fram måldatumet till {requiredResult.alternatives.laterDate.dateLabel}.</p>
+                  <p className="text-[12px] text-[var(--color-text-muted)]">2. Flytta fram måldatumet till {requiredResult.alternatives.laterDate.dateLabel}.</p>
                 )}
-                <p className="text-[12px] text-white/50">3. Sänk målbeloppet till cirka {fmt(requiredResult.alternatives.lowerTarget.achievableTarget)} kr.</p>
+                <p className="text-[12px] text-[var(--color-text-muted)]">3. Sänk målbeloppet till cirka {fmt(requiredResult.alternatives.lowerTarget.achievableTarget)} kr.</p>
               </div>
             )
           )}

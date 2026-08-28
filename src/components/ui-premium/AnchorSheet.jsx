@@ -56,7 +56,7 @@ export default function AnchorSheet({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center pt-3 pb-2 shrink-0">
-              <div className="w-10 h-1 rounded-full bg-white/20" />
+              <div className="w-10 h-1 rounded-full bg-[var(--color-border)]" />
             </div>
             {(title || headerRight) && (
               <div className="px-5 sm:px-6 pb-3 shrink-0 flex items-start justify-between gap-3">
@@ -67,7 +67,7 @@ export default function AnchorSheet({
                     </h2>
                   )}
                   {subtitle && (
-                    <p className="anchor-type-body-sm mt-0.5 text-white/45">{subtitle}</p>
+                    <p className="anchor-type-body-sm mt-0.5 text-[var(--color-text-secondary)]">{subtitle}</p>
                   )}
                 </div>
                 {headerRight}

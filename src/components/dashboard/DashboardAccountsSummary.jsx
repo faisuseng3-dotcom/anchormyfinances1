@@ -64,10 +64,10 @@ export default function DashboardAccountsSummary({ profile }) {
                 onClick={() => (isFront ? navigate(createPageUrl('SavingsGoals')) : bringToFront(itemIndex))}
                 className="absolute inset-0 text-left rounded-2xl p-4 anchor-pressable"
                 style={{
-                  background: `linear-gradient(135deg, ${acc.color}29, rgba(255,255,255,0.03) 70%)`,
-                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: `linear-gradient(135deg, ${acc.color}29, #FFFFFF 70%)`,
+                  border: '1px solid var(--color-border)',
                   zIndex: t.z,
-                  boxShadow: isFront ? '0 16px 34px -14px rgba(0,0,0,0.55)' : 'none',
+                  boxShadow: isFront ? '0 16px 34px -14px rgba(11,18,32,0.28)' : 'none',
                   clipPath: t.band
                     ? `inset(calc(100% - ${t.band}px) 0 0 0 round ${CARD_RADIUS}px)`
                     : undefined,
@@ -80,15 +80,15 @@ export default function DashboardAccountsSummary({ profile }) {
                   style={{ background: acc.color }}
                   aria-hidden
                 />
-                <p className="text-[13px] font-medium text-white/70 truncate">{acc.name}</p>
+                <p className="text-[13px] font-medium text-[var(--color-text-secondary)] truncate">{acc.name}</p>
                 <p
                   className="text-[18px] font-bold tabular-nums mt-1"
-                  style={{ color: acc.amount < 0 ? '#e2857a' : '#ffffff' }}
+                  style={{ color: acc.amount < 0 ? 'var(--color-danger)' : 'var(--color-text-primary)' }}
                 >
                   {fmtKr(acc.amount, { signed: acc.amount < 0 })}
                 </p>
                 {pct != null && isFront && (
-                  <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+                  <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: 'var(--color-border)' }}>
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: 'var(--color-accent)' }} />
                   </div>
                 )}
@@ -102,7 +102,7 @@ export default function DashboardAccountsSummary({ profile }) {
               <span
                 key={acc.id}
                 className="w-1.5 h-1.5 rounded-full"
-                style={{ background: order[0] === i ? 'var(--color-accent)' : 'rgba(255,255,255,0.18)' }}
+                style={{ background: order[0] === i ? 'var(--color-accent)' : 'rgba(11,18,32,0.15)' }}
               />
             ))}
           </div>

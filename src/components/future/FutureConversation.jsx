@@ -81,8 +81,8 @@ export default function FutureConversation({ profile, transactions }) {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Fråga vad som helst om din framtid…"
-          className="w-full rounded-[20px] px-5 py-4 pr-14 text-[15px] text-white placeholder:text-white/30 outline-none"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+          className="w-full rounded-[20px] px-5 py-4 pr-14 text-[15px] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] outline-none"
+          style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
         />
         <button
           type="submit"
@@ -92,9 +92,9 @@ export default function FutureConversation({ profile, transactions }) {
           aria-label="Fråga"
         >
           {pending ? (
-            <Loader2 className="w-4 h-4 text-[#08110c] animate-spin" />
+            <Loader2 className="w-4 h-4 text-white animate-spin" />
           ) : (
-            <ArrowUp className="w-4 h-4 text-[#08110c]" />
+            <ArrowUp className="w-4 h-4 text-white" />
           )}
         </button>
       </motion.form>
@@ -106,8 +106,8 @@ export default function FutureConversation({ profile, transactions }) {
             type="button"
             onClick={() => runQuestion(s)}
             disabled={pending}
-            className="text-[12.5px] text-white/55 px-3.5 py-2 rounded-full disabled:opacity-40"
-            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+            className="text-[12.5px] text-[var(--color-text-secondary)] px-3.5 py-2 rounded-full disabled:opacity-40"
+            style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
           >
             {s}
           </button>

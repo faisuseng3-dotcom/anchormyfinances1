@@ -55,7 +55,7 @@ export const type = {
   body: 'text-[15px] font-normal leading-[1.55] text-[var(--color-text-secondary)]',
   bodySm: 'text-[14px] font-normal leading-[1.5] text-[var(--color-text-secondary)]',
   label: 'text-[12px] font-medium tracking-wide text-[var(--color-text-muted)]',
-  meta: 'text-[13px] font-medium tabular-nums text-white/45',
+  meta: 'text-[13px] font-medium tabular-nums text-[var(--color-text-secondary)]',
 };
 
 /** Touch — min 48×48dp hit area */
@@ -77,6 +77,6 @@ export const layout = {
 export const surface = {
   page: 'anchor-page',
   card: 'anchor-elev-2 rounded-[var(--anchor-radius-lg)] bg-[var(--color-surface-raised)] shadow-[var(--anchor-shadow-1)]',
-  cardInset: 'anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white/[0.04] ring-1 ring-inset ring-white/[0.08]',
+  cardInset: 'anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-[var(--color-background-secondary)] ring-1 ring-inset ring-[var(--color-border)]',
   overlay: 'anchor-overlay',
 };

@@ -15,7 +15,7 @@ export function SkeletonCircle({ size = 40, className }) {
 
 export function SkeletonCard({ className, children }) {
   return (
-    <div className={cn('rounded-2xl shadow-[var(--anchor-shadow-1)] bg-white/[0.04] p-4', className)}>
+    <div className={cn('rounded-2xl shadow-[var(--anchor-shadow-1)] border border-[var(--color-border)] bg-white p-4', className)}>
       {children}
     </div>
   );

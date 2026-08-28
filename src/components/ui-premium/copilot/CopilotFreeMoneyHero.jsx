@@ -68,7 +68,7 @@ export default function CopilotFreeMoneyHero({
           <button
             type="button"
             onClick={() => setShowBreakdown((v) => !v)}
-            className="anchor-sts-breakdown-toggle inline-flex items-center gap-1 text-[13px] text-white/45 hover:text-white/70 transition-colors"
+            className="anchor-sts-breakdown-toggle inline-flex items-center gap-1 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
           >
             Visa beräkning
             <ChevronDown
@@ -79,16 +79,16 @@ export default function CopilotFreeMoneyHero({
           {showBreakdown && (
             <dl className="anchor-sts-breakdown-list mt-3 w-full max-w-[280px] mx-auto text-left">
               {safeToSpend.breakdown.map((row) => (
-                <div key={row.label} className="flex items-center justify-between py-1.5 text-[14px] border-b border-white/[0.06] last:border-0">
-                  <dt className="text-white/55">{row.label}</dt>
-                  <dd className={row.value < 0 ? 'text-white/70' : 'text-white/85'}>
+                <div key={row.label} className="flex items-center justify-between py-1.5 text-[14px] border-b border-[var(--color-border)] last:border-0">
+                  <dt className="text-[var(--color-text-secondary)]">{row.label}</dt>
+                  <dd className={row.value < 0 ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-text-primary)]'}>
                     {row.value < 0 ? '−' : ''}{fmt(Math.abs(row.value))} kr
                   </dd>
                 </div>
               ))}
               <div className="flex items-center justify-between pt-2 mt-1 text-[14px] font-semibold">
-                <dt className="text-white/85">Tryggt att spendera</dt>
-                <dd className="text-white">{fmt(safeToSpend.amount)} kr</dd>
+                <dt className="text-[var(--color-text-primary)]">Tryggt att spendera</dt>
+                <dd className="text-[var(--color-text-primary)]">{fmt(safeToSpend.amount)} kr</dd>
               </div>
             </dl>
           )}

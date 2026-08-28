@@ -8,9 +8,9 @@ import { CategoryIcon } from '@/lib/anchorIcons';
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
 function getStatus(pct) {
-  if (pct >= 1)   return { color: '#e2857a', bg: 'rgba(226,133,122,0.12)' };
-  if (pct >= 0.8) return { color: '#d9b25c', bg: 'rgba(217,178,92,0.10)' };
-  return              { color: '#4fae82', bg: 'rgba(79,174,130,0.10)' };
+  if (pct >= 1)   return { color: 'var(--color-danger)', bg: 'var(--color-danger-soft)' };
+  if (pct >= 0.8) return { color: 'var(--color-warning)', bg: 'var(--color-warning-soft)' };
+  return              { color: 'var(--color-success)', bg: 'var(--color-success-soft)' };
 }
 
 export default function BudgetCategoryRow({ category, spent, limit, onEdit, prevSpent = 0 }) {
@@ -27,7 +27,7 @@ export default function BudgetCategoryRow({ category, spent, limit, onEdit, prev
       onClick={() => onEdit(category)}
       whileTap={{ scale: 0.985 }}
       className="w-full text-left rounded-2xl p-4 touch-manipulation"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}
     >
       <div className="flex items-center gap-3 mb-3">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -36,30 +36,30 @@ export default function BudgetCategoryRow({ category, spent, limit, onEdit, prev
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <span className="text-[14px] font-semibold text-white">{meta.label}</span>
+            <span className="text-[14px] font-semibold text-[var(--color-text-primary)]">{meta.label}</span>
             <div className="flex items-center gap-2">
               {trend !== null && Math.abs(trend) > 50 && (
-                <span className="text-[11px]" style={{ color: trend > 0 ? '#e2857a' : '#4fae82' }}>
+                <span className="text-[11px]" style={{ color: trend > 0 ? 'var(--color-danger)' : 'var(--color-success)' }}>
                   {trend > 0 ? '↑' : '↓'}{fmt(Math.abs(trend))} kr
                 </span>
               )}
-              <ChevronRight size={14} className="text-white/20" />
+              <ChevronRight size={14} className="text-[var(--color-text-muted)]" />
             </div>
           </div>
           <div className="flex items-baseline gap-1.5 mt-0.5">
             {limit > 0 ? (
               over
-                ? <span className="text-[12px] font-medium" style={{ color: '#e2857a' }}>{fmt(spent - limit)} kr över gränsen</span>
-                : <span className="text-[12px] text-white/45"><span className="text-white font-medium">{fmt(left)} kr</span> kvar av {fmt(limit)} kr</span>
+                ? <span className="text-[12px] font-medium" style={{ color: 'var(--color-danger)' }}>{fmt(spent - limit)} kr över gränsen</span>
+                : <span className="text-[12px] text-[var(--color-text-secondary)]"><span className="text-[var(--color-text-primary)] font-medium">{fmt(left)} kr</span> kvar av {fmt(limit)} kr</span>
             ) : (
-              <span className="text-[12px] text-white/35">Tryck för att sätta gräns</span>
+              <span className="text-[12px] text-[var(--color-text-muted)]">Tryck för att sätta gräns</span>
             )}
           </div>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--color-background-secondary)' }}>
         {limit > 0 && (
           <motion.div
             initial={{ width: 0 }}

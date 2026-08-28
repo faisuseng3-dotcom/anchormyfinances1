@@ -28,8 +28,8 @@ export default function CopilotEnvelopeGoal({
       onKeyDown={(e) => { if (e.key === 'Enter') triggerHaptic('light'); }}
       whileTap={{ scale: 0.97 }}
       transition={{ type: 'spring', stiffness: 380, damping: 26 }}
-      className={`relative rounded-3xl overflow-hidden cursor-pointer ${className}`}
-      style={{ background: 'rgba(255,255,255,0.05)', boxShadow: 'var(--organic-shadow-soft), var(--organic-shadow-inset)' }}
+      className={`relative rounded-3xl overflow-hidden cursor-pointer border border-[var(--color-border)] ${className}`}
+      style={{ background: '#FFFFFF', boxShadow: 'var(--anchor-shadow-1)' }}
     >
       <motion.div
         className="absolute bottom-0 left-0 right-0 pointer-events-none"
@@ -37,7 +37,7 @@ export default function CopilotEnvelopeGoal({
         animate={{ height: `${fillPct}%` }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          background: 'linear-gradient(180deg, rgba(79, 174, 130, 0.05) 0%, rgba(79, 174, 130, 0.22) 100%)',
+          background: 'linear-gradient(180deg, rgba(22, 163, 74, 0.04) 0%, rgba(22, 163, 74, 0.12) 100%)',
         }}
       />
       <svg
@@ -49,7 +49,7 @@ export default function CopilotEnvelopeGoal({
       >
         <path
           d="M0,12 C80,4 160,20 240,10 C320,0 360,16 400,8 L400,24 L0,24 Z"
-          fill="rgba(79, 174, 130, 0.35)"
+          fill="rgba(22, 163, 74, 0.22)"
         />
       </svg>
 
@@ -63,11 +63,11 @@ export default function CopilotEnvelopeGoal({
           showMilestones
         />
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-white truncate">{name}</p>
-          <p className="text-[12px] text-[var(--copilot-text-muted)] mt-0.5 tabular-nums">
+          <p className="text-[15px] font-semibold text-[var(--color-text-primary)] truncate">{name}</p>
+          <p className="text-[12px] text-[var(--color-text-muted)] mt-0.5 tabular-nums">
             {fmt(current)} / {fmt(target)} kr
           </p>
-          <div className="mt-3 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+          <div className="mt-3 h-1.5 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{ background: 'linear-gradient(90deg, var(--copilot-accent-blue), var(--copilot-accent-green))' }}

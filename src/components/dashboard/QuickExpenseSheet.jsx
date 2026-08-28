@@ -119,7 +119,7 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile, transactio
         <button
           type="button"
           onClick={onSwitchToWrite}
-          className="flex items-center gap-1.5 text-[13px] font-medium text-white/50 hover:text-white/80 transition-colors shrink-0 pt-1"
+          className="flex items-center gap-1.5 text-[13px] font-medium text-[var(--copilot-text-secondary)] hover:text-[var(--copilot-text-primary)] transition-colors shrink-0 pt-1"
         >
           <Type size={14} />
           Skriv/tala
@@ -139,10 +139,10 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile, transactio
                   type="button"
                   onClick={() => savePayee(p)}
                   className="shrink-0 flex flex-col items-start gap-1 px-3.5 py-2.5 rounded-2xl anchor-pressable"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.07)' }}
+                  style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
                 >
-                  <span className="text-[13px] font-medium text-white">{p.key}</span>
-                  <span className="text-[12px] text-white/45 tabular-nums">~{p.amount.toLocaleString('sv-SE')} kr</span>
+                  <span className="text-[13px] font-medium text-[var(--copilot-text-primary)]">{p.key}</span>
+                  <span className="text-[12px] text-[var(--copilot-text-muted)] tabular-nums">~{p.amount.toLocaleString('sv-SE')} kr</span>
                 </button>
               ))}
             </div>
@@ -161,7 +161,7 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile, transactio
               placeholder="0"
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^\d]/g, ''))}
-              className="w-full h-16 rounded-2xl bg-[var(--copilot-bg-card)] organic-surface text-center text-3xl font-bold text-white tabular-nums outline-none focus:border-[rgba(79, 174, 130, 0.5)]"
+              className="w-full h-16 rounded-2xl bg-[var(--copilot-bg-card)] organic-surface text-center text-3xl font-bold text-[var(--copilot-text-primary)] tabular-nums outline-none focus:border-[rgba(37,99,235,0.5)]"
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[13px] text-[var(--copilot-text-muted)]">
               kr
@@ -197,13 +197,13 @@ export default function QuickExpenseSheet({ isOpen, onClose, profile, transactio
                   onClick={() => handleCategoryTap(cat.id)}
                   className={`flex items-center gap-2.5 p-3.5 rounded-3xl text-left transition-all ${
                     active
-                      ? 'border-[var(--copilot-accent-blue)] bg-[rgba(79, 174, 130, 0.2)]'
+                      ? 'border-[var(--copilot-accent-blue)] bg-[rgba(37,99,235,0.1)]'
                       : ' bg-[var(--copilot-bg-card)] hover:bg-[var(--copilot-bg-card-hover)]'
                   }`}
                   style={active ? undefined : { background: `linear-gradient(135deg, ${tint.bg}, var(--copilot-bg-card))` }}
                 >
                   <CategoryIcon category={cat.id} size={18} color={tint.accent} />
-                  <span className="text-[14px] font-medium text-white">{cat.label}</span>
+                  <span className="text-[14px] font-medium text-[var(--copilot-text-primary)]">{cat.label}</span>
                 </motion.button>
               );
             })}

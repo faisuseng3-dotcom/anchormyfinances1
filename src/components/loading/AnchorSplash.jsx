@@ -32,7 +32,7 @@ export default function AnchorSplash() {
       style={{
         position: 'fixed',
         inset: 0,
-        background: '#040814',
+        background: '#F7F9FC',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -54,7 +54,7 @@ export default function AnchorSplash() {
               fontWeight: 800,
               fontSize: 42,
               letterSpacing: '-0.03em',
-              color: '#ffffff',
+              color: '#0B1220',
               lineHeight: 1,
               display: 'inline-block',
             }}

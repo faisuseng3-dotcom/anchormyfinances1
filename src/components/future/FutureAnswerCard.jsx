@@ -39,17 +39,17 @@ export default function FutureAnswerCard({ question, result, intent, amountKr, p
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
       className="rounded-[24px] p-5 sm:p-6"
-      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
     >
-      <p className="text-[13px] text-white/40 mb-1">{question}</p>
-      <h3 className="text-[19px] font-bold text-white mb-3">{title}</h3>
+      <p className="text-[13px] text-[var(--color-text-muted)] mb-1">{question}</p>
+      <h3 className="text-[19px] font-bold text-[var(--color-text-primary)] mb-3">{title}</h3>
 
       {narrative && (
-        <p className="text-[14.5px] text-white/70 leading-relaxed mb-4">{narrative}</p>
+        <p className="text-[14.5px] text-[var(--color-text-secondary)] leading-relaxed mb-4">{narrative}</p>
       )}
 
       {assumption && (
-        <p className="flex items-start gap-1.5 text-[12px] text-white/40 mb-4 leading-relaxed">
+        <p className="flex items-start gap-1.5 text-[12px] text-[var(--color-text-muted)] mb-4 leading-relaxed">
           <Sparkles className="w-3.5 h-3.5 mt-0.5 shrink-0" />
           {assumption}
         </p>
@@ -74,7 +74,7 @@ export default function FutureAnswerCard({ question, result, intent, amountKr, p
         <button
           type="button"
           onClick={() => setConfirmOpen(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-[#08110c] bg-[#4fae82] hover:opacity-90 transition-opacity"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-white bg-[var(--color-accent)] hover:opacity-90 transition-opacity"
         >
           Använd denna plan
         </button>

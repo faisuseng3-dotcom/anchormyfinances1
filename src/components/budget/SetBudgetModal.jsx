@@ -28,7 +28,7 @@ export default function SetBudgetModal({ category, currentLimit, onSave, onClose
             <CategoryIcon category={category} size={22} color={meta.color} />
           </div>
           <div>
-            <p className="text-[14px] font-semibold text-white">{meta.label}</p>
+            <p className="text-[14px] font-semibold text-[var(--copilot-text-primary)]">{meta.label}</p>
             <p className="text-[12px] text-[var(--copilot-text-muted)]">Sätt din månadsgräns</p>
           </div>
           <Icon className="w-5 h-5 ml-auto opacity-40" style={{ color: meta.color }} />

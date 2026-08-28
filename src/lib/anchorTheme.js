@@ -3,17 +3,14 @@
  * One canvas, typography-led hierarchy, dividers instead of nested boxes.
  */
 
-export const ANCHOR_PAGE_GRADIENT = '#0b0f0d';
+export const ANCHOR_PAGE_GRADIENT = '#F7F9FC';
 
 /** Legacy glass — use only for sheets/modals */
 export function glassSurface(overrides = {}) {
   return {
-    background:
-      'linear-gradient(165deg, rgba(255,255,255,0.11) 0%, rgba(255,255,255,0.04) 40%, rgba(8,11,9,0.85) 100%)',
-    backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
-    boxShadow: 'var(--anchor-shadow-1)',
-    boxShadow: '0 24px 56px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255,255,255,0.06)',
+    background: '#FFFFFF',
+    boxShadow: 'var(--anchor-shadow-3)',
+    border: '1px solid var(--color-border)',
     ...overrides,
   };
 }
@@ -21,11 +18,9 @@ export function glassSurface(overrides = {}) {
 /** Single elevated surface per viewport (drawers, modals) */
 export function elevatedSheet(overrides = {}) {
   return {
-    background: 'rgba(14, 17, 15, 0.94)',
-    backdropFilter: 'blur(28px)',
-    WebkitBackdropFilter: 'blur(28px)',
-    borderTop: '1px solid rgba(255,255,255,0.1)',
-    boxShadow: '0 -16px 48px rgba(0,0,0,0.35)',
+    background: '#FFFFFF',
+    borderTop: '1px solid var(--color-border)',
+    boxShadow: '0 -16px 48px rgba(11,18,32,0.12)',
     ...overrides,
   };
 }
@@ -33,7 +28,7 @@ export function elevatedSheet(overrides = {}) {
 export const dashboardGlassSurface = glassSurface;
 
 /** Sentence-case section titles — not uppercase labels */
-export const sectionTitleClass = 'anchor-dash-heading anchor-dash-heading--section tracking-tight text-white';
+export const sectionTitleClass = 'anchor-dash-heading anchor-dash-heading--section tracking-tight';
 
 /** Titlar inuti cards/widgets */
 export const cardTitleClass = 'anchor-card-title';
@@ -43,13 +38,13 @@ export const cardEyebrowClass = 'anchor-card-eyebrow';
 
 export const sectionLabelClass = sectionTitleClass;
 
-export const sectionSubtitleClass = 'text-[13px] text-white/50 leading-relaxed';
+export const sectionSubtitleClass = 'text-[13px] leading-relaxed text-[var(--color-text-secondary)]';
 
-export const sectionMetaClass = 'text-[13px] font-medium text-white/45 tabular-nums';
+export const sectionMetaClass = 'text-[13px] font-medium tabular-nums text-[var(--color-text-secondary)]';
 
 /** @deprecated Prefer sectionTitleClass */
 export const sectionLabelClassLegacy =
-  'text-[10px] font-semibold uppercase tracking-[0.2em] text-white/45';
+  'text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--color-text-secondary)]';
 
 export const anchorPageClass =
   'min-h-screen min-h-[100dvh] overflow-x-hidden anchor-page anchor-page-pad-bottom';
@@ -58,9 +53,9 @@ export const anchorPageClass =
 export const anchorZoneClass = 'px-4 sm:px-6';
 
 export const anchorDisplayClass =
-  'font-semibold leading-none tracking-tight text-white tabular-nums';
+  'font-semibold leading-none tracking-tight tabular-nums text-[var(--color-text-primary)]';
 
-export const anchorDividerClass = 'h-px bg-white/[0.08]';
+export const anchorDividerClass = 'h-px bg-[var(--color-border)]';
 
 export const anchorListRowClass =
   'flex items-center gap-3 py-3.5 w-full text-left transition-opacity active:opacity-60';
@@ -71,19 +66,19 @@ export const anchorButtonBaseClass =
   'anchor-btn inline-flex items-center justify-center transition-colors disabled:opacity-50 touch-manipulation';
 
 export const anchorPrimaryButtonClass =
-  `${anchorButtonBaseClass} anchor-btn--default anchor-btn--rounded text-[#0a1628] bg-white hover:bg-white/95 shadow-[0_8px_24px_rgba(0,0,0,0.18)]`;
+  `${anchorButtonBaseClass} anchor-btn--default anchor-btn--rounded text-white bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] shadow-[0_4px_14px_rgba(37,99,235,0.28)]`;
 
 export const anchorSecondaryButtonClass =
-  `${anchorButtonBaseClass} anchor-btn--default anchor-btn--rounded text-white/90 bg-white/[0.08] hover:bg-white/[0.12]`;
+  `${anchorButtonBaseClass} anchor-btn--default anchor-btn--rounded text-[var(--color-text-primary)] bg-white border border-[var(--color-border)] hover:bg-[var(--color-background-secondary)]`;
 
 export const anchorGhostButtonClass =
-  `${anchorButtonBaseClass} anchor-btn--compact text-white/70 hover:text-white`;
+  `${anchorButtonBaseClass} anchor-btn--compact text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]`;
 
 export const anchorIconButtonClass =
-  `${anchorButtonBaseClass} anchor-btn--icon rounded-full bg-white/[0.08] text-white/80 hover:bg-white/[0.12] anchor-pressable`;
+  `${anchorButtonBaseClass} anchor-btn--icon rounded-full bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] hover:bg-[#e2e8f0] anchor-pressable`;
 
 export const anchorInputBaseClass =
-  'anchor-input organic-input w-full transition-all focus-visible:shadow-[0_0_0_3px_rgba(79, 174, 130, 0.25)]';
+  'anchor-input organic-input w-full transition-all focus-visible:shadow-[0_0_0_3px_rgba(37,99,235,0.15)]';
 
 export const anchorInputClass = `${anchorInputBaseClass} anchor-input--field`;
 

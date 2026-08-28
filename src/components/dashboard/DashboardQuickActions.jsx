@@ -26,7 +26,7 @@ export default function DashboardQuickActions({ onAddTransaction, onTransfer }) 
           type="button"
           onClick={a.onClick}
           className="flex flex-col items-center gap-2 py-3 rounded-2xl anchor-pressable"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+          style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
         >
           <span
             className="w-10 h-10 rounded-full flex items-center justify-center"
@@ -34,7 +34,7 @@ export default function DashboardQuickActions({ onAddTransaction, onTransfer }) 
           >
             <a.icon size={18} style={{ color: 'var(--color-accent)' }} />
           </span>
-          <span className="text-[11px] font-medium text-white/70">{a.label}</span>
+          <span className="text-[11px] font-medium text-[var(--color-text-secondary)]">{a.label}</span>
         </button>
       ))}
     </section>

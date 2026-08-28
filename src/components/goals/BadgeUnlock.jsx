@@ -68,7 +68,7 @@ export default function BadgeUnlock({ badgeId, isVisible, onClose }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            className="absolute inset-0 bg-[rgba(11,18,32,0.7)] backdrop-blur-sm"
           />
 
           <motion.div

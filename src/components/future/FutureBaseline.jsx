@@ -16,22 +16,22 @@ export default function FutureBaseline({ profile, transactions }) {
   if (!safeToSpend.isReady) return null;
 
   return (
-    <div className="rounded-[24px] p-5 sm:p-6 mb-6" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)' }}>
-      <p className="text-[12px] uppercase tracking-wide text-white/35 mb-1">Fortsätt som nu</p>
-      <h2 className="text-[19px] font-bold text-white mb-3">Så här ser din ekonomi ut om inget förändras</h2>
+    <div className="rounded-[24px] p-5 sm:p-6 mb-6" style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}>
+      <p className="text-[12px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Fortsätt som nu</p>
+      <h2 className="text-[19px] font-bold text-[var(--color-text-primary)] mb-3">Så här ser din ekonomi ut om inget förändras</h2>
       <div className="flex flex-wrap gap-x-6 gap-y-4">
         <div className="flex-1 min-w-[140px]">
-          <p className="text-[11px] uppercase tracking-wide text-white/35 mb-1">Tryggt att spendera</p>
-          <p className="text-[22px] font-extrabold text-white tabular-nums">{fmt(safeToSpend.amount)} kr</p>
+          <p className="text-[11px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Tryggt att spendera</p>
+          <p className="text-[22px] font-extrabold text-[var(--color-text-primary)] tabular-nums">{fmt(safeToSpend.amount)} kr</p>
         </div>
         {goal && (
           <div className="flex-1 min-w-[140px]">
-            <p className="text-[11px] uppercase tracking-wide text-white/35 mb-1">Beräknat måldatum, {goal.goalName}</p>
-            <p className="text-[22px] font-extrabold text-white tabular-nums">{goal.targetDateLabel || '—'}</p>
+            <p className="text-[11px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">Beräknat måldatum, {goal.goalName}</p>
+            <p className="text-[22px] font-extrabold text-[var(--color-text-primary)] tabular-nums">{goal.targetDateLabel || '—'}</p>
           </div>
         )}
       </div>
-      <p className="text-[12.5px] text-white/40 mt-4 leading-relaxed">
+      <p className="text-[12.5px] text-[var(--color-text-secondary)] mt-4 leading-relaxed">
         Beräknat utifrån din senaste ekonomiska historik{goal?.isRateAssumed ? ' och ett uppskattat sparande' : ''} — inte en garanti, men en rimlig riktning om du fortsätter ungefär som idag.
       </p>
     </div>

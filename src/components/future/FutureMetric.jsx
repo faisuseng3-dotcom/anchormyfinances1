@@ -22,10 +22,10 @@ export default function FutureMetric({ label, value, format = 'kr', accent = fal
 
   return (
     <div className="flex-1 min-w-[120px]">
-      <p className="text-[11px] uppercase tracking-wide text-white/35 mb-1">{label}</p>
+      <p className="text-[11px] uppercase tracking-wide text-[var(--color-text-muted)] mb-1">{label}</p>
       <p
         className="text-[22px] font-extrabold tabular-nums leading-tight"
-        style={{ color: TONE_COLOR[resolvedTone] || '#fff' }}
+        style={{ color: TONE_COLOR[resolvedTone] || 'var(--color-text-primary)' }}
       >
         {formatValue(displayed, format)}
       </p>

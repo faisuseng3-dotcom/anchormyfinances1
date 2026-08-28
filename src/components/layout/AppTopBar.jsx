@@ -55,7 +55,7 @@ export default function AppTopBar() {
         >
           <div className="copilot-health-score-ring">
             <svg viewBox="0 0 34 34" width="34" height="34" aria-hidden>
-              <circle cx="17" cy="17" r={RING_R} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2.5" />
+              <circle cx="17" cy="17" r={RING_R} fill="none" stroke="rgba(11,18,32,0.1)" strokeWidth="2.5" />
               <circle
                 cx="17"
                 cy="17"

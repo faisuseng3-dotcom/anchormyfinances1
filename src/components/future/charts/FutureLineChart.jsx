@@ -12,7 +12,7 @@ import {
 
 const COLOR_MAP = {
   accent: 'var(--color-accent)',
-  muted: 'rgba(255,255,255,0.32)',
+  muted: 'rgba(11,18,32,0.28)',
   critical: 'var(--color-danger)',
 };
 
@@ -23,9 +23,9 @@ function ChartTooltip({ active, payload, label }) {
   return (
     <div
       className="rounded-xl px-3 py-2 text-[12px]"
-      style={{ background: '#0e1310', border: '1px solid rgba(255,255,255,0.12)', boxShadow: '0 8px 24px -8px rgba(0,0,0,0.6)' }}
+      style={{ background: '#FFFFFF', border: '1px solid var(--color-border)', boxShadow: 'var(--anchor-shadow-2)' }}
     >
-      <p className="text-white/50 mb-1">{label}</p>
+      <p className="text-[var(--color-text-secondary)] mb-1">{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} className="tabular-nums font-semibold" style={{ color: p.color }}>
           {fmt(p.value)} kr
@@ -54,16 +54,16 @@ export default function FutureLineChart({ data, lines, height = 220 }) {
               <stop offset="100%" stopColor={primaryColor} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid vertical={false} stroke="rgba(255,255,255,0.06)" />
+          <CartesianGrid vertical={false} stroke="var(--color-border)" />
           <XAxis
             dataKey="x"
-            tick={{ fill: 'rgba(255,255,255,0.35)', fontSize: 11 }}
+            tick={{ fill: 'rgba(11,18,32,0.45)', fontSize: 11 }}
             axisLine={false}
             tickLine={false}
             interval="preserveStartEnd"
           />
           <YAxis hide domain={['dataMin', 'dataMax']} />
-          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.15)' }} />
+          <Tooltip content={<ChartTooltip />} cursor={{ stroke: 'var(--color-border)' }} />
           <Area
             type="monotone"
             dataKey={primary.key}
@@ -93,7 +93,7 @@ export default function FutureLineChart({ data, lines, height = 220 }) {
       </ResponsiveContainer>
       <div className="flex items-center gap-4 mt-1 px-1">
         {lines.map((l) => (
-          <span key={l.key} className="flex items-center gap-1.5 text-[11px] text-white/45">
+          <span key={l.key} className="flex items-center gap-1.5 text-[11px] text-[var(--color-text-secondary)]">
             <span
               className="w-2 h-2 rounded-full shrink-0"
               style={{ background: COLOR_MAP[l.color] || COLOR_MAP.muted }}

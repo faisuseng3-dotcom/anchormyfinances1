@@ -32,7 +32,7 @@ export default function TintIconCard({
         {icon || <CategoryIcon category={category} size={18} color={tint.accent} />}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[14px] font-medium text-white truncate">{title}</p>
+        <p className="text-[14px] font-medium text-[var(--copilot-text-primary)] truncate">{title}</p>
         {subtitle && (
           <p className="text-[12px] text-[var(--copilot-text-muted)] mt-0.5 truncate">{subtitle}</p>
         )}
@@ -41,7 +41,7 @@ export default function TintIconCard({
         <p
           className={cn(
             'text-[14px] font-semibold tabular-nums flex-shrink-0',
-            amountPositive ? 'text-[var(--copilot-accent-green)]' : 'text-white',
+            amountPositive ? 'text-[var(--copilot-accent-green)]' : 'text-[var(--copilot-text-primary)]',
           )}
         >
           {amount}

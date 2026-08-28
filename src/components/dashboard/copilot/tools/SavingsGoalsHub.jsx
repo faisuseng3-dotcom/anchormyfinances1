@@ -46,8 +46,8 @@ export default function SavingsGoalsHub({ profile, updateProfile }) {
       )}
     >
       {goals.length === 0 ? (
-        <div className="rounded-3xl border-dashed  p-12 text-center">
-          <p className="text-[16px] font-semibold text-white mb-2">Inga sparmål ännu</p>
+        <div className="rounded-3xl border-dashed border border-[var(--color-border)] p-12 text-center">
+          <p className="text-[16px] font-semibold text-[var(--color-text-primary)] mb-2">Inga sparmål ännu</p>
           <p className="text-[14px] text-[var(--copilot-text-secondary)] mb-6">
             Sätt ditt första mål — varje krona tar dig närmare det du drömmer om.
           </p>

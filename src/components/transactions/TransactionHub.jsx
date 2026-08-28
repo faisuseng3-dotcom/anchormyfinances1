@@ -217,7 +217,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
       maxHeight="min(88dvh, 640px)"
     >
       {goal > 0 && (
-        <div className="flex items-center gap-4 mb-5 p-4 rounded-2xl organic-surface bg-[rgba(79, 174, 130, 0.08)]">
+        <div className="flex items-center gap-4 mb-5 p-4 rounded-2xl organic-surface bg-[rgba(22,163,74,0.08)]">
           <VisualSavingsGoalRing
             pct={goalPct}
             size={72}
@@ -227,7 +227,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
             showMilestones
           />
           <div>
-            <p className="text-[13px] font-semibold text-white">{profile?.savingsGoalName || 'Sparmål'}</p>
+            <p className="text-[13px] font-semibold text-[var(--copilot-text-primary)]">{profile?.savingsGoalName || 'Sparmål'}</p>
             <p className="text-[12px] text-[var(--copilot-text-muted)] tabular-nums">
               {fmt(saved)} / {fmt(goal)} kr · {Math.round(goalPct)}%
             </p>
@@ -246,7 +246,7 @@ export default function TransactionHub({ isOpen, onClose, profile }) {
               className={`flex-1 py-3 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
                 tab === t.id
                   ? 'bg-[var(--copilot-accent-blue)] text-white'
-                  : 'text-[var(--copilot-text-secondary)] hover:text-white'
+                  : 'text-[var(--copilot-text-secondary)] hover:text-[var(--copilot-text-primary)]'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />

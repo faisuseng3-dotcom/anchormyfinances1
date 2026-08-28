@@ -48,12 +48,12 @@ export default function SubscriptionDueToday({ profile }) {
   return (
     <div
       className="rounded-[20px] overflow-hidden"
-      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+      style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
     >
       <div className="px-4 pt-4 pb-2">
         <h2 className="anchor-card-title">Förfaller idag</h2>
       </div>
-      <div className="divide-y divide-white/[0.05]">
+      <div className="divide-y divide-[var(--color-border)]">
         <AnimatePresence initial={false}>
           {visible.map((item) => (
             <motion.div
@@ -64,13 +64,13 @@ export default function SubscriptionDueToday({ profile }) {
               className="flex items-center gap-3 px-4 py-3"
             >
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] text-white/85 font-medium truncate">{item.sub.name}</p>
-                <p className="text-[12px] text-white/40">{fmt(item.sub.amount)} kr</p>
+                <p className="text-[14px] text-[var(--color-text-primary)] font-medium truncate">{item.sub.name}</p>
+                <p className="text-[12px] text-[var(--color-text-secondary)]">{fmt(item.sub.amount)} kr</p>
               </div>
               <button
                 type="button"
                 onClick={() => skip(item)}
-                className="w-9 h-9 rounded-full flex items-center justify-center bg-white/[0.06] text-white/50 shrink-0"
+                className="w-9 h-9 rounded-full flex items-center justify-center bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] shrink-0"
                 aria-label="Redan loggad — hoppa över"
               >
                 <X size={15} />
@@ -79,7 +79,7 @@ export default function SubscriptionDueToday({ profile }) {
                 type="button"
                 onClick={() => logPayment(item)}
                 className="h-9 px-3.5 rounded-full flex items-center gap-1.5 text-[13px] font-semibold text-white shrink-0"
-                style={{ background: 'rgba(79, 174, 130, 0.2)' }}
+                style={{ background: 'var(--color-success)' }}
               >
                 <Check size={14} /> Logga
               </button>

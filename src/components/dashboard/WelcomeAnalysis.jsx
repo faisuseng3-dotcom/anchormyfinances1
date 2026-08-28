@@ -54,7 +54,7 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-[#030610]/85 backdrop-blur-lg"
+      className="fixed inset-0 z-50 flex items-center justify-center p-5 bg-[rgba(11,18,32,0.4)] backdrop-blur-sm"
       onClick={onClose}
     >
       <motion.div
@@ -68,10 +68,10 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
         <div className="flex items-start justify-between gap-3 mb-6">
           <div>
             <p className={dashLabel}>Start</p>
-            <h2 className="text-[24px] font-light text-white tracking-tight mt-1">
+            <h2 className="text-[24px] font-light text-[var(--color-text-primary)] tracking-tight mt-1">
               Din ekonomi i korthet
             </h2>
-            <p className="text-[14px] text-white/45 mt-2 font-light leading-relaxed">
+            <p className="text-[14px] text-[var(--color-text-secondary)] mt-2 font-light leading-relaxed">
               {concern?.hint || 'Utifrån det du just fyllt i.'}
             </p>
           </div>
@@ -84,14 +84,14 @@ export default function WelcomeAnalysis({ profile, onClose, onFirstAction }) {
           {rows.map(({ icon: Icon, label, value }) => (
             <li
               key={label}
-              className="flex items-center gap-3 py-3 border-b border-white/[0.06] last:border-0"
+              className="flex items-center gap-3 py-3 border-b border-[var(--color-border)] last:border-0"
             >
-              <div className="w-10 h-10 rounded-2xl bg-white/[0.05] flex items-center justify-center shadow-[var(--anchor-shadow-1)]">
-                <Icon className="w-4 h-4 text-cyan-300/80" />
+              <div className="w-10 h-10 rounded-2xl bg-[var(--color-background-secondary)] flex items-center justify-center shadow-[var(--anchor-shadow-1)]">
+                <Icon className="w-4 h-4 text-[var(--color-accent)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[13px] text-white/45">{label}</p>
-                <p className="text-[16px] font-medium text-white tabular-nums">{value}</p>
+                <p className="text-[13px] text-[var(--color-text-secondary)]">{label}</p>
+                <p className="text-[16px] font-medium text-[var(--color-text-primary)] tabular-nums">{value}</p>
               </div>
             </li>
           ))}

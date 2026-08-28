@@ -21,7 +21,7 @@ export const techInset =
   'relative overflow-hidden rounded-[26px] shadow-[var(--anchor-shadow-1)]';
 
 export const techInsetBg =
-  'absolute inset-0 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-transparent pointer-events-none';
+  'absolute inset-0 bg-transparent pointer-events-none';
 
 /** Hero-band på undersidor */
 export const techHeroWrap =
@@ -32,14 +32,14 @@ export const techHeroMesh =
 
 /** Undertext under sidtitlar */
 export const techPageTitle =
-  'text-[24px] sm:text-[30px] font-light tracking-tight text-white break-words';
+  'text-[24px] sm:text-[30px] font-light tracking-tight text-[var(--color-text-primary)] break-words';
 
 export const techPageBackHeader =
   'px-4 sm:px-7 pt-[max(2.25rem,env(safe-area-inset-top,0px))] sm:pt-11 pb-5 w-full max-w-lg mx-auto box-border';
 
 /** Ersätt "Genererar…" / AI-knappar */
 export const techCta =
-  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center bg-white text-[#08110c] hover:bg-white/95 transition-colors disabled:opacity-50';
+  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] transition-colors disabled:opacity-50';
 
 export const techCtaGhost =
-  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center text-white/80 bg-white/[0.07] ring-1 ring-white/[0.1] hover:bg-white/[0.1]';
+  'anchor-btn anchor-btn--compact anchor-btn--pill inline-flex items-center justify-center text-[var(--color-text-primary)] bg-white ring-1 ring-[var(--color-border)] hover:bg-[var(--color-background-secondary)]';

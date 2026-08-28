@@ -1,7 +1,7 @@
 /** Mobil adressfält / PWA — samma färg på alla sidor. */
 export const THEME_COLORS = {
-  personal: '#050d28',
-  business: '#0D1B2A',
+  personal: '#F7F9FC',
+  business: '#F7F9FC',
 };
 
 export function getThemeColor(mode) {

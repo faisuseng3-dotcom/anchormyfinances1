@@ -52,12 +52,12 @@ function buildGoalDiscovery(profile) {
 function DiscoveryCard({ insight }) {
   const [open, setOpen] = useState(false);
   return (
-    <li className="rounded-2xl p-4 organic-surface bg-white/[0.03] border border-white/[0.06]">
+    <li className="rounded-2xl p-4 organic-surface bg-white border border-[var(--color-border)]">
       <div className="flex items-start gap-2.5">
         <span className="shrink-0 mt-0.5" aria-hidden>💡</span>
         <div className="min-w-0 flex-1">
-          <p className="text-[15px] font-semibold text-white leading-snug">{insight.title}</p>
-          <p className="text-[14px] text-white/60 leading-snug mt-0.5">{insight.description}</p>
+          <p className="text-[15px] font-semibold text-[var(--color-text-primary)] leading-snug">{insight.title}</p>
+          <p className="text-[14px] text-[var(--color-text-secondary)] leading-snug mt-0.5">{insight.description}</p>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -67,10 +67,10 @@ function DiscoveryCard({ insight }) {
             <ChevronDown className="w-3.5 h-3.5 transition-transform" style={{ transform: open ? 'rotate(180deg)' : 'none' }} />
           </button>
           {open && (
-            <div className="mt-2 space-y-2 text-[13px] text-white/55 leading-relaxed">
+            <div className="mt-2 space-y-2 text-[13px] text-[var(--color-text-secondary)] leading-relaxed">
               {insight.consequence && <p>{insight.consequence}</p>}
               {insight.actionLink && (
-                <Link to={insight.actionLink} className="inline-block font-medium text-white/80 hover:text-white underline underline-offset-2">
+                <Link to={insight.actionLink} className="inline-block font-medium text-[var(--color-text-primary)] hover:text-[var(--color-accent)] underline underline-offset-2">
                   {insight.action ? `Gå till: ${insight.action}` : 'Visa detaljer'}
                 </Link>
               )}
@@ -104,7 +104,7 @@ export default function DashboardDiscoveries({ profile, transactions }) {
           ))}
         </ul>
       ) : (
-        <p className="text-[14px] text-white/45 leading-relaxed">
+        <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">
           Jag behöver ungefär en månads transaktioner innan jag kan identifiera ett tydligt utgiftsmönster.
         </p>
       )}

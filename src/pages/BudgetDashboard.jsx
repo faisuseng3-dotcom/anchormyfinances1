@@ -38,10 +38,10 @@ function getDaysLeft() {
 function getWinStatus(pct, daysLeft, daysTotal) {
   const daysPassed = daysTotal - daysLeft;
   const expectedPct = daysPassed / daysTotal;
-  if (pct === 0)       return { label: 'Sätt din budget',   color: 'rgba(255,255,255,0.35)', icon: null };
-  if (pct >= 1)        return { label: 'Gränsen nådd',      color: '#e2857a',                icon: null };
-  if (pct > expectedPct + 0.15) return { label: 'Håll koll',  color: '#d9b25c',              icon: null };
-  return                        { label: 'I fas med budgeten', color: '#4fae82',             icon: null };
+  if (pct === 0)       return { label: 'Sätt din budget',   color: 'var(--color-text-muted)', icon: null };
+  if (pct >= 1)        return { label: 'Gränsen nådd',      color: 'var(--color-danger)',    icon: null };
+  if (pct > expectedPct + 0.15) return { label: 'Håll koll',  color: 'var(--color-warning)', icon: null };
+  return                        { label: 'I fas med budgeten', color: 'var(--color-success)', icon: null };
 }
 
 export default function BudgetDashboard() {
@@ -122,30 +122,31 @@ export default function BudgetDashboard() {
         {...entry(0)}
         className="rounded-[24px] p-6 mb-4"
         style={{
-          background: 'linear-gradient(145deg, rgba(79, 174, 130, 0.10) 0%, rgba(79, 174, 130, 0.06) 100%)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          background: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          boxShadow: 'var(--anchor-shadow-1)',
         }}
       >
         {hasAnyBudget ? (
           <>
             <div className="flex flex-col items-center text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/40 mb-2">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-text-muted)] mb-2">
               Kvar att spendera
             </p>
             <div className="anchor-sts-glow-wrap">
               <div className="anchor-sts-glow" aria-hidden="true" />
-              <p className="relative z-10 text-[64px] sm:text-[76px] font-black text-white tabular-nums leading-none tracking-tight">
+              <p className="relative z-10 text-[64px] sm:text-[76px] font-black text-[var(--color-text-primary)] tabular-nums leading-none tracking-tight">
                 {fmt(displayedLeft)}
-                <span className="text-[28px] sm:text-[32px] font-semibold text-white/40 ml-1">kr</span>
+                <span className="text-[28px] sm:text-[32px] font-semibold text-[var(--color-text-secondary)] ml-1">kr</span>
               </p>
             </div>
-            <p className="text-[13px] text-white/40 mt-2">
+            <p className="text-[13px] text-[var(--color-text-secondary)] mt-2">
               av {fmt(totalBudgeted)} kr · {fmt(dailyLeft)} kr/dag
             </p>
             </div>
 
             {/* Wide progress bar */}
-            <div className="mt-5 h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
+            <div className="mt-5 h-2 rounded-full overflow-hidden" style={{ background: 'var(--color-background-secondary)' }}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(100, pct * 100)}%` }}
@@ -153,10 +154,10 @@ export default function BudgetDashboard() {
                 className="h-full rounded-full"
                 style={{
                   background: pct >= 1
-                    ? '#e2857a'
+                    ? 'var(--color-danger)'
                     : pct >= 0.8
-                      ? '#d9b25c'
-                      : '#4fae82',
+                      ? 'var(--color-warning)'
+                      : 'var(--color-success)',
                 }}
               />
             </div>
@@ -167,7 +168,7 @@ export default function BudgetDashboard() {
                 {winStatus.icon && `${winStatus.icon} `}{winStatus.label}
               </span>
               {streak > 0 && (
-                <span className="flex items-center gap-1 text-[12px] text-white/50">
+                <span className="flex items-center gap-1 text-[12px] text-[var(--color-text-secondary)]">
                   <Flame size={12} className="text-orange-400" />
                   {streak} dagar i rad
                 </span>
@@ -176,9 +177,9 @@ export default function BudgetDashboard() {
           </>
         ) : (
           <div className="text-center py-4">
-            <Trophy size={32} className="mx-auto mb-3 text-white/20" />
-            <p className="text-[16px] font-bold text-white mb-1">Sätt din första gräns</p>
-            <p className="text-[13px] text-white/40 leading-relaxed">
+            <Trophy size={32} className="mx-auto mb-3 text-[var(--color-text-muted)]" />
+            <p className="text-[16px] font-bold text-[var(--color-text-primary)] mb-1">Sätt din första gräns</p>
+            <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed">
               Tryck på en kategori nedan. Lago håller koll och varnar innan du går över.
             </p>
           </div>
@@ -200,7 +201,7 @@ export default function BudgetDashboard() {
       </motion.div>
 
       {/* ── Footer hint ──────────────────────────────────────────── */}
-      <motion.p {...entry(2)} className="text-[12px] text-white/25 text-center mt-4">
+      <motion.p {...entry(2)} className="text-[12px] text-[var(--color-text-muted)] text-center mt-4">
         Tryck på en kategori för att sätta eller ändra gräns
       </motion.p>
 

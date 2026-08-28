@@ -50,10 +50,10 @@ export default function BottomTabBar() {
     <nav
       className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex items-end justify-around"
       style={{
-        background: 'rgba(4, 8, 20, 0.96)',
+        background: 'rgba(255, 255, 255, 0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid rgba(255,255,255,0.07)',
+        borderTop: '1px solid var(--color-border)',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
         height: 'calc(60px + env(safe-area-inset-bottom, 0px))',
       }}
@@ -66,7 +66,7 @@ export default function BottomTabBar() {
             type="button"
             onClick={() => navigate(tab.href)}
             className="relative flex flex-col items-center justify-center gap-1 flex-1 h-[60px] touch-manipulation"
-            style={{ color: active ? '#ffffff' : 'rgba(255,255,255,0.35)' }}
+            style={{ color: active ? 'var(--color-accent)' : 'var(--color-text-secondary)' }}
           >
             {tab.icon(active)}
             <span className={`anchor-nav-tab-label ${active ? 'anchor-nav-tab-label--active' : ''}`}>
@@ -79,7 +79,7 @@ export default function BottomTabBar() {
                 width: 3,
                 height: 3,
                 borderRadius: '50%',
-                background: '#4fae82',
+                background: 'var(--color-accent)',
               }} />
             )}
           </button>

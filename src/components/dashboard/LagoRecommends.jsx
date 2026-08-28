@@ -56,11 +56,11 @@ export default function LagoRecommends({ profile, transactions }) {
   return (
     <section className="pt-2">
       <h2 className="anchor-dash-heading anchor-dash-heading--section mb-4">Lago rekommenderar</h2>
-      <div className="rounded-2xl p-4 organic-surface bg-white/[0.03] border border-white/[0.06]">
+      <div className="rounded-2xl p-4 organic-surface bg-white border border-[var(--color-border)]">
         <div className="flex items-start gap-2.5">
           <Sparkles className="w-4 h-4 shrink-0 mt-0.5 text-[var(--color-accent)]" aria-hidden />
           <div className="min-w-0 flex-1">
-            <p className="text-[14px] text-white/80 leading-relaxed">
+            <p className="text-[14px] text-[var(--color-text-primary)] leading-relaxed">
               Du har cirka {fmt(rec.surplus)} kr mer än förväntat kvar den här månaden.
               {rec.toGoal > 0 && rec.toBuffer > 0 && (
                 <> Jag rekommenderar att du lägger {fmt(rec.toGoal)} kr på {rec.goalName || 'ditt sparmål'} och behåller {fmt(rec.toBuffer)} kr som buffert.</>
@@ -73,7 +73,7 @@ export default function LagoRecommends({ profile, transactions }) {
               )}
             </p>
             {rec.whatIf?.monthsEarlier > 0 && (
-              <p className="text-[13px] text-white/45 mt-1.5">
+              <p className="text-[13px] text-[var(--color-text-secondary)] mt-1.5">
                 Det gör att du når {rec.goalName || 'sparmålet'} ungefär {rec.whatIf.monthsEarlier} månad{rec.whatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.
               </p>
             )}
@@ -81,7 +81,7 @@ export default function LagoRecommends({ profile, transactions }) {
               <button
                 type="button"
                 onClick={() => setConfirmOpen(true)}
-                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-[#08110c] bg-[#4fae82] hover:opacity-90 transition-opacity"
+                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-white bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] transition-colors"
               >
                 Gör detta till min plan
               </button>

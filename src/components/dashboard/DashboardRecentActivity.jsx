@@ -40,7 +40,7 @@ export default function DashboardRecentActivity({ transactions = [] }) {
         <button
           type="button"
           onClick={() => navigate(createPageUrl('TransactionHistory'))}
-          className="flex items-center gap-0.5 text-[13px] font-medium text-white/45 hover:text-white/70 transition-colors"
+          className="flex items-center gap-0.5 text-[13px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
         >
           Visa alla
           <ChevronRight size={14} />
