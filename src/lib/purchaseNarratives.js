@@ -6,17 +6,17 @@
 const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 export const VERDICT_META = {
-  green: { emoji: '🟢', label: 'DU HAR RÅD', color: '#4fae82', shortAnswer: 'Ja, du har råd.' },
+  green: { emoji: '🟢', label: 'DU HAR RÅD', color: '#16A34A', shortAnswer: 'Ja, du har råd.' },
   yellow: {
     emoji: '🟡',
     label: 'DU KAN KÖPA DEN — MEN JAG SKULLE VÄNTA',
-    color: '#F59E0B',
+    color: '#D97706',
     shortAnswer: 'Ja, du kan köpa den — men jag skulle vänta.',
   },
   red: {
     emoji: '🔴',
     label: 'JAG SKULLE INTE KÖPA DEN JUST NU',
-    color: '#e2857a',
+    color: '#DC2626',
     shortAnswer: 'Nej, jag skulle inte köpa den just nu.',
   },
 };

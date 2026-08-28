@@ -40,12 +40,12 @@ export function DashboardSection({
   const actionEl =
     action ||
     (actionHref ? (
-      <Link to={actionHref} className="flex items-center gap-0.5 min-h-12 px-1 text-[14px] font-medium text-white/55 hover:text-white/90 anchor-pressable">
+      <Link to={actionHref} className="flex items-center gap-0.5 min-h-12 px-1 text-[14px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] anchor-pressable">
         {actionLabel}
         <ChevronRight className="w-4 h-4" />
       </Link>
     ) : onAction ? (
-      <button type="button" onClick={onAction} className="flex items-center gap-0.5 text-[14px] font-medium text-white/55 hover:text-white/90">
+      <button type="button" onClick={onAction} className="flex items-center gap-0.5 text-[14px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]">
         {actionLabel}
         <ChevronRight className="w-4 h-4" />
       </button>
@@ -92,7 +92,7 @@ export function DashboardListRow({
   title,
   subtitle,
   trailing,
-  trailingClassName = 'text-[15px] font-semibold tabular-nums text-white',
+  trailingClassName = 'text-[15px] font-semibold tabular-nums text-[var(--color-text-primary)]',
   className = '',
   ...rest
 }) {
@@ -100,13 +100,13 @@ export function DashboardListRow({
     <>
       {leading != null && <div className="flex-shrink-0 w-11 flex items-center justify-center">{leading}</div>}
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-medium text-white truncate">{title}</p>
+        <p className="text-[15px] font-medium text-[var(--color-text-primary)] truncate">{title}</p>
         {subtitle && <p className={`${sectionMetaClass} mt-0.5 truncate`}>{subtitle}</p>}
       </div>
       {trailing != null && (
         <div className={`flex-shrink-0 text-right ${trailingClassName}`}>{trailing}</div>
       )}
-      {(href || onClick) && <ChevronRight className="w-4 h-4 text-white/25 flex-shrink-0 ml-1" />}
+      {(href || onClick) && <ChevronRight className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0 ml-1" />}
     </>
   );
 
@@ -144,7 +144,7 @@ export function DashboardStatStrip({ items }) {
             <p className="text-[10px] anchor-card-eyebrow">
               {item.label}
             </p>
-            <p className="text-[17px] font-bold text-white tabular-nums mt-1 leading-none">{item.value}</p>
+            <p className="text-[17px] font-bold text-[var(--color-text-primary)] tabular-nums mt-1 leading-none">{item.value}</p>
             {item.sub && <p className="text-[12px] text-[var(--copilot-text-muted)] mt-1">{item.sub}</p>}
           </div>
         </React.Fragment>

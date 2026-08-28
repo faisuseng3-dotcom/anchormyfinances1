@@ -23,8 +23,8 @@ export default function VisualSavingsGoalRing({
   pct = 0,
   size = 120,
   stroke = 7,
-  color = '#4fae82',
-  trackColor = 'rgba(255,255,255,0.1)',
+  color = 'var(--color-success)',
+  trackColor = 'var(--color-border)',
   imageUrl = null,
   iconId = 'default',
   showMilestones = true,
@@ -60,9 +60,9 @@ export default function VisualSavingsGoalRing({
           className="absolute inset-0 rounded-full pointer-events-none"
           animate={{
             boxShadow: [
-              `0 0 ${12 + effects.glowIntensity * 20}px rgba(34,217,122,${0.25 + effects.glowIntensity * 0.35})`,
-              `0 0 ${20 + effects.glowIntensity * 28}px rgba(34,217,122,${0.4 + effects.glowIntensity * 0.4})`,
-              `0 0 ${12 + effects.glowIntensity * 20}px rgba(34,217,122,${0.25 + effects.glowIntensity * 0.35})`,
+              `0 0 ${12 + effects.glowIntensity * 20}px rgba(22,163,74,${0.2 + effects.glowIntensity * 0.3})`,
+              `0 0 ${20 + effects.glowIntensity * 28}px rgba(22,163,74,${0.32 + effects.glowIntensity * 0.35})`,
+              `0 0 ${12 + effects.glowIntensity * 20}px rgba(22,163,74,${0.2 + effects.glowIntensity * 0.3})`,
             ],
           }}
           transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
@@ -95,8 +95,8 @@ export default function VisualSavingsGoalRing({
                 cx={x}
                 cy={y}
                 r={reached ? 3.5 : 2.5}
-                fill={reached ? color : 'rgba(255,255,255,0.25)'}
-                stroke={reached ? 'rgba(255,255,255,0.5)' : 'transparent'}
+                fill={reached ? color : 'rgba(11,18,32,0.15)'}
+                stroke={reached ? '#FFFFFF' : 'transparent'}
                 strokeWidth={1}
               />
             );
@@ -108,7 +108,7 @@ export default function VisualSavingsGoalRing({
         style={{
           width: innerSize,
           height: innerSize,
-          background: imageUrl ? '#0a1020' : 'linear-gradient(145deg, rgba(79, 174, 130, 0.15), rgba(79, 174, 130, 0.12))',
+          background: imageUrl ? 'var(--color-background-secondary)' : 'linear-gradient(145deg, rgba(22, 163, 74, 0.14), rgba(22, 163, 74, 0.08))',
         }}
       >
         {imageUrl ? (
@@ -137,7 +137,7 @@ export default function VisualSavingsGoalRing({
       </div>
 
       {showPctLabel && (
-        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-bold tabular-nums text-white bg-black/50 backdrop-blur-sm">
+        <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full text-[10px] font-bold tabular-nums text-white bg-[rgba(11,18,32,0.6)] backdrop-blur-sm">
           {Math.round(clampedPct)}%
         </div>
       )}

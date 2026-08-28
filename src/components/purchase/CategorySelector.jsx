@@ -24,11 +24,11 @@ export default function CategorySelector({ selected, onSelect }) {
                 <div
                   className={`w-10 h-10 rounded-xl flex items-center justify-center border ${
                     isSelected
-                      ? 'bg-[#4fae82]/20 border-[#4fae82]/40'
-                      : 'bg-[#4fae82]/10 border-white/[0.08]'
+                      ? 'bg-[var(--color-accent-soft)] border-[var(--color-accent)]/40'
+                      : 'bg-[var(--color-accent-soft)] border-[var(--color-border)]'
                   }`}
                 >
-                  <Icon className="w-5 h-5 text-[#9FB5FF]" />
+                  <Icon className="w-5 h-5 text-[var(--color-accent)]" />
                 </div>
               }
               title={cat.name}

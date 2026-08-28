@@ -21,7 +21,7 @@ export default function PurchaseVerdictCard({ price, priceLabel, impact, bestDat
       <div className="flex items-start justify-between gap-3">
         <div>
           {price > 0 && (
-            <p className="text-[13px] text-white/45 mb-1">
+            <p className="text-[13px] text-[var(--color-text-secondary)] mb-1">
               {priceLabel ? `${priceLabel}: ` : ''}{fmt(price)} kr
             </p>
           )}
@@ -30,17 +30,17 @@ export default function PurchaseVerdictCard({ price, priceLabel, impact, bestDat
           </p>
         </div>
       </div>
-      <p className="text-[14px] text-white/75 leading-relaxed">{purchaseConsequenceLine(impact)}</p>
+      <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">{purchaseConsequenceLine(impact)}</p>
       {impact.verdict !== 'green' && (
         bestDate?.found ? (
-          <div className="pt-2 border-t border-white/10">
-            <p className="text-[12px] text-white/40 uppercase tracking-wider font-bold mb-0.5">Bättre datum att köpa</p>
-            <p className="text-[14px] font-semibold text-white">{bestDate.dateLabel}</p>
-            <p className="text-[12px] text-white/50 mt-0.5">Då har bufferten hunnit återhämta sig till minst {fmt(bestDate.balanceThen)} kr.</p>
+          <div className="pt-2 border-t border-[var(--color-border)]">
+            <p className="text-[12px] text-[var(--color-text-muted)] uppercase tracking-wider font-bold mb-0.5">Bättre datum att köpa</p>
+            <p className="text-[14px] font-semibold text-[var(--color-text-primary)]">{bestDate.dateLabel}</p>
+            <p className="text-[12px] text-[var(--color-text-secondary)] mt-0.5">Då har bufferten hunnit återhämta sig till minst {fmt(bestDate.balanceThen)} kr.</p>
           </div>
         ) : (
-          <div className="pt-2 border-t border-white/10">
-            <p className="text-[12px] text-white/50">
+          <div className="pt-2 border-t border-[var(--color-border)]">
+            <p className="text-[12px] text-[var(--color-text-secondary)]">
               Även {bestDate?.horizonDays || 90} dagar framåt är det fortfarande tajt — börja med att bygga bufferten innan köpet.
             </p>
           </div>
@@ -49,7 +49,7 @@ export default function PurchaseVerdictCard({ price, priceLabel, impact, bestDat
       {impact.verdict !== 'green' && (
         <Link
           to={createPageUrl('FuturePulse')}
-          className="inline-flex items-center gap-1 text-[13px] font-medium text-white/70 hover:text-white no-underline"
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
         >
           Se påverkan på min framtid
           <ArrowRight className="w-3.5 h-3.5" />

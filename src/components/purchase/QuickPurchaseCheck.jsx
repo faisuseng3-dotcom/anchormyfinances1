@@ -51,7 +51,7 @@ export default function QuickPurchaseCheck({ profile }) {
         </button>
       </div>
       {notFound && (
-        <p className="text-[13px] text-white/45">
+        <p className="text-[13px] text-[var(--color-text-secondary)]">
           Jag hittade inget pris i texten — skriv t.ex. "en TV för 8000 kr".
         </p>
       )}

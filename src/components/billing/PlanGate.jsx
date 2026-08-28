@@ -69,14 +69,14 @@ export default function PlanGate({ feature, children, compact = false }) {
     <div className="min-h-[50vh] flex flex-col items-center justify-center px-6 py-10">
       <div
         className="rounded-[var(--anchor-radius-xl)] p-8 flex flex-col items-center gap-4 text-center max-w-sm w-full anchor-elev-2"
-        style={{ background: 'var(--color-surface-raised)' }}
+        style={{ background: 'var(--color-surface-raised)', border: '1px solid var(--color-border)' }}
       >
-        <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center">
-          <Lock className="w-8 h-8 text-slate-400" />
+        <div className="w-16 h-16 rounded-2xl bg-[var(--color-background-secondary)] flex items-center justify-center">
+          <Lock className="w-8 h-8 text-[var(--color-text-secondary)]" />
         </div>
         <div>
-          <p className="text-lg font-bold text-white mb-1">{copy.title}</p>
-          <p className="text-sm text-slate-400 leading-relaxed">
+          <p className="text-lg font-bold text-[var(--color-text-primary)] mb-1">{copy.title}</p>
+          <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
             {isAiCoachFeature && aiCoachRemaining === 0
               ? `Du har använt alla ${PLANS[plan]?.aiCoachLimit ?? 5} Coach-frågor den här månaden.`
               : copy.description}
@@ -85,7 +85,7 @@ export default function PlanGate({ feature, children, compact = false }) {
         <Link to={createPageUrl('Pricing')} className="w-full no-underline">
           <AnchorPressable
             type="button"
-            className="w-full py-3 rounded-xl text-sm font-bold text-[#08110c] bg-[#4fae82]"
+            className="w-full py-3 rounded-xl text-sm font-bold text-white bg-[var(--color-accent)]"
           >
             Uppgradera till {neededLabel} →
           </AnchorPressable>

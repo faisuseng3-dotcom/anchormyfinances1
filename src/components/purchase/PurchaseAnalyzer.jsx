@@ -42,9 +42,9 @@ function applyEngineVerdict(payload, profile, transactions) {
 const fmt = (v) => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
 const VERDICT_LABEL = {
-  Köp: { text: 'text-emerald-300/90', label: 'Går bra' },
-  Vänta: { text: 'text-amber-300/90', label: 'Vänta lite' },
-  'Hitta billigare': { text: 'text-white/70', label: 'Leta alternativ' },
+  Köp: { text: 'text-[var(--color-success)]', label: 'Går bra' },
+  Vänta: { text: 'text-[var(--color-warning)]', label: 'Vänta lite' },
+  'Hitta billigare': { text: 'text-[var(--color-text-secondary)]', label: 'Leta alternativ' },
 };
 
 function computeBuyScore(result, profile) {
@@ -245,7 +245,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
       <div className="space-y-3">
         <div className="flex gap-2">
           <div className="relative flex-1">
-            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35 pointer-events-none" />
+            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)] pointer-events-none" />
             <input
               placeholder="https://blocket.se/…"
               value={url}
@@ -277,7 +277,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                 setImageFile(null);
                 setImagePreview(null);
               }}
-              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 flex items-center justify-center"
+              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-[rgba(11,18,32,0.55)] flex items-center justify-center"
               aria-label="Ta bort bild"
             >
               <X className="w-3.5 h-3.5 text-white" />
@@ -309,14 +309,14 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative rounded-[26px] shadow-[var(--anchor-shadow-1)] bg-gradient-to-br from-white/[0.07] to-transparent px-4 py-4 space-y-3 overflow-hidden"
+            className="relative rounded-[26px] shadow-[var(--anchor-shadow-1)] bg-white border border-[var(--color-border)] px-4 py-4 space-y-3 overflow-hidden"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-[17px] font-semibold text-white">{result.productName}</p>
+                <p className="text-[17px] font-semibold text-[var(--color-text-primary)]">{result.productName}</p>
                 <p className={sectionMetaClass}>{result.priceAssessment}</p>
               </div>
-              <p className="text-[20px] font-semibold text-white tabular-nums shrink-0">
+              <p className="text-[20px] font-semibold text-[var(--color-text-primary)] tabular-nums shrink-0">
                 {fmt(result.price)} kr
               </p>
             </div>
@@ -326,31 +326,31 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               className="mt-5 rounded-2xl px-5 py-5 text-center"
               style={{
                 background: buyScore.recommendation === 'KÖP'
-                  ? 'rgba(79, 174, 130, 0.08)'
+                  ? 'var(--color-success-soft)'
                   : buyScore.recommendation === 'AVVAKTA'
-                    ? 'rgba(226, 133, 122, 0.08)'
-                    : 'rgba(251,191,36,0.08)',
-                border: '1px solid rgba(255,255,255,0.06)',
+                    ? 'var(--color-danger-soft)'
+                    : 'var(--color-warning-soft)',
+                border: '1px solid var(--color-border)',
               }}
             >
               <h2 className="anchor-card-title">Köp-score</h2>
-              <p className="text-[56px] font-bold text-white tabular-nums leading-none mt-2">
+              <p className="text-[56px] font-bold text-[var(--color-text-primary)] tabular-nums leading-none mt-2">
                 {buyScore.score}
-                <span className="text-[22px] text-white/35 font-medium">/100</span>
+                <span className="text-[22px] text-[var(--color-text-muted)] font-medium">/100</span>
               </p>
               <p
                 className="text-[18px] font-bold mt-3 tracking-wide"
                 style={{
-                  color: buyScore.recommendation === 'KÖP' ? '#4fae82'
-                    : buyScore.recommendation === 'AVVAKTA' ? '#e2857a' : '#fbbf24',
+                  color: buyScore.recommendation === 'KÖP' ? 'var(--color-success)'
+                    : buyScore.recommendation === 'AVVAKTA' ? 'var(--color-danger)' : 'var(--color-warning)',
                 }}
               >
                 {buyScore.recommendation}
               </p>
               <ul className="mt-4 space-y-1.5 text-left max-w-xs mx-auto">
                 {buyScore.reasons.map((r) => (
-                  <li key={r} className="flex items-start gap-2 text-[13px] text-white/65">
-                    <span className="text-white/30 mt-0.5">•</span>
+                  <li key={r} className="flex items-start gap-2 text-[13px] text-[var(--color-text-secondary)]">
+                    <span className="text-[var(--color-text-muted)] mt-0.5">•</span>
                     {r}
                   </li>
                 ))}
@@ -362,19 +362,19 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                 <span className={sectionMetaClass}>Av din marginal</span>
                 <span className={sectionMetaClass}>{result.budgetImpact} %</span>
               </div>
-              <div className="h-1 rounded-full bg-white/[0.08] overflow-hidden">
+              <div className="h-1 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(result.budgetImpact, 100)}%` }}
                   transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="h-full rounded-full bg-white/50"
+                  className="h-full rounded-full bg-[var(--color-accent)]"
                 />
               </div>
             </div>
 
             <DashboardDivider className="my-5" />
 
-            <p className="text-[13px] font-medium text-white/45 mb-3">Före och efter köpet</p>
+            <p className="text-[13px] font-medium text-[var(--color-text-secondary)] mb-3">Före och efter köpet</p>
             <div className="space-y-3">
               {[
                 { label: 'Innan köp', value: result.margin, max: result.margin },
@@ -387,16 +387,16 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                 <div key={bar.label}>
                   <div className="flex justify-between mb-1">
                     <span className={sectionMetaClass}>{bar.label}</span>
-                    <span className="text-[15px] font-medium text-white tabular-nums">
+                    <span className="text-[15px] font-medium text-[var(--color-text-primary)] tabular-nums">
                       {fmt(bar.value)} kr kvar
                     </span>
                   </div>
-                  <div className="h-1 rounded-full bg-white/[0.08] overflow-hidden">
+                  <div className="h-1 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${bar.max ? Math.min((bar.value / bar.max) * 100, 100) : 0}%` }}
                       transition={{ duration: 0.8 }}
-                      className="h-full rounded-full bg-white/40"
+                      className="h-full rounded-full bg-[var(--color-accent)]/60"
                     />
                   </div>
                 </div>
@@ -408,13 +408,13 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
             <div className="flex gap-6">
               <div>
                 <p className={sectionMetaClass}>Till sparmål</p>
-                <p className="text-[17px] font-semibold text-white tabular-nums mt-0.5">
+                <p className="text-[17px] font-semibold text-[var(--color-text-primary)] tabular-nums mt-0.5">
                   +{result.daysDelayedGoal} dagar
                 </p>
               </div>
               <div className="flex-1 min-w-0">
                 <p className={sectionMetaClass}>I stället för</p>
-                <p className="text-[14px] text-white/75 mt-0.5 leading-snug">{result.opportunityCost}</p>
+                <p className="text-[14px] text-[var(--color-text-secondary)] mt-0.5 leading-snug">{result.opportunityCost}</p>
               </div>
             </div>
 
@@ -422,10 +422,10 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               <>
                 <DashboardDivider className="my-5" />
                 <div className="flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 text-rose-300/80 flex-shrink-0 mt-0.5" />
-                  <p className="text-[14px] text-white/70 leading-relaxed">
+                  <AlertTriangle className="w-4 h-4 text-[var(--color-warning)] flex-shrink-0 mt-0.5" />
+                  <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">
                     {result.maintenanceNote}{' '}
-                    <span className="text-white font-medium">+{fmt(result.maintenanceCost)} kr/år</span>
+                    <span className="text-[var(--color-text-primary)] font-medium">+{fmt(result.maintenanceCost)} kr/år</span>
                   </p>
                 </div>
               </>
@@ -436,7 +436,7 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
             <div>
               <p className={`text-[15px] font-semibold ${vs.text}`}>{vs.label}</p>
               <p className={`${sectionSubtitleClass} mt-2`}>{result.verdictReason}</p>
-              <p className="text-[14px] text-white/75 leading-relaxed mt-2">{result.aiInsight}</p>
+              <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed mt-2">{result.aiInsight}</p>
             </div>
 
             {result.verdict !== 'Köp' && result._bestDate?.found && (
@@ -444,8 +444,8 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                 <DashboardDivider className="my-5" />
                 <div>
                   <p className={sectionMetaClass}>Bättre datum att köpa</p>
-                  <p className="text-[15px] font-semibold text-white mt-1">{result._bestDate.dateLabel}</p>
-                  <p className="text-[13px] text-white/55 mt-1">
+                  <p className="text-[15px] font-semibold text-[var(--color-text-primary)] mt-1">{result._bestDate.dateLabel}</p>
+                  <p className="text-[13px] text-[var(--color-text-secondary)] mt-1">
                     Då har din buffert hunnit återhämta sig till minst {fmt(result._bestDate.balanceThen)} kr.
                   </p>
                 </div>
@@ -456,9 +456,9 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
               <>
                 <DashboardDivider className="my-5" />
                 <div className="space-y-3">
-                  <p className="text-[15px] font-semibold text-amber-300/90">Impulse Shield</p>
-                  <p className="text-[14px] text-white/70">{risk.reason}</p>
-                  <p className="text-[13px] text-white/55">
+                  <p className="text-[15px] font-semibold text-[var(--color-warning)]">Impulse Shield</p>
+                  <p className="text-[14px] text-[var(--color-text-secondary)]">{risk.reason}</p>
+                  <p className="text-[13px] text-[var(--color-text-secondary)]">
                     Detta köp försenar ditt mål med cirka {result.daysDelayedGoal} dagar.
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -485,17 +485,17 @@ Inkomst ${income} kr, marginal ${margin} kr.`,
                     </button>
                   </div>
                   {wishlistSaved && (
-                    <p className="text-[13px] text-emerald-300/90">
+                    <p className="text-[13px] text-[var(--color-success)]">
                       Sparad i wishlist med cooldown. Du kan kolla senare när impulsen lagt sig.
                     </p>
                   )}
                   {shieldChoice === 'cheaper' && (
-                    <p className="text-[13px] text-white/65">
+                    <p className="text-[13px] text-[var(--color-text-secondary)]">
                       Tips: sök samma modell begagnad eller med prisbevakning innan köp.
                     </p>
                   )}
                   {shieldChoice === 'buy' && (
-                    <p className="text-[13px] text-amber-300/80">
+                    <p className="text-[13px] text-[var(--color-warning)]">
                       Okej, men håll koll på månadsutrymmet så sparmålet inte glider.
                     </p>
                   )}

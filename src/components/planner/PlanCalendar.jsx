@@ -86,7 +86,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
     >
         <div className="-mx-1">
           {events.length === 0 && !adding && (
-            <p className="text-[14px] text-white/45 py-6 text-center">
+            <p className="text-[14px] text-[var(--color-text-muted)] py-6 text-center">
               Inga händelser denna dag. Lägg till något du planerar.
             </p>
           )}
@@ -95,21 +95,21 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
             {events.map((ev) => (
               <li
                 key={ev.id}
-                className="flex items-center gap-3 py-3.5 border-b border-white/[0.06] last:border-0"
+                className="flex items-center gap-3 py-3.5 border-b border-[var(--color-border)] last:border-0"
               >
                 <span
                   className="w-2 h-2 rounded-full flex-shrink-0"
                   style={{ background: ev.color }}
                 />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-medium text-white truncate">{ev.title}</p>
-                  <p className="text-[12px] text-white/40 mt-0.5">
+                  <p className="text-[15px] font-medium text-[var(--color-text-primary)] truncate">{ev.title}</p>
+                  <p className="text-[12px] text-[var(--color-text-muted)] mt-0.5">
                     {ev.source === 'auto' ? 'Automatiskt' : 'Din planering'}
                     {ev.note ? ` · ${ev.note}` : ''}
                   </p>
                 </div>
                 <span className={`text-[15px] font-semibold tabular-nums flex-shrink-0 ${
-                  ev.amount > 0 ? 'text-emerald-300' : 'text-white/85'
+                  ev.amount > 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-text-primary)]'
                 }`}>
                   {ev.amount > 0 ? '+' : '−'}{formatKr(ev.amount)}
                 </span>
@@ -118,7 +118,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                     type="button"
                     onClick={() => onRemove(ev.id)}
                     disabled={saving}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-white/35 hover:text-rose-300 hover:bg-white/[0.06] transition-colors"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--color-text-muted)] hover:text-[var(--color-danger)] hover:bg-[var(--color-background-secondary)] transition-colors"
                     aria-label="Ta bort"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -136,7 +136,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
                 onSubmit={handleSubmit}
-                className="mt-4 pt-4 border-t border-white/[0.08] space-y-3"
+                className="mt-4 pt-4 border-t border-[var(--color-border)] space-y-3"
               >
                 <input
                   className={anchorInputClass}
@@ -161,8 +161,8 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                       onClick={() => setCategory(c.id)}
                       className={`px-3 py-2 min-h-10 rounded-full text-[12px] font-medium ${
                         category === c.id
-                          ? 'bg-[var(--color-text-primary)] text-[#050d28]'
-                          : 'bg-white/[0.08] text-white/65 shadow-[var(--anchor-shadow-1)]'
+                          ? 'bg-[var(--color-accent)] text-white'
+                          : 'bg-white text-[var(--color-text-secondary)] border border-[var(--color-border)]'
                       }`}
                     >
                       {c.label}
@@ -173,7 +173,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                   <button
                     type="button"
                     onClick={() => setAdding(false)}
-                    className="flex-1 h-11 rounded-xl text-[14px] font-medium text-white/60 bg-white/[0.06]"
+                    className="flex-1 h-11 rounded-xl text-[14px] font-medium text-[var(--color-text-secondary)] bg-[var(--color-background-secondary)]"
                   >
                     Avbryt
                   </button>
@@ -181,7 +181,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                     type="submit"
                     disabled={!title.trim() || saving}
                     minTouch={false}
-                    className="flex-1 h-11 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold text-[14px] anchor-elev-1"
+                    className="flex-1 h-11 rounded-full bg-[var(--color-accent)] text-white font-semibold text-[14px] anchor-elev-1"
                   >
                     Spara
                   </AnchorPressable>
@@ -194,7 +194,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
                 animate={{ opacity: 1 }}
                 type="button"
                 onClick={() => setAdding(true)}
-                className="mt-4 w-full flex items-center justify-center gap-2 h-12 rounded-2xl border-dashed border-white/15 text-[14px] font-medium text-white/55 hover:text-white/80 hover:border-white/25 transition-colors"
+                className="mt-4 w-full flex items-center justify-center gap-2 h-12 rounded-2xl border-dashed border-[var(--color-border)] text-[14px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] hover:border-[rgba(37,99,235,0.35)] transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Lägg till händelse
@@ -204,7 +204,7 @@ function DayDetailPanel({ isOpen, date, events, onClose, onAdd, onRemove, saving
         </div>
 
         <div className="pt-4 mt-2 mt-2 pt-2">
-          <div className="flex flex-wrap items-center gap-4 text-[11px] text-white/35">
+          <div className="flex flex-wrap items-center gap-4 text-[11px] text-[var(--color-text-muted)]">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: EVENT_COLORS.bill }} />
               Fasta & abonnemang
@@ -311,39 +311,39 @@ export default function PlanCalendar({ profile, onSavePlannedEvents }) {
         <button
           type="button"
           onClick={goPrev}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--color-background-secondary)] hover:bg-[#e2e8f0] transition-colors"
           aria-label="Föregående månad"
         >
-          <ChevronLeft className="w-5 h-5 text-white/80" />
+          <ChevronLeft className="w-5 h-5 text-[var(--color-text-secondary)]" />
         </button>
 
         <button type="button" onClick={goToday} className="text-center">
-          <h2 className="text-[20px] font-semibold text-white tracking-tight">
+          <h2 className="text-[20px] font-semibold text-[var(--color-text-primary)] tracking-tight">
             {getMonthLabel(viewYear, viewMonth)}
           </h2>
           {(viewYear !== today.getFullYear() || viewMonth !== today.getMonth()) && (
-            <span className="text-[12px] text-white/40 mt-0.5 block">Tryck för idag</span>
+            <span className="text-[12px] text-[var(--color-text-muted)] mt-0.5 block">Tryck för idag</span>
           )}
         </button>
 
         <button
           type="button"
           onClick={goNext}
-          className="w-10 h-10 rounded-full flex items-center justify-center bg-white/[0.06] hover:bg-white/[0.1] transition-colors"
+          className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--color-background-secondary)] hover:bg-[#e2e8f0] transition-colors"
           aria-label="Nästa månad"
         >
-          <ChevronRight className="w-5 h-5 text-white/80" />
+          <ChevronRight className="w-5 h-5 text-[var(--color-text-secondary)]" />
         </button>
       </div>
 
       {/* Month summary strip */}
       {(summary.plannedCount > 0 || summary.autoCount > 0) && (
-        <div className="flex items-center gap-3 mb-4 px-1 text-[13px] text-white/50 tabular-nums">
+        <div className="flex items-center gap-3 mb-4 px-1 text-[13px] text-[var(--color-text-secondary)] tabular-nums">
           {summary.plannedCount > 0 && (
             <span>{summary.plannedCount} planerade · {formatKr(summary.plannedTotal)}</span>
           )}
           {summary.autoCount > 0 && (
-            <span className="text-white/35">{summary.autoCount} automatiska</span>
+            <span className="text-[var(--color-text-muted)]">{summary.autoCount} automatiska</span>
           )}
         </div>
       )}
@@ -351,7 +351,7 @@ export default function PlanCalendar({ profile, onSavePlannedEvents }) {
       {/* Weekday row */}
       <div className="grid grid-cols-7 mb-2">
         {weekdays.map((wd, i) => (
-          <div key={`${wd}-${i}`} className="text-center text-[11px] font-medium text-white/35 py-1">
+          <div key={`${wd}-${i}`} className="text-center text-[11px] font-medium text-[var(--color-text-muted)] py-1">
             {wd}
           </div>
         ))}
@@ -371,18 +371,18 @@ export default function PlanCalendar({ profile, onSavePlannedEvents }) {
               type="button"
               onClick={() => handleDayClick(date, inMonth)}
               className={`relative flex flex-col items-center py-1.5 rounded-xl transition-colors ${
-                inMonth ? 'hover:bg-white/[0.05]' : 'opacity-30'
+                inMonth ? 'hover:bg-[var(--color-background-secondary)]' : 'opacity-30'
               }`}
             >
               <span
                 className={`w-9 h-9 flex items-center justify-center rounded-full text-[15px] font-medium tabular-nums transition-all ${
                   isSelected
-                    ? 'bg-white text-[#0a1628] font-semibold'
+                    ? 'bg-[var(--color-accent)] text-white font-semibold'
                     : isToday
-                      ? 'ring-1 ring-white/50 text-white'
+                      ? 'ring-1 ring-[rgba(37,99,235,0.5)] text-[var(--color-text-primary)]'
                       : inMonth
-                        ? 'text-white/90'
-                        : 'text-white/40'
+                        ? 'text-[var(--color-text-primary)]'
+                        : 'text-[var(--color-text-muted)]'
                 }`}
               >
                 {date.getDate()}
@@ -400,10 +400,10 @@ export default function PlanCalendar({ profile, onSavePlannedEvents }) {
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={() => setPanelOpen(true)}
-          className="mt-6 w-full text-left rounded-2xl px-4 py-3.5 bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.07] transition-colors"
+          className="mt-6 w-full text-left rounded-2xl px-4 py-3.5 bg-white border border-[var(--color-border)] hover:bg-[var(--color-background-secondary)] transition-colors"
         >
-          <p className="text-[12px] text-white/40 capitalize mb-1">{formatDayHeading(selectedDate)}</p>
-          <p className="text-[14px] text-white/80">
+          <p className="text-[12px] text-[var(--color-text-muted)] capitalize mb-1">{formatDayHeading(selectedDate)}</p>
+          <p className="text-[14px] text-[var(--color-text-secondary)]">
             {selectedEvents.length} händelse{selectedEvents.length > 1 ? 'r' : ''}
             {' · '}
             {selectedEvents.slice(0, 2).map((e) => e.title).join(', ')}

@@ -194,11 +194,7 @@ Svara ENDAST med JSON.`;
   const btnRisk = liveCalc
     ? (liveCalc.totalMonthlyCost / margin) > 0.3 ? 'high' : (liveCalc.totalMonthlyCost / margin) > 0.2 ? 'mid' : 'low'
     : 'low';
-  const btnClass = btnRisk === 'high'
-    ? 'bg-[#4fae82] hover:opacity-90'
-    : btnRisk === 'mid'
-    ? 'bg-[#4fae82] hover:opacity-90'
-    : 'bg-[#4fae82] hover:opacity-90';
+  const btnClass = 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]';
 
   const price = parseFloat(vehicle.price) || 0;
   const loanAmount = price - (downPaymentPct / 100) * price;

@@ -113,16 +113,16 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-      className="rounded-2xl overflow-hidden"
-      style={{ background: '#10140f', boxShadow: 'var(--anchor-shadow-1)' }}
+      className="rounded-2xl overflow-hidden border border-[var(--color-border)]"
+      style={{ background: 'var(--color-background-secondary)', boxShadow: 'var(--anchor-shadow-1)' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-4 pb-2">
         <div>
-          <p className="text-xs font-bold text-[#4fae82] uppercase tracking-widest">Trigger-bibliotek</p>
-          <p className="text-[11px] text-white/40">Välj en händelse som utlöser ditt sparande</p>
+          <p className="text-xs font-bold text-[var(--color-accent)] uppercase tracking-widest">Trigger-bibliotek</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Välj en händelse som utlöser ditt sparande</p>
         </div>
-        <button onClick={onClose} className="text-white/40 hover:text-white">
+        <button onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -131,7 +131,7 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
       <div className="flex gap-1.5 px-4 pb-3 overflow-x-auto">
         {TRIGGER_CATEGORIES.map(c => (
           <button key={c.id} onClick={() => setActiveCategory(c.id)}
-            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${activeCategory === c.id ? 'bg-[#4fae82] text-[#08110c] shadow' : 'bg-white/5 text-white/45 hover:bg-white/10'}`}>
+            className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all inline-flex items-center gap-1.5 ${activeCategory === c.id ? 'bg-[var(--color-accent)] text-white shadow' : 'bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-border)]'}`}>
             <TriggerIcon iconKey={c.iconKey} />
             {c.label}
           </button>

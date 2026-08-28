@@ -210,16 +210,16 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
         transition={{ type: 'spring', damping: 28, stiffness: 280 }}
         onClick={e => e.stopPropagation()}
         className="w-full rounded-t-3xl p-6 pb-10 max-h-[92vh] overflow-y-auto"
-        style={{ background: 'rgba(12, 18, 38, 0.98)', borderTop: '1px solid rgba(255,255,255,0.1)' }}
+        style={{ background: 'var(--color-card)', borderTop: '1px solid var(--color-border)', boxShadow: 'var(--anchor-shadow-3)' }}
       >
         <div className="flex items-center justify-between mb-6">
           <div>
-            <p className="text-[13px] font-medium text-white/45">Nytt sparmål</p>
-            <h2 className="text-[20px] font-semibold text-white mt-0.5">
+            <p className="text-[13px] font-medium text-[var(--color-text-secondary)]">Nytt sparmål</p>
+            <h2 className="text-[20px] font-semibold text-[var(--color-text-primary)] mt-0.5">
               {step === 1 ? 'Vad sparar du till?' : step === 2 ? 'När vill du vara klar?' : step === 3 ? 'Hur vill du spara?' : 'Klart!'}
             </h2>
           </div>
-          <button type="button" onClick={onClose} className="text-white/50 hover:text-white" aria-label="Stäng">
+          <button type="button" onClick={onClose} className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]" aria-label="Stäng">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -227,7 +227,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
         {/* Step indicator */}
         <div className="flex gap-1.5 mb-6">
           {[1,2,3,4].map(s => (
-            <div key={s} className={`h-1 rounded-full flex-1 transition-all ${s <= step ? 'bg-[#4fae82]' : 'bg-white/10'}`} />
+            <div key={s} className={`h-1 rounded-full flex-1 transition-all ${s <= step ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-border)]'}`} />
           ))}
         </div>
 
@@ -236,15 +236,15 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
           {step === 1 && (
             <motion.div key="s1" initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} className="space-y-5">
               <div>
-                <label className="text-xs text-white/45 mb-2 block">Vad drömmer du om?</label>
+                <label className="text-xs text-[var(--color-text-secondary)] mb-2 block">Vad drömmer du om?</label>
                 <Input placeholder="T.ex. Thailand-resa, Min första bil" value={form.name}
                   onChange={e => { setForm({ ...form, name: e.target.value }); setValidationError(null); }}
                   className="h-12 rounded-xl text-lg font-medium" />
-                <p className="text-[11px] text-white/40 mt-1.5">Inte bara &quot;Sparande 10 000 kr&quot; — beskriv din dröm.</p>
+                <p className="text-[11px] text-[var(--color-text-muted)] mt-1.5">Inte bara &quot;Sparande 10 000 kr&quot; — beskriv din dröm.</p>
               </div>
 
               <div>
-                <label className="text-xs text-white/45 mb-2 block">Ditt framtida jag — bild eller symbol</label>
+                <label className="text-xs text-[var(--color-text-secondary)] mb-2 block">Ditt framtida jag — bild eller symbol</label>
                 <GoalVisualPicker
                   imageUrl={form.imageUrl}
                   iconId={form.goalIcon}
@@ -258,12 +258,12 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
               </div>
 
               <div>
-                <label className="text-xs text-white/45 mb-2 block">Hur mycket behöver du?</label>
+                <label className="text-xs text-[var(--color-text-secondary)] mb-2 block">Hur mycket behöver du?</label>
                 <div className="relative">
                   <Input type="number" placeholder="20 000" value={form.amount}
                     onChange={e => setForm({ ...form, amount: e.target.value })}
                     className="h-12 rounded-xl pr-12 text-lg font-bold" />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/45">kr</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)]">kr</span>
                 </div>
               </div>
             </motion.div>
@@ -281,12 +281,12 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   iconId={form.goalIcon}
                   className="mx-auto"
                 />
-                <p className="text-white font-bold mt-3">{form.name}</p>
-                <p className="text-white/45 text-sm">{parseInt(form.amount || 0).toLocaleString('sv-SE')} kr</p>
+                <p className="text-[var(--color-text-primary)] font-bold mt-3">{form.name}</p>
+                <p className="text-[var(--color-text-secondary)] text-sm">{parseInt(form.amount || 0).toLocaleString('sv-SE')} kr</p>
               </div>
 
               <div>
-                <label className="text-xs text-white/45 mb-2 block">När vill du vara klar?</label>
+                <label className="text-xs text-[var(--color-text-secondary)] mb-2 block">När vill du vara klar?</label>
                 <Input type="date" value={form.targetDate}
                   onChange={e => setForm({ ...form, targetDate: e.target.value })}
                   className="h-12 rounded-xl" min={new Date().toISOString().split('T')[0]} />
@@ -294,19 +294,19 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
               {form.targetDate && form.amount && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  className="p-4 rounded-2xl" style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-white/70">Tid kvar</span>
-                    <span className="text-sm font-bold text-white">{monthsUntil()} månader</span>
+                    <span className="text-sm text-[var(--color-text-secondary)]">Tid kvar</span>
+                    <span className="text-sm font-bold text-[var(--color-text-primary)]">{monthsUntil()} månader</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-white/70">Krävs per månad</span>
-                    <span className={`text-lg font-bold ${monthlyNeeded() > margin ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    <span className="text-sm text-[var(--color-text-secondary)]">Krävs per månad</span>
+                    <span className={`text-lg font-bold ${monthlyNeeded() > margin ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>
                       {monthlyNeeded().toLocaleString('sv-SE')} kr
                     </span>
                   </div>
                   {monthlyNeeded() > margin && (
-                    <p className="text-xs text-rose-300 mt-2">Överstiger din nuvarande marginal ({margin.toLocaleString('sv-SE')} kr). Insikt i nästa steg.</p>
+                    <p className="text-xs text-[var(--color-danger)] mt-2">Överstiger din nuvarande marginal ({margin.toLocaleString('sv-SE')} kr). Insikt i nästa steg.</p>
                   )}
                 </motion.div>
               )}
@@ -318,35 +318,35 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
             <motion.div key="s3" initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -40, opacity: 0 }} className="space-y-5">
               {loadingAi ? (
                 <div className="flex flex-col items-center gap-3 py-8">
-                  <Loader2 className="w-8 h-8 text-[#4fae82] animate-spin" />
-                  <p className="text-white/45 text-sm">Räknar på din plan…</p>
+                  <Loader2 className="w-8 h-8 text-[var(--color-accent)] animate-spin" />
+                  <p className="text-[var(--color-text-secondary)] text-sm">Räknar på din plan…</p>
                 </div>
               ) : aiInsight && (
                 <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-                  className="p-4 rounded-2xl" style={{ background: 'rgba(139,92,246,0.1)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  className="p-4 rounded-2xl" style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-[#4fae82]/15 flex items-center justify-center flex-shrink-0">
-                      <LineChart className="w-5 h-5 text-[#0FDEBD]" />
+                    <div className="w-9 h-9 rounded-xl bg-[var(--color-accent-soft)] flex items-center justify-center flex-shrink-0">
+                      <LineChart className="w-5 h-5 text-[var(--color-accent)]" />
                     </div>
                     <div>
-                      <p className="text-xs text-[#0FDEBD] font-semibold mb-1">Sparinsikt</p>
-                      <p className="text-sm text-slate-200 leading-relaxed">{aiInsight.message}</p>
+                      <p className="text-xs text-[var(--color-accent)] font-semibold mb-1">Sparinsikt</p>
+                      <p className="text-sm text-[var(--color-text-primary)] leading-relaxed">{aiInsight.message}</p>
                     </div>
                   </div>
                 </motion.div>
               )}
 
               <div>
-                <label className="text-xs text-white/45 mb-3 block">Välj din spar-stil</label>
+                <label className="text-xs text-[var(--color-text-secondary)] mb-3 block">Välj din spar-stil</label>
                 <div className="space-y-2">
                   {STRATEGIES.map(s => (
                     <button key={s.id} onClick={() => { setStrategy(s.id); setCustomAiMsg(null); }}
-                      className={`w-full p-4 rounded-xl text-left transition-all flex items-center gap-3 ${strategy === s.id ? 'ring-2 ring-[#4fae82]' : ''}`}
-                      style={{ background: strategy === s.id ? 'rgba(139,92,246,0.2)' : 'rgba(255,255,255,0.04)' }}>
-                      <s.Icon className="w-6 h-6 text-[#4fae82] flex-shrink-0" />
+                      className={`w-full p-4 rounded-xl text-left transition-all flex items-center gap-3 border border-[var(--color-border)] ${strategy === s.id ? 'ring-2 ring-[var(--color-accent)]' : ''}`}
+                      style={{ background: strategy === s.id ? 'var(--color-accent-soft)' : 'var(--color-background-secondary)' }}>
+                      <s.Icon className="w-6 h-6 text-[var(--color-accent)] flex-shrink-0" />
                       <div>
-                        <p className="text-sm font-semibold text-white">{s.title}</p>
-                        <p className="text-xs text-white/45">{s.desc}</p>
+                        <p className="text-sm font-semibold text-[var(--color-text-primary)]">{s.title}</p>
+                        <p className="text-xs text-[var(--color-text-secondary)]">{s.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -356,16 +356,16 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
               {/* Custom Flow Builder */}
               {strategy === 'custom' && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 p-4 rounded-2xl space-y-4" style={{ background: 'rgba(79, 174, 130, 0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                  <p className="text-xs font-semibold text-[#4fae82] uppercase tracking-widest flex items-center gap-1.5"><Wrench className="w-3.5 h-3.5" /> Bygg ditt schema</p>
+                  className="mt-2 p-4 rounded-2xl space-y-4" style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  <p className="text-xs font-semibold text-[var(--color-accent)] uppercase tracking-widest flex items-center gap-1.5"><Wrench className="w-3.5 h-3.5" /> Bygg ditt schema</p>
 
                   {/* Frequency */}
                   <div>
-                    <p className="text-xs text-white/45 mb-2">Frekvens</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mb-2">Frekvens</p>
                     <div className="flex flex-wrap gap-2">
                       {FREQUENCIES.map(f => (
                         <button key={f.id} onClick={() => setCustomFreq(f.id)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${customFreq === f.id ? 'bg-[#4fae82] text-white' : 'bg-white/5 text-white/70 hover:bg-white/10'}`}>
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${customFreq === f.id ? 'bg-[var(--color-accent)] text-white' : 'bg-white text-[var(--color-text-secondary)] border border-[var(--color-border)] hover:bg-[var(--color-background-secondary)]'}`}>
                           {f.label}
                         </button>
                       ))}
@@ -374,11 +374,11 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
                   {/* Amount type + value */}
                   <div>
-                    <p className="text-xs text-white/45 mb-2">Belopp per tillfälle</p>
+                    <p className="text-xs text-[var(--color-text-secondary)] mb-2">Belopp per tillfälle</p>
                     <div className="flex gap-2 mb-2">
                       {[{id:'fixed',label:'Fast kr'},{id:'percent',label:'% av lön'}].map(t => (
                         <button key={t.id} onClick={() => setCustomAmountType(t.id)}
-                          className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${customAmountType === t.id ? 'bg-[#4fae82] text-white' : 'bg-white/5 text-white/70'}`}>
+                          className={`flex-1 py-1.5 rounded-lg text-xs font-medium transition-all ${customAmountType === t.id ? 'bg-[var(--color-accent)] text-white' : 'bg-white text-[var(--color-text-secondary)] border border-[var(--color-border)]'}`}>
                           {t.label}
                         </button>
                       ))}
@@ -387,7 +387,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                       <Input type="number" placeholder={customAmountType === 'percent' ? '5' : '100'}
                         value={customAmount} onChange={e => { setCustomAmount(e.target.value); setCustomAiMsg(null); }}
                         className="h-10 rounded-xl pr-10 text-sm" />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/45 text-xs">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] text-xs">
                         {customAmountType === 'percent' ? '%' : 'kr'}
                       </span>
                     </div>
@@ -396,12 +396,12 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {/* Real-time simulation */}
                   {customAmount && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                      className="p-3 rounded-xl" style={{ background: 'rgba(16,185,129,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                      <p className="text-xs text-white/45">Simulering</p>
-                      <p className="text-sm font-bold text-emerald-400 mt-0.5">
+                      className="p-3 rounded-xl" style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                      <p className="text-xs text-[var(--color-text-secondary)]">Simulering</p>
+                      <p className="text-sm font-bold text-[var(--color-success)] mt-0.5">
                         ≈ {customMonthlyEquivalent().toLocaleString('sv-SE')} kr / månad
                       </p>
-                      <p className={`text-xs mt-1 ${customMonthlyEquivalent() > margin ? 'text-rose-400' : 'text-emerald-300'}`}>
+                      <p className={`text-xs mt-1 ${customMonthlyEquivalent() > margin ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>
                         <span className="inline-flex items-center gap-1">
                           {customMonthlyEquivalent() > margin
                             ? <><AlertTriangle className="w-3.5 h-3.5" /> Överstiger din marginal ({margin.toLocaleString('sv-SE')} kr)</>
@@ -414,9 +414,9 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {/* AI Trigger */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <p className="text-xs text-white/45">Automatisk trigger (valfritt)</p>
+                      <p className="text-xs text-[var(--color-text-secondary)]">Automatisk trigger (valfritt)</p>
                       <button onClick={() => setShowTriggerLib(!showTriggerLib)}
-                        className="flex items-center gap-1 text-xs text-[#4fae82] hover:text-[#4fae82]">
+                        className="flex items-center gap-1 text-xs text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">
                         <BookOpen className="w-3 h-3" />
                         {showTriggerLib ? 'Stäng' : 'Öppna bibliotek'}
                       </button>
@@ -424,9 +424,9 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
 
                     {customTrigger && !showTriggerLib && (
                       <div className="p-3 rounded-xl text-xs flex items-center justify-between"
-                        style={{ background: 'rgba(79, 174, 130, 0.12)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                        <span className="text-white font-medium">{customTrigger.label}</span>
-                        <button onClick={() => setCustomTrigger(null)} className="text-white/40 hover:text-white"><X className="w-3 h-3" /></button>
+                        style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                        <span className="text-[var(--color-text-primary)] font-medium">{customTrigger.label}</span>
+                        <button onClick={() => setCustomTrigger(null)} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"><X className="w-3 h-3" /></button>
                       </div>
                     )}
 
@@ -444,16 +444,16 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                   {/* Get AI feedback */}
                   {customAmount && (
                     <button onClick={fetchCustomAi} disabled={loadingCustomAi}
-                      className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[#4fae82] text-[#08110c] flex items-center justify-center gap-2">
+                      className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[var(--color-accent)] text-white flex items-center justify-center gap-2">
                       {loadingCustomAi ? <><Loader2 className="w-4 h-4 animate-spin" /> Analyserar…</> : <><LineChart className="w-4 h-4" /> Få sparinsikt</>}
                     </button>
                   )}
 
                   {customAiMsg && (
                     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                      className="p-3 rounded-xl" style={{ background: 'rgba(139,92,246,0.12)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                      <p className="text-xs text-[#0FDEBD] font-semibold mb-1">Sparinsikt</p>
-                      <p className="text-xs text-slate-200 leading-relaxed">{customAiMsg.message}</p>
+                      className="p-3 rounded-xl" style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                      <p className="text-xs text-[var(--color-accent)] font-semibold mb-1">Sparinsikt</p>
+                      <p className="text-xs text-[var(--color-text-primary)] leading-relaxed">{customAiMsg.message}</p>
                     </motion.div>
                   )}
                 </motion.div>
@@ -475,23 +475,23 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                 />
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white">{form.name}</h3>
-                <p className="text-white/45 text-sm mt-1">Din resa börjar nu</p>
+                <h3 className="text-2xl font-bold text-[var(--color-text-primary)]">{form.name}</h3>
+                <p className="text-[var(--color-text-secondary)] text-sm mt-1">Din resa börjar nu</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                  <p className="text-xs text-white/45">Mål</p>
-                  <p className="text-lg font-bold text-white">{parseInt(form.amount || 0).toLocaleString('sv-SE')} kr</p>
+                <div className="p-3 rounded-xl" style={{ background: 'var(--color-background-secondary)' }}>
+                  <p className="text-xs text-[var(--color-text-secondary)]">Mål</p>
+                  <p className="text-lg font-bold text-[var(--color-text-primary)]">{parseInt(form.amount || 0).toLocaleString('sv-SE')} kr</p>
                 </div>
-                <div className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                  <p className="text-xs text-white/45">Per månad</p>
-                  <p className="text-lg font-bold text-emerald-400">{monthlyNeeded().toLocaleString('sv-SE')} kr</p>
+                <div className="p-3 rounded-xl" style={{ background: 'var(--color-background-secondary)' }}>
+                  <p className="text-xs text-[var(--color-text-secondary)]">Per månad</p>
+                  <p className="text-lg font-bold text-[var(--color-success)]">{monthlyNeeded().toLocaleString('sv-SE')} kr</p>
                 </div>
               </div>
 
               {/* Account Type Advisor */}
               <div className="text-left">
-                <p className="text-xs text-white/40 mb-2 tracking-wide font-semibold">Var ska pengarna ligga?</p>
+                <p className="text-xs text-[var(--color-text-muted)] mb-2 tracking-wide font-semibold">Var ska pengarna ligga?</p>
                 <AccountTypeAdvisor
                   months={monthsUntil()}
                   isBuffer={false}
@@ -500,7 +500,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
                 />
               </div>
 
-              <p className="text-xs text-white/40 px-4">
+              <p className="text-xs text-[var(--color-text-muted)] px-4">
                 Varje krona gör bilden skarpare — du ser ditt framtida jag ta form.
               </p>
             </motion.div>
@@ -508,7 +508,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
         </AnimatePresence>
 
         {validationError && (
-          <p className="text-xs text-rose-400 mt-4 font-medium">{validationError}</p>
+          <p className="text-xs text-[var(--color-danger)] mt-4 font-medium">{validationError}</p>
         )}
 
         {/* Navigation */}
@@ -521,7 +521,7 @@ Ge ett kort svar på svenska (2-3 meningar): bekräfta om det är realistiskt, o
           <Button
             onClick={handleNext}
             disabled={(step === 1 && !canNext1) || (step === 2 && !canNext2) || loadingAi}
-            className="flex-1 h-12 rounded-xl bg-[#4fae82] font-bold text-[#08110c] text-base"
+            className="flex-1 h-12 rounded-xl bg-[var(--color-accent)] font-bold text-white text-base"
           >
             {step === 4 ? <><Rocket className="w-4 h-4 mr-1" /> Starta min dröm!</> : <>Nästa <ChevronRight className="w-4 h-4 ml-1" /></>}
           </Button>
