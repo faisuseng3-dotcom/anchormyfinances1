@@ -45,8 +45,8 @@ export const staggerItem = (i = 0) => ({
  * exactly where it already sits, nothing slides or flies in. Tune the
  * whole feel from these three constants.
  */
-export const DASHBOARD_ENTRY_STAGGER = 0.12;
-export const DASHBOARD_ENTRY_DURATION = 0.4;
+export const DASHBOARD_ENTRY_STAGGER = 0.17;
+export const DASHBOARD_ENTRY_DURATION = 0.6;
 export const DASHBOARD_ENTRY_EASE = 'easeOut';
 
 export const dashboardEntryItem = (i = 0, { reduced = false } = {}) => {
