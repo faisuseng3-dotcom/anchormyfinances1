@@ -40,13 +40,14 @@ export const staggerItem = (i = 0) => ({
 });
 
 /**
- * Pure fade/appear entry — no translation, only opacity (+ a barely-there
- * scale). Used for the Dashboard's page-build-in sequence: each element
- * appears exactly where it already sits, nothing slides or flies in.
- * Tune the whole feel from these two constants.
+ * Pure fade/appear entry — no translation, only opacity (+ a subtle scale).
+ * Used for the Dashboard's page-build-in sequence: each element appears
+ * exactly where it already sits, nothing slides or flies in. Tune the
+ * whole feel from these three constants.
  */
-export const DASHBOARD_ENTRY_STAGGER = 0.07;
-export const DASHBOARD_ENTRY_DURATION = 0.3;
+export const DASHBOARD_ENTRY_STAGGER = 0.12;
+export const DASHBOARD_ENTRY_DURATION = 0.4;
+export const DASHBOARD_ENTRY_EASE = 'easeOut';
 
 export const dashboardEntryItem = (i = 0, { reduced = false } = {}) => {
   if (reduced) {
@@ -57,12 +58,12 @@ export const dashboardEntryItem = (i = 0, { reduced = false } = {}) => {
     };
   }
   return {
-    initial: { opacity: 0, scale: 0.98 },
+    initial: { opacity: 0, scale: 0.96 },
     animate: { opacity: 1, scale: 1 },
     transition: {
       delay: i * DASHBOARD_ENTRY_STAGGER,
       duration: DASHBOARD_ENTRY_DURATION,
-      ease: [0.22, 1, 0.36, 1],
+      ease: DASHBOARD_ENTRY_EASE,
     },
   };
 };
