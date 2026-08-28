@@ -73,8 +73,8 @@ export default function GoalVisualPicker({
           onClick={() => setTab('image')}
           className={`flex-1 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
             tab === 'image'
-              ? 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-500/40'
-              : 'bg-white/5 text-white/50 hover:text-white/80'
+              ? 'bg-[var(--color-accent-soft)] text-[var(--color-accent)] ring-1 ring-[var(--color-accent)]/40'
+              : 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
           }`}
         >
           <Camera className="w-3.5 h-3.5" />
@@ -86,8 +86,8 @@ export default function GoalVisualPicker({
           onClick={() => setTab('icon')}
           className={`flex-1 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${
             tab === 'icon'
-              ? 'bg-[#4fae82]/20 text-[#4fae82] ring-1 ring-[#4fae82]/40'
-              : 'bg-white/5 text-white/50 hover:text-white/80'
+              ? 'bg-[var(--color-accent-soft)] text-[var(--color-accent)] ring-1 ring-[var(--color-accent)]/40'
+              : 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
@@ -105,11 +105,11 @@ export default function GoalVisualPicker({
           showMilestones
         />
         <div className="flex-1 text-center sm:text-left">
-          <p className="text-xs text-white/45 leading-relaxed">
+          <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">
             Din bild blir skarpare ju närmare målet du kommer — så du ser ditt framtida jag ta form.
           </p>
           {(imageUrl || (iconId && iconId !== 'default')) && (
-            <p className="text-[11px] text-emerald-400/90 mt-2 font-medium">Visuellt mål valt</p>
+            <p className="text-[11px] text-[var(--color-success)] mt-2 font-medium">Visuellt mål valt</p>
           )}
         </div>
       </div>
@@ -120,14 +120,14 @@ export default function GoalVisualPicker({
             type="button"
             onClick={pickImage}
             disabled={disabled || uploading}
-            className="w-full py-4 rounded-3xl border-dashed border-white/15 hover:border-emerald-500/40 bg-white/[0.03] flex flex-col items-center gap-2 transition-colors disabled:opacity-50"
+            className="w-full py-4 rounded-3xl border-dashed border-[var(--color-border)] hover:border-[var(--color-accent)]/40 bg-[var(--color-background-secondary)] flex flex-col items-center gap-2 transition-colors disabled:opacity-50"
           >
             {uploading ? (
-              <Loader2 className="w-6 h-6 text-emerald-400 animate-spin" />
+              <Loader2 className="w-6 h-6 text-[var(--color-accent)] animate-spin" />
             ) : (
-              <ImageIcon className="w-6 h-6 text-white/40" />
+              <ImageIcon className="w-6 h-6 text-[var(--color-text-muted)]" />
             )}
-            <span className="text-sm text-white/70">
+            <span className="text-sm text-[var(--color-text-secondary)]">
               {uploading ? 'Laddar upp…' : imageUrl ? 'Byt bild' : 'T.ex. strand, bil eller drömbostad'}
             </span>
           </button>
@@ -143,7 +143,7 @@ export default function GoalVisualPicker({
               type="button"
               onClick={removeImage}
               disabled={disabled}
-              className="flex items-center gap-1 text-[11px] font-semibold text-white/45 hover:text-white/70"
+              className="flex items-center gap-1 text-[11px] font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
             >
               <Trash2 className="w-3 h-3" />
               Ta bort bild
@@ -162,18 +162,18 @@ export default function GoalVisualPicker({
               onClick={() => selectIcon(id)}
               className={`aspect-square rounded-2xl flex items-center justify-center transition-all ${
                 iconId === id && visualType === 'icon'
-                  ? 'bg-[#4fae82]/30 ring-2 ring-[#4fae82] scale-105'
-                  : 'bg-white/5 hover:bg-white/10'
+                  ? 'bg-[var(--color-accent-soft)] ring-2 ring-[var(--color-accent)] scale-105'
+                  : 'bg-[var(--color-background-secondary)] hover:bg-[var(--color-border)]'
               }`}
             >
-              <Icon className="w-8 h-8 text-[#4fae82]" strokeWidth={1.6} />
+              <Icon className="w-8 h-8 text-[var(--color-accent)]" strokeWidth={1.6} />
             </button>
           ))}
         </div>
       )}
 
       {error && (
-        <p className="text-[11px] font-medium text-rose-400">{error}</p>
+        <p className="text-[11px] font-medium text-[var(--color-danger)]">{error}</p>
       )}
     </div>
   );

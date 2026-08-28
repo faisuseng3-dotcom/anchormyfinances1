@@ -9,8 +9,8 @@ const fmt = (v) => Math.round(v || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g
 function MonthlyBitePie({ cost, margin }) {
   const pct = Math.min(cost / margin, 1);
   const data = [
-    { value: pct, color: pct > 0.35 ? '#EF4444' : pct > 0.2 ? '#F59E0B' : '#6366F1' },
-    { value: 1 - pct, color: 'rgba(255,255,255,0.06)' },
+    { value: pct, color: pct > 0.35 ? 'var(--color-danger)' : pct > 0.2 ? 'var(--color-warning)' : 'var(--color-accent)' },
+    { value: 1 - pct, color: 'var(--color-background-secondary)' },
   ];
   return (
     <div className="flex flex-col items-center">
@@ -24,10 +24,10 @@ function MonthlyBitePie({ cost, margin }) {
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-xs font-bold text-white">{Math.round(pct * 100)}%</span>
+          <span className="text-xs font-bold text-[var(--color-text-primary)]">{Math.round(pct * 100)}%</span>
         </div>
       </div>
-      <p className="text-[10px] text-white/40 mt-1 text-center">av din lön</p>
+      <p className="text-[10px] text-[var(--color-text-secondary)] mt-1 text-center">av din lön</p>
     </div>
   );
 }
@@ -40,26 +40,26 @@ export default function VehicleCFOReport({ analysis }) {
     <div className="space-y-4">
 
       {/* Top Summary Bar */}
-      <div className="rounded-2xl p-4 text-center"
-        style={{ background: 'rgba(255,255,255,0.03)', boxShadow: 'var(--anchor-shadow-1)' }}>
-        <p className="text-xs text-white/40 mb-1 uppercase tracking-wider">Total månadskostnad</p>
-        <p className="text-3xl font-black text-white">{fmt(analysis.totalMonthlyCost)} kr/mån</p>
-        <p className="text-xs text-white/40 mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
+      <div className="rounded-2xl p-4 text-center bg-white border border-[var(--color-border)]"
+        style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+        <p className="text-xs text-[var(--color-text-secondary)] mb-1 uppercase tracking-wider">Total månadskostnad</p>
+        <p className="text-3xl font-black text-[var(--color-text-primary)]">{fmt(analysis.totalMonthlyCost)} kr/mån</p>
+        <p className="text-xs text-[var(--color-text-secondary)] mt-1">inkl. lån ({fmt(analysis.monthlyLoan)} kr) + drift ({fmt(analysis.monthlyRunning)} kr)</p>
       </div>
 
       {/* Header: fordon + deterministisk köpverdikt */}
       <div>
-        <p className="text-xs text-white/40 uppercase tracking-wider font-semibold mb-1">
+        <p className="text-xs text-[var(--color-text-secondary)] uppercase tracking-wider font-semibold mb-1">
           {analysis.vehicleName || 'Fordon'}
         </p>
-        <h2 className="text-xl font-black text-white">{fmt(analysis.price)} kr</h2>
-        <p className="text-xs text-white/40 mt-0.5 mb-3">
+        <h2 className="text-xl font-black text-[var(--color-text-primary)]">{fmt(analysis.price)} kr</h2>
+        <p className="text-xs text-[var(--color-text-secondary)] mt-0.5 mb-3">
           Insats: {analysis.downPaymentPct}% = {fmt(analysis.downPaymentAmount)} kr · Lån: {fmt(analysis.loanAmount)} kr · {analysis.interestRate}%
         </p>
         <PurchaseVerdictCard price={analysis.downPaymentAmount} priceLabel="Kontantinsats" impact={analysis.impact} bestDate={analysis.bestDate} />
         {analysis.cfo_recommendation && (
-          <div className="rounded-xl p-3 mt-3 text-sm text-white/70 leading-relaxed"
-            style={{ background: 'rgba(0,0,0,0.3)', boxShadow: 'var(--anchor-shadow-1)' }}>
+          <div className="rounded-xl p-3 mt-3 text-sm text-[var(--color-text-secondary)] leading-relaxed bg-[var(--color-background-secondary)]"
+            style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
             {analysis.cfo_recommendation}
           </div>
         )}
@@ -69,11 +69,11 @@ export default function VehicleCFOReport({ analysis }) {
       {isDebtTrap && (
         <motion.div initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
           className="rounded-xl p-4"
-          style={{ background: 'rgba(239,68,68,0.09)', border: '2px solid rgba(239,68,68,0.35)' }}>
-          <p className="text-sm font-bold text-rose-400 mb-1 flex items-center gap-2">
+          style={{ background: 'var(--color-danger-soft)', border: '1px solid var(--color-danger)' }}>
+          <p className="text-sm font-bold text-[var(--color-danger)] mb-1 flex items-center gap-2">
             <AlertTriangle className="w-4 h-4" /> Skuldfällevarning – {analysis.months} månader
           </p>
-          <p className="text-xs text-rose-200">
+          <p className="text-xs text-[var(--color-text-secondary)]">
             Lånetiden är längre än bilens beräknade värdebehållning. Du riskerar att ha kvar skulden när du säljer bilen och kan hamna "under vatten" – skulden överstiger bilens marknadsvärde.
           </p>
         </motion.div>
@@ -83,9 +83,9 @@ export default function VehicleCFOReport({ analysis }) {
       {analysis.isUnderwater && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           className="rounded-xl p-4"
-          style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-xs font-bold text-rose-400 mb-1 inline-flex items-center gap-1"><Waves className="w-3.5 h-3.5" aria-hidden /> Under vatten vid halvtid</p>
-          <p className="text-xs text-rose-200">
+          style={{ background: 'var(--color-danger-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+          <p className="text-xs font-bold text-[var(--color-danger)] mb-1 inline-flex items-center gap-1"><Waves className="w-3.5 h-3.5" aria-hidden /> Under vatten vid halvtid</p>
+          <p className="text-xs text-[var(--color-text-secondary)]">
             Vid lånets mitt punkt: skuld <strong>{fmt(analysis.remainingDebt)} kr</strong> vs bilens värde <strong>{fmt(analysis.midResidualValue)} kr</strong>.
             Om du säljer bilen halvvägs kan du inte betala tillbaka lånet.
           </p>
@@ -95,14 +95,14 @@ export default function VehicleCFOReport({ analysis }) {
       {/* Liquidity check */}
       {analysis.downPaymentAmount > 0 && analysis.currentBuffer > 0 && (
         <div className="rounded-xl p-4 flex gap-3 items-start"
-          style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <Shield className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" />
+          style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+          <Shield className="w-4 h-4 text-[var(--color-success)] flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-[11px] font-bold text-[#4fae82] mb-0.5">Likviditets-check</p>
-            <p className="text-xs text-white/70">
+            <p className="text-[11px] font-bold text-[var(--color-success)] mb-0.5">Likviditets-check</p>
+            <p className="text-xs text-[var(--color-text-secondary)]">
               Kontantinsatsen på {fmt(analysis.downPaymentAmount)} kr sänker din trygghet från{' '}
-              <strong className="text-white">{analysis.bufferMonths.toFixed(1)} månader</strong> till{' '}
-              <strong className={analysis.newBufferMonths < 1 ? 'text-rose-300' : analysis.newBufferMonths < 2 ? 'text-amber-300' : 'text-[#4fae82]'}>
+              <strong className="text-[var(--color-text-primary)]">{analysis.bufferMonths.toFixed(1)} månader</strong> till{' '}
+              <strong className={analysis.newBufferMonths < 1 ? 'text-[var(--color-danger)]' : analysis.newBufferMonths < 2 ? 'text-[var(--color-warning)]' : 'text-[var(--color-success)]'}>
                 {analysis.newBufferMonths.toFixed(1)} månader
               </strong>.
               {analysis.newBufferMonths < 1 && (
@@ -115,21 +115,21 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Monthly bite + numbers */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="rounded-2xl p-3 flex flex-col items-center"
-          style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
+        <div className="rounded-2xl p-3 flex flex-col items-center bg-white border border-[var(--color-border)]"
+          style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
           <MonthlyBitePie cost={analysis.totalMonthlyCost} margin={analysis.margin} />
         </div>
-        <div className="rounded-2xl p-3 flex flex-col justify-center"
-          style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-[10px] text-white/40 mb-0.5">Total ränta</p>
-          <p className="text-base font-black text-amber-400">{fmt(analysis.totalInterest)}</p>
-          <p className="text-[10px] text-white/30">kr att betala extra</p>
+        <div className="rounded-2xl p-3 flex flex-col justify-center bg-white border border-[var(--color-border)]"
+          style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+          <p className="text-[10px] text-[var(--color-text-secondary)] mb-0.5">Total ränta</p>
+          <p className="text-base font-black text-[var(--color-warning)]">{fmt(analysis.totalInterest)}</p>
+          <p className="text-[10px] text-[var(--color-text-muted)]">kr att betala extra</p>
         </div>
-        <div className="rounded-2xl p-3 flex flex-col justify-center"
-          style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-[10px] text-white/40 mb-0.5">Totalpris</p>
-          <p className="text-base font-black text-white">{fmt(analysis.totalPaid)}</p>
-          <p className="text-[10px] text-white/30">kr inkl. insats</p>
+        <div className="rounded-2xl p-3 flex flex-col justify-center bg-white border border-[var(--color-border)]"
+          style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+          <p className="text-[10px] text-[var(--color-text-secondary)] mb-0.5">Totalpris</p>
+          <p className="text-base font-black text-[var(--color-text-primary)]">{fmt(analysis.totalPaid)}</p>
+          <p className="text-[10px] text-[var(--color-text-muted)]">kr inkl. insats</p>
         </div>
       </div>
 
@@ -137,10 +137,10 @@ export default function VehicleCFOReport({ analysis }) {
       {isLongLoan && (
         <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
           className="rounded-xl p-4"
-          style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-xs font-bold text-amber-400 mb-1 inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" aria-hidden /> The {analysis.months}-Month Twist</p>
-          <p className="text-xs text-amber-200">
-            Priset för bekvämlighet: <strong className="text-white">{fmt(analysis.interestExtra)} kr extra</strong> i ränta jämfört med 36 månader.
+          style={{ background: 'var(--color-warning-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+          <p className="text-xs font-bold text-[var(--color-warning)] mb-1 inline-flex items-center gap-1"><Clock className="w-3.5 h-3.5" aria-hidden /> The {analysis.months}-Month Twist</p>
+          <p className="text-xs text-[var(--color-text-secondary)]">
+            Priset för bekvämlighet: <strong className="text-[var(--color-text-primary)]">{fmt(analysis.interestExtra)} kr extra</strong> i ränta jämfört med 36 månader.
             Skulden hänger kvar längre än garantin.
           </p>
         </motion.div>
@@ -148,48 +148,48 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Depreciation vs Debt */}
       <div className="grid grid-cols-2 gap-3">
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'var(--color-danger-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <div className="flex items-start gap-2 mb-2">
-            <TrendingDown className="w-5 h-5 text-rose-400 flex-shrink-0 mt-0.5" />
+            <TrendingDown className="w-5 h-5 text-[var(--color-danger)] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] font-bold text-rose-400 uppercase tracking-wider">Värdeminskning</p>
-              <p className="text-xl font-black text-white mt-0.5">-{fmt(analysis.depreciation)} kr</p>
+              <p className="text-[11px] font-bold text-[var(--color-danger)] uppercase tracking-wider">Värdeminskning</p>
+              <p className="text-xl font-black text-[var(--color-text-primary)] mt-0.5">-{fmt(analysis.depreciation)} kr</p>
             </div>
           </div>
-          <p className="text-[10px] text-white/40 leading-relaxed">Restvärde: <span className="text-white font-semibold">{fmt(analysis.residualValue)} kr</span></p>
+          <p className="text-[10px] text-[var(--color-text-secondary)] leading-relaxed">Restvärde: <span className="text-[var(--color-text-primary)] font-semibold">{fmt(analysis.residualValue)} kr</span></p>
         </div>
 
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
+        <div className="rounded-2xl p-4" style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
           <div className="flex items-start gap-2 mb-2">
-            <TrendingUp className="w-5 h-5 text-[#4fae82] flex-shrink-0 mt-0.5" />
+            <TrendingUp className="w-5 h-5 text-[var(--color-success)] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-[11px] font-bold text-[#4fae82] uppercase tracking-wider">Alternativkostnad</p>
-              <p className="text-xl font-black text-white mt-0.5">+{fmt(analysis.opportunityCost)} kr</p>
+              <p className="text-[11px] font-bold text-[var(--color-success)] uppercase tracking-wider">Alternativkostnad</p>
+              <p className="text-xl font-black text-[var(--color-text-primary)] mt-0.5">+{fmt(analysis.opportunityCost)} kr</p>
             </div>
           </div>
-          <p className="text-[10px] text-white/40 leading-relaxed">Vad kontantinsatsen gett på börsen (7%/år).</p>
+          <p className="text-[10px] text-[var(--color-text-secondary)] leading-relaxed">Vad kontantinsatsen gett på börsen (7%/år).</p>
         </div>
       </div>
 
       {/* Trade-off */}
-      <div className="rounded-2xl p-4" style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}>
-        <p className="text-xs font-bold text-white/45 uppercase tracking-wider mb-2 inline-flex items-center gap-1"><Utensils className="w-3.5 h-3.5" aria-hidden /> Trade-off kalkylatorn</p>
-        <div className="space-y-2 text-xs text-white/70">
+      <div className="rounded-2xl p-4 bg-white border border-[var(--color-border)]" style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+        <p className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-wider mb-2 inline-flex items-center gap-1"><Utensils className="w-3.5 h-3.5" aria-hidden /> Trade-off kalkylatorn</p>
+        <div className="space-y-2 text-xs text-[var(--color-text-secondary)]">
           <div className="flex justify-between items-center">
             <span className="inline-flex items-center gap-1"><Salad className="w-3.5 h-3.5" aria-hidden /> Luncher ute (130 kr/st)</span>
-            <span className="font-bold text-white">{fmt(analysis.lunchEquivalent)} st</span>
+            <span className="font-bold text-[var(--color-text-primary)]">{fmt(analysis.lunchEquivalent)} st</span>
           </div>
-          <div className="h-px bg-white/5" />
-          <p className="text-white/45 leading-relaxed italic">{analysis.contextual_story}</p>
+          <div className="h-px bg-[var(--color-border)]" />
+          <p className="text-[var(--color-text-secondary)] leading-relaxed italic">{analysis.contextual_story}</p>
         </div>
       </div>
 
       {/* Opportunity investment */}
       {analysis.opportunity_investment && (
-        <div className="rounded-2xl p-4" style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1 inline-flex items-center gap-1"><LineChart className="w-3.5 h-3.5" aria-hidden /> Alternativet – Indexfond</p>
-          <p className="text-xs text-white/70">{analysis.opportunity_investment}</p>
-          <p className="text-sm font-bold text-emerald-400 mt-2">
+        <div className="rounded-2xl p-4" style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+          <p className="text-xs font-bold text-[var(--color-success)] uppercase tracking-wider mb-1 inline-flex items-center gap-1"><LineChart className="w-3.5 h-3.5" aria-hidden /> Alternativet – Indexfond</p>
+          <p className="text-xs text-[var(--color-text-secondary)]">{analysis.opportunity_investment}</p>
+          <p className="text-sm font-bold text-[var(--color-success)] mt-2">
             {fmt(analysis.downPaymentAmount)} kr → {fmt(analysis.opportunityFinalValue)} kr
           </p>
         </div>
@@ -197,12 +197,11 @@ export default function VehicleCFOReport({ analysis }) {
 
       {/* Better alternative */}
       {analysis.better_alternative && (
-        <div className="rounded-xl p-3 flex gap-3 items-start"
-          style={{ background: 'rgba(17,24,39,0.5)', boxShadow: 'var(--anchor-shadow-1)' }}>
-          <Zap className="w-4 h-4 text-cyan-400 flex-shrink-0 mt-0.5" />
+        <div className="rounded-xl p-3 flex gap-3 items-start bg-[var(--color-accent-soft)]">
+          <Zap className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-[11px] font-bold text-cyan-400 mb-0.5">Smartare alternativ</p>
-            <p className="text-xs text-white/70">{analysis.better_alternative}</p>
+            <p className="text-[11px] font-bold text-[var(--color-accent)] mb-0.5">Smartare alternativ</p>
+            <p className="text-xs text-[var(--color-text-secondary)]">{analysis.better_alternative}</p>
           </div>
         </div>
       )}

@@ -52,7 +52,7 @@ const TRIGGER_CATEGORIES = [
     iconKey: 'health',
     color: 'from-emerald-500 to-green-600',
     border: 'rgba(255,255,255,0.12)',
-    bg: 'rgba(255,255,255,0.04)',
+    bg: 'var(--color-accent-soft)',
     triggers: [
       { id: 'steps', label: 'Steg-utmaningen', iconKey: 'footsteps', desc: 'Spara 1 kr per 1 000 steg du går.', amount: 10, users: 3241 },
       { id: 'sleep', label: 'Sömntuta', iconKey: 'sleep', desc: 'Spara 20 kr varje natt du sover 7+ timmar.', amount: 20, users: 1872 },
@@ -65,7 +65,7 @@ const TRIGGER_CATEGORIES = [
     iconKey: 'shopping',
     color: 'from-blue-500 to-indigo-600',
     border: 'rgba(255,255,255,0.12)',
-    bg: 'rgba(255,255,255,0.04)',
+    bg: 'var(--color-accent-soft)',
     triggers: [
       { id: 'luncbox', label: 'Matlåda-vinsten', iconKey: 'lunchbox', desc: 'Ta med matlåda istället för att äta ute → spara 100 kr.', amount: 100, users: 1420 },
       { id: 'secondhand', label: 'Second Hand-bonus', iconKey: 'secondhand', desc: 'Köp begagnat → spara 50% av det du "tjänade".', amount: 50, users: 677 },
@@ -78,7 +78,7 @@ const TRIGGER_CATEGORIES = [
     iconKey: 'fun',
     color: 'from-purple-500 to-pink-600',
     border: 'rgba(255,255,255,0.12)',
-    bg: 'rgba(255,255,255,0.04)',
+    bg: 'var(--color-accent-soft)',
     triggers: [
       { id: 'rain', label: 'Väder-spararen', iconKey: 'rain', desc: 'Spara 10 kr varje dag det regnar.', amount: 10, users: 561 },
       { id: 'transport', label: 'Transport-hack', iconKey: 'transport', desc: 'Cykla/gå istället för buss → spara 39 kr.', amount: 39, users: 988 },
@@ -91,7 +91,7 @@ const TRIGGER_CATEGORIES = [
     iconKey: 'custom',
     color: 'from-amber-500 to-orange-600',
     border: 'rgba(255,255,255,0.12)',
-    bg: 'rgba(255,255,255,0.04)',
+    bg: 'var(--color-accent-soft)',
     triggers: [
       { id: 'workout', label: 'Träningspass', iconKey: 'workout', desc: 'Spara ett belopp varje gång du tränar.', amount: 50, users: 2830 },
       { id: 'no_purchase', label: 'Shoppa-fritt', iconKey: 'no_purchase', desc: 'Klarar du en dag utan köp? Spara 100 kr.', amount: 100, users: 1654 },
@@ -146,17 +146,17 @@ export default function TriggerLibrary({ activeTrigger, onSelect, onClose }) {
               const isActive = activeTrigger === t.id;
               return (
                 <button key={t.id} onClick={() => onSelect(t)}
-                  className={`w-full p-3 rounded-xl text-left transition-all flex items-start gap-3 ${isActive ? 'ring-2 ring-[#4fae82]' : 'hover:bg-white/5'}`}
-                  style={{ background: isActive ? cat.bg : 'rgba(255,255,255,0.03)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                  <TriggerIcon iconKey={t.iconKey} className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" />
+                  className={`w-full p-3 rounded-xl text-left transition-all flex items-start gap-3 border ${isActive ? 'ring-2 ring-[var(--color-accent)] border-transparent' : 'border-[var(--color-border)] hover:bg-[var(--color-border)]'}`}
+                  style={{ background: isActive ? cat.bg : '#FFFFFF', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  <TriggerIcon iconKey={t.iconKey} className="w-4 h-4 text-[var(--color-accent)] flex-shrink-0 mt-0.5" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-white">{t.label}</p>
-                    <p className="text-[11px] text-white/45 mt-0.5 leading-snug">{t.desc}</p>
-                    <p className="text-[10px] text-white/30 mt-1 inline-flex items-center gap-1"><Users className="w-3 h-3" aria-hidden /> {t.users.toLocaleString('sv-SE')} sparar med denna trigger</p>
+                    <p className="text-xs font-semibold text-[var(--color-text-primary)]">{t.label}</p>
+                    <p className="text-[11px] text-[var(--color-text-secondary)] mt-0.5 leading-snug">{t.desc}</p>
+                    <p className="text-[10px] text-[var(--color-text-muted)] mt-1 inline-flex items-center gap-1"><Users className="w-3 h-3" aria-hidden /> {t.users.toLocaleString('sv-SE')} sparar med denna trigger</p>
                   </div>
                   {t.amount && (
                     <div className="flex-shrink-0 text-right">
-                      <span className="text-sm font-bold text-emerald-400">+{t.amount} kr</span>
+                      <span className="text-sm font-bold text-[var(--color-success)]">+{t.amount} kr</span>
                     </div>
                   )}
                 </button>

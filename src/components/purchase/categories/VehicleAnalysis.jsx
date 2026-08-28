@@ -203,23 +203,23 @@ Svara ENDAST med JSON.`;
     <div className="space-y-5">
       {/* Input Card */}
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-5 space-y-4"
-        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
-        <h3 className="font-semibold text-white flex items-center gap-2">
-          <Car className="w-5 h-5 text-blue-400" /> Fordonsinformation
+        className="rounded-2xl p-5 space-y-4 bg-white border border-[var(--color-border)]"
+        style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+        <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+          <Car className="w-5 h-5 text-[var(--color-accent)]" /> Fordonsinformation
         </h3>
 
         {/* URL */}
         <div>
-          <Label className="text-xs text-white/45">Annons-URL (Blocket, Riddermark…)</Label>
+          <Label className="text-xs text-[var(--color-text-secondary)]">Annons-URL (Blocket, Riddermark…)</Label>
           <div className="flex gap-2 mt-1">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
               <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
                 placeholder="https://blocket.se/…" className="pl-9 h-10 text-sm" />
             </div>
             <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
-              className="bg-[#4fae82] hover:bg-[#4fae82] h-10 flex-shrink-0">
+              className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] h-10 flex-shrink-0">
               {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
             </Button>
           </div>
@@ -227,13 +227,13 @@ Svara ENDAST med JSON.`;
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label className="text-xs text-white/45">Modell</Label>
+            <Label className="text-xs text-[var(--color-text-secondary)]">Modell</Label>
             <Input value={vehicle.name}
               onChange={e => setVehicle({ ...vehicle, name: e.target.value })}
               placeholder="Volvo XC60…" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-white/45">Pris (kr)</Label>
+            <Label className="text-xs text-[var(--color-text-secondary)]">Pris (kr)</Label>
             <Input type="number" value={vehicle.price}
               onChange={e => setVehicle({ ...vehicle, price: e.target.value })}
               placeholder="450 000" className="mt-1 h-10 text-sm" />
@@ -243,20 +243,20 @@ Svara ENDAST med JSON.`;
         {/* Down payment */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Label className="text-xs text-white/45">Kontantinsats</Label>
-            <span className="text-sm font-bold text-white">{downPaymentPct}%
-              {price > 0 && <span className="text-white/45 font-normal ml-1">= {fmt((downPaymentPct / 100) * price)} kr</span>}
+            <Label className="text-xs text-[var(--color-text-secondary)]">Kontantinsats</Label>
+            <span className="text-sm font-bold text-[var(--color-text-primary)]">{downPaymentPct}%
+              {price > 0 && <span className="text-[var(--color-text-secondary)] font-normal ml-1">= {fmt((downPaymentPct / 100) * price)} kr</span>}
             </span>
           </div>
           <Slider min={10} max={50} step={5}
             value={[downPaymentPct]}
             onValueChange={([v]) => setDownPaymentPct(v)}
             className="w-full" />
-          <div className="flex justify-between text-[10px] text-white/30 mt-1">
+          <div className="flex justify-between text-[10px] text-[var(--color-text-muted)] mt-1">
             <span>10% (min)</span><span>50%</span>
           </div>
           {downPaymentPct < 20 && (
-            <p className="text-[10px] text-amber-400 mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3 flex-shrink-0" aria-hidden /> Lagens minimikrav för billån är 20%</p>
+            <p className="text-[10px] text-[var(--color-warning)] mt-1 flex items-center gap-1"><AlertTriangle className="w-3 h-3 flex-shrink-0" aria-hidden /> Lagens minimikrav för billån är 20%</p>
           )}
         </div>
 
@@ -264,14 +264,14 @@ Svara ENDAST med JSON.`;
         {price > 0 && (
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-xs text-white/45">Lånebelopp (beräknat)</Label>
-              <div className="mt-1 h-10 rounded-xl flex items-center px-3 text-sm font-semibold text-[#4fae82]"
-                style={{ background: 'rgba(59,130,246,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
+              <Label className="text-xs text-[var(--color-text-secondary)]">Lånebelopp (beräknat)</Label>
+              <div className="mt-1 h-10 rounded-xl flex items-center px-3 text-sm font-semibold text-[var(--color-accent)]"
+                style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 {fmt(loanAmount)} kr
               </div>
             </div>
             <div>
-              <Label className="text-xs text-white/45">Ränta (%)</Label>
+              <Label className="text-xs text-[var(--color-text-secondary)]">Ränta (%)</Label>
               <Input type="number" step="0.05" value={interestRate}
                 onChange={e => setInterestRate(parseFloat(e.target.value) || 6.95)}
                 className="mt-1 h-10 text-sm" />
@@ -282,16 +282,16 @@ Svara ENDAST med JSON.`;
         {/* Months slider */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <Label className="text-xs text-white/45">Avbetalningstid</Label>
-            <span className="text-sm font-bold text-white">{months} månader</span>
+            <Label className="text-xs text-[var(--color-text-secondary)]">Avbetalningstid</Label>
+            <span className="text-sm font-bold text-[var(--color-text-primary)]">{months} månader</span>
           </div>
           <input type="range" min="12" max="96" step="12"
             value={months}
             onChange={e => setVehicle({ ...vehicle, months: e.target.value })}
-            className="w-full accent-[#4fae82] cursor-pointer"
+            className="w-full accent-[var(--color-accent)] cursor-pointer"
             style={{ height: '4px' }}
           />
-          <div className="flex justify-between text-[10px] text-white/30 mt-1">
+          <div className="flex justify-between text-[10px] text-[var(--color-text-muted)] mt-1">
             {[12, 24, 36, 48, 60, 72, 84, 96].map(m => <span key={m}>{m}</span>)}
           </div>
         </div>
@@ -302,18 +302,18 @@ Svara ENDAST med JSON.`;
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
-              style={{ background: 'rgba(59,130,246,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
+              style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
               <div>
-                <p className="text-[10px] text-white/40">Månadskostnad</p>
-                <p className="text-sm font-bold text-blue-400">{fmt(liveCalc.totalMonthlyCost)} kr</p>
+                <p className="text-[10px] text-[var(--color-text-secondary)]">Månadskostnad</p>
+                <p className="text-sm font-bold text-[var(--color-accent)]">{fmt(liveCalc.totalMonthlyCost)} kr</p>
               </div>
               <div>
-                <p className="text-[10px] text-white/40">Total ränta</p>
-                <p className="text-sm font-bold text-amber-400">{fmt(liveCalc.totalInterest)} kr</p>
+                <p className="text-[10px] text-[var(--color-text-secondary)]">Total ränta</p>
+                <p className="text-sm font-bold text-[var(--color-warning)]">{fmt(liveCalc.totalInterest)} kr</p>
               </div>
               <div>
-                <p className="text-[10px] text-white/40">Av marginalen</p>
-                <p className={`text-sm font-bold ${liveCalc.totalMonthlyCost / margin > 0.3 ? 'text-rose-400' : liveCalc.totalMonthlyCost / margin > 0.2 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                <p className="text-[10px] text-[var(--color-text-secondary)]">Av marginalen</p>
+                <p className={`text-sm font-bold ${liveCalc.totalMonthlyCost / margin > 0.3 ? 'text-[var(--color-danger)]' : liveCalc.totalMonthlyCost / margin > 0.2 ? 'text-[var(--color-warning)]' : 'text-[var(--color-success)]'}`}>
                   {Math.round((liveCalc.totalMonthlyCost / margin) * 100)}%
                 </p>
               </div>
@@ -325,9 +325,9 @@ Svara ENDAST med JSON.`;
         {months >= 84 && liveCalc && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(239,68,68,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}>
-            <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
-            <p className="text-rose-200">
+            style={{ background: 'var(--color-danger-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+            <AlertTriangle className="w-4 h-4 text-[var(--color-danger)] flex-shrink-0 mt-0.5" />
+            <p className="text-[var(--color-danger)]">
               <strong>Skuldfälla ({months} mån):</strong> Lånetiden är längre än bilens beräknade värdebehållning. Du riskerar att ha kvar skulden när du säljer bilen.
             </p>
           </motion.div>
@@ -336,9 +336,9 @@ Svara ENDAST med JSON.`;
         {months >= 60 && months < 84 && liveCalc && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-            <span className="text-amber-400 text-base flex-shrink-0">⏳</span>
-            <p className="text-amber-200">
+            style={{ background: 'var(--color-warning-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+            <span className="text-[var(--color-warning)] text-base flex-shrink-0">⏳</span>
+            <p className="text-[var(--color-warning)]">
               <strong>Lång avbetalning ({months} mån):</strong> Ökar totalkostnaden med{' '}
               <strong>{fmt(liveCalc.interestExtra)} kr</strong> jämfört med 36 månader.
             </p>
@@ -349,12 +349,12 @@ Svara ENDAST med JSON.`;
         {liveCalc && liveCalc.downPaymentAmount > 0 && currentBuffer > 0 && liveCalc.downPaymentAmount > currentBuffer * 0.3 && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="rounded-xl p-3 flex gap-2 items-start text-xs"
-            style={{ background: 'rgba(79, 174, 130, 0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-            <Shield className="w-4 h-4 text-[#4fae82] flex-shrink-0 mt-0.5" aria-hidden />
-            <p className="text-[#4fae82]">
+            style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+            <Shield className="w-4 h-4 text-[var(--color-success)] flex-shrink-0 mt-0.5" aria-hidden />
+            <p className="text-[var(--color-success)]">
               Kontantinsatsen på <strong>{fmt(liveCalc.downPaymentAmount)} kr</strong> sänker din buffert
               från <strong>{bufferMonths.toFixed(1)} mån</strong> till{' '}
-              <strong className={currentBuffer - liveCalc.downPaymentAmount < totalFixed ? 'text-rose-300' : 'text-[#4fae82]'}>
+              <strong className={currentBuffer - liveCalc.downPaymentAmount < totalFixed ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}>
                 {Math.max(0, ((currentBuffer - liveCalc.downPaymentAmount) / totalFixed)).toFixed(1)} mån
               </strong> trygghet.
             </p>

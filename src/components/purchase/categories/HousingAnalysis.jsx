@@ -153,23 +153,23 @@ Svara ENDAST med JSON.`,
   return (
     <div className="space-y-5">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-        className="rounded-2xl p-5 space-y-4"
-        style={{ background: 'rgba(17,24,39,0.7)', boxShadow: 'var(--anchor-shadow-1)' }}>
-        <h3 className="font-semibold text-white flex items-center gap-2">
-          <Home className="w-5 h-5 text-emerald-400" /> Bostadsinformation
+        className="rounded-2xl p-5 space-y-4 bg-white border border-[var(--color-border)]"
+        style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+        <h3 className="font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
+          <Home className="w-5 h-5 text-[var(--color-accent)]" /> Bostadsinformation
         </h3>
 
         {/* URL */}
         <div>
-          <Label className="text-xs text-white/45">Annons-URL (Hemnet, Booli, Blocket Bostad)</Label>
+          <Label className="text-xs text-[var(--color-text-secondary)]">Annons-URL (Hemnet, Booli, Blocket Bostad)</Label>
           <div className="flex gap-2 mt-1">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
               <Input value={urlInput} onChange={e => setUrlInput(e.target.value)}
                 placeholder="https://hemnet.se/…" className="pl-9 h-10 text-sm" />
             </div>
             <Button onClick={handleUrlAutofill} disabled={!urlInput || urlLoading} size="sm"
-              className="bg-[#4fae82] hover:bg-[#4fae82] h-10 flex-shrink-0">
+              className="bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] h-10 flex-shrink-0">
               {urlLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Hämta'}
             </Button>
           </div>
@@ -179,36 +179,36 @@ Svara ENDAST med JSON.`,
         <div className="grid grid-cols-3 gap-2">
           {[{ id: 'brf', label: 'BRF' }, { id: 'house', label: 'Hus' }, { id: 'rental', label: 'Hyresrätt' }].map(t => (
             <button key={t.id} onClick={() => setHousing(h => ({ ...h, type: t.id }))}
-              className={`py-2 rounded-xl text-sm font-medium border transition-all ${housing.type === t.id ? 'border-emerald-500 bg-[#4fae82]/10 text-emerald-300' : 'border-white/10 text-white/45 hover:border-white/20'}`}>
+              className={`py-2 rounded-xl text-sm font-medium border transition-all ${housing.type === t.id ? 'border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-[var(--color-accent)]' : 'border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[var(--color-text-muted)]'}`}>
               {t.label}
             </button>
           ))}
         </div>
 
         <div>
-          <Label className="text-xs text-white/45">Adress / Beskrivning</Label>
+          <Label className="text-xs text-[var(--color-text-secondary)]">Adress / Beskrivning</Label>
           <Input value={housing.name} onChange={e => setHousing(h => ({ ...h, name: e.target.value }))}
             placeholder="Storgatan 5, 3 rum i Södermalm" className="mt-1 h-10 text-sm" />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label className="text-xs text-white/45">Pris (kr)</Label>
+            <Label className="text-xs text-[var(--color-text-secondary)]">Pris (kr)</Label>
             <Input type="number" value={housing.price} onChange={e => setHousing(h => ({ ...h, price: e.target.value }))}
               placeholder="4 500 000" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-white/45">{housing.type === 'brf' ? 'Månadsavgift (kr)' : 'Driftskostnad (kr)'}</Label>
+            <Label className="text-xs text-[var(--color-text-secondary)]">{housing.type === 'brf' ? 'Månadsavgift (kr)' : 'Driftskostnad (kr)'}</Label>
             <Input type="number" value={housing.fee} onChange={e => setHousing(h => ({ ...h, fee: e.target.value }))}
               placeholder="3 500" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-white/45">Boarea (m²)</Label>
+            <Label className="text-xs text-[var(--color-text-secondary)]">Boarea (m²)</Label>
             <Input type="number" value={housing.area} onChange={e => setHousing(h => ({ ...h, area: e.target.value }))}
               placeholder="65" className="mt-1 h-10 text-sm" />
           </div>
           <div>
-            <Label className="text-xs text-white/45">Område</Label>
+            <Label className="text-xs text-[var(--color-text-secondary)]">Område</Label>
             <Input value={housing.location} onChange={e => setHousing(h => ({ ...h, location: e.target.value }))}
               placeholder="Stockholm, Göteborg…" className="mt-1 h-10 text-sm" />
           </div>
@@ -220,20 +220,20 @@ Svara ENDAST med JSON.`,
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
               className="space-y-2">
               <div className="rounded-xl p-3 grid grid-cols-3 gap-2 text-center"
-                style={{ background: 'rgba(16,185,129,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
                 <div>
-                  <p className="text-[10px] text-white/40">Månadskostnad</p>
-                  <p className="text-sm font-bold text-emerald-400">{fmt(liveCalc.totalMonthly)} kr</p>
+                  <p className="text-[10px] text-[var(--color-text-secondary)]">Månadskostnad</p>
+                  <p className="text-sm font-bold text-[var(--color-success)]">{fmt(liveCalc.totalMonthly)} kr</p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-white/40">Av inkomst</p>
-                  <p className={`text-sm font-bold ${liveCalc.incomeShare > 0.4 ? 'text-rose-400' : liveCalc.incomeShare > 0.3 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                  <p className="text-[10px] text-[var(--color-text-secondary)]">Av inkomst</p>
+                  <p className={`text-sm font-bold ${liveCalc.incomeShare > 0.4 ? 'text-[var(--color-danger)]' : liveCalc.incomeShare > 0.3 ? 'text-[var(--color-warning)]' : 'text-[var(--color-success)]'}`}>
                     {Math.round(liveCalc.incomeShare * 100)}%
                   </p>
                 </div>
                 <div>
-                  <p className="text-[10px] text-white/40">Vid 5% ränta</p>
-                  <p className={`text-sm font-bold ${liveCalc.afterStress5 < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  <p className="text-[10px] text-[var(--color-text-secondary)]">Vid 5% ränta</p>
+                  <p className={`text-sm font-bold ${liveCalc.afterStress5 < 0 ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>
                     {fmt(liveCalc.afterStress5)} kr
                   </p>
                 </div>
@@ -241,9 +241,9 @@ Svara ENDAST med JSON.`,
 
               {housing.type === 'house' && liveCalc.hiddenCosts > 0 && (
                 <div className="rounded-xl p-3 flex gap-2 text-xs"
-                  style={{ background: 'rgba(245,158,11,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                  <AlertTriangle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-amber-200">
+                  style={{ background: 'var(--color-warning-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  <AlertTriangle className="w-4 h-4 text-[var(--color-warning)] flex-shrink-0 mt-0.5" />
+                  <p className="text-[var(--color-text-secondary)]">
                     Dolda kostnader för hus: lagfart ({fmt(liveCalc.lagfart)} kr) + pantbrev ({fmt(liveCalc.pantbrev)} kr) = <strong>{fmt(liveCalc.hiddenCosts)} kr extra</strong>
                   </p>
                 </div>
@@ -251,9 +251,9 @@ Svara ENDAST med JSON.`,
 
               {liveCalc.incomeShare > 0.4 && (
                 <div className="rounded-xl p-3 flex gap-2 text-xs"
-                  style={{ background: 'rgba(239,68,68,0.07)', boxShadow: 'var(--anchor-shadow-1)' }}>
-                  <AlertTriangle className="w-4 h-4 text-rose-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-rose-200">Månadskostnaden överstiger 40% av din inkomst. CFO-rekommendationen är max 30-35%.</p>
+                  style={{ background: 'var(--color-danger-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
+                  <AlertTriangle className="w-4 h-4 text-[var(--color-danger)] flex-shrink-0 mt-0.5" />
+                  <p className="text-[var(--color-text-secondary)]">Månadskostnaden överstiger 40% av din inkomst. CFO-rekommendationen är max 30-35%.</p>
                 </div>
               )}
             </motion.div>

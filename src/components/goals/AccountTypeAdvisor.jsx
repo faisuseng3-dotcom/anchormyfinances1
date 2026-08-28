@@ -7,27 +7,27 @@ const ACCOUNT_TYPES = {
   fast: {
     Icon: Zap,
     label: 'Snabbt konto',
-    color: 'from-amber-500/20 to-yellow-500/10',
-    border: 'rgba(245,158,11,0.3)',
-    textColor: 'text-amber-300',
+    color: 'rgba(217,119,6,0.14), rgba(217,119,6,0.06)',
+    border: 'rgba(217,119,6,0.3)',
+    textColor: 'text-[var(--color-warning)]',
     tagline: 'Sparkonto med fria uttag',
     when: 'Mål inom 0–3 månader eller buffert',
   },
   trog: {
     Icon: Turtle,
     label: 'Trögt konto',
-    color: 'from-blue-500/20 to-cyan-500/10',
-    border: 'rgba(59,130,246,0.3)',
-    textColor: 'text-blue-300',
+    color: 'rgba(37,99,235,0.14), rgba(37,99,235,0.06)',
+    border: 'rgba(37,99,235,0.3)',
+    textColor: 'text-[var(--color-accent)]',
     tagline: 'Nischbank – 1–3 dagars uttagstid',
     when: 'Mål om 3–12 månader',
   },
   last: {
     Icon: Lock,
     label: 'Låst konto / ISK',
-    color: 'from-[#4fae82]/20 to-[#4fae82]/10',
-    border: 'rgba(139,92,246,0.3)',
-    textColor: 'text-[#4fae82]',
+    color: 'rgba(22,163,74,0.14), rgba(22,163,74,0.06)',
+    border: 'rgba(22,163,74,0.3)',
+    textColor: 'text-[var(--color-success)]',
     tagline: 'Fasträntekonto eller ISK/aktier',
     when: 'Mål om 12+ månader',
   },
@@ -45,7 +45,7 @@ export function AccountTypeBadge({ months, isBuffer }) {
   const Icon = t.Icon;
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${t.textColor}`}
-      style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
+      style={{ background: 'var(--color-background-secondary)', boxShadow: 'var(--anchor-shadow-1)' }}>
       <Icon className="w-3 h-3" aria-hidden /> {t.label}
     </span>
   );
@@ -96,15 +96,15 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
       <div className="p-4">
         <div className="flex items-center gap-3 mb-2">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${type.textColor}`}
-            style={{ background: 'rgba(255,255,255,0.08)' }}>
+            style={{ background: '#FFFFFF', boxShadow: 'var(--anchor-shadow-1)' }}>
             <TypeIcon className="w-5 h-5" aria-hidden />
           </div>
           <div>
             <p className={`text-sm font-bold ${type.textColor}`}>{type.label}</p>
-            <p className="text-xs text-slate-400">{type.tagline}</p>
+            <p className="text-xs text-[var(--color-text-secondary)]">{type.tagline}</p>
           </div>
         </div>
-        <p className="text-xs text-slate-500">{type.when}</p>
+        <p className="text-xs text-[var(--color-text-muted)]">{type.when}</p>
       </div>
 
       {/* AI advice */}
@@ -112,7 +112,7 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
         {!fetched && !loading && (
           <button onClick={fetchAdvice}
             className={`w-full py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all ${type.textColor}`}
-            style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--anchor-shadow-1)' }}>
+            style={{ background: '#FFFFFF', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Landmark className="w-3.5 h-3.5" />
             Få råd om kontotyp
           </button>
@@ -120,8 +120,8 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
 
         {loading && (
           <div className="flex items-center gap-2 py-2">
-            <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
-            <span className="text-xs text-slate-400">Analyserar…</span>
+            <Loader2 className="w-4 h-4 animate-spin text-[var(--color-text-secondary)]" />
+            <span className="text-xs text-[var(--color-text-secondary)]">Analyserar…</span>
           </div>
         )}
 
@@ -129,10 +129,10 @@ Skriv ett kort, personligt råd på svenska (2–3 meningar) om VARFÖR just den
           {advice && (
             <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
               className="flex items-start gap-2 mt-1">
-              <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <Landmark className="w-3.5 h-3.5 text-white/70" />
+              <div className="w-7 h-7 rounded-lg bg-white flex items-center justify-center flex-shrink-0 mt-0.5" style={{ boxShadow: 'var(--anchor-shadow-1)' }}>
+                <Landmark className="w-3.5 h-3.5 text-[var(--color-text-secondary)]" />
               </div>
-              <p className="text-xs text-slate-200 leading-relaxed">{advice}</p>
+              <p className="text-xs text-[var(--color-text-primary)] leading-relaxed">{advice}</p>
             </motion.div>
           )}
         </AnimatePresence>
