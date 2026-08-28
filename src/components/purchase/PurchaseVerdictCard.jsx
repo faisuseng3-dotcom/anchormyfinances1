@@ -1,6 +1,9 @@
 // @ts-nocheck
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { VERDICT_META, purchaseConsequenceLine, fmtKr as fmt } from '@/lib/purchaseNarratives';
+import { createPageUrl } from '@/utils';
 
 /**
  * Gemensam köp-verdikt: 🟢/🟡/🔴 + konsekvens + "bästa datum att köpa".
@@ -42,6 +45,15 @@ export default function PurchaseVerdictCard({ price, priceLabel, impact, bestDat
             </p>
           </div>
         )
+      )}
+      {impact.verdict !== 'green' && (
+        <Link
+          to={createPageUrl('FuturePulse')}
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-white/70 hover:text-white no-underline"
+        >
+          Se påverkan på min framtid
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
       )}
     </div>
   );

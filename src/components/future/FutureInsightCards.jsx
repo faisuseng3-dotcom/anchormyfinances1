@@ -10,11 +10,25 @@ const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
  */
 export default function FutureInsightCards({ insights, onSelect }) {
   if (!insights?.length) return null;
+  const top = insights[0];
 
   return (
     <div className="mb-8">
+      <div className="rounded-2xl p-4 mb-4" style={{ background: 'rgba(79, 174, 130, 0.08)', border: '1px solid rgba(79, 174, 130, 0.2)' }}>
+        <p className="text-[13px] font-semibold text-[var(--color-accent)] mb-1">Lago rekommenderar</p>
+        <p className="text-[13.5px] text-white/70 leading-relaxed">
+          En minskning på {fmt(top.monthly)} kr/mån i {top.label.toLowerCase()} är den förändring som ger mest rimlig effekt just nu, baserat på din senaste ekonomiska historik.
+        </p>
+        <button
+          type="button"
+          onClick={() => onSelect(top.question)}
+          className="mt-2 text-[12.5px] font-semibold text-[var(--color-accent)]"
+        >
+          Visa scenario →
+        </button>
+      </div>
       <p className="text-[13px] text-white/45 mb-3">
-        Jag har analyserat din ekonomi. Det här påverkar din framtid mest just nu:
+        Andra saker som påverkar din framtid mest just nu:
       </p>
       <div className="grid gap-2.5 sm:grid-cols-3">
         {insights.map((insight, i) => (

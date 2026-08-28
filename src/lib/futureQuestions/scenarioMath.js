@@ -12,6 +12,7 @@ import {
   monthsToDebtFreeWithExtra,
   pickBoostLoanIndex,
 } from '@/lib/loanMath';
+import { whatIfExtraSavings } from '@/lib/goalProjectionEngine';
 
 const EXPENSE_TYPES = ['expense', 'savings_deposit', 'transfer_to_savings'];
 const INVESTED_RATE = 0.07;
@@ -137,21 +138,13 @@ function calcIncreaseSavings(profile, transactions, params) {
   const growth = buildGrowthSeries({ startingAmount: profile?.savingsCurrentBalance || 0, monthlyContribution: monthly, months: 60 });
   const fiveYear = growth[growth.length - 1];
 
+  // Samma funktion Sparmål-sidan och Dashboard använder — annars kan
+  // FuturePulse/Coach visa ett annat måldatum än resten av appen för
+  // exakt samma scenario.
   let goalLine = '';
-  if (profile?.savingsGoal > 0) {
-    const current = profile.savingsCurrentBalance || 0;
-    const remaining = Math.max(0, profile.savingsGoal - current);
-    // Samma antagande som financialEngine.getSavingsGoalProjection när inget
-    // uttryckligt månadsmål är satt — annars blandas "nuvarande takt" ihop
-    // med den extra summan som just testas.
-    const existingRate = profile.savingsGoalMonthlyTarget > 0
-      ? profile.savingsGoalMonthlyTarget
-      : Math.max(0, Math.round(getMonthlyMargin(profile) * 0.3));
-    const monthsNow = existingRate > 0 ? Math.ceil(remaining / existingRate) : null;
-    const monthsWithExtra = Math.ceil(remaining / (existingRate + monthly));
-    if (monthsNow) {
-      goalLine = ` Ditt sparmål "${profile.savingsGoalName || 'sparmål'}" nås ${monthsNow - monthsWithExtra} månader tidigare.`;
-    }
+  const goalWhatIf = whatIfExtraSavings(profile, monthly);
+  if (goalWhatIf?.monthsEarlier > 0) {
+    goalLine = ` Ditt sparmål "${profile.savingsGoalName || 'sparmål'}" nås ${goalWhatIf.monthsEarlier} månad${goalWhatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.`;
   }
 
   return {

@@ -1,12 +1,14 @@
 // @ts-nocheck
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import {
   getSavingsGoalProjection,
   whatIfExtraSavings,
   getRequiredMonthlyRate,
   getMonthlyMargin,
 } from '@/lib/financialEngine';
+import { createPageUrl } from '@/utils';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 
@@ -45,6 +47,14 @@ export default function GoalProjectionRow({ profile }) {
           Om du sparar {fmt(suggestedExtra)} kr mer/mån når du målet {whatIf.monthsEarlier} månad{whatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.
         </p>
       )}
+
+      <Link
+        to={createPageUrl('FuturePulse')}
+        className="inline-flex items-center gap-1 text-[13px] font-medium text-white/60 hover:text-white no-underline"
+      >
+        Utforska i Framtid
+        <ArrowRight className="w-3.5 h-3.5" />
+      </Link>
 
       <button
         type="button"

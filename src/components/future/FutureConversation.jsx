@@ -5,6 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { classifyQuestionLocally, classifyQuestionWithLLM } from '@/lib/futureQuestions/intentClassifier';
 import { computeScenario } from '@/lib/futureQuestions/scenarioMath';
 import { buildProactiveInsights } from '@/lib/futureQuestions/proactiveInsights';
+import FutureBaseline from './FutureBaseline';
 import FutureInsightCards from './FutureInsightCards';
 import FutureAnswerCard from './FutureAnswerCard';
 
@@ -52,7 +53,10 @@ export default function FutureConversation({ profile, transactions }) {
       return;
     }
 
-    setThread((prev) => [{ id: `${Date.now()}`, question: q, result }, ...prev]);
+    setThread((prev) => [
+      { id: `${Date.now()}`, question: q, result, intent: classified.intent, amountKr: classified.amountKr },
+      ...prev,
+    ]);
     setQuestion('');
     setPending(false);
   };
@@ -64,6 +68,8 @@ export default function FutureConversation({ profile, transactions }) {
 
   return (
     <div className="space-y-6">
+      <FutureBaseline profile={profile} transactions={transactions} />
+
       <form onSubmit={handleSubmit} className="relative">
         <input
           type="text"
@@ -118,7 +124,14 @@ export default function FutureConversation({ profile, transactions }) {
       <div className="space-y-4">
         <AnimatePresence initial={false}>
           {thread.map((item) => (
-            <FutureAnswerCard key={item.id} question={item.question} result={item.result} />
+            <FutureAnswerCard
+              key={item.id}
+              question={item.question}
+              result={item.result}
+              intent={item.intent}
+              amountKr={item.amountKr}
+              profile={profile}
+            />
           ))}
         </AnimatePresence>
       </div>

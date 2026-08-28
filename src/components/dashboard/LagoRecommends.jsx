@@ -1,11 +1,12 @@
 // @ts-nocheck
 import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { toast } from 'sonner';
-import { Sparkles, Check } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { getMonthlyMargin, getBufferRunwayMonths, calcLiquidityForecast, whatIfExtraSavings } from '@/lib/financialEngine';
+import { applySavingsTransfer } from '@/lib/planActions';
 import { useFinancialProfile } from '@/hooks/useFinancialProfile';
 import { useOptimisticTransactions } from '@/hooks/useOptimisticTransactions';
+import ConfirmPlanChangeSheet from '@/components/plan/ConfirmPlanChangeSheet';
 
 const fmt = (n) => Math.round(n || 0).toLocaleString('sv-SE');
 const MIN_SURPLUS_KR = 500;
@@ -38,34 +39,19 @@ export default function LagoRecommends({ profile, transactions }) {
   const { updateProfile } = useFinancialProfile();
   const { createTransaction } = useOptimisticTransactions();
   const [applied, setApplied] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const rec = useMemo(() => buildRecommendation(profile, transactions), [profile, transactions]);
 
   if (!rec || applied) return null;
 
-  const handleApply = async () => {
-    if (busy) return;
-    setBusy(true);
-    try {
-      if (rec.toGoal > 0) {
-        await updateProfile({
-          savingsCurrentBalance: (profile.savingsCurrentBalance || 0) + rec.toGoal,
-          buffer: Math.max(0, (profile.buffer || 0) - rec.toGoal),
-        });
-        await createTransaction({
-          type: 'transfer_to_savings',
-          amount: rec.toGoal,
-          label: `Lago rekommenderar: +${fmt(rec.toGoal)} kr till ${rec.goalName || 'sparmålet'}`,
-        });
-      }
-      setApplied(true);
-      toast.success('Klart — planen är satt.');
-    } catch {
-      toast.error('Kunde inte spara planen just nu. Försök igen.');
-    } finally {
-      setBusy(false);
-    }
+  const handleConfirm = async () => {
+    await applySavingsTransfer(profile, rec.toGoal, {
+      updateProfile,
+      createTransaction,
+      label: `Lago rekommenderar: +${fmt(rec.toGoal)} kr till ${rec.goalName || 'sparmålet'}`,
+    });
+    setApplied(true);
   };
 
   return (
@@ -100,17 +86,26 @@ export default function LagoRecommends({ profile, transactions }) {
             {rec.toGoal > 0 && (
               <button
                 type="button"
-                onClick={handleApply}
-                disabled={busy}
-                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-[#08110c] bg-[#4fae82] hover:opacity-90 disabled:opacity-50 transition-opacity"
+                onClick={() => setConfirmOpen(true)}
+                className="mt-3 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-semibold text-[#08110c] bg-[#4fae82] hover:opacity-90 transition-opacity"
               >
-                {applied ? <Check className="w-3.5 h-3.5" /> : null}
                 Gör detta till min plan
               </button>
             )}
           </div>
         </div>
       </div>
+
+      <ConfirmPlanChangeSheet
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title="Din nya plan"
+        change={{ label: 'Överföring till sparande nu', before: 0, after: rec.toGoal }}
+        impactLine={rec.whatIf?.monthsEarlier > 0
+          ? `Du når ${rec.goalName || 'sparmålet'} ungefär ${rec.whatIf.monthsEarlier} månad${rec.whatIf.monthsEarlier === 1 ? '' : 'er'} tidigare.`
+          : `${fmt(rec.toGoal)} kr flyttas från buffert till ${rec.goalName || 'sparmålet'}.`}
+        onConfirm={handleConfirm}
+      />
     </motion.section>
   );
 }
