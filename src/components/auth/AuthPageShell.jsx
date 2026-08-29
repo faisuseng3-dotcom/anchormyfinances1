@@ -23,19 +23,19 @@ export default function AuthPageShell({ icon: Icon, title, subtitle, children, f
               <Icon className="w-7 h-7" style={{ color: 'var(--color-accent)' }} />
             </div>
           )}
-          <h1 className="text-[28px] font-semibold text-white tracking-tight">{title}</h1>
+          <h1 className="text-[28px] font-semibold text-[var(--color-text-primary)] tracking-tight">{title}</h1>
           {subtitle && (
-            <p className="text-[15px] text-white/50 mt-3 leading-relaxed">{subtitle}</p>
+            <p className="text-[15px] text-[var(--color-text-secondary)] mt-3 leading-relaxed">{subtitle}</p>
           )}
         </div>
 
         {children}
 
         {footer ?? (
-          <div className="mt-10 pt-8 border-t border-white/[0.08] text-center">
+          <div className="mt-10 pt-8 border-t border-[var(--color-border)] text-center">
             <Link
               to={createPageUrl('Landing')}
-              className="text-[13px] text-white/45 hover:text-white/70 no-underline"
+              className="text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] no-underline"
             >
               Till startsidan
             </Link>

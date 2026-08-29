@@ -14,37 +14,37 @@ const CHAPTER_META = {
     title: 'Bli en mästare på buffert',
     subtitle: 'Atomic Habits — små steg, stor trygghet',
     icon: Shield,
-    accent: '#4fae82',
+    accent: '#2563EB',
   },
   compound_interest: {
     title: 'Så fungerar ränta-på-ränta',
     subtitle: 'Förstå kraften i tid och avkastning',
     icon: TrendingUp,
-    accent: '#4fae82',
+    accent: '#2563EB',
   },
   many_streams: {
     title: 'Många bäckar små',
     subtitle: 'Dolda abonnemang som äter marginalen',
     icon: Droplets,
-    accent: 'rgba(255,255,255,0.75)',
+    accent: '#64748B',
   },
   inflation_basics: {
     title: 'Inflation i praktiken',
     subtitle: 'Köpkraft, lön och framtidsplan',
     icon: Flame,
-    accent: 'rgba(255,255,255,0.75)',
+    accent: '#64748B',
   },
   cashless_blindness: {
     title: 'Osynliga pengar',
     subtitle: 'Kontantlöst samhälle och impulser',
     icon: BookOpen,
-    accent: '#4fae82',
+    accent: '#2563EB',
   },
   swedish_economy_basics: {
     title: 'Sverige — grunderna',
     subtitle: 'Inflation, ränta och risk på svenska',
     icon: GraduationCap,
-    accent: '#4fae82',
+    accent: '#2563EB',
   },
 };
 
@@ -92,9 +92,9 @@ function ChapterCard({ lesson, meta, completed, index, onOpen }) {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[15px] font-semibold text-white">{meta.title}</p>
+          <p className="text-[15px] font-semibold text-[var(--copilot-text-primary)]">{meta.title}</p>
           <p className="text-[12px] text-[var(--copilot-text-muted)] mt-0.5">{meta.subtitle}</p>
-          <div className="mt-3 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+          <div className="mt-3 h-1.5 rounded-full bg-[var(--color-border)] overflow-hidden">
             <div
               className="h-full rounded-full transition-all duration-500"
               style={{
@@ -138,11 +138,11 @@ export default function AcademyHub({ profile, transactions, updateProfile }) {
     >
       <div
         className="rounded-2xl organic-surface px-5 py-4 mb-6 flex items-center justify-between"
-        style={{ background: 'rgba(79, 174, 130, 0.12)' }}
+        style={{ background: 'var(--color-accent-soft)' }}
       >
         <div>
           <p className="text-[12px] text-[var(--copilot-text-muted)]">Din mastery</p>
-          <p className="text-[22px] font-bold text-white tabular-nums">
+          <p className="text-[22px] font-bold text-[var(--copilot-text-primary)] tabular-nums">
             {mastered}/{chapters.length} kapitel
           </p>
         </div>
@@ -155,7 +155,7 @@ export default function AcademyHub({ profile, transactions, updateProfile }) {
             title: lesson.title,
             subtitle: lesson.topic,
             icon: BookOpen,
-            accent: '#4fae82',
+            accent: '#2563EB',
           };
           return (
             <ChapterCard

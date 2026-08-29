@@ -48,14 +48,14 @@ export default function DeleteAccountSection({ profile }) {
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <p className="text-sm font-semibold">Radering misslyckades</p>
         </div>
-        <p className="text-xs text-white/45 leading-relaxed">
+        <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
           Något gick fel. Försök igen eller kontakta oss på hello@anchormyfinances.com så hjälper vi dig att radera ditt konto.
         </p>
         <AnchorPressable
           type="button"
           minTouch={false}
           onClick={() => setStep('idle')}
-          className="w-full h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]"
+          className="w-full h-11 rounded-full text-sm font-semibold bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)]"
         >
           Stäng
         </AnchorPressable>

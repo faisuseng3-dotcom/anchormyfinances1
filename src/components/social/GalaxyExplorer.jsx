@@ -102,7 +102,7 @@ export default function GalaxyExplorer({
 
   if (isError) {
     return (
-      <div className="text-center py-10 text-sm text-white/45">
+      <div className="text-center py-10 text-sm text-[var(--color-text-muted)]">
         Kunde inte ladda Galaxy just nu. Kontrollera din anslutning och ladda om sidan.
       </div>
     );
@@ -112,7 +112,7 @@ export default function GalaxyExplorer({
     <div className="space-y-6">
       <GlassSection>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35 pointer-events-none" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)] pointer-events-none" />
           <input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -124,7 +124,7 @@ export default function GalaxyExplorer({
               type="button"
               minTouch={false}
               onClick={() => setSearchText('')}
-              className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-white/40"
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full flex items-center justify-center text-[var(--color-text-muted)]"
               aria-label="Rensa sökning"
             >
               <X className="w-4 h-4" />
@@ -148,8 +148,8 @@ export default function GalaxyExplorer({
                 className={cn(
                   'px-3 py-2 min-h-10 rounded-full text-[13px] font-medium',
                   active
-                    ? 'bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1'
-                    : 'bg-white/[0.06] text-white/55 ring-1 ring-white/10',
+                    ? 'bg-[var(--color-text-primary)] text-white anchor-elev-1'
+                    : 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)]',
                 )}
               >
                 {tag}
@@ -161,7 +161,7 @@ export default function GalaxyExplorer({
               type="button"
               minTouch={false}
               onClick={clearFilters}
-              className="text-[13px] font-medium text-white/45 px-2 min-h-10"
+              className="text-[13px] font-medium text-[var(--color-text-muted)] px-2 min-h-10"
             >
               Rensa
             </AnchorPressable>
@@ -196,8 +196,8 @@ export default function GalaxyExplorer({
       >
         {(rest.length ? rest : filtered.filter((p) => !p.isOwn)).length === 0 ? (
           <div className="py-10 text-center rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] shadow-[var(--anchor-shadow-1)]">
-            <Users className="w-8 h-8 mx-auto text-white/25 mb-3" />
-            <p className="text-[15px] font-medium text-white">Inga träffar</p>
+            <Users className="w-8 h-8 mx-auto text-[var(--color-text-muted)] mb-3" />
+            <p className="text-[15px] font-medium text-[var(--color-text-primary)]">Inga träffar</p>
             <p className={sectionSubtitleClass}>
               {userCount === 0
                 ? 'Ingen har publicerat än — bli först, eller prova exempelprofilerna.'

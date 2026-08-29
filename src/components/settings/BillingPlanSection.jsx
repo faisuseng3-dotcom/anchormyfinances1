@@ -37,19 +37,19 @@ export default function BillingPlanSection() {
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-lg font-bold text-white">{planLabel}</p>
-            <p className="text-sm text-white/50 mt-1">
+            <p className="text-lg font-bold text-[var(--color-text-primary)]">{planLabel}</p>
+            <p className="text-sm text-[var(--color-text-secondary)] mt-1">
               {current.priceKr === 0
                 ? 'Gratis — uppgradera när du vill gå djupare'
                 : `${current.priceKr} kr/månad`}
             </p>
             {renewalLabel && (
-              <p className="text-sm text-white/45 mt-2">
+              <p className="text-sm text-[var(--color-text-muted)] mt-2">
                 Förnyas {renewalLabel}
               </p>
             )}
             {!aiCoachUnlimited && aiCoachRemaining != null && (
-              <p className="text-sm text-white/45 mt-1">
+              <p className="text-sm text-[var(--color-text-muted)] mt-1">
                 Coach: {aiCoachRemaining} kvar denna månad
               </p>
             )}
@@ -74,7 +74,7 @@ export default function BillingPlanSection() {
               type="button"
               onClick={handlePortal}
               disabled={portalLoading}
-              className="inline-flex items-center gap-2 min-h-11 px-4 rounded-xl text-sm font-semibold bg-white/8 text-white ring-1 ring-white/12"
+              className="inline-flex items-center gap-2 min-h-11 px-4 rounded-xl text-sm font-semibold bg-[var(--color-background-secondary)] text-[var(--color-text-primary)] ring-1 ring-[var(--color-border)]"
             >
               {portalLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
               Hantera prenumeration
@@ -82,7 +82,7 @@ export default function BillingPlanSection() {
           )}
           <Link
             to={createPageUrl('Pricing')}
-            className="inline-flex items-center min-h-11 px-4 text-sm text-white/60 no-underline hover:text-white/80"
+            className="inline-flex items-center min-h-11 px-4 text-sm text-[var(--color-text-secondary)] no-underline hover:text-[var(--color-text-primary)]"
           >
             Jämför planer →
           </Link>

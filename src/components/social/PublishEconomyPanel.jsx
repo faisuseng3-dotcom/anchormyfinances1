@@ -114,7 +114,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
         </p>
         <Link
           to={createPageUrl('CreateAccount')}
-          className="inline-flex mt-4 h-12 px-6 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold items-center anchor-elev-2 no-underline"
+          className="inline-flex mt-4 h-12 px-6 rounded-full bg-[var(--color-text-primary)] text-white font-semibold items-center anchor-elev-2 no-underline"
         >
           Skapa konto
         </Link>
@@ -160,7 +160,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
 
       {(!published || expanded) && (
         <>
-          <div className="rounded-[var(--anchor-radius-md)] px-3 py-2.5 bg-white/[0.04] ring-1 ring-white/[0.06]">
+          <div className="rounded-[var(--anchor-radius-md)] px-3 py-2.5 bg-[var(--color-background-secondary)] ring-1 ring-[var(--color-border)]">
             <p className={sectionMetaClass}>
               {privacy === 'full' && (
                 <span className="inline-flex items-center gap-1.5">
@@ -198,7 +198,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
                 type="button"
                 disabled={busy || !check.ok}
                 onClick={handlePublish}
-                className="flex-1 h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2"
+                className="flex-1 h-12 rounded-full bg-[var(--color-text-primary)] text-white font-semibold disabled:opacity-40 anchor-elev-2"
               >
                 {busy ? <span className="w-5 h-5 rounded-full skeleton mx-auto block" /> : 'Publicera min ekonomi'}
               </AnchorPressable>
@@ -208,7 +208,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
                   type="button"
                   disabled={busy || !check.ok}
                   onClick={handleRefresh}
-                  className="flex-1 h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2"
+                  className="flex-1 h-12 rounded-full bg-[var(--color-text-primary)] text-white font-semibold disabled:opacity-40 anchor-elev-2"
                 >
                   {busy ? <span className="w-5 h-5 rounded-full skeleton mx-auto block" /> : 'Uppdatera publicering'}
                 </AnchorPressable>
@@ -216,7 +216,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
                   type="button"
                   disabled={busy}
                   onClick={handleUnpublish}
-                  className="flex-1 h-12 rounded-full bg-white/[0.08] text-white/90 font-semibold ring-1 ring-white/[0.1]"
+                  className="flex-1 h-12 rounded-full bg-white text-[var(--color-text-primary)] font-semibold ring-1 ring-[var(--color-border)]"
                 >
                   Ta bort
                 </AnchorPressable>
@@ -227,7 +227,7 @@ export default function PublishEconomyPanel({ defaultCollapsed = false }) {
           {!socialProfile?.username && (
             <Link
               to={createPageUrl('Social')}
-              className="w-full h-12 rounded-full bg-white/[0.08] text-white/90 font-semibold flex items-center justify-center no-underline ring-1 ring-white/[0.1]"
+              className="w-full h-12 rounded-full bg-white text-[var(--color-text-primary)] font-semibold flex items-center justify-center no-underline ring-1 ring-[var(--color-border)]"
             >
               Skapa @användarnamn först
             </Link>
@@ -243,13 +243,13 @@ function HeaderContent({ published, socialProfile, snap, expanded }) {
     <>
       <div
         className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
-          published ? 'bg-emerald-500/15' : 'bg-white/[0.08]'
+          published ? 'bg-emerald-500/15' : 'bg-[var(--color-background-secondary)]'
         }`}
       >
         {published ? (
           <Radio className="w-5 h-5 text-emerald-300" />
         ) : (
-          <EyeOff className="w-5 h-5 text-white/45" />
+          <EyeOff className="w-5 h-5 text-[var(--color-text-muted)]" />
         )}
       </div>
       <div className="min-w-0 flex-1">
@@ -261,7 +261,7 @@ function HeaderContent({ published, socialProfile, snap, expanded }) {
         </p>
       </div>
       {published && (
-        <span className="text-white/40 mt-1 flex-shrink-0">
+        <span className="text-[var(--color-text-muted)] mt-1 flex-shrink-0">
           {expanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </span>
       )}

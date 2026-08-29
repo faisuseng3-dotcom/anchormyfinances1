@@ -96,7 +96,7 @@ export default function ProfilePhotoUpload({
       )}
 
       {error && (
-        <p className="text-[11px] font-medium" style={{ color: '#E53E3E' }}>
+        <p className="text-[11px] font-medium" style={{ color: 'var(--color-danger)' }}>
           {error}
         </p>
       )}

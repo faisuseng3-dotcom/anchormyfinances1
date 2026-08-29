@@ -50,7 +50,7 @@ export default function PengometerCard({ profile, transactions, toneMode = 'norm
               cy={RING / 2}
               r={r}
               fill="none"
-              stroke="rgba(255,255,255,0.06)"
+              stroke="var(--color-border)"
               strokeWidth={STROKE}
             />
             <motion.circle
@@ -70,7 +70,7 @@ export default function PengometerCard({ profile, transactions, toneMode = 'norm
               <linearGradient id="pengGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#5eead4" />
                 <stop offset="50%" stopColor="#60a5fa" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0.75)" />
+                <stop offset="100%" stopColor="var(--color-accent)" />
               </linearGradient>
             </defs>
           </svg>
@@ -83,21 +83,21 @@ export default function PengometerCard({ profile, transactions, toneMode = 'norm
             >
               {fmt(pengometer.headline_kr)}
             </motion.span>
-            <span className="text-[13px] text-white/40 mt-0.5">kr</span>
+            <span className="text-[13px] text-[var(--color-text-muted)] mt-0.5">kr</span>
           </div>
         </div>
 
         <p className={dashLabel}>{pengometer.headline_label}</p>
 
         {!soft && (
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 mt-5 text-[12px] sm:text-[13px] text-white/42 tabular-nums">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-6 mt-5 text-[12px] sm:text-[13px] text-[var(--color-text-muted)] tabular-nums">
             <span>{fmt(pengometer.remaining_month_kr)} kr / mån</span>
             <span>~{fmt(pengometer.remaining_today_kr)} kr idag</span>
           </div>
         )}
 
         {line?.feeling_line && (
-          <p className="text-[14px] sm:text-[15px] text-white/55 mt-4 max-w-[min(300px,90vw)] px-2 leading-relaxed font-light">
+          <p className="text-[14px] sm:text-[15px] text-[var(--color-text-secondary)] mt-4 max-w-[min(300px,90vw)] px-2 leading-relaxed font-light">
             {line.feeling_line}
           </p>
         )}

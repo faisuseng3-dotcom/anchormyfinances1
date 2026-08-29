@@ -66,7 +66,7 @@ export default function PlanQuickAddSheet({ isOpen, onClose, defaultDate }) {
         <div className="flex gap-2">
           <input
             type="date"
-            className={`${anchorInputClass} flex-1 [color-scheme:dark]`}
+            className={`${anchorInputClass} flex-1`}
             value={date}
             onChange={(e) => setDate(e.target.value)}
           />
@@ -87,8 +87,8 @@ export default function PlanQuickAddSheet({ isOpen, onClose, defaultDate }) {
               onClick={() => setCategory(c.id)}
               className={`px-4 py-2.5 min-h-11 rounded-full text-[12px] font-medium ${
                 category === c.id
-                  ? 'bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1'
-                  : 'bg-white/[0.06] text-white/65 shadow-[var(--anchor-shadow-1)]'
+                  ? 'bg-[var(--color-accent)] text-white anchor-elev-1'
+                  : 'bg-white text-[var(--color-text-secondary)] border border-[var(--color-border)]'
               }`}
             >
               {c.label}
@@ -98,7 +98,7 @@ export default function PlanQuickAddSheet({ isOpen, onClose, defaultDate }) {
         <AnchorPressable
           type="submit"
           disabled={!title.trim() || saving}
-          className="w-full h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold text-[15px] disabled:opacity-40 anchor-elev-2"
+          className="w-full h-12 rounded-full bg-[var(--color-accent)] text-white font-semibold text-[15px] disabled:opacity-40 anchor-elev-2"
         >
           {saving ? 'Sparar…' : 'Lägg till i kalendern'}
         </AnchorPressable>

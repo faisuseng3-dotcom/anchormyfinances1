@@ -8,31 +8,31 @@ const BADGE_CONFIGS = {
     Icon: Star,
     title: 'Första tusenlappen!',
     description: 'Du sparade första 1000 kr',
-    color: '#4fae82'
+    color: 'var(--color-accent)'
   },
   debt_destroyer: {
     Icon: Flame,
     title: 'Skuld-Slayer!',
     description: 'Du betalade av ett helt lån',
-    color: '#4fae82'
+    color: 'var(--color-accent)'
   },
   streak_master: {
     Icon: Flame,
     title: 'Streak Master!',
     description: '7 dagars inloggningsstreak',
-    color: '#4fae82'
+    color: 'var(--color-accent)'
   },
   expense_tracker: {
     Icon: Target,
     title: 'Spenderbjörn!',
     description: 'Du registrerade 20 utgifter',
-    color: '#4fae82'
+    color: 'var(--color-accent)'
   },
   buffer_builder: {
     Icon: Shield,
     title: 'Buffer Builder!',
     description: 'Din buffert är 3+ månaders lön',
-    color: '#4fae82'
+    color: 'var(--color-accent)'
   }
 };
 

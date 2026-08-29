@@ -8,7 +8,7 @@ import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 const PRIVACY_ICONS = {
   full: { Icon: Eye, className: 'bg-emerald-500/15 text-emerald-300 ring-emerald-400/25', label: 'Full' },
   hybrid: { Icon: BarChart2, className: 'bg-[var(--color-accent)]/15 text-[var(--color-accent)] ring-[var(--color-accent)]/25', label: 'Hybrid' },
-  ghost: { Icon: Ghost, className: 'bg-white/10 text-white/55 ring-white/15', label: 'Ghost' },
+  ghost: { Icon: Ghost, className: 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-[var(--color-border)]', label: 'Ghost' },
 };
 
 export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
@@ -25,7 +25,7 @@ export default function SocialFriendCard({ friend, onRemove, index = 0 }) {
       <ProfileAvatar profile={friend} size={48} />
 
       <div className="flex-1 min-w-0">
-        <p className="text-[15px] font-semibold text-white truncate">
+        <p className="text-[15px] font-semibold text-[var(--color-text-primary)] truncate">
           @{friend.username || 'anonym'}
         </p>
         {friend.bio && (

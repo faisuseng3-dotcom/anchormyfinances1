@@ -22,7 +22,7 @@ const LEVEL_COPY = {
     Icon: Ghost,
     title: 'Ghost-läge',
     compare: 'Du kan inte publicera ekonomi i Jämför i Ghost-läge.',
-    iconWrap: 'bg-white/10 text-white/55 ring-white/15',
+    iconWrap: 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-[var(--color-border)]',
   },
 };
 
@@ -54,7 +54,7 @@ export default function SocialPrivacySummary({ privacyLevel, isPublished, userna
       {canPublish && !isPublished && (
         <Link
           to={`${createPageUrl('Galaxy')}?tab=compare`}
-          className="w-full rounded-full h-11 bg-white/[0.08] text-white/90 ring-1 ring-white/[0.1] font-semibold text-[15px] flex items-center justify-center gap-1 no-underline anchor-pressable min-h-12"
+          className="w-full rounded-full h-11 bg-white text-[var(--color-text-primary)] ring-1 ring-[var(--color-border)] font-semibold text-[15px] flex items-center justify-center gap-1 no-underline anchor-pressable min-h-12"
         >
           Publicera i Jämför
           <ChevronRight className="w-4 h-4" />

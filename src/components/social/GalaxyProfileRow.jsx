@@ -12,7 +12,7 @@ function BudgetMiniBar({ items = [] }) {
 
   return (
     <div
-      className="flex h-2 w-[72px] rounded-full overflow-hidden flex-shrink-0 ring-1 ring-white/[0.06]"
+      className="flex h-2 w-[72px] rounded-full overflow-hidden flex-shrink-0 ring-1 ring-[var(--color-border)]"
       aria-hidden
     >
       {segments.map((item) => (
@@ -64,7 +64,7 @@ export default function GalaxyProfileRow({
               <span
                 className={cn(
                   'text-[13px] font-medium tabular-nums text-right truncate',
-                  profile.highlight ? 'text-white/85' : 'text-white/60',
+                  profile.highlight ? 'text-[var(--color-text-primary)]' : 'text-[var(--color-text-secondary)]',
                 )}
               >
                 {profile.highlight || savingsLabel}

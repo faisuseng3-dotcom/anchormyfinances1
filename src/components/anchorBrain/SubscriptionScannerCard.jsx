@@ -49,8 +49,8 @@ export default function SubscriptionScannerCard({ profile, transactions, variant
           <div className={dashRailCardBorder} />
           <div className="relative z-10 h-full flex flex-col justify-between min-h-[148px]">
             <p className={dashLabel}>Prenumerationer</p>
-            <p className="text-[14px] text-white/50 leading-snug">Lägg till under Inställningar</p>
-            <Link to={createPageUrl('Settings')} className="text-[13px] font-medium text-cyan-300/90">
+            <p className="text-[14px] text-[var(--color-text-secondary)] leading-snug">Lägg till under Inställningar</p>
+            <Link to={createPageUrl('Settings')} className="text-[13px] font-medium text-[var(--color-accent)]">
               Öppna →
             </Link>
           </div>
@@ -64,25 +64,25 @@ export default function SubscriptionScannerCard({ profile, transactions, variant
           className={dashRailCardInner}
           style={{
             background:
-              'linear-gradient(135deg, rgba(94, 234, 212, 0.12) 0%, rgba(255,255,255,0.03) 55%)',
+              'linear-gradient(135deg, rgba(94, 234, 212, 0.12) 0%, rgba(37, 99, 235, 0.03) 55%)',
           }}
         />
         <div className={dashRailCardBorder} />
         <div className="relative z-10">
           <div className="flex justify-between items-start">
             <p className={dashLabel}>Flöden / mån</p>
-            <button type="button" onClick={handleShare} className="text-white/40 hover:text-white/70">
+            <button type="button" onClick={handleShare} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]">
               <Share2 className="w-3.5 h-3.5" />
             </button>
           </div>
-          <p className="text-[36px] font-light tracking-tight text-white tabular-nums mt-3 leading-none">
+          <p className="text-[36px] font-light tracking-tight text-[var(--color-text-primary)] tabular-nums mt-3 leading-none">
             {scan.total_kr.toLocaleString('sv-SE')}
           </p>
-          <p className="text-[13px] text-white/45 mt-2">
+          <p className="text-[13px] text-[var(--color-text-secondary)] mt-2">
             {scan.subscription_count} tjänster
           </p>
           {copy?.insight && (
-            <p className="text-[12px] text-white/50 mt-3 line-clamp-3 leading-relaxed">{copy.insight}</p>
+            <p className="text-[12px] text-[var(--color-text-secondary)] mt-3 line-clamp-3 leading-relaxed">{copy.insight}</p>
           )}
         </div>
       </div>

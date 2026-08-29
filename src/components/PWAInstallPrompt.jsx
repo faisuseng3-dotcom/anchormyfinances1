@@ -59,16 +59,16 @@ export default function PWAInstallPrompt() {
         >
           <button
             onClick={dismiss}
-            className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/10 flex items-center justify-center"
+            className="absolute top-3 right-3 w-7 h-7 rounded-full bg-[var(--color-background-secondary)] flex items-center justify-center"
           >
             <X className="w-4 h-4 text-slate-400" />
           </button>
           <div className="flex items-start gap-3 pr-6">
-            <div className="w-10 h-10 rounded-xl bg-[#4fae82] flex items-center justify-center flex-shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-[var(--color-accent)] flex items-center justify-center flex-shrink-0">
               <Smartphone className="w-5 h-5 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm">Installera Lago</p>
+              <p className="font-semibold text-[var(--color-text-primary)] text-sm">Installera Lago</p>
               <p className="text-xs text-slate-400 mt-0.5">
                 {deferredPrompt
                   ? 'Lägg till på hemskärmen för en bättre upplevelse – snabbare och utan webbläsare.'

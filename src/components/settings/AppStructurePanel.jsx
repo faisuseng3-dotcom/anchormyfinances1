@@ -18,7 +18,7 @@ export default function AppStructurePanel() {
       onToggle={() => setOpen((v) => !v)}
     >
       <div>
-        <p className="anchor-type-body-sm text-white/40 mb-2">Kärnvyer</p>
+        <p className="anchor-type-body-sm text-[var(--color-text-muted)] mb-2">Kärnvyer</p>
         <ul className="space-y-1">
           {CORE_VIEWS.map((view) => {
             const Icon = view.icon;
@@ -26,7 +26,7 @@ export default function AppStructurePanel() {
               <li key={view.id}>
                 <Link
                   to={createPageUrl(view.page)}
-                  className="flex items-center gap-2.5 py-2.5 min-h-11 text-[14px] text-white/75 hover:text-white no-underline anchor-pressable rounded-[var(--anchor-radius-md)]"
+                  className="flex items-center gap-2.5 py-2.5 min-h-11 text-[14px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline anchor-pressable rounded-[var(--anchor-radius-md)]"
                 >
                   <Icon className="w-4 h-4 text-[var(--color-accent)]" />
                   {view.label}
@@ -40,19 +40,19 @@ export default function AppStructurePanel() {
       <DashboardDivider className="opacity-25" />
 
       <div>
-        <p className="anchor-type-body-sm text-white/40 mb-2">Djupvyer (via hub)</p>
+        <p className="anchor-type-body-sm text-[var(--color-text-muted)] mb-2">Djupvyer (via hub)</p>
         <ul className="space-y-1">
           {DEEP_VIEWS.filter((d) => !d.legacy).map((view) => {
             const Icon = view.icon;
             const path = view.page === 'Budget' ? '/Budget' : createPageUrl(view.page);
             return (
               <li key={view.page} className="flex items-center gap-2.5 py-2 min-h-11">
-                <Icon className="w-3.5 h-3.5 text-white/30 shrink-0" />
-                <span className="text-[13px] text-white/55 flex-1 min-w-0">{view.label}</span>
-                <span className="text-[11px] text-white/30 shrink-0">← {view.hub}</span>
+                <Icon className="w-3.5 h-3.5 text-[var(--color-text-muted)] shrink-0" />
+                <span className="text-[13px] text-[var(--color-text-secondary)] flex-1 min-w-0">{view.label}</span>
+                <span className="text-[11px] text-[var(--color-text-muted)] shrink-0">← {view.hub}</span>
                 <Link
                   to={path}
-                  className="text-[12px] text-[var(--color-accent)] hover:text-white no-underline shrink-0 anchor-pressable px-2 py-1"
+                  className="text-[12px] text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] no-underline shrink-0 anchor-pressable px-2 py-1"
                 >
                   Öppna
                 </Link>

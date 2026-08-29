@@ -33,21 +33,21 @@ export default function PaymentFailedBanner() {
       role="alert"
     >
       <div className="max-w-lg mx-auto flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" aria-hidden />
+        <AlertTriangle className="w-5 h-5 text-[var(--color-danger)] shrink-0 mt-0.5" aria-hidden />
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-red-100">Betalningen misslyckades</p>
-          <p className="text-red-200/80 mt-0.5 text-[13px] leading-relaxed">
+          <p className="font-semibold text-[var(--color-danger)]">Betalningen misslyckades</p>
+          <p className="text-[var(--color-danger)]/80 mt-0.5 text-[13px] leading-relaxed">
             Uppdatera ditt kort för att behålla din plan. Vi har skickat ett mejl med instruktioner.
           </p>
           <div className="flex flex-wrap items-center gap-3 mt-2">
             <button
               type="button"
               onClick={handleUpdatePayment}
-              className="text-[13px] font-semibold text-white underline underline-offset-2"
+              className="text-[13px] font-semibold text-[var(--color-danger)] underline underline-offset-2"
             >
               Uppdatera betalning
             </button>
-            <Link to={createPageUrl('Settings')} className="text-[13px] text-red-100/80 no-underline">
+            <Link to={createPageUrl('Settings')} className="text-[13px] text-[var(--color-danger)]/80 no-underline">
               Inställningar
             </Link>
           </div>
@@ -56,7 +56,7 @@ export default function PaymentFailedBanner() {
           type="button"
           minTouch={false}
           onClick={dismissPaymentFailed}
-          className="p-1.5 rounded-lg text-red-200/70 hover:text-white"
+          className="p-1.5 rounded-lg text-[var(--color-danger)]/70 hover:text-[var(--color-danger)]"
           aria-label="Stäng"
         >
           <X className="w-4 h-4" />

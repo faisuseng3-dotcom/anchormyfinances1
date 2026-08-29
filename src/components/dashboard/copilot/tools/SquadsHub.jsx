@@ -16,7 +16,12 @@ const DEMO_SQUADS = [
     target: 15000,
     current: 8200,
     members: ['Alex', 'Sara', 'Erik', 'Maja'],
-    colors: ['#4fae82', '#4fae82', 'rgba(255,255,255,0.75)', '#4fae82'],
+    colors: [
+      'var(--color-accent)',
+      'var(--color-accent)',
+      'var(--color-text-secondary)',
+      'var(--color-accent)',
+    ],
   },
   {
     id: 'weekend',
@@ -25,7 +30,7 @@ const DEMO_SQUADS = [
     target: 6000,
     current: 4100,
     members: ['Du', 'Linnea'],
-    colors: ['#4fae82', 'rgba(255,255,255,0.75)'],
+    colors: ['var(--color-accent)', 'var(--color-text-secondary)'],
   },
 ];
 
@@ -35,7 +40,7 @@ function AvatarStack({ members, colors }) {
       {members.map((name, i) => (
         <div
           key={name}
-          className="w-9 h-9 rounded-full border-2 border-[#0b0f0d] flex items-center justify-center text-[11px] font-bold text-white"
+          className="w-9 h-9 rounded-full border-2 border-white flex items-center justify-center text-[11px] font-bold text-white"
           style={{
             background: colors[i % colors.length],
             marginLeft: i > 0 ? -10 : 0,
@@ -70,12 +75,12 @@ function SquadCard({ squad, index }) {
         <div className="flex items-center gap-3 min-w-0">
           <div
             className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+            style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <Icon className="w-5 h-5 text-[var(--copilot-accent-blue)]" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-[17px] font-bold text-white truncate">{squad.name}</h3>
+            <h3 className="text-[17px] font-bold text-[var(--copilot-text-primary)] truncate">{squad.name}</h3>
             <p className="text-[12px] text-[var(--copilot-text-muted)] mt-0.5">
               {squad.members.length} medlemmar · gemensam pott
             </p>
@@ -93,7 +98,7 @@ function SquadCard({ squad, index }) {
           <span className="tabular-nums">{fmtKr(squad.current)}</span>
           <span className="tabular-nums">Mål {fmtKr(squad.target)}</span>
         </div>
-        <div className="h-2.5 rounded-full bg-white/[0.08] overflow-hidden">
+        <div className="h-2.5 rounded-full bg-[var(--color-border)] overflow-hidden">
           <motion.div
             className="h-full rounded-full"
             style={{ background: 'var(--color-accent)' }}

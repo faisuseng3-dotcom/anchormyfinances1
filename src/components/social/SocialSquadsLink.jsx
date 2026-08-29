@@ -18,11 +18,11 @@ export default function SocialSquadsLink() {
           <Users className="w-5 h-5 text-[var(--color-accent)]" />
         </div>
         <div>
-          <p className="text-[15px] font-semibold text-white">Savings Squads</p>
+          <p className="text-[15px] font-semibold text-[var(--color-text-primary)]">Savings Squads</p>
           <p className="anchor-type-body-sm mt-0.5">Spara ihop med vänner mot gemensamma mål</p>
         </div>
       </div>
-      <ChevronRight className="w-4 h-4 text-white/40 flex-shrink-0" />
+      <ChevronRight className="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0" />
     </AnchorPressable>
   );
 }

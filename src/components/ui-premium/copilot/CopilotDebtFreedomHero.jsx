@@ -41,11 +41,11 @@ export default function CopilotDebtFreedomHero({ loans = [], extraPayment = 0, c
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         className={`rounded-2xl organic-surface p-6 text-center ${className}`}
-        style={{ background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.12), rgba(79, 174, 130, 0.08))' }}
+        style={{ background: 'linear-gradient(135deg, rgba(22, 163, 74, 0.12), rgba(22, 163, 74, 0.08))' }}
         onClick={handleCelebrate}
       >
         <Sparkles className="w-8 h-8 text-[var(--copilot-accent-green)] mx-auto mb-3" />
-        <p className="text-[18px] font-bold text-white">Du är skuldfri</p>
+        <p className="text-[18px] font-bold text-[var(--color-text-primary)]">Du är skuldfri</p>
         <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-2">Fortsätt bygga buffert och sparmål.</p>
       </motion.div>
     );
@@ -56,7 +56,7 @@ export default function CopilotDebtFreedomHero({ loans = [], extraPayment = 0, c
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className={`rounded-2xl organic-surface overflow-hidden ${className}`}
-      style={{ background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.12) 0%, rgba(79, 174, 130, 0.08) 100%)' }}
+      style={{ background: 'linear-gradient(135deg, rgba(22, 163, 74, 0.12) 0%, rgba(22, 163, 74, 0.08) 100%)' }}
       onClick={handleCelebrate}
     >
       <div className="p-5 flex items-center gap-4">
@@ -65,7 +65,7 @@ export default function CopilotDebtFreedomHero({ loans = [], extraPayment = 0, c
           max={100}
           size={88}
           stroke={6}
-          color="#4fae82"
+          color="var(--copilot-accent-green)"
           label={`${freedomPct}%`}
           sublabel="mot frihet"
         />
@@ -73,7 +73,7 @@ export default function CopilotDebtFreedomHero({ loans = [], extraPayment = 0, c
           <h2 className="anchor-card-title flex items-center gap-1.5">
             <Flag className="w-3.5 h-3.5" /> Din skuldfrihetsplan
           </h2>
-          <p className="text-[22px] font-bold text-white mt-1 leading-tight">
+          <p className="text-[22px] font-bold text-[var(--color-text-primary)] mt-1 leading-tight">
             {monthsLeft > 0 ? (
               <>Skuldfri om cirka <span className="text-[var(--copilot-accent-green)]">{monthsLeft} mån</span></>
             ) : (

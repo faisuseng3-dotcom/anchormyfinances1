@@ -24,7 +24,7 @@ const PRIVACY_LEVELS = [
     label: 'Ghost-läge',
     sub: 'Profil syns, men ingen ekonomisk data och ingen publicering i Jämför.',
     Icon: Ghost,
-    iconWrap: 'bg-white/10 text-white/55',
+    iconWrap: 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)]',
   },
 ];
 
@@ -79,26 +79,26 @@ export default function PrivacyMatrix({
                 onClick={() => onPrivacyChange(level.id)}
                 minTouch={false}
                 className={cn(
-                  'w-full flex items-center gap-4 p-4 min-h-[4.5rem] rounded-[var(--anchor-radius-lg)] text-left ring-1',
+                  'w-full flex items-center gap-4 p-4 min-h-[4.5rem] rounded-[var(--anchor-radius-lg)] text-left ring-1 bg-white',
                   active
-                    ? 'bg-white/[0.06] ring-white/20 anchor-elev-1'
-                    : 'bg-white/[0.02] ring-white/[0.08]',
+                    ? 'ring-[var(--color-accent)]/40 anchor-elev-1'
+                    : 'ring-[var(--color-border)]',
                 )}
               >
                 <div className={`w-11 h-11 rounded-[var(--anchor-radius-lg)] flex items-center justify-center flex-shrink-0 ${level.iconWrap}`}>
                   <Ic className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-semibold text-white">{level.label}</p>
+                  <p className="text-[15px] font-semibold text-[var(--color-text-primary)]">{level.label}</p>
                   <p className={`${sectionSubtitleClass} mt-0.5`}>{level.sub}</p>
                 </div>
                 <div
                   className={cn(
                     'w-6 h-6 rounded-full border-2 flex-shrink-0 flex items-center justify-center',
-                    active ? 'border-white bg-white' : 'border-white/25',
+                    active ? 'border-[var(--color-accent)] bg-[var(--color-accent)]' : 'border-[var(--color-border)]',
                   )}
                 >
-                  {active && <Check className="w-3.5 h-3.5 text-[#050d28]" />}
+                  {active && <Check className="w-3.5 h-3.5 text-white" />}
                 </div>
               </AnchorPressable>
             );
@@ -124,8 +124,8 @@ export default function PrivacyMatrix({
                   className={cn(
                     'px-3 py-2 min-h-10 rounded-full text-[13px] font-medium',
                     on
-                      ? 'bg-[var(--color-text-primary)] text-[#050d28]'
-                      : 'bg-white/[0.06] text-white/55 ring-1 ring-white/10',
+                      ? 'bg-[var(--color-text-primary)] text-white'
+                      : 'bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)]',
                   )}
                 >
                   {cat.label}

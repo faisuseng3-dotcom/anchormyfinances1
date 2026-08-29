@@ -28,12 +28,12 @@ function BudgetRow({ label, pct, amountKr, showKr, color }) {
   return (
     <div className="py-2.5">
       <div className="flex items-center justify-between gap-3 mb-1.5">
-        <span className="text-[15px] font-medium text-white">{label}</span>
-        <span className="text-[15px] font-semibold tabular-nums text-white">
+        <span className="text-[15px] font-medium text-[var(--color-text-primary)]">{label}</span>
+        <span className="text-[15px] font-semibold tabular-nums text-[var(--color-text-primary)]">
           {showKr && amountKr != null ? fmtKr(amountKr) : `${pct} %`}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
+      <div className="h-1.5 rounded-full bg-[var(--color-background-secondary)] overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-300"
           style={{ width: `${Math.min(pct, 100)}%`, background: color }}
@@ -121,7 +121,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                 {profile.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-white/[0.06] text-white/55 shadow-[var(--anchor-shadow-1)]"
+                    className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] shadow-[var(--anchor-shadow-1)]"
                   >
                     {tag}
                   </span>
@@ -134,7 +134,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
         {profile.bio && <p className={sectionSubtitleClass}>{profile.bio}</p>}
 
         {profile.isDemo && (
-          <p className="text-[12px] text-white/40 rounded-[var(--anchor-radius-md)] px-3 py-2 bg-white/[0.03] ring-1 ring-white/[0.06]">
+          <p className="text-[12px] text-[var(--color-text-muted)] rounded-[var(--anchor-radius-md)] px-3 py-2 bg-[var(--color-background-secondary)] ring-1 ring-[var(--color-border)]">
             Exempelprofil — illustration, inte en riktig användare.
           </p>
         )}
@@ -186,9 +186,9 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                 Object.entries(appliedPreview).map(([key, kr]) => (
                   <div
                     key={key}
-                    className="flex items-center justify-between py-2 border-b border-white/[0.06] last:border-0"
+                    className="flex items-center justify-between py-2 border-b border-[var(--color-border)] last:border-0"
                   >
-                    <span className="text-[14px] text-white/70">
+                    <span className="text-[14px] text-[var(--color-text-secondary)]">
                       {{
                         food: 'Mat',
                         transport: 'Transport',
@@ -200,15 +200,15 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
                         other: 'Övrigt',
                       }[key] || key}
                     </span>
-                    <span className="text-[14px] font-semibold tabular-nums text-white">
+                    <span className="text-[14px] font-semibold tabular-nums text-[var(--color-text-primary)]">
                       {fmtKr(kr)}/mån
                     </span>
                   </div>
                 ))
               )}
               {tip && (
-                <div className="mt-4 rounded-[var(--anchor-radius-md)] px-4 py-3 shadow-[var(--anchor-shadow-1)] bg-white/[0.03] anchor-elev-1">
-                  <p className="text-[14px] text-white/85 leading-relaxed">{tip}</p>
+                <div className="mt-4 rounded-[var(--anchor-radius-md)] px-4 py-3 shadow-[var(--anchor-shadow-1)] bg-[var(--color-background-secondary)] anchor-elev-1">
+                  <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">{tip}</p>
                 </div>
               )}
             </div>
@@ -216,13 +216,13 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
         )}
 
         {!userIncome && !isOwn && (
-          <div className="rounded-[var(--anchor-radius-md)] px-4 py-3 shadow-[var(--anchor-shadow-1)] bg-white/[0.03]">
+          <div className="rounded-[var(--anchor-radius-md)] px-4 py-3 shadow-[var(--anchor-shadow-1)] bg-[var(--color-background-secondary)]">
             <p className={sectionSubtitleClass}>
               Lägg in din månadsinkomst under inställningar för att se belopp i kronor och kopiera budgeten.
             </p>
             <Link
               to={createPageUrl('Settings')}
-              className="inline-flex mt-3 h-11 px-5 rounded-full bg-white/[0.08] text-white/90 font-semibold items-center no-underline ring-1 ring-white/[0.1]"
+              className="inline-flex mt-3 h-11 px-5 rounded-full bg-white text-[var(--color-text-primary)] font-semibold items-center no-underline ring-1 ring-[var(--color-border)]"
               onClick={onClose}
             >
               Gå till inställningar
@@ -245,7 +245,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
               type="button"
               disabled={activated || saving}
               onClick={applyTemplate}
-              className="w-full h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold disabled:opacity-40 anchor-elev-2 flex items-center justify-center gap-2"
+              className="w-full h-12 rounded-full bg-[var(--color-text-primary)] text-white font-semibold disabled:opacity-40 anchor-elev-2 flex items-center justify-center gap-2"
             >
               {activated ? (
                 <>
@@ -262,7 +262,7 @@ export default function ExpandedProfile({ profile, onClose, userFinancialProfile
               <Link
                 to="/Budget"
                 onClick={onClose}
-                className="w-full h-12 rounded-full bg-white/[0.08] text-white/90 font-semibold flex items-center justify-center no-underline ring-1 ring-white/[0.1]"
+                className="w-full h-12 rounded-full bg-white text-[var(--color-text-primary)] font-semibold flex items-center justify-center no-underline ring-1 ring-[var(--color-border)]"
               >
                 Öppna budgetöversikt
               </Link>

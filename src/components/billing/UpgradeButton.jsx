@@ -54,8 +54,8 @@ export default function UpgradeButton({
       className={cn(
         'inline-flex items-center justify-center gap-2 min-h-11 px-5 rounded-xl text-sm font-bold touch-manipulation disabled:opacity-60',
         variant === 'primary'
-          ? 'bg-[#4fae82] text-[#08110c]'
-          : 'bg-white/10 text-white ring-1 ring-white/15',
+          ? 'bg-[var(--color-accent)] text-white'
+          : 'bg-[var(--color-background-secondary)] text-[var(--color-text-primary)] ring-1 ring-[var(--color-border)]',
         className,
       )}
     >
