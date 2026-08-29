@@ -50,7 +50,7 @@ export default function InviteUserSection() {
         <AnchorPressable
           onClick={handleInvite}
           disabled={loading || success}
-          className="w-12 h-12 rounded-full bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-2 shrink-0"
+          className="w-12 h-12 rounded-full bg-[var(--color-text-primary)] text-white anchor-elev-2 shrink-0"
         >
           {success ? (
             <CheckCircle className="w-5 h-5" />

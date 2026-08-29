@@ -57,10 +57,10 @@ export default function ResetPassword() {
       title="Nytt lösenord"
       subtitle="Välj ett nytt lösenord för ditt konto."
       footer={(
-        <div className="mt-10 pt-8 border-t border-white/[0.08] text-center">
+        <div className="mt-10 pt-8 border-t border-[var(--color-border)] text-center">
           <Link
             to={createPageUrl('ForgotPassword')}
-            className="text-[13px] text-white/45 hover:text-white/70 no-underline"
+            className="text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] no-underline"
           >
             Begär ny återställningslänk
           </Link>
@@ -69,7 +69,7 @@ export default function ResetPassword() {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label className="text-white/50 text-sm">Nytt lösenord</Label>
+          <Label className="text-[var(--color-text-secondary)] text-sm">Nytt lösenord</Label>
           <Input
             type="password"
             autoComplete="new-password"
@@ -81,7 +81,7 @@ export default function ResetPassword() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-white/50 text-sm">Bekräfta lösenord</Label>
+          <Label className="text-[var(--color-text-secondary)] text-sm">Bekräfta lösenord</Label>
           <Input
             type="password"
             autoComplete="new-password"

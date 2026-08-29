@@ -37,7 +37,7 @@ function AmountField({ icon: Icon, label, placeholder, value, onChange }) {
   return (
     <div className="space-y-2">
       <label className={onboardingFieldLabel}>
-        <Icon className="w-4 h-4 text-[#4fae82]" />
+        <Icon className="w-4 h-4 text-[var(--color-accent)]" />
         {label}
       </label>
       <div className="relative">
@@ -117,26 +117,26 @@ function WowMoment({ amount, onContinue }) {
     >
       <div className="w-full max-w-md text-center space-y-8">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-white/40 mb-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--color-text-muted)] mb-4">
             Din personliga slutsats
           </p>
-          <h1 className="text-[28px] sm:text-[32px] font-bold text-white leading-tight">
+          <h1 className="text-[28px] sm:text-[32px] font-bold text-[var(--color-text-primary)] leading-tight">
             Du kan tryggt spendera
           </h1>
         </div>
 
         <div
           className="w-full rounded-[28px] px-6 py-12"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+          style={{ background: 'white', border: '1px solid var(--color-border)' }}
         >
-          <p className="text-[68px] sm:text-[80px] font-bold text-white tabular-nums leading-none tracking-tight">
+          <p className="text-[68px] sm:text-[80px] font-bold text-[var(--color-text-primary)] tabular-nums leading-none tracking-tight">
             {fmt(amount)}
-            <span className="text-[26px] sm:text-[30px] font-medium text-white/40 ml-2">kr</span>
+            <span className="text-[26px] sm:text-[30px] font-medium text-[var(--color-text-muted)] ml-2">kr</span>
           </p>
-          <p className="text-[14px] text-white/45 mt-4">denna månad</p>
+          <p className="text-[14px] text-[var(--color-text-muted)] mt-4">denna månad</p>
         </div>
 
-        <p className="text-[15px] text-white/50 leading-relaxed">
+        <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed">
           Baserat på din inkomst, boende och fasta kostnader — uppdateras automatiskt när du spenderar.
         </p>
 

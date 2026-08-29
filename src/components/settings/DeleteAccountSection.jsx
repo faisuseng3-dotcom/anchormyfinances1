@@ -70,7 +70,7 @@ export default function DeleteAccountSection({ profile }) {
           <AlertTriangle className="w-4 h-4 shrink-0" />
           <p className="text-sm font-semibold">Är du säker?</p>
         </div>
-        <p className="text-xs text-white/45 leading-relaxed">
+        <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
           All din data raderas permanent och kan inte återställas. Din rätt att bli glömd (GDPR art. 17) uppfylls omedelbart.
         </p>
         <div className="flex gap-2">
@@ -78,7 +78,7 @@ export default function DeleteAccountSection({ profile }) {
             type="button"
             minTouch={false}
             onClick={() => setStep('idle')}
-            className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]"
+            className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)]"
           >
             Avbryt
           </AnchorPressable>

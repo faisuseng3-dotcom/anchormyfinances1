@@ -100,8 +100,8 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
     >
       <div className="space-y-6">
         <div>
-          <label className="text-white/70 text-sm flex items-center gap-2 mb-3">
-            <PiggyBank className="w-4 h-4" style={{ color: '#4fae82' }} />
+          <label className="text-[var(--color-text-secondary)] text-sm flex items-center gap-2 mb-3">
+            <PiggyBank className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
             Populära sparmål
           </label>
           <div className="grid grid-cols-2 gap-2">
@@ -112,12 +112,12 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
                 onClick={() => selectSuggestion(s)}
                 className={`p-3 rounded-xl text-left border transition-all ${
                   data.savingsGoalName === s.name
-                    ? 'border-[#4fae82]/50 bg-[#4fae82]/10'
-                    : 'border-white/10 hover:border-[#4fae82]/30 dark-card'
+                    ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/10'
+                    : 'border-[var(--color-border)] hover:border-[var(--color-accent)]/30 dark-card'
                 }`}
               >
-                <p className="font-medium text-sm text-white">{s.name}</p>
-                <p className="text-xs text-white/45">{formatNumber(s.amount)} kr</p>
+                <p className="font-medium text-sm text-[var(--color-text-primary)]">{s.name}</p>
+                <p className="text-xs text-[var(--color-text-muted)]">{formatNumber(s.amount)} kr</p>
               </button>
             ))}
           </div>
@@ -126,16 +126,16 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
         <div className="space-y-4">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
+              <div className="w-full border-t border-[var(--color-border)]" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-[#0b0f0d] px-2 text-white/45">eller eget mål</span>
+              <span className="bg-[var(--color-background-primary)] px-2 text-[var(--color-text-muted)]">eller eget mål</span>
             </div>
           </div>
 
           <div className="space-y-2">
             <label className={onboardingFieldLabel}>
-              <Target className="w-4 h-4" style={{ color: '#4fae82' }} />
+              <Target className="w-4 h-4" style={{ color: 'var(--color-accent)' }} />
               Namn på sparmål
             </label>
             <Input
@@ -164,13 +164,13 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
             <div className="text-center py-2 relative">
               <div
                 className="absolute inset-0 m-auto w-40 h-20 rounded-full opacity-70 pointer-events-none"
-                style={{ background: 'radial-gradient(ellipse at center, rgba(79,174,130,0.22), transparent 70%)', filter: 'blur(8px)' }}
+                style={{ background: 'radial-gradient(ellipse at center, var(--color-accent-soft), transparent 70%)', filter: 'blur(8px)' }}
                 aria-hidden="true"
               />
-              <p className="relative text-[32px] font-black text-white tabular-nums leading-none">
-                {displayedMonths} <span className="text-[18px] font-bold text-white/50">mån</span>
+              <p className="relative text-[32px] font-black text-[var(--color-text-primary)] tabular-nums leading-none">
+                {displayedMonths} <span className="text-[18px] font-bold text-[var(--color-text-secondary)]">mån</span>
               </p>
-              <p className="relative text-[12px] text-white/40 mt-2">
+              <p className="relative text-[12px] text-[var(--color-text-muted)] mt-2">
                 Ungefär {(() => {
                   const d = new Date();
                   d.setMonth(d.getMonth() + (estimate.months || 0));
@@ -210,7 +210,7 @@ export default function SavingsGoalStep({ data, onChange, onNext, onBack }) {
         <Button
           onClick={handleNext}
           className="flex-1 h-14 rounded-xl"
-          style={{ background: '#4fae82', color: '#08110c' }}
+          style={{ background: 'var(--color-accent)', color: '#fff' }}
         >
           {!data.savingsGoal ? 'Hoppa över' : 'Fortsätt'}
         </Button>

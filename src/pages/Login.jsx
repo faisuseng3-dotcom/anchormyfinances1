@@ -76,16 +76,16 @@ export default function Login() {
       title="Logga in"
       subtitle="Välkommen tillbaka. Logga in för att öppna din översikt, budget och sparverktyg."
       footer={(
-        <div className="mt-10 pt-8 border-t border-white/[0.08] space-y-4 text-center">
+        <div className="mt-10 pt-8 border-t border-[var(--color-border)] space-y-4 text-center">
           <Link
             to={createPageUrl('CreateAccount')}
-            className="block text-[15px] font-medium text-white/80 hover:text-white no-underline"
+            className="block text-[15px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
           >
             Skapa nytt konto
           </Link>
           <Link
             to={createPageUrl('Landing')}
-            className="block text-[13px] text-white/45 hover:text-white/70 no-underline"
+            className="block text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] no-underline"
           >
             Till startsidan
           </Link>
@@ -94,7 +94,7 @@ export default function Login() {
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label className="text-white/50 text-sm">E-post</Label>
+          <Label className="text-[var(--color-text-secondary)] text-sm">E-post</Label>
           <Input
             type="email"
             autoComplete="email"
@@ -107,7 +107,7 @@ export default function Login() {
 
         <div className="space-y-1.5">
           <div className="flex items-center justify-between gap-2">
-            <Label className="text-white/50 text-sm">Lösenord</Label>
+            <Label className="text-[var(--color-text-secondary)] text-sm">Lösenord</Label>
             <Link
               to={createPageUrl('ForgotPassword')}
               className="text-[13px] text-[var(--color-accent)] no-underline hover:underline"

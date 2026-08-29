@@ -6,15 +6,15 @@ export function onboardingChoiceCard(selected) {
   return cn(
     'w-full p-4 rounded-2xl text-left transition-all border',
     selected
-      ? 'border-[#4fae82]/50 bg-[#4fae82]/12'
-      : 'border-white/[0.12] bg-white/[0.04] hover:border-white/25',
+      ? 'border-[var(--color-accent)]/50 bg-[var(--color-accent)]/12'
+      : 'border-[var(--color-border)] bg-white hover:border-[var(--color-accent)]/30',
   );
 }
 
 export function onboardingChoiceCheck(selected) {
   return cn(
     'w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0',
-    selected ? 'border-white bg-white' : 'border-white/25',
+    selected ? 'border-[var(--color-accent)] bg-[var(--color-accent)]' : 'border-[var(--color-border)]',
   );
 }
 

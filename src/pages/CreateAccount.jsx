@@ -124,7 +124,7 @@ export default function CreateAccount() {
           <button
             type="button"
             onClick={() => { setPhase('form'); setOtp(''); setError(''); }}
-            className="text-[13px] text-white/45 hover:text-white/70 bg-transparent border-0 cursor-pointer"
+            className="text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] bg-transparent border-0 cursor-pointer"
           >
             ← Tillbaka till registrering
           </button>
@@ -132,7 +132,7 @@ export default function CreateAccount() {
       >
         <form onSubmit={handleVerifyOtp} className="space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-white/50 text-sm">Verifieringskod</Label>
+            <Label className="text-[var(--color-text-secondary)] text-sm">Verifieringskod</Label>
             <Input
               type="text"
               inputMode="numeric"
@@ -168,7 +168,7 @@ export default function CreateAccount() {
             type="button"
             onClick={handleResendOtp}
             disabled={loading}
-            className="w-full text-sm text-white/50 hover:text-white/80 bg-transparent border-0 cursor-pointer"
+            className="w-full text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] bg-transparent border-0 cursor-pointer"
           >
             Skicka ny kod
           </button>
@@ -183,16 +183,16 @@ export default function CreateAccount() {
       title="Skapa konto"
       subtitle="Kom igång gratis. Efter registrering guidar vi dig genom några snabba steg."
       footer={(
-        <div className="mt-10 pt-8 border-t border-white/[0.08] space-y-4 text-center">
+        <div className="mt-10 pt-8 border-t border-[var(--color-border)] space-y-4 text-center">
           <Link
             to={createPageUrl('Login')}
-            className="block text-[15px] font-medium text-white/80 hover:text-white no-underline"
+            className="block text-[15px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
           >
             Har du redan konto? Logga in
           </Link>
           <Link
             to={createPageUrl('Landing')}
-            className="block text-[13px] text-white/45 hover:text-white/70 no-underline"
+            className="block text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] no-underline"
           >
             Till startsidan
           </Link>
@@ -201,7 +201,7 @@ export default function CreateAccount() {
     >
       <form onSubmit={handleRegister} className="space-y-4">
         <div className="space-y-1.5">
-          <Label className="text-white/50 text-sm">Namn</Label>
+          <Label className="text-[var(--color-text-secondary)] text-sm">Namn</Label>
           <Input
             type="text"
             autoComplete="name"
@@ -213,7 +213,7 @@ export default function CreateAccount() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-white/50 text-sm">E-post</Label>
+          <Label className="text-[var(--color-text-secondary)] text-sm">E-post</Label>
           <Input
             type="email"
             autoComplete="email"
@@ -225,7 +225,7 @@ export default function CreateAccount() {
         </div>
 
         <div className="space-y-1.5">
-          <Label className="text-white/50 text-sm">Lösenord</Label>
+          <Label className="text-[var(--color-text-secondary)] text-sm">Lösenord</Label>
           <Input
             type="password"
             autoComplete="new-password"

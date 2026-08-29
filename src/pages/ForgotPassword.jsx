@@ -46,10 +46,10 @@ export default function ForgotPassword() {
           : 'Ange din e-post så skickar vi en återställningslänk.'
       }
       footer={(
-        <div className="mt-10 pt-8 border-t border-white/[0.08] space-y-4 text-center">
+        <div className="mt-10 pt-8 border-t border-[var(--color-border)] space-y-4 text-center">
           <Link
             to={createPageUrl('Login')}
-            className="block text-[15px] font-medium text-white/80 hover:text-white no-underline"
+            className="block text-[15px] font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] no-underline"
           >
             ← Tillbaka till inloggning
           </Link>
@@ -57,13 +57,13 @@ export default function ForgotPassword() {
       )}
     >
       {sent ? (
-        <p className="text-sm text-white/60 text-center leading-relaxed">
+        <p className="text-sm text-[var(--color-text-secondary)] text-center leading-relaxed">
           Länken går till sidan för nytt lösenord. Den kan ta någon minut att komma fram — kolla skräppost också.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label className="text-white/50 text-sm">E-post</Label>
+            <Label className="text-[var(--color-text-secondary)] text-sm">E-post</Label>
             <Input
               type="email"
               autoComplete="email"
