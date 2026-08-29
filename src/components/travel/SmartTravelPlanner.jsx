@@ -176,7 +176,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
       <Button
         onClick={handleAnalyze}
         disabled={!destination || !days || !month || loading}
-        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90"
+        className="w-full h-12 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]"
       >
         {loading ? (
           <>
@@ -199,20 +199,20 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className={`p-5 rounded-3xl ${
-              marketData.price_trend?.status === 'cheap' 
-                ? 'border-emerald-500/30 bg-[#4fae82]/10' 
+              marketData.price_trend?.status === 'cheap'
+                ? 'border-[rgba(22,163,74,0.3)] bg-[var(--color-success-soft)]'
                 : 'border-amber-500/30 bg-amber-500/10'
             }`}
           >
             <div className="flex items-start gap-3">
               {marketData.price_trend?.status === 'cheap' ? (
-                <TrendingDown className="w-6 h-6 text-emerald-400 flex-shrink-0" />
+                <TrendingDown className="w-6 h-6 text-[var(--color-success)] flex-shrink-0" />
               ) : (
-                <TrendingUp className="w-6 h-6 text-amber-400 flex-shrink-0" />
+                <TrendingUp className="w-6 h-6 text-[var(--color-warning)] flex-shrink-0" />
               )}
               <div>
-                <h3 className="font-semibold text-white mb-1">Pristrend</h3>
-                <p className="text-sm text-white/70">{marketData.price_trend?.reason}</p>
+                <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">Pristrend</h3>
+                <p className="text-sm text-[var(--color-text-secondary)]">{marketData.price_trend?.reason}</p>
               </div>
             </div>
           </motion.div>
@@ -224,19 +224,19 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
               animate={{ opacity: 1, scale: 1 }}
               className="glass-effect p-6 rounded-2xl text-center"
             >
-              <p className="text-sm text-white/45 mb-1">Potentiell besparing</p>
-              <p className="text-4xl font-bold bg-[#4fae82] bg-clip-text text-transparent">
+              <p className="text-sm text-[var(--color-text-muted)] mb-1">Potentiell besparing</p>
+              <p className="text-4xl font-bold bg-[var(--color-success)] bg-clip-text text-transparent">
                 {formatNumber(potentialSavings)} kr
               </p>
-              <div className="mt-3 px-4 py-2 rounded-full bg-[#4fae82]/20 inline-block">
-                <span className="text-sm text-emerald-400 font-medium inline-flex items-center gap-1"><Trophy className="w-4 h-4" /> Smart Traveler</span>
+              <div className="mt-3 px-4 py-2 rounded-full bg-[var(--color-success-soft)] inline-block">
+                <span className="text-sm text-[var(--color-success)] font-medium inline-flex items-center gap-1"><Trophy className="w-4 h-4" /> Smart Traveler</span>
               </div>
             </motion.div>
           )}
 
           {/* Optimizations */}
           <div className="space-y-3">
-            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
               <MapPin className="w-5 h-5 text-[#0FDEBD]" />
               Smart Swap-förslag
             </h3>
@@ -249,25 +249,25 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
                 className="dark-card p-5 rounded-xl"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <h4 className="font-semibold text-white">{opt.category}</h4>
-                  <span className="px-2 py-1 rounded-full bg-[#4fae82]/20 text-emerald-400 text-xs font-medium">
+                  <h4 className="font-semibold text-[var(--color-text-primary)]">{opt.category}</h4>
+                  <span className="px-2 py-1 rounded-full bg-[var(--color-success-soft)] text-[var(--color-success)] text-xs font-medium">
                     -{formatNumber(opt.savings)} kr
                   </span>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <p className="text-white/45">
-                    <span className="text-white/40">Nuvarande:</span> {opt.current}
+                  <p className="text-[var(--color-text-muted)]">
+                    <span className="text-[var(--color-text-muted)]">Nuvarande:</span> {opt.current}
                   </p>
-                  <p className="text-white/70">
-                    <span className="text-emerald-400 font-medium">Förslag:</span> {opt.suggestion}
+                  <p className="text-[var(--color-text-secondary)]">
+                    <span className="text-[var(--color-success)] font-medium">Förslag:</span> {opt.suggestion}
                   </p>
                   {opt.rating_improvement && (
-                    <p className="text-blue-400 text-xs inline-flex items-center gap-1"><Star className="w-3 h-3" aria-hidden /> {opt.rating_improvement}</p>
+                    <p className="text-[var(--color-accent)] text-xs inline-flex items-center gap-1"><Star className="w-3 h-3" aria-hidden /> {opt.rating_improvement}</p>
                   )}
                 </div>
                 <Button
                   size="sm"
-                  className="w-full mt-3 bg-[#4fae82] hover:opacity-90"
+                  className="w-full mt-3 bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]"
                 >
                   Välj detta alternativ
                 </Button>

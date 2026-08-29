@@ -229,10 +229,10 @@ export default function SubscriptionListView({ profile, updateProfile }) {
     >
       <div
         className="organic-surface rounded-[20px] p-5 mb-6"
-        style={{ background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.14) 0%, rgba(79, 174, 130, 0.08) 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, var(--color-accent-soft) 100%)' }}
       >
         <h2 className="anchor-card-title">Totalt per månad</h2>
-        <p className="text-[32px] font-bold text-white tabular-nums mt-1">
+        <p className="text-[32px] font-bold text-[var(--color-text-primary)] tabular-nums mt-1">
           {fmtKr(total)}
         </p>
       </div>
@@ -269,7 +269,7 @@ export default function SubscriptionListView({ profile, updateProfile }) {
             transition={{ type: 'spring', stiffness: 340, damping: 28 }}
             className="organic-surface rounded-[20px] p-5 mt-6"
           >
-            <h3 className="text-[15px] font-semibold text-white mb-4">
+            <h3 className="text-[15px] font-semibold text-[var(--color-text-primary)] mb-4">
               {editIndex != null ? 'Redigera abonnemang' : 'Nytt abonnemang'}
             </h3>
             <div className="space-y-3">
@@ -288,7 +288,7 @@ export default function SubscriptionListView({ profile, updateProfile }) {
                 <AnchorPressable type="button" onClick={resetForm} className={`flex-1 h-12 rounded-full active:scale-[0.97] ${copilotChipClass(false)}`}>
                   Avbryt
                 </AnchorPressable>
-                <AnchorPressable type="button" onClick={handleSave} disabled={saving} className="flex-1 h-12 rounded-full bg-gradient-to-r from-[#4fae82] to-[#4fae82] text-white font-semibold active:scale-[0.97] disabled:opacity-40">
+                <AnchorPressable type="button" onClick={handleSave} disabled={saving} className="flex-1 h-12 rounded-full bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent)] text-white font-semibold active:scale-[0.97] disabled:opacity-40">
                   <Check className="w-4 h-4 mr-1.5 inline" />
                   {saving ? 'Sparar…' : 'Spara'}
                 </AnchorPressable>

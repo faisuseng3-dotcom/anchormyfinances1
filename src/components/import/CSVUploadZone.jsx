@@ -65,30 +65,30 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
         onClick={() => inputRef.current?.click()}
         whileTap={{ scale: 0.99 }}
         animate={{
-          borderColor: dragging ? 'rgba(79, 174, 130, 0.6)' : 'rgba(255,255,255,0.12)',
-          background: dragging ? 'rgba(79, 174, 130, 0.08)' : 'var(--copilot-bg-card)',
+          borderColor: dragging ? 'rgba(37, 99, 235, 0.6)' : 'var(--color-border)',
+          background: dragging ? 'var(--color-accent-soft)' : 'var(--copilot-bg-card)',
         }}
         className="border-2 border-dashed rounded-3xl p-8 flex flex-col items-center gap-4 cursor-pointer transition-colors min-h-[200px] justify-center"
       >
         <div
           className="w-14 h-14 rounded-2xl flex items-center justify-center"
-          style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+          style={{ background: 'rgba(37, 99, 235, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <Upload className="w-7 h-7 text-[var(--copilot-accent-blue)]" />
         </div>
         <div className="text-center">
-          <p className="text-[15px] font-semibold text-white">Dra & släpp din bankexport</p>
+          <p className="text-[15px] font-semibold text-[var(--color-text-primary)]">Dra & släpp din bankexport</p>
           <p className="text-[13px] text-[var(--copilot-text-muted)] mt-1">CSV eller PDF från Swedbank, SEB, Nordea…</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[rgba(79, 174, 130, 0.12)] text-[var(--copilot-accent-cyan)]">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[rgba(37,99,235,0.12)] text-[var(--copilot-accent-cyan)]">
             <FileText className="w-3 h-3" /> CSV
           </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[rgba(255, 255, 255, 0.12)] text-[#4fae82]">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-semibold bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)]">
             <FileType className="w-3 h-3" /> PDF
           </span>
         </div>
-        <span className="px-5 py-2.5 rounded-full text-[13px] font-semibold text-white bg-gradient-to-r from-[#4fae82] to-[#4fae82] min-h-12 flex items-center">
+        <span className="px-5 py-2.5 rounded-full text-[13px] font-semibold text-white bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent)] min-h-12 flex items-center">
           Välj fil
         </span>
         <input
@@ -105,7 +105,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
         onClick={() => setPasteMode((v) => !v)}
         className={`w-full flex items-center justify-center gap-2 min-h-12 rounded-2xl text-[14px] font-semibold transition-all active:scale-[0.98] ${
           pasteMode
-            ? 'bg-[rgba(79, 174, 130, 0.12)] border border-[rgba(79, 174, 130, 0.35)] text-white'
+            ? 'bg-[rgba(37,99,235,0.12)] border border-[rgba(37,99,235,0.35)] text-[var(--color-text-primary)]'
             : 'bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)]'
         }`}
       >
@@ -130,7 +130,7 @@ export default function CSVUploadZone({ onFileParsed, onPdfFile, onPasteText }) 
                 rows={7}
                 className={`${copilotInputClass} !rounded-none !border-0 !h-auto min-h-[140px] py-4 font-mono text-[12px] resize-none`}
               />
-              <div className="flex gap-2 p-3 border-t ">
+              <div className="flex gap-2 p-3 border-t border-[var(--color-border)]">
                 <button
                   type="button"
                   onClick={() => { setPasteMode(false); setPasteValue(''); }}
