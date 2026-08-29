@@ -27,7 +27,7 @@ export default function LiquidityTooltip() {
               background: '#1A2332',
               color: '#E8ECF0',
               width: 260,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
+              boxShadow: 'var(--anchor-shadow-4)',
             }}>
             Beräknat på dina likvida medel i förhållande till dina kortfristiga skulder enligt Konsumentverkets och Skatteverkets definitioner.
             <div className="absolute -bottom-1.5 left-4 w-3 h-3 rotate-45"

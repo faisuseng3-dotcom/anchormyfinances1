@@ -35,7 +35,7 @@ export default function ContextualLessonLink({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className={`text-left text-[13px] text-[#4fae82]/85 hover:text-[#4fae82] underline-offset-2 hover:underline transition-colors ${className}`}
+        className={`text-left text-[13px] text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] underline-offset-2 hover:underline transition-colors ${className}`}
       >
         {detected.invite}
       </button>

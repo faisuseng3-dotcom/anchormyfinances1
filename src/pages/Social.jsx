@@ -190,7 +190,7 @@ export default function Social() {
           minTouch={false}
           onClick={handleSave}
           disabled={saving}
-          className="h-10 px-4 rounded-full bg-[var(--color-text-primary)] text-[#050d28] text-[14px] font-semibold disabled:opacity-40 anchor-elev-2"
+          className="h-10 px-4 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-[14px] font-semibold disabled:opacity-40 anchor-elev-2"
         >
           {saving ? <span className="w-4 h-4 rounded-full skeleton inline-block" /> : 'Spara'}
         </AnchorPressable>
@@ -240,7 +240,7 @@ export default function Social() {
                 <label className="block">
                   <span className={sectionMetaClass}>Användarnamn</span>
                   <div className="relative mt-1.5">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[15px] text-white/40">@</span>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[15px] text-[var(--color-text-muted)]">@</span>
                     <input
                       value={form.username}
                       onChange={(e) =>
@@ -318,7 +318,7 @@ export default function Social() {
             <GlassSection title="Hitta vänner">
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
                   <input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -332,7 +332,7 @@ export default function Social() {
                   minTouch={false}
                   onClick={handleSearch}
                   disabled={searching}
-                  className="h-12 px-4 rounded-full bg-[var(--color-text-primary)] text-[#050d28] font-semibold shrink-0 anchor-elev-1"
+                  className="h-12 px-4 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-semibold shrink-0 anchor-elev-1"
                 >
                   {searching ? <span className="w-4 h-4 rounded-full skeleton" /> : 'Sök'}
                 </AnchorPressable>
@@ -349,14 +349,14 @@ export default function Social() {
                 >
                   <ProfileAvatar profile={searchResult} size={48} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-semibold text-white">@{searchResult.username}</p>
+                    <p className="text-[15px] font-semibold text-[var(--color-text-primary)]">@{searchResult.username}</p>
                     {searchResult.bio && <p className={sectionSubtitleClass}>{searchResult.bio}</p>}
                   </div>
                   <AnchorPressable
                     type="button"
                     minTouch={false}
                     onClick={() => addFriend(searchResult)}
-                    className="h-10 px-3 rounded-full bg-[var(--color-text-primary)] text-[#050d28] text-[13px] font-semibold flex items-center gap-1.5"
+                    className="h-10 px-3 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white text-[13px] font-semibold flex items-center gap-1.5"
                   >
                     <UserPlus className="w-3.5 h-3.5" />
                     Lägg till
@@ -369,8 +369,8 @@ export default function Social() {
               <p className={sectionMetaClass}>Dina vänner ({friendProfiles.length})</p>
               {friendProfiles.length === 0 ? (
                 <div className="py-10 text-center rounded-[var(--anchor-radius-lg)] anchor-elev-1 bg-[var(--color-surface-raised)] shadow-[var(--anchor-shadow-1)] mt-2">
-                  <Users className="w-8 h-8 mx-auto text-white/25 mb-2" />
-                  <p className="text-[15px] font-medium text-white">Inga vänner ännu</p>
+                  <Users className="w-8 h-8 mx-auto text-[var(--color-text-muted)] mb-2" />
+                  <p className="text-[15px] font-medium text-[var(--color-text-primary)]">Inga vänner ännu</p>
                   <p className={sectionSubtitleClass}>Sök på @användarnamn för att lägga till någon</p>
                 </div>
               ) : (

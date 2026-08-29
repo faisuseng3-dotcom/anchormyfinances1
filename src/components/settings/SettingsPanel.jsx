@@ -16,14 +16,14 @@ export default function SettingsPanel({ icon: Icon, title, subtitle, open, onTog
         <span className="flex items-center gap-2.5 min-w-0">
           {Icon && <Icon className="w-4 h-4 text-[var(--color-accent)] shrink-0" />}
           <span>
-            <span className="block text-[14px] font-medium text-white/85">{title}</span>
+            <span className="block text-[14px] font-medium text-[var(--color-text-primary)]">{title}</span>
             {subtitle && (
-              <span className="block text-[12px] text-white/45 mt-0.5">{subtitle}</span>
+              <span className="block text-[12px] text-[var(--color-text-secondary)] mt-0.5">{subtitle}</span>
             )}
           </span>
         </span>
         <ChevronDown
-          className={`w-4 h-4 text-white/35 shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-[var(--color-text-muted)] shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </AnchorPressable>
       {open && (
@@ -38,11 +38,11 @@ export function SettingsRowIcon({ icon: Icon, muted = false }) {
     <div
       className={`w-11 h-11 rounded-[var(--anchor-radius-lg)] flex items-center justify-center anchor-elev-1 ${
         muted
-          ? 'bg-white/[0.05] shadow-[var(--anchor-shadow-1)]'
+          ? 'bg-[var(--color-background-secondary)] shadow-[var(--anchor-shadow-1)]'
           : 'bg-[var(--color-accent)]/10 ring-1 ring-[var(--color-accent)]/20'
       }`}
     >
-      <Icon className={`w-5 h-5 ${muted ? 'text-white/55' : 'text-[var(--color-accent)]'}`} />
+      <Icon className={`w-5 h-5 ${muted ? 'text-[var(--color-text-secondary)]' : 'text-[var(--color-accent)]'}`} />
     </div>
   );
 }

@@ -52,7 +52,7 @@ export default function AcademyLessonSheet({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[60] flex items-end justify-center bg-[#030610]/80 backdrop-blur-lg"
+          className="fixed inset-0 z-[60] flex items-end justify-center bg-[rgba(11,18,32,0.45)] backdrop-blur-lg"
           onClick={onClose}
         >
           <motion.div
@@ -64,7 +64,7 @@ export default function AcademyLessonSheet({
             style={elevatedSheet()}
           >
             <div className="flex justify-center mb-4">
-              <div className="w-10 h-1 rounded-full bg-white/15" />
+              <div className="w-10 h-1 rounded-full bg-[var(--color-border)]" />
             </div>
             <div className="flex justify-between items-start mb-5">
               <p className={dashLabel}>~{lesson.durationSec} sek</p>
@@ -73,27 +73,27 @@ export default function AcademyLessonSheet({
               </button>
             </div>
             {loading ? (
-              <div className="flex items-center gap-2 py-10 text-white/45">
+              <div className="flex items-center gap-2 py-10 text-[var(--color-text-secondary)]">
                 <Loader2 className="w-5 h-5 animate-spin" />
                 Laddar…
               </div>
             ) : (
               <>
-                <h3 className="text-[24px] font-light text-white tracking-tight">
+                <h3 className="text-[24px] font-light text-[var(--color-text-primary)] tracking-tight">
                   {content?.title || lesson.title}
                 </h3>
-                <p className="text-[15px] text-white/55 mt-4 leading-relaxed font-light">
+                <p className="text-[15px] text-[var(--color-text-secondary)] mt-4 leading-relaxed font-light">
                   {formatCoachText(content?.body)}
                 </p>
                 {content?.takeaway && (
-                  <p className="text-[14px] text-cyan-300/80 mt-5 leading-relaxed">
+                  <p className="text-[14px] text-[var(--color-accent)] mt-5 leading-relaxed">
                     {formatCoachText(content.takeaway)}
                   </p>
                 )}
                 <button
                   type="button"
                   onClick={handleDone}
-                  className="w-full mt-8 h-12 rounded-full bg-white text-[#050d28] font-semibold text-[15px]"
+                  className="w-full mt-8 h-12 rounded-full bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] text-white font-semibold text-[15px]"
                 >
                   {content?.cta || 'Klar'}
                 </button>

@@ -33,7 +33,9 @@ export default function TravelPlanner() {
             type="button"
             onClick={() => setActiveTab('agent')}
             className={`${anchorSecondaryButtonClass} h-9 px-3 text-[13px] ${
-              activeTab === 'agent' ? 'bg-white/15' : ''
+              activeTab === 'agent'
+                ? 'bg-[var(--color-accent-soft)] border-[var(--color-accent)] text-[var(--color-accent)]'
+                : ''
             }`}
           >
             Fråga
@@ -42,7 +44,9 @@ export default function TravelPlanner() {
             type="button"
             onClick={() => setActiveTab('analyze')}
             className={`${anchorSecondaryButtonClass} h-9 px-3 text-[13px] ${
-              activeTab === 'analyze' ? 'bg-white/15' : ''
+              activeTab === 'analyze'
+                ? 'bg-[var(--color-accent-soft)] border-[var(--color-accent)] text-[var(--color-accent)]'
+                : ''
             }`}
           >
             Räkna

@@ -10,32 +10,32 @@ import {
   Shield, BarChart2, ShoppingBag, FileUp, Wrench,
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import { DashboardSection, DashboardListRow, DashboardDivider } from '@/components/dashboard/DashboardChrome';
+import AnchorPressable from '@/components/ui-premium/AnchorPressable';
 
 const SECTION = ({ title, children }) => (
-  <div>
-    <h2 className="anchor-card-title mb-2 px-1">{title}</h2>
-    <div className="rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+  <DashboardSection nested title={title}>
+    <div className="rounded-2xl overflow-hidden bg-white border border-[var(--color-border)]">
       {children}
     </div>
-  </div>
+  </DashboardSection>
 );
 
-const ROW = ({ icon: Icon, label, sublabel, onPress, color = '#4fae82', last = false }) => (
-  <button
-    type="button"
-    onClick={onPress}
-    className="w-full flex items-center gap-3 px-4 py-3.5 touch-manipulation text-left"
-    style={{ borderBottom: last ? 'none' : '1px solid rgba(255,255,255,0.05)' }}
-  >
-    <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${color}18` }}>
-      <Icon size={16} style={{ color }} />
-    </div>
-    <div className="flex-1 min-w-0">
-      <p className="text-[15px] font-medium text-white">{label}</p>
-      {sublabel && <p className="text-[12px] text-white/35 mt-0.5">{sublabel}</p>}
-    </div>
-    <ChevronRight size={16} className="text-white/20 shrink-0" />
-  </button>
+const ROW = ({ icon: Icon, label, sublabel, onPress, color = 'var(--color-accent)', last = false }) => (
+  <React.Fragment>
+    <DashboardListRow
+      onClick={onPress}
+      className="px-4 min-h-[56px]"
+      leading={
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ background: `color-mix(in srgb, ${color} 15%, transparent)` }}>
+          <Icon size={16} style={{ color }} />
+        </div>
+      }
+      title={label}
+      subtitle={sublabel}
+    />
+    {!last && <DashboardDivider className="ml-[4.25rem]" />}
+  </React.Fragment>
 );
 
 export default function Mer() {
@@ -54,17 +54,16 @@ export default function Mer() {
         <button
           type="button"
           onClick={() => navigate(createPageUrl('Import'))}
-          className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left touch-manipulation"
-          style={{ background: 'rgba(79, 174, 130, 0.1)', border: '1px solid rgba(79, 174, 130, 0.2)' }}
+          className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left touch-manipulation bg-[var(--color-accent-soft)] border border-[var(--color-accent)]/20"
         >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(79, 174, 130, 0.15)' }}>
-            <FileUp size={18} className="text-[#4fae82]" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-[var(--color-accent)]/15">
+            <FileUp size={18} className="text-[var(--color-accent)]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-semibold text-white">Importera från banken</p>
-            <p className="text-[13px] text-white/45 mt-0.5">Ladda upp CSV — Lago analyserar allt</p>
+            <p className="text-[15px] font-semibold text-[var(--color-text-primary)]">Importera från banken</p>
+            <p className="text-[13px] text-[var(--color-text-secondary)] mt-0.5">Ladda upp CSV — Lago analyserar allt</p>
           </div>
-          <ChevronRight size={16} className="text-white/25 shrink-0" />
+          <ChevronRight size={16} className="text-[var(--color-text-muted)] shrink-0" />
         </button>
 
         <SECTION title="Konto">
@@ -85,7 +84,7 @@ export default function Mer() {
           <ROW icon={Globe} label="Galaxy" sublabel="Se ekonomiska mönster" onPress={() => navigate(createPageUrl('Insights'))} />
           <ROW icon={Users} label="Social" sublabel="Dela och jämför" onPress={() => navigate(createPageUrl('Social'))} />
           <ROW icon={Plane} label="Reseplanering" sublabel="AI-agent för din nästa resa" onPress={() => navigate(createPageUrl('TravelPlanner'))} />
-          <ROW icon={BookOpen} label="Lago Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} color="#4fae82" last />
+          <ROW icon={BookOpen} label="Lago Academy" sublabel="Lär dig mer om ekonomi" onPress={() => navigate(createPageUrl('AnchorAcademy'))} last />
         </SECTION>
 
         <SECTION title="Hjälp oss bli bättre">
@@ -94,21 +93,19 @@ export default function Mer() {
             label="Ge feedback"
             sublabel="Buggar, förslag eller problem"
             onPress={handleFeedback}
-            color="#4fae82"
             last
           />
         </SECTION>
 
-        <button
+        <AnchorPressable
           type="button"
           onClick={() => base44.auth.logout(window.location.origin)}
-          className="w-full py-3.5 rounded-2xl text-[15px] font-semibold touch-manipulation"
-          style={{ background: 'rgba(226, 133, 122, 0.08)', border: '1px solid rgba(226, 133, 122, 0.15)', color: '#e2857a' }}
+          className="w-full py-3.5 rounded-2xl text-[15px] font-semibold touch-manipulation bg-[var(--color-danger-soft)] border border-[var(--color-danger)]/20 text-[var(--color-danger)]"
         >
           Logga ut
-        </button>
+        </AnchorPressable>
 
-        <p className="text-[11px] text-white/20 text-center">
+        <p className="text-[11px] text-[var(--color-text-muted)] text-center">
           Lago · hello@anchormyfinances.com
         </p>
       </div>
