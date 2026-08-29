@@ -28,8 +28,11 @@ function getLast6Months() {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-2xl border-white/10 bg-[#1a2235] px-4 py-3 shadow-xl text-sm">
-      <p className="text-slate-400 mb-2 font-medium">{label}</p>
+    <div
+      className="rounded-2xl px-4 py-3 shadow-xl text-sm"
+      style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
+    >
+      <p className="text-[var(--color-text-secondary)] mb-2 font-medium">{label}</p>
       {payload.map((p) => (
         <p key={p.dataKey} style={{ color: p.color }} className="font-bold">
           {p.name}: {fmt(p.value)} kr
@@ -108,7 +111,7 @@ export default function FinancialTrendsPanel() {
             key={i}
             animate={{ opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1 }}
-            className="h-24 bg-white/[0.04] rounded-xl"
+            className="h-24 bg-[var(--color-background-secondary)] rounded-xl"
           />
         ))}
       </div>
@@ -135,13 +138,13 @@ export default function FinancialTrendsPanel() {
       <DashboardSection nested title="Buffert och skuld" subtitle="Senaste 6 månader">
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={chartData} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
             <XAxis dataKey="label" tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false}
               tickFormatter={(v) => (v >= 1000 ? `${Math.round(v / 1000)}k` : v)} />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: '11px', color: '#9ca3af', paddingTop: '12px' }} />
-            <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" />
+            <ReferenceLine y={0} stroke="var(--color-border)" />
             <Line type="monotone" dataKey="Buffert" stroke="#10b981" strokeWidth={2.5} dot={{ fill: '#10b981', strokeWidth: 0, r: 3 }} />
             <Line type="monotone" dataKey="Skuld" stroke="#f59e0b" strokeWidth={2.5} dot={{ fill: '#f59e0b', strokeWidth: 0, r: 3 }} strokeDasharray="5 3" />
           </LineChart>

@@ -106,20 +106,20 @@ Lämna kategori tom — den sätts separat.`,
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center -mt-1 mb-1">
-              <div className="w-9 h-1 rounded-full bg-white/15" />
+              <div className="w-9 h-1 rounded-full bg-[var(--color-border)]" />
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-[#4fae82]/80" />
-                <p className="text-[15px] font-medium text-white">Snabb inmatning</p>
+                <Zap className="w-4 h-4 text-[#2563EB]/80" />
+                <p className="text-[15px] font-medium text-[var(--color-text-primary)]">Snabb inmatning</p>
               </div>
-              <button type="button" onClick={onClose} className="text-white/40 hover:text-white/70">
+              <button type="button" onClick={onClose} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <textarea
-              className="w-full rounded-2xl p-3 text-[15px] resize-none focus:outline-none focus:ring-1 focus:ring-white/20 bg-white/[0.06] text-white placeholder:text-white/35"
+              className="w-full rounded-2xl p-3 text-[15px] resize-none focus:outline-none focus:ring-1 focus:ring-[rgba(37,99,235,0.2)] bg-white border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]"
               style={{ minHeight: 80 }}
               placeholder='T.ex. "Lunch 145 kr" eller "Tidning igår 49 kr"'
               value={text}
@@ -154,7 +154,7 @@ Lämna kategori tom — den sätts separat.`,
               <motion.div
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-[20px] p-4 space-y-3 ring-1 ring-inset ring-[#4fae82]/20 bg-[#4fae82]/5"
+                className="rounded-[20px] p-4 space-y-3 ring-1 ring-inset ring-[#2563EB]/20 bg-[#2563EB]/5"
               >
                 <div className="flex items-center justify-between">
                   <p className={dashLabel}>Förslag</p>
@@ -167,22 +167,22 @@ Lämna kategori tom — den sätts separat.`,
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-[13px]">
                   <div>
-                    <span className="text-white/40">Beskrivning</span>
-                    <p className="text-white font-medium mt-0.5">{parsed.description}</p>
+                    <span className="text-[var(--color-text-muted)]">Beskrivning</span>
+                    <p className="text-[var(--color-text-primary)] font-medium mt-0.5">{parsed.description}</p>
                   </div>
                   <div>
-                    <span className="text-white/40">Belopp</span>
+                    <span className="text-[var(--color-text-muted)]">Belopp</span>
                     <p className={`font-medium tabular-nums mt-0.5 ${parsed.amount < 0 ? 'text-rose-300' : 'text-emerald-300'}`}>
                       {parsed.amount} kr
                     </p>
                   </div>
                   <div>
-                    <span className="text-white/40">Datum</span>
-                    <p className="text-white font-medium mt-0.5">{parsed.date}</p>
+                    <span className="text-[var(--color-text-muted)]">Datum</span>
+                    <p className="text-[var(--color-text-primary)] font-medium mt-0.5">{parsed.date}</p>
                   </div>
                   <div>
-                    <span className="text-white/40">Kategori</span>
-                    <p className="text-white font-medium mt-0.5">
+                    <span className="text-[var(--color-text-muted)]">Kategori</span>
+                    <p className="text-[var(--color-text-primary)] font-medium mt-0.5">
                       {CATEGORY_LABELS[parsed.category] || parsed.category}
                     </p>
                   </div>
@@ -199,7 +199,7 @@ Lämna kategori tom — den sätts separat.`,
               </motion.div>
             )}
 
-            <p className="text-[11px] text-center text-white/35">Enter = tolka</p>
+            <p className="text-[11px] text-center text-[var(--color-text-muted)]">Enter = tolka</p>
           </motion.div>
         </motion.div>
       )}

@@ -14,7 +14,7 @@ export default function InsightWhyButton({ why, className = '' }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 text-[12px] font-medium text-white/45 hover:text-cyan-300/90 transition-colors"
+        className="inline-flex items-center gap-1.5 text-[12px] font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors"
       >
         <HelpCircle className="w-3.5 h-3.5" />
         Varför?
@@ -25,7 +25,7 @@ export default function InsightWhyButton({ why, className = '' }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="text-[13px] text-white/55 leading-relaxed mt-2 overflow-hidden"
+            className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed mt-2 overflow-hidden"
           >
             {why}
           </motion.p>

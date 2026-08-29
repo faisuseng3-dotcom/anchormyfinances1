@@ -49,9 +49,9 @@ const toEntry = (tx, idx) => {
 };
 
 const statusConfig = {
-  booked: { icon: CheckCircle2, color: '#3DAA7A', label: 'Bokförd', bg: 'rgba(61,170,122,0.12)' },
-  pending: { icon: Clock, color: '#D4AF37', label: 'Väntar', bg: 'rgba(212,175,55,0.12)' },
-  error: { icon: AlertTriangle, color: '#D95F5F', label: 'Fel', bg: 'rgba(217,95,95,0.12)' },
+  booked: { icon: CheckCircle2, color: 'var(--color-success)', label: 'Bokförd', bg: 'var(--color-success-soft)' },
+  pending: { icon: Clock, color: 'var(--color-warning)', label: 'Väntar', bg: 'var(--color-warning-soft)' },
+  error: { icon: AlertTriangle, color: 'var(--color-danger)', label: 'Fel', bg: 'var(--color-danger-soft)' },
 };
 
 function exportCSV(ents) {
@@ -101,11 +101,11 @@ export default function LedgerVaultPanel() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-[13px] text-white/45">Företagets bokföringsunderlag</p>
+        <p className="text-[13px] text-[var(--color-text-muted)]">Företagets bokföringsunderlag</p>
         <button
           type="button"
           onClick={() => exportCSV(entries)}
-          className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold bg-[#4B7CF3]/12 text-[#4B7CF3] border border-[#4B7CF3]/30"
+          className="flex items-center gap-1.5 px-3 h-9 rounded-full text-xs font-bold bg-[rgba(37,99,235,0.12)] text-[var(--color-accent)] border border-[rgba(37,99,235,0.3)]"
         >
           <Download className="w-3.5 h-3.5" /> CSV
         </button>
@@ -113,22 +113,22 @@ export default function LedgerVaultPanel() {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="p-3 rounded-xl bg-emerald-500/8 border border-emerald-500/20">
-          <p className="text-[11px] text-white/45">Bokförda</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Bokförda</p>
           <p className="text-2xl font-black text-emerald-400">{bookedCount}</p>
         </div>
         <div className="p-3 rounded-xl bg-amber-500/8 border border-amber-500/20">
-          <p className="text-[11px] text-white/45">Väntar underlag</p>
+          <p className="text-[11px] text-[var(--color-text-muted)]">Väntar underlag</p>
           <p className="text-2xl font-black text-amber-300">{pendingCount}</p>
         </div>
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Sök verifikat, leverantör…"
-          className="w-full h-11 pl-10 pr-4 rounded-xl text-sm bg-white/[0.06] border border-white/[0.09] text-white"
+          className="w-full h-11 pl-10 pr-4 rounded-xl text-sm bg-white border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)]"
         />
       </div>
 
@@ -144,12 +144,12 @@ export default function LedgerVaultPanel() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03 }}
               onClick={() => setSelected(entry)}
-              className="w-full rounded-xl p-3 text-left bg-white/[0.04] border border-white/[0.06]"
+              className="w-full rounded-xl p-3 text-left bg-white border border-[var(--color-border)]"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold truncate text-white">{entry.vendor}</p>
-                  <p className="text-[10px] text-white/40 mt-0.5">{entry.id} · {entry.date}</p>
+                  <p className="text-xs font-bold truncate text-[var(--color-text-primary)]">{entry.vendor}</p>
+                  <p className="text-[10px] text-[var(--color-text-muted)] mt-0.5">{entry.id} · {entry.date}</p>
                 </div>
                 <p className={`text-xs font-black tabular-nums ${entry.amount < 0 ? 'text-rose-400' : 'text-emerald-400'}`}>
                   {entry.amount < 0 ? '−' : '+'}{Math.abs(entry.amount).toLocaleString('sv-SE')} kr
@@ -163,7 +163,7 @@ export default function LedgerVaultPanel() {
         })}
 
         {filtered.length === 0 && (
-          <p className="text-center text-[14px] text-white/40 py-12">
+          <p className="text-center text-[14px] text-[var(--color-text-muted)] py-12">
             {isReset ? 'Inga verifikat än — bokför via företagsarkivet.' : 'Inga verifikat hittades.'}
           </p>
         )}

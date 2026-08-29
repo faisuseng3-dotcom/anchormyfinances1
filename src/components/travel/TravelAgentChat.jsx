@@ -187,10 +187,10 @@ const VIBE_THEMES = {
   safety: {
     Icon: Wine,
     vibe: 'Säkrast Marginal',
-    gradient: 'from-[#4fae82]/25 to-[#4fae82]/[0.03]',
-    glow: 'rgba(79,174,130,0.3)',
+    gradient: 'from-[#2563EB]/25 to-[#2563EB]/[0.03]',
+    glow: 'rgba(37,99,235,0.3)',
     tag: 'Säkrast Marginal',
-    tagColor: 'bg-[#4fae82]/20 text-[#4fae82] border-[#4fae82]/40',
+    tagColor: 'bg-[#2563EB]/20 text-[var(--color-accent)] border-[#2563EB]/40',
   },
 };
 
@@ -206,7 +206,7 @@ function BudgetDonut({ accommodationCost, activitiesCost, otherCosts, totalCost 
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth={stroke} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--color-border)" strokeWidth={stroke} />
       {/* Accommodation */}
       <circle cx={size/2} cy={size/2} r={r} fill="none"
         stroke="#6366f1" strokeWidth={stroke}
@@ -258,7 +258,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
       }}
       transition={{ delay: index * 0.1, type: 'spring', stiffness: 300, damping: 25 }}
       className={`rounded-2xl overflow-hidden border cursor-pointer transition-all ${
-        selected ? 'border-white/30' : 'border-white/10'
+        selected ? 'border-[var(--color-accent)]' : 'border-[var(--color-border)]'
       }`}
       onClick={() => onSelect(pkg)}
     >
@@ -303,7 +303,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
       </div>
 
       {/* Card body */}
-      <div className={`p-4 space-y-3 ${selected ? `bg-gradient-to-b ${theme.gradient} bg-opacity-10` : 'bg-[#1a2235]'}`}>
+      <div className={`p-4 space-y-3 ${selected ? `bg-gradient-to-b ${theme.gradient} bg-opacity-10` : 'bg-white'}`}>
         {/* Budget donut + breakdown */}
         <div className="flex items-center gap-4">
           <BudgetDonut
@@ -314,34 +314,34 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
           />
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full bg-[#4fae82] inline-block"/>Boende</span>
-              <span className="text-white font-medium">{formatNumber(pkg.accommodationCost)} kr</span>
+              <span className="flex items-center gap-1.5 text-[var(--color-text-muted)]"><span className="w-2 h-2 rounded-full bg-[var(--color-accent)] inline-block"/>Boende</span>
+              <span className="text-[var(--color-text-primary)] font-medium">{formatNumber(pkg.accommodationCost)} kr</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"/>Aktiviteter</span>
-              <span className="text-white font-medium">{formatNumber(pkg.activitiesCost)} kr</span>
+              <span className="flex items-center gap-1.5 text-[var(--color-text-muted)]"><span className="w-2 h-2 rounded-full bg-amber-500 inline-block"/>Aktiviteter</span>
+              <span className="text-[var(--color-text-primary)] font-medium">{formatNumber(pkg.activitiesCost)} kr</span>
             </div>
             <div className="flex items-center justify-between text-xs">
-              <span className="flex items-center gap-1.5 text-white/45"><span className="w-2 h-2 rounded-full bg-[#4fae82] inline-block"/>Marginal</span>
-              <span className={`font-medium ${pkg.margin < 500 ? 'text-rose-400' : 'text-emerald-400'}`}>{formatNumber(pkg.margin)} kr</span>
+              <span className="flex items-center gap-1.5 text-[var(--color-text-muted)]"><span className="w-2 h-2 rounded-full bg-[var(--color-accent)] inline-block"/>Marginal</span>
+              <span className={`font-medium ${pkg.margin < 500 ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>{formatNumber(pkg.margin)} kr</span>
             </div>
           </div>
         </div>
 
         {/* Details */}
-        <div className="space-y-1.5 text-xs border-t border-white/5 pt-3">
-          <div className="flex items-start gap-2 text-white/70">
-            <Hotel className="w-3.5 h-3.5 text-[#4fae82] mt-0.5 flex-shrink-0" />
+        <div className="space-y-1.5 text-xs border-t border-[var(--color-border)] pt-3">
+          <div className="flex items-start gap-2 text-[var(--color-text-secondary)]">
+            <Hotel className="w-3.5 h-3.5 text-[var(--color-accent)] mt-0.5 flex-shrink-0" />
             <span>{pkg.accommodation}</span>
           </div>
-          <div className="flex items-start gap-2 text-white/70">
-            <Zap className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start gap-2 text-[var(--color-text-secondary)]">
+            <Zap className="w-3.5 h-3.5 text-[var(--color-warning)] mt-0.5 flex-shrink-0" />
             <span>{pkg.activities}</span>
           </div>
         </div>
 
         {/* AI comment */}
-        <div className="text-xs italic text-white/45 bg-white/5 rounded-xl px-3 py-2">
+        <div className="text-xs italic text-[var(--color-text-muted)] bg-[var(--color-background-secondary)] rounded-xl px-3 py-2">
           <span className="inline-flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> {pkg.aiComment}</span>
         </div>
 
@@ -352,8 +352,8 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
             onClick={handleChoose}
             className={`flex-1 h-10 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
               selected
-                ? `bg-gradient-to-r ${theme.gradient} text-white shadow-lg`
-                : 'bg-white/8 hover:bg-white/15 text-white border border-white/10'
+                ? 'bg-[var(--color-accent)] text-white shadow-lg'
+                : 'bg-white hover:bg-[var(--color-background-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border)]'
             }`}
           >
             {selected ? (
@@ -366,7 +366,7 @@ function DiscoveryCard({ pkg, destImage, selected, onSelect, onBook, index }) {
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={handleBook}
-              className="h-10 px-3 rounded-xl bg-[#4fae82]/15 hover:bg-[#4fae82]/25 border border-[#4fae82]/30 text-[#4fae82] text-xs font-bold flex items-center gap-1.5 flex-shrink-0"
+              className="h-10 px-3 rounded-xl bg-[#2563EB]/15 hover:bg-[#2563EB]/25 border border-[#2563EB]/30 text-[var(--color-accent)] text-xs font-bold flex items-center gap-1.5 flex-shrink-0"
             >
               <ExternalLink className="w-3.5 h-3.5" />
               Boka
@@ -391,18 +391,18 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
     <div className="space-y-3">
       {/* Dot indicators + navigation */}
       <div className="flex items-center justify-between px-1">
-        <button onClick={prev} disabled={activeIndex === 0} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center disabled:opacity-30">
-          <ChevronLeft className="w-4 h-4 text-white" />
+        <button onClick={prev} disabled={activeIndex === 0} className="w-7 h-7 rounded-full bg-white border border-[var(--color-border)] flex items-center justify-center disabled:opacity-30">
+          <ChevronLeft className="w-4 h-4 text-[var(--color-text-primary)]" />
         </button>
         <div className="flex gap-1.5">
           {packages.map((_, i) => (
             <button key={i} onClick={() => setActiveIndex(i)}
-              className={`h-1.5 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-[#4fae82]' : 'w-1.5 bg-white/20'}`}
+              className={`h-1.5 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-[var(--color-accent)]' : 'w-1.5 bg-[var(--color-border)]'}`}
             />
           ))}
         </div>
-        <button onClick={next} disabled={activeIndex === packages.length - 1} className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center disabled:opacity-30">
-          <ChevronRight className="w-4 h-4 text-white" />
+        <button onClick={next} disabled={activeIndex === packages.length - 1} className="w-7 h-7 rounded-full bg-white border border-[var(--color-border)] flex items-center justify-center disabled:opacity-30">
+          <ChevronRight className="w-4 h-4 text-[var(--color-text-primary)]" />
         </button>
       </div>
 
@@ -427,8 +427,8 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
       </AnimatePresence>
 
       {/* Comparison mini-table */}
-      <div className="rounded-3xl border-white/8 overflow-hidden">
-        <div className="grid grid-cols-4 text-xs bg-white/5 px-3 py-2 text-white/45 font-medium">
+      <div className="rounded-3xl border border-[var(--color-border)] overflow-hidden">
+        <div className="grid grid-cols-4 text-xs bg-[var(--color-background-secondary)] px-3 py-2 text-[var(--color-text-muted)] font-medium">
           <span>Alternativ</span>
           <span className="text-center">Boende</span>
           <span className="text-center">Aktiviteter</span>
@@ -442,14 +442,14 @@ function DiscoveryCarousel({ packages, selectedPkg, onSelect, onBook, destinatio
             <div
               key={i}
               onClick={() => { setActiveIndex(i); onSelect(pkg); }}
-              className={`grid grid-cols-4 text-xs px-3 py-2.5 cursor-pointer transition-all border-t border-white/5 ${
-                selectedPkg?.id === pkg.id ? 'bg-[#4fae82]/10' : 'hover:bg-white/5'
+              className={`grid grid-cols-4 text-xs px-3 py-2.5 cursor-pointer transition-all border-t border-[var(--color-border)] ${
+                selectedPkg?.id === pkg.id ? 'bg-[var(--color-accent-soft)]' : 'hover:bg-[var(--color-background-secondary)]'
               }`}
             >
-              <span className="text-white font-medium flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> Alt {i+1}</span>
-              <span className="text-center text-white/70">{formatNumber(pkg.accommodationCost)}</span>
-              <span className="text-center text-white/70">{formatNumber(pkg.activitiesCost)}</span>
-              <span className={`text-center font-medium ${pocketMoney < 150 ? 'text-rose-400' : 'text-emerald-400'}`}>
+              <span className="text-[var(--color-text-primary)] font-medium flex items-center gap-1"><theme.Icon className="w-3.5 h-3.5" /> Alt {i+1}</span>
+              <span className="text-center text-[var(--color-text-secondary)]">{formatNumber(pkg.accommodationCost)}</span>
+              <span className="text-center text-[var(--color-text-secondary)]">{formatNumber(pkg.activitiesCost)}</span>
+              <span className={`text-center font-medium ${pocketMoney < 150 ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>
                 {formatNumber(pocketMoney)} kr
               </span>
             </div>
@@ -470,8 +470,8 @@ function CFOBubble({ budgetCheck }) {
       animate={{ opacity: 1, scale: 1, x: 0 }}
       className={`flex items-center gap-2 px-3 py-2 rounded-full border text-xs font-semibold ${
         tight
-          ? 'bg-rose-500/15 border-rose-500/40 text-rose-300'
-          : 'bg-[#4fae82]/15 border-emerald-500/40 text-emerald-300'
+          ? 'bg-rose-500/15 border-rose-500/40 text-[var(--color-danger)]'
+          : 'bg-[var(--color-success-soft)] border-[rgba(22,163,74,0.4)] text-[var(--color-success)]'
       }`}
       style={{ boxShadow: tight ? '0 0 12px rgba(239,68,68,0.2)' : '0 0 12px rgba(16,185,129,0.2)' }}
     >
@@ -489,20 +489,20 @@ function ThinkingBubble() {
   const icons = [Plane, Hotel, Wallet];
   return (
     <div className="flex gap-3">
-      <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-        <Loader2 className="w-4 h-4 text-white animate-spin" />
+      <div className="w-8 h-8 rounded-xl bg-[var(--color-accent-soft)] flex items-center justify-center flex-shrink-0">
+        <Loader2 className="w-4 h-4 text-[var(--color-accent)] animate-spin" />
       </div>
-      <div className="flex-1 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3">
-        <div className="flex items-center gap-2 text-sm text-white/45 mb-2">Analyserar din resa...</div>
+      <div className="flex-1 bg-white border border-[var(--color-border)] rounded-2xl rounded-tl-sm px-4 py-3">
+        <div className="flex items-center gap-2 text-sm text-[var(--color-text-muted)] mb-2">Analyserar din resa...</div>
         <div className="flex gap-3">
           {icons.map((IconComp, i) => (
             <motion.div
               key={i}
               animate={{ y: [-4, 0, -4], opacity: [0.3, 1, 0.3] }}
               transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
-              className="w-8 h-8 rounded-xl bg-white/8 flex items-center justify-center"
+              className="w-8 h-8 rounded-xl bg-[var(--color-background-secondary)] flex items-center justify-center"
             >
-              <IconComp className="w-4 h-4 text-[#4fae82]" />
+              <IconComp className="w-4 h-4 text-[var(--color-accent)]" />
             </motion.div>
           ))}
         </div>
@@ -701,7 +701,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
     if (msg.role === 'user') {
       return (
         <div key={i} className="flex justify-end">
-          <div className="bg-[#4fae82] text-[#08110c] rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm shadow-lg">
+          <div className="bg-[var(--color-accent)] text-white rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] text-sm shadow-lg">
             {msg.content}
           </div>
         </div>
