@@ -86,7 +86,7 @@ export default function Pricing() {
                 djupare.
               </p>
             </div>
-            <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-white/[0.06] flex items-center justify-center shadow-[var(--anchor-shadow-1)] anchor-elev-1 shrink-0">
+            <div className="w-12 h-12 rounded-[var(--anchor-radius-lg)] bg-[var(--color-background-secondary)] flex items-center justify-center shadow-[var(--anchor-shadow-1)] anchor-elev-1 shrink-0">
               <Sparkles className="w-5 h-5 text-[var(--color-accent)]" />
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function Pricing() {
                     : 'var(--color-surface-raised)',
                   borderColor: isPopular
                     ? 'color-mix(in srgb, var(--color-accent) 35%, transparent)'
-                    : 'rgba(255, 255, 255, 0.08)',
+                    : 'var(--color-border)',
                 }}
                 {...staggerItem(i)}
               >

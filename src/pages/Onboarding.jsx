@@ -295,10 +295,10 @@ export default function Onboarding() {
           />
         </div>
         <div className="flex justify-between px-5 sm:px-6 py-3">
-          <span className="anchor-type-body-sm text-white/45">
+          <span className="anchor-type-body-sm text-[var(--color-text-muted)]">
             Kom igång · steg {step + 1} av {TOTAL_STEPS}
           </span>
-          <span className="anchor-type-body-sm text-white/45 tabular-nums">{progressPercent}%</span>
+          <span className="anchor-type-body-sm text-[var(--color-text-muted)] tabular-nums">{progressPercent}%</span>
         </div>
       </div>
 
