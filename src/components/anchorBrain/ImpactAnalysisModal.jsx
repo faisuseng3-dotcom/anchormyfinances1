@@ -35,7 +35,8 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-end sm:items-center justify-center p-4"
+        className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4"
+        style={{ background: 'rgba(11,18,32,0.45)' }}
         onClick={onAccept}
       >
         <motion.div
@@ -44,34 +45,32 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
           exit={{ y: 80, opacity: 0 }}
           transition={{ type: 'spring', damping: 24 }}
           onClick={(e) => e.stopPropagation()}
-          className="w-full max-w-sm rounded-3xl overflow-hidden"
+          className="w-full max-w-sm rounded-3xl overflow-hidden bg-white border border-[var(--color-border)]"
           style={{
-            background: 'rgba(10,14,26,0.98)',
-            boxShadow: 'var(--anchor-shadow-1)',
-            boxShadow: '0 0 60px rgba(239,68,68,0.2), 0 20px 60px rgba(0,0,0,0.6)'
+            boxShadow: '0 0 60px rgba(239,68,68,0.2), 0 20px 60px rgba(11,18,32,0.25)'
           }}
         >
-          <div className="h-1 bg-[#4fae82]" />
+          <div className="h-1 bg-[var(--color-danger)]" />
           <div className="p-6">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
-                <TrendingDown className="w-5 h-5 text-rose-400" />
-                <h2 className="text-base font-bold text-white">Konsekvensanalys</h2>
+                <TrendingDown className="w-5 h-5 text-[var(--color-danger)]" />
+                <h2 className="text-base font-bold text-[var(--color-text-primary)]">Konsekvensanalys</h2>
               </div>
-              <button onClick={onAccept} className="text-white/30 hover:text-white transition-colors">
+              <button onClick={onAccept} className="text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-white/40 mb-5">Impulsköp – 800 kr</p>
+            <p className="text-xs text-[var(--color-text-muted)] mb-5">Impulsköp – 800 kr</p>
 
             {/* Chart */}
             <ResponsiveContainer width="100%" height={150}>
               <BarChart data={chartData} barSize={48}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-                <XAxis dataKey="label" tick={{ fill: 'rgba(148,163,184,0.7)', fontSize: 10 }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+                <XAxis dataKey="label" tick={{ fill: 'var(--color-text-secondary)', fontSize: 10 }} axisLine={false} tickLine={false} />
                 <YAxis hide />
                 <Tooltip
-                  contentStyle={{ background: 'rgba(10,14,26,0.95)', boxShadow: 'var(--anchor-shadow-1)', borderRadius: 8, fontSize: 12 }}
+                  contentStyle={{ background: '#FFFFFF', border: '1px solid var(--color-border)', boxShadow: 'var(--anchor-shadow-1)', borderRadius: 8, fontSize: 12 }}
                   formatter={(v) => [`${formatNumber(v)} kr`, '']}
                 />
                 <Bar dataKey="value" radius={[6, 6, 0, 0]}>
@@ -83,12 +82,12 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
             </ResponsiveContainer>
 
             {/* Impact text */}
-            <div className="mt-4 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20">
-              <p className="text-sm text-white/70 leading-relaxed">
-                Detta köp tar <span className="text-rose-400 font-bold">800 kr</span> från din månadsmarginal.
-                Din nya marginal: <span className="font-bold text-white">{formatNumber(marginAfter)} kr</span>.
+            <div className="mt-4 p-4 rounded-xl bg-[var(--color-danger-soft)] border border-[var(--color-danger)]/20">
+              <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">
+                Detta köp tar <span className="text-[var(--color-danger)] font-bold">800 kr</span> från din månadsmarginal.
+                Din nya marginal: <span className="font-bold text-[var(--color-text-primary)]">{formatNumber(marginAfter)} kr</span>.
                 {marginAfter < 0 && (
-                  <span className="text-rose-400"> Du är nu <strong>{formatNumber(Math.abs(marginAfter))} kr</strong> under noll.</span>
+                  <span className="text-[var(--color-danger)]"> Du är nu <strong>{formatNumber(Math.abs(marginAfter))} kr</strong> under noll.</span>
                 )}
               </p>
             </div>
@@ -98,18 +97,18 @@ export default function ImpactAnalysisModal({ isOpen, onUndo, onAccept, profile 
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl bg-[#4fae82]/20 border border-emerald-500/30"
+                className="mt-5 flex items-center justify-center gap-2 py-3 rounded-2xl bg-[var(--color-success-soft)] border border-[var(--color-success)]/30"
               >
-                <CheckCircle className="w-5 h-5 text-emerald-400" />
-                <p className="text-sm font-semibold text-emerald-300">Köp ångrat! +800 kr återställt.</p>
+                <CheckCircle className="w-5 h-5 text-[var(--color-success)]" />
+                <p className="text-sm font-semibold text-[var(--color-success)]">Köp ångrat! +800 kr återställt.</p>
               </motion.div>
             ) : (
               <div className="flex gap-3 mt-5">
-                <Button onClick={handleUndo} className="flex-1 rounded-xl bg-[#4fae82] hover:opacity-90 text-white text-sm">
+                <Button onClick={handleUndo} className="flex-1 rounded-xl bg-[var(--color-accent)] hover:opacity-90 text-white text-sm">
                   <Undo2 className="w-4 h-4 mr-1.5" />
                   Ångra köp
                 </Button>
-                <Button onClick={onAccept} variant="outline" className="flex-1 rounded-2xl-white/10 hover:bg-white/5 text-white/70 text-sm">
+                <Button onClick={onAccept} variant="outline" className="flex-1 rounded-2xl border border-[var(--color-border)] hover:bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] text-sm">
                   Acceptera
                 </Button>
               </div>

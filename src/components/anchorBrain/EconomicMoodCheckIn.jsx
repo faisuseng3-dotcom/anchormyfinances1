@@ -26,7 +26,7 @@ export default function EconomicMoodCheckIn({ onComplete }) {
       className="py-6 text-center"
     >
       <p className={dashLabel}>Innan siffrorna</p>
-      <h2 className="text-[22px] font-light text-white mt-2 tracking-tight">
+      <h2 className="text-[22px] font-light text-[var(--color-text-primary)] mt-2 tracking-tight">
         Hur känns ekonomin idag?
       </h2>
 
@@ -41,8 +41,8 @@ export default function EconomicMoodCheckIn({ onComplete }) {
               onClick={() => handlePick(m.id)}
               className={`px-5 py-3 rounded-full text-[14px] font-medium transition-all ${
                 on
-                  ? 'bg-white text-[#050d28] shadow-[0_0_32px_rgba(255,255,255,0.2)]'
-                  : 'bg-white/[0.06] text-white/75 ring-1 ring-white/[0.1] hover:bg-white/[0.1]'
+                  ? 'bg-[var(--color-accent)] text-white shadow-[var(--anchor-shadow-1)]'
+                  : 'bg-white text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)] hover:bg-[var(--color-background-secondary)]'
               }`}
             >
               {m.label}
@@ -50,7 +50,7 @@ export default function EconomicMoodCheckIn({ onComplete }) {
           );
         })}
       </div>
-      <p className="text-[12px] text-white/35 mt-4 max-w-[260px] mx-auto">
+      <p className="text-[12px] text-[var(--color-text-muted)] mt-4 max-w-[260px] mx-auto">
         Vi anpassar hur mycket som visas — inget skuldbeläggning.
       </p>
     </motion.section>
