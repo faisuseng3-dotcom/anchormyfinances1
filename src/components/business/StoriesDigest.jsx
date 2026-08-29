@@ -107,7 +107,7 @@ export default function StoriesDigest() {
                 <story.Icon className="w-6 h-6" style={{ color: story.color }} />
                 {!isSeen && (
                   <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full border-2"
-                    style={{ background: '#0D7377', borderColor: '#0F1724' }} />
+                    style={{ background: '#0D7377', borderColor: '#F4F6F8' }} />
                 )}
               </div>
               <p className="text-[10px] font-semibold text-center w-16 leading-tight truncate"

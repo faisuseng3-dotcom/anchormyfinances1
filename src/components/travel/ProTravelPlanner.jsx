@@ -135,7 +135,7 @@ Beräkna:
         animate={{ opacity: 1, y: 0 }}
         className="dark-card p-6 rounded-2xl"
       >
-        <h3 className="font-semibold text-white mb-4">Reseinformation</h3>
+        <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Reseinformation</h3>
         <div className="space-y-4">
           <div>
             <Label>Destination</Label>
@@ -149,7 +149,7 @@ Beräkna:
           <div>
             <Label className="flex items-center justify-between">
               <span>Total resekostnad</span>
-              <span className="text-[#4fae82] font-medium">{formatNumber(travelCost)} kr</span>
+              <span className="text-[var(--color-accent)] font-medium">{formatNumber(travelCost)} kr</span>
             </Label>
             <Slider
               value={[travelCost]}
@@ -159,7 +159,7 @@ Beräkna:
               step={1000}
               className="mt-3"
             />
-            <div className="flex justify-between text-xs text-white/40 mt-1">
+            <div className="flex justify-between text-xs text-[var(--color-text-muted)] mt-1">
               <span>5 000 kr</span>
               <span>50 000 kr</span>
             </div>
@@ -174,37 +174,37 @@ Beräkna:
         transition={{ delay: 0.1 }}
         className="dark-card p-6 rounded-2xl"
       >
-        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-[#4fae82]" />
+        <h3 className="font-semibold text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-[var(--color-accent)]" />
           12-månaders kassaflödesprognos
         </h3>
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={impactData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis 
-              dataKey="label" 
-              stroke="#9CA3AF" 
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
+            <XAxis
+              dataKey="label"
+              stroke="var(--color-text-secondary)"
               style={{ fontSize: '12px' }}
             />
-            <YAxis 
-              stroke="#9CA3AF" 
+            <YAxis
+              stroke="var(--color-text-secondary)"
               style={{ fontSize: '12px' }}
               tickFormatter={(value) => `${Math.round(value/1000)}k`}
             />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1F2937', 
-                border: '1px solid #374151',
+            <Tooltip
+              contentStyle={{
+                backgroundColor: '#FFFFFF',
+                border: '1px solid var(--color-border)',
                 borderRadius: '8px',
-                color: '#F3F4F6'
+                color: 'var(--color-text-primary)'
               }}
               formatter={(value) => `${formatNumber(value)} kr`}
             />
-            <ReferenceLine 
-              y={fixedExpenses * 2} 
-              stroke="#EF4444" 
+            <ReferenceLine
+              y={fixedExpenses * 2}
+              stroke="var(--color-danger)"
               strokeDasharray="3 3"
-              label={{ value: 'Kritisk nivå', fill: '#EF4444', fontSize: 10 }}
+              label={{ value: 'Kritisk nivå', fill: 'var(--color-danger)', fontSize: 10 }}
             />
             <Line 
               type="monotone" 
@@ -226,12 +226,12 @@ Beräkna:
         </ResponsiveContainer>
         <div className="flex items-center justify-center gap-6 mt-4 text-xs">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#4fae82] rounded-full" />
-            <span className="text-white/45">Utan resa</span>
+            <div className="w-3 h-3 bg-[var(--color-accent)] rounded-full" />
+            <span className="text-[var(--color-text-muted)]">Utan resa</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 bg-[#4fae82] rounded-full" />
-            <span className="text-white/45">Med resa</span>
+            <div className="w-3 h-3 bg-[var(--color-accent)] rounded-full" />
+            <span className="text-[var(--color-text-muted)]">Med resa</span>
           </div>
         </div>
       </motion.div>
@@ -242,36 +242,36 @@ Beräkna:
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className={`p-6 rounded-3xl-2 ${
-          isCritical 
-            ? 'border-rose-500 bg-rose-500/10' 
-            : isRisky 
+          isCritical
+            ? 'border-rose-500 bg-rose-500/10'
+            : isRisky
             ? 'border-amber-500 bg-amber-500/10'
-            : 'border-emerald-500 bg-[#4fae82]/10'
+            : 'border-[var(--color-success)] bg-[var(--color-success-soft)]'
         }`}
       >
         <div className="flex items-start gap-4">
           {isCritical ? (
-            <AlertTriangle className="w-8 h-8 text-rose-400 flex-shrink-0" />
+            <AlertTriangle className="w-8 h-8 text-[var(--color-danger)] flex-shrink-0" />
           ) : isRisky ? (
-            <AlertTriangle className="w-8 h-8 text-amber-400 flex-shrink-0" />
+            <AlertTriangle className="w-8 h-8 text-[var(--color-warning)] flex-shrink-0" />
           ) : (
-            <Target className="w-8 h-8 text-emerald-400 flex-shrink-0" />
+            <Target className="w-8 h-8 text-[var(--color-success)] flex-shrink-0" />
           )}
           <div className="flex-1">
-            <h3 className="font-semibold text-white mb-1">Financial Stability Score</h3>
-            <p className="text-4xl font-bold text-white mb-3">{stabilityScore}/100</p>
+            <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">Financial Stability Score</h3>
+            <p className="text-4xl font-bold text-[var(--color-text-primary)] mb-3">{stabilityScore}/100</p>
             {isCritical && (
-              <p className="text-rose-400 text-sm font-medium">
+              <p className="text-[var(--color-danger)] text-sm font-medium">
                 <span className="inline-flex items-center gap-1"><Ban className="w-4 h-4" /> KRITISK: Denna resa tömmer bufferten under säker nivå. Strategiskt godkännande blockerat.</span>
               </p>
             )}
             {isRisky && !isCritical && (
-              <p className="text-amber-400 text-sm font-medium">
+              <p className="text-[var(--color-warning)] text-sm font-medium">
                 <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> RISK: Bufferten blir låg. Överväg att minska kostnaden eller skjuta upp resan.</span>
               </p>
             )}
             {!isRisky && (
-              <p className="text-emerald-400 text-sm font-medium">
+              <p className="text-[var(--color-success)] text-sm font-medium">
                 <span className="inline-flex items-center gap-1"><Check className="w-4 h-4" /> SÄKER: Denna utgift är strategiskt godkänd för din långsiktiga plan.</span>
               </p>
             )}
@@ -283,7 +283,7 @@ Beräkna:
       <Button
         onClick={handleStrategicAnalysis}
         disabled={!destination || loading}
-        className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90"
+        className="w-full h-12 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]"
       >
         {loading ? (
           <>
@@ -308,37 +308,37 @@ Beräkna:
           {/* Goal Delay */}
           <div className="dark-card p-5 rounded-xl">
             <div className="flex items-center gap-3 mb-3">
-              <Calendar className="w-5 h-5 text-blue-400" />
-              <h4 className="font-semibold text-white">Påverkan på sparmål</h4>
+              <Calendar className="w-5 h-5 text-[var(--color-accent)]" />
+              <h4 className="font-semibold text-[var(--color-text-primary)]">Påverkan på sparmål</h4>
             </div>
-            <p className="text-2xl font-bold text-blue-400 mb-2">
+            <p className="text-2xl font-bold text-[var(--color-accent)] mb-2">
               +{simulation.goal_delay_months} månader
             </p>
-            <p className="text-sm text-white/45">
+            <p className="text-sm text-[var(--color-text-muted)]">
               Denna resa fördröjer ditt {profile.savingsGoalName || 'sparmål'} med {simulation.goal_delay_months} månader.
             </p>
           </div>
 
           {/* Risk Analysis */}
           <div className="dark-card p-5 rounded-xl">
-            <h4 className="font-semibold text-white mb-2">Riskanalys</h4>
-            <p className="text-sm text-white/70">{simulation.risk_analysis}</p>
+            <h4 className="font-semibold text-[var(--color-text-primary)] mb-2">Riskanalys</h4>
+            <p className="text-sm text-[var(--color-text-secondary)]">{simulation.risk_analysis}</p>
           </div>
 
           {/* Strategic Recommendation */}
           <div className={`p-5 rounded-2xl ${
-            simulation.is_safe 
-              ? 'border-emerald-500/30 bg-[#4fae82]/10' 
+            simulation.is_safe
+              ? 'border-[rgba(22,163,74,0.3)] bg-[var(--color-success-soft)]'
               : 'border-rose-500/30 bg-rose-500/10'
           }`}>
-            <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
+            <h4 className="font-semibold text-[var(--color-text-primary)] mb-2 flex items-center gap-2">
               {simulation.is_safe ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />} CFO-rekommendation
             </h4>
-            <p className="text-sm text-white/70 mb-3">{simulation.strategic_recommendation}</p>
+            <p className="text-sm text-[var(--color-text-secondary)] mb-3">{simulation.strategic_recommendation}</p>
             {simulation.alternative_scenario && (
-              <div className="mt-3 pt-3 border-t border-white/10">
-                <p className="text-xs text-white/45 mb-1">Alternativt scenario:</p>
-                <p className="text-sm text-white/70">{simulation.alternative_scenario}</p>
+              <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
+                <p className="text-xs text-[var(--color-text-muted)] mb-1">Alternativt scenario:</p>
+                <p className="text-sm text-[var(--color-text-secondary)]">{simulation.alternative_scenario}</p>
               </div>
             )}
           </div>
@@ -346,20 +346,20 @@ Beräkna:
           {/* Trade-off Confirmation */}
           {!simulation.is_safe ? (
             <div className="dark-card p-5 rounded-xl text-center">
-              <p className="text-sm text-white/45 mb-3">
+              <p className="text-sm text-[var(--color-text-muted)] mb-3">
                 Är du okej med denna trade-off?
               </p>
               <div className="grid grid-cols-2 gap-3">
                 <Button variant="outline" className="rounded-xl">
                   Nej, justera
                 </Button>
-                <Button className="rounded-xl bg-[#4fae82]">
+                <Button className="rounded-xl bg-[var(--color-accent)]">
                   Ja, jag accepterar
                 </Button>
               </div>
             </div>
           ) : (
-            <Button className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90">
+            <Button className="w-full h-12 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]">
               <Check className="w-4 h-4 mr-1" /> Godkänn strategisk reseinvestering
             </Button>
           )}

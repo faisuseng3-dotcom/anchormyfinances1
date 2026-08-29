@@ -189,7 +189,7 @@ export default function Import() {
             className="flex flex-col items-center py-24 gap-4"
           >
             <Loader2 className="w-10 h-10 animate-spin text-[var(--copilot-accent-blue)]" />
-            <p className="text-[16px] font-semibold text-white">{analyzeLabel}</p>
+            <p className="text-[16px] font-semibold text-[var(--color-text-primary)]">{analyzeLabel}</p>
             <p className="text-[13px] text-[var(--copilot-text-muted)]">Detta tar några sekunder</p>
           </motion.div>
         )}
@@ -220,11 +220,11 @@ export default function Import() {
           >
             <div
               className="w-16 h-16 rounded-full flex items-center justify-center"
-              style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+              style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}
             >
               <CheckCircle2 className="w-8 h-8 text-[var(--copilot-accent-green)]" />
             </div>
-            <p className="text-[22px] font-bold text-white">Import klar</p>
+            <p className="text-[22px] font-bold text-[var(--color-text-primary)]">Import klar</p>
             <p className="text-[14px] text-[var(--copilot-text-secondary)] max-w-xs">
               Transaktionerna är sparade. Din översikt uppdateras med dina fria pengar.
             </p>

@@ -20,40 +20,40 @@ export default function EmotionalShield({ profile }) {
       }`}
     >
       <div className="flex items-center gap-3 mb-4">
-        <Shield className={`w-6 h-6 ${isRiskTime ? 'text-amber-400' : 'text-emerald-400'}`} />
-        <h3 className="font-semibold text-white">Emotional Spending Shield</h3>
+        <Shield className={`w-6 h-6 ${isRiskTime ? 'text-[var(--color-warning)]' : 'text-[var(--color-success)]'}`} />
+        <h3 className="font-semibold text-[var(--color-text-primary)]">Emotional Spending Shield</h3>
       </div>
 
       {isRiskTime ? (
         <>
           <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-5 h-5 text-amber-400" />
-            <p className="text-amber-400 font-medium">Risk-tid aktiv</p>
+            <Clock className="w-5 h-5 text-[var(--color-warning)]" />
+            <p className="text-[var(--color-warning)] font-medium">Risk-tid aktiv</p>
           </div>
-          <p className="text-sm text-slate-300 mb-4">
+          <p className="text-sm text-[var(--color-text-secondary)] mb-4">
             Du är i en risktid för impulsköp (sen kväll eller helg).
           </p>
-          <div className="p-4 rounded-xl bg-black/20 border border-amber-500/30">
-            <p className="text-sm text-white font-medium mb-2">
+          <div className="p-4 rounded-xl bg-white border border-amber-500/30">
+            <p className="text-sm text-[var(--color-text-primary)] font-medium mb-2">
               <MessageCircle className="w-4 h-4 inline mr-1" aria-hidden /> Fråga dig själv:
             </p>
-            <p className="text-sm text-slate-300">
+            <p className="text-sm text-[var(--color-text-secondary)]">
               "Kommer detta köp göra mig lycklig om 30 dagar?"
             </p>
           </div>
         </>
       ) : (
         <>
-          <p className="text-emerald-400 font-medium mb-2 inline-flex items-center gap-1"><Check className="w-4 h-4" aria-hidden /> Säker köptid</p>
-          <p className="text-sm text-slate-300">
+          <p className="text-[var(--color-success)] font-medium mb-2 inline-flex items-center gap-1"><Check className="w-4 h-4" aria-hidden /> Säker köptid</p>
+          <p className="text-sm text-[var(--color-text-secondary)]">
             Du är inte i en risktid för impulsköp just nu.
           </p>
         </>
       )}
 
-      <div className="mt-6 p-4 rounded-xl bg-white/5">
-        <p className="text-xs text-slate-400 mb-2">Dina risktider:</p>
-        <div className="space-y-1 text-sm text-slate-300">
+      <div className="mt-6 p-4 rounded-xl bg-white border border-[var(--color-border)]">
+        <p className="text-xs text-[var(--color-text-secondary)] mb-2">Dina risktider:</p>
+        <div className="space-y-1 text-sm text-[var(--color-text-secondary)]">
           <p className="inline-flex items-center gap-1.5"><Moon className="w-3.5 h-3.5" aria-hidden /> Kvällar efter 20:00</p>
           <p className="inline-flex items-center gap-1.5"><PartyPopper className="w-3.5 h-3.5" aria-hidden /> Helger (lördag & söndag)</p>
           <p className="inline-flex items-center gap-1.5"><Store className="w-3.5 h-3.5" aria-hidden /> Köpcentrum (platsbaserat - kommer snart)</p>

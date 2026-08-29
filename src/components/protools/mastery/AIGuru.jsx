@@ -48,7 +48,7 @@ Ge en tydlig insikt om vad det betyder per år.`,
         <p className={sectionMetaClass}>Extra sparande per månad</p>
         <p className={`${anchorDisplayClass} mt-2`} style={{ fontSize: '2.25rem' }}>
           {extra.toLocaleString('sv-SE')}
-          <span className="text-lg font-medium text-white/40 ml-1">kr</span>
+          <span className="text-lg font-medium text-[var(--color-text-muted)] ml-1">kr</span>
         </p>
         <input
           type="range"
@@ -57,7 +57,7 @@ Ge en tydlig insikt om vad det betyder per år.`,
           step={100}
           value={extra}
           onChange={(e) => setExtra(Number(e.target.value))}
-          className="w-full mt-4 h-1 rounded-full appearance-none cursor-pointer accent-white"
+          className="w-full mt-4 h-1 rounded-full appearance-none cursor-pointer accent-[var(--color-accent)]"
         />
         <div className="flex justify-between mt-1">
           <span className={sectionMetaClass}>100 kr</span>
@@ -77,11 +77,11 @@ Ge en tydlig insikt om vad det betyder per år.`,
       <div className="min-h-[72px]">
         {loading ? (
           <div className="flex items-center gap-2">
-            <Loader2 className="w-4 h-4 text-white/50 animate-spin" />
+            <Loader2 className="w-4 h-4 text-[var(--color-text-secondary)] animate-spin" />
             <p className={sectionSubtitleClass}>Räknar…</p>
           </div>
         ) : (
-          <p className="text-[15px] text-white/80 leading-relaxed">
+          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed">
             {aiResponse || 'Dra i reglaget för att se effekten.'}
           </p>
         )}

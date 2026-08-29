@@ -43,7 +43,7 @@ export default function MarginMaxer({ profile }) {
       {totalKilled > 0 && (
         <div className="text-center py-2">
           <p className={sectionMetaClass}>Du sparar nu</p>
-          <p className="text-[28px] font-semibold text-emerald-300/90 tabular-nums mt-1">
+          <p className="text-[28px] font-semibold text-[var(--color-success)] tabular-nums mt-1">
             +{totalKilled.toLocaleString('sv-SE')} kr/mån
           </p>
           <p className={sectionSubtitleClass}>
@@ -57,7 +57,7 @@ export default function MarginMaxer({ profile }) {
       )}
 
       {subs.length === 0 && totalKilled > 0 && (
-        <p className="text-[15px] text-white/75 text-center">Alla listade abonnemang är borttagna.</p>
+        <p className="text-[15px] text-[var(--color-text-secondary)] text-center">Alla listade abonnemang är borttagna.</p>
       )}
 
       {subs.map((sub, i) => {
@@ -71,7 +71,7 @@ export default function MarginMaxer({ profile }) {
             {i > 0 && <DashboardDivider />}
             <div className="flex items-center gap-3 py-3">
               <div className="flex-1 min-w-0">
-                <p className="text-[15px] font-medium text-white">{sub.name}</p>
+                <p className="text-[15px] font-medium text-[var(--color-text-primary)]">{sub.name}</p>
                 <p className={sectionMetaClass}>
                   {(sub.amount || 0).toLocaleString('sv-SE')} kr/mån
                   {sub.category && ` · ${CATEGORY_LABELS[sub.category] || sub.category}`}
@@ -84,7 +84,7 @@ export default function MarginMaxer({ profile }) {
                 className={`${anchorSecondaryButtonClass} h-10 px-4 text-[13px] shrink-0`}
               >
                 {loading === idx ? (
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-[var(--color-border)] border-t-[var(--color-text-primary)] rounded-full animate-spin" />
                 ) : (
                   <>
                     <Scissors className="w-3.5 h-3.5" /> Pausa
@@ -99,11 +99,11 @@ export default function MarginMaxer({ profile }) {
       {killedSubs.length > 0 && (
         <>
           <DashboardDivider />
-          <p className="text-[13px] font-medium text-white/45 mb-2">Borttagna</p>
+          <p className="text-[13px] font-medium text-[var(--color-text-muted)] mb-2">Borttagna</p>
           {killedSubs.map((sub, i) => (
             <DashboardListRow
               key={i}
-              leading={<Check className="w-4 h-4 text-emerald-400/80" />}
+              leading={<Check className="w-4 h-4 text-[var(--color-success)]" />}
               title={sub.name}
               subtitle={`−${sub.amount} kr/mån`}
             />

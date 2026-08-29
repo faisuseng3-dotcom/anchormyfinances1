@@ -19,8 +19,8 @@ const CATEGORY_LABELS = {
 };
 
 const CATEGORY_COLORS = [
-  '#4fae82', '#4fae82', 'rgba(255,255,255,0.75)', '#4fae82',
-  '#4fae82', 'rgba(255,255,255,0.75)', 'rgba(255,255,255,0.4)', 'rgba(255,255,255,0.55)'
+  '#2563EB', '#2563EB', '#64748B', '#2563EB',
+  '#2563EB', '#64748B', 'rgba(11,18,32,0.42)', 'rgba(11,18,32,0.55)'
 ];
 
 function getMonthKey(dateStr) {
@@ -45,7 +45,7 @@ function isIncome(tx) {
 function CustomTooltip({ active, payload }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl px-3 py-2 text-sm bg-[var(--copilot-bg-deep)] text-white shadow-xl organic-surface">
+    <div className="rounded-xl px-3 py-2 text-sm bg-[var(--copilot-bg-card)] border border-[var(--color-border)] text-[var(--color-text-primary)] shadow-xl organic-surface">
       <p className="font-semibold">{payload[0].name}</p>
       <p className="tabular-nums">{payload[0].value?.toLocaleString('sv-SE')} kr</p>
     </div>
@@ -103,7 +103,7 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
     return (
       <div className="py-16 text-center">
         <TrendingUp className="w-10 h-10 mx-auto mb-4 text-[var(--copilot-text-muted)]" />
-        <p className="text-[17px] font-semibold text-white mb-1">Din ekonomi väntar på data</p>
+        <p className="text-[17px] font-semibold text-[var(--color-text-primary)] mb-1">Din ekonomi väntar på data</p>
         <p className="text-[14px] text-[var(--copilot-text-secondary)]">Importera transaktioner för kategorier och trender.</p>
         <Link to="/Import" className={`inline-flex mt-6 px-6 no-underline ${copilotPrimaryBtnClass}`}>
           Importera bank-data
@@ -134,7 +134,7 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
               </PieChart>
             </ResponsiveContainer>
 
-            <p className="text-center text-[28px] font-semibold text-white tabular-nums -mt-1">
+            <p className="text-center text-[28px] font-semibold text-[var(--color-text-primary)] tabular-nums -mt-1">
               {displayedTotalExpenses.toLocaleString('sv-SE')} kr
             </p>
             <p className="text-center text-[13px] text-[var(--copilot-text-muted)] mb-4">investerat i din vardag</p>
@@ -144,14 +144,14 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
                 <div key={d.key} className="flex items-center gap-2 py-1">
                   <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: CATEGORY_COLORS[i % CATEGORY_COLORS.length] }} />
                   <p className="text-[14px] text-[var(--copilot-text-secondary)] flex-1 truncate">{d.name}</p>
-                  <p className="text-[14px] font-medium tabular-nums text-white">{d.value.toLocaleString('sv-SE')}</p>
+                  <p className="text-[14px] font-medium tabular-nums text-[var(--color-text-primary)]">{d.value.toLocaleString('sv-SE')}</p>
                 </div>
               ))}
             </div>
 
             {topCategory && (
               <p className="text-[14px] text-[var(--copilot-accent-green)] mt-4 leading-relaxed">
-                Störst fokus: <strong className="text-white">{topCategory.name}</strong> — {topCategory.value.toLocaleString('sv-SE')} kr ({Math.round((topCategory.value / totalExpenses) * 100)}%)
+                Störst fokus: <strong className="text-[var(--color-text-primary)]">{topCategory.name}</strong> — {topCategory.value.toLocaleString('sv-SE')} kr ({Math.round((topCategory.value / totalExpenses) * 100)}%)
               </p>
             )}
           </>
@@ -161,14 +161,14 @@ export default function TransactionInsightsPanel({ transactions = [], isLoading,
       <GlassSection title="Senaste 6 månaderna" subtitle="Inkomst och utgifter i balans">
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={barData} barSize={12} barGap={4}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
             <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--copilot-text-muted)' }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fontSize: 10, fill: 'var(--copilot-text-muted)' }} axisLine={false} tickLine={false}
               tickFormatter={v => v >= 1000 ? `${Math.round(v / 1000)}k` : v} />
             <Tooltip content={<CustomTooltip />} />
             <Legend wrapperStyle={{ fontSize: 12, color: 'var(--copilot-text-secondary)', paddingTop: 8 }} />
-            <Bar dataKey="Inkomst" fill="#4fae82" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="Utgifter" fill="rgba(255,255,255,0.28)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Inkomst" fill="var(--color-success)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Utgifter" fill="var(--color-text-muted)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
 

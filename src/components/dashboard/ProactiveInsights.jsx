@@ -120,17 +120,16 @@ export default function ProactiveInsights({ profile, transactions }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="rounded-[20px] overflow-hidden"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+      className="rounded-[20px] overflow-hidden bg-white border border-[var(--color-border)]"
     >
       <div className="px-4 pt-4 pb-1 flex items-center gap-2">
         <h2 className="anchor-card-title">Insikter</h2>
       </div>
-      <div className="divide-y divide-white/[0.05]">
+      <div className="divide-y divide-[var(--color-border)]">
         {insights.map((insight, i) => (
           <div key={i} className="flex items-start gap-2.5 px-4 py-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4fae82]/60 shrink-0 mt-2" />
-            <p className="text-[13px] text-white/70 leading-relaxed">{insight}</p>
+            <span className="w-1.5 h-1.5 rounded-full bg-[rgba(37,99,235,0.6)] shrink-0 mt-2" />
+            <p className="text-[13px] text-[var(--color-text-secondary)] leading-relaxed">{insight}</p>
           </div>
         ))}
       </div>

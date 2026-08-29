@@ -27,7 +27,7 @@ export default function FutureTimeline({ profile }) {
 
   if (futureEvents.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-500 text-sm">
+      <div className="text-center py-8 text-[var(--color-text-secondary)] text-sm">
         <span className="inline-flex items-center gap-1.5 justify-center">
           Ingen kommande händelser. Du är i kontroll! <PartyPopper className="w-4 h-4" />
         </span>
@@ -53,37 +53,37 @@ export default function FutureTimeline({ profile }) {
                 ? 'bg-red-500/10 border-red-500/30'
                 : isImmediate
                 ? 'bg-amber-500/10 border-amber-500/30'
-                : 'bg-white/5 border-white/10'
+                : 'bg-white border-[var(--color-border)]'
             }`}
           >
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3 flex-1">
                 {/* Icon */}
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                  isCritical ? 'bg-red-500/20' : isImmediate ? 'bg-amber-500/20' : 'bg-white/10'
+                  isCritical ? 'bg-red-500/20' : isImmediate ? 'bg-amber-500/20' : 'bg-[var(--color-background-secondary)]'
                 }`}>
                   <EventCategoryIcon
                     event={event}
                     size={18}
-                    className={isCritical ? 'text-red-400' : isImmediate ? 'text-amber-400' : 'text-slate-400'}
+                    className={isCritical ? 'text-[var(--color-danger)]' : isImmediate ? 'text-[var(--color-warning)]' : 'text-[var(--color-text-secondary)]'}
                   />
                 </div>
 
                 {/* Content */}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <p className="font-semibold text-white">{event.description}</p>
+                    <p className="font-semibold text-[var(--color-text-primary)]">{event.description}</p>
                     {isImmediate && (
                       <motion.span
                         animate={{ scale: [1, 1.2, 1] }}
                         transition={{ duration: 0.6, repeat: Infinity }}
-                        className="text-amber-400 text-lg"
+                        className="text-[var(--color-warning)] text-lg"
                       >
                         <Zap className="w-4 h-4" />
                       </motion.span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-[var(--color-text-secondary)]">
                     {daysUntil === 0 ? 'Idag' : daysUntil === 1 ? 'Imorgon' : `Om ${daysUntil} dagar`} · {event.date}
                   </p>
                 </div>
@@ -91,10 +91,10 @@ export default function FutureTimeline({ profile }) {
 
               {/* Amount & Balance */}
               <div className="text-right">
-                <p className={`font-bold ${event.amount < 0 ? 'text-red-400' : 'text-slate-400'}`}>
+                <p className={`font-bold ${event.amount < 0 ? 'text-[var(--color-danger)]' : 'text-[var(--color-text-secondary)]'}`}>
                   {event.amount < 0 ? '-' : '+'}{Math.abs(event.amount).toLocaleString('sv-SE')} kr
                 </p>
-                <p className={`text-xs ${isCritical ? 'text-red-300' : 'text-slate-400'}`}>
+                <p className={`text-xs ${isCritical ? 'text-[var(--color-danger)]' : 'text-[var(--color-text-secondary)]'}`}>
                   Saldo: {event.balance.toLocaleString('sv-SE')} kr
                 </p>
               </div>
@@ -105,7 +105,7 @@ export default function FutureTimeline({ profile }) {
               <motion.div
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-3 flex items-center gap-2 text-xs text-red-300"
+                className="mt-3 flex items-center gap-2 text-xs text-[var(--color-danger)]"
               >
                 <AlertCircle className="w-4 h-4" />
                 <span>Saldo går negativt. Kontrollera din budget!</span>

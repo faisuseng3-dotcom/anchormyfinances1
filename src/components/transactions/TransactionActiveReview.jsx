@@ -83,11 +83,11 @@ export default function TransactionActiveReview({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[13px] text-[var(--copilot-text-secondary)]">
-          <span className="text-white font-semibold">{index + 1}</span> / {total} ·{' '}
+          <span className="text-[var(--color-text-primary)] font-semibold">{index + 1}</span> / {total} ·{' '}
           <span className="text-[var(--copilot-accent-green)]">{approvedCount} godkända</span>
         </p>
         {getNeedsReview?.(current) && (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-300/90">
+          <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[var(--color-warning)]">
             <AlertCircle className="w-3.5 h-3.5" /> Granska
           </span>
         )}
@@ -97,7 +97,7 @@ export default function TransactionActiveReview({
         <button
           type="button"
           onClick={approveAllRemaining}
-          className="text-[12px] font-medium text-[var(--copilot-text-muted)] hover:text-white/70 transition-colors underline underline-offset-2"
+          className="text-[12px] font-medium text-[var(--copilot-text-muted)] hover:text-[var(--color-text-primary)] transition-colors underline underline-offset-2"
         >
           Godkänn alla {total - index} resterande på en gång
         </button>
@@ -111,7 +111,7 @@ export default function TransactionActiveReview({
           GODKÄNN →
         </motion.div>
         <motion.div
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-rose-300 font-bold text-sm pointer-events-none"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-danger)] font-bold text-sm pointer-events-none"
           style={{ opacity: skipOpacity }}
         >
           ← HOPPA
@@ -131,7 +131,7 @@ export default function TransactionActiveReview({
             transition={{ duration: 0.22 }}
             className="w-full max-w-sm cursor-grab active:cursor-grabbing"
           >
-            <div className="rounded-3xl p-5 touch-pan-y" style={{ background: 'rgba(255,255,255,0.06)', boxShadow: 'var(--organic-shadow-soft)' }}>
+            <div className="rounded-3xl p-5 touch-pan-y border border-[var(--color-border)]" style={{ background: 'var(--color-surface)', boxShadow: 'var(--organic-shadow-soft)' }}>
               <div className="flex items-start gap-3">
                 <div
                   className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
@@ -140,12 +140,12 @@ export default function TransactionActiveReview({
                   <CategoryIcon category={cat} size={20} color={tint.accent} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-[16px] font-semibold text-white leading-snug">
+                  <p className="text-[16px] font-semibold text-[var(--color-text-primary)] leading-snug">
                     {getDescription(current)}
                   </p>
                   <p className="text-[12px] text-[var(--copilot-text-muted)] mt-1">{getDate(current)}</p>
                 </div>
-                <p className={`text-[17px] font-bold tabular-nums shrink-0 ${isNegative ? 'text-rose-300' : 'text-[var(--copilot-accent-green)]'}`}>
+                <p className={`text-[17px] font-bold tabular-nums shrink-0 ${isNegative ? 'text-[var(--color-danger)]' : 'text-[var(--copilot-accent-green)]'}`}>
                   {isNegative ? '−' : '+'}{Math.abs(amount).toLocaleString('sv-SE')}
                 </p>
               </div>
@@ -163,7 +163,7 @@ export default function TransactionActiveReview({
                         className={`px-3 py-2 min-h-10 rounded-full text-[11px] font-semibold transition-all ${
                           cat === c
                             ? 'bg-[var(--copilot-accent-blue)] text-white'
-                            : 'bg-white/[0.06] text-[var(--copilot-text-secondary)]'
+                            : 'bg-white border border-[var(--color-border)] text-[var(--copilot-text-secondary)]'
                         }`}
                       >
                         {CATEGORY_LABELS[c] || c}
@@ -181,15 +181,15 @@ export default function TransactionActiveReview({
         <AnchorPressable
           type="button"
           onClick={() => { triggerHaptic('light'); advance(false); }}
-          className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl bg-white/[0.06] organic-surface text-[var(--copilot-text-secondary)] font-semibold text-[13px] active:scale-[0.98]"
+          className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl bg-white border border-[var(--color-border)] organic-surface text-[var(--copilot-text-secondary)] font-semibold text-[13px] active:scale-[0.98]"
         >
           <ChevronLeft className="w-4 h-4" /> Hoppa över
         </AnchorPressable>
         <AnchorPressable
           type="button"
           onClick={() => { triggerHaptic('success'); advance(true); }}
-          className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl font-semibold text-[13px] text-white active:scale-[0.98]"
-          style={{ background: 'rgba(79, 174, 130, 0.2)', boxShadow: 'var(--anchor-shadow-1)' }}
+          className="flex-1 flex items-center justify-center gap-2 min-h-12 rounded-2xl font-semibold text-[13px] text-[var(--color-success)] active:scale-[0.98]"
+          style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           Godkänn <Check className="w-4 h-4" />
         </AnchorPressable>

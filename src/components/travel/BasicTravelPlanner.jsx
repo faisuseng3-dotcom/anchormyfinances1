@@ -56,7 +56,7 @@ export default function BasicTravelPlanner({ profile }) {
         animate={{ opacity: 1, y: 0 }}
         className="dark-card p-6 rounded-2xl"
       >
-        <h3 className="font-semibold text-white mb-4">Reseinformation</h3>
+        <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Reseinformation</h3>
         <div className="space-y-4">
           <div>
             <Label>Destination</Label>
@@ -98,7 +98,7 @@ export default function BasicTravelPlanner({ profile }) {
         transition={{ delay: 0.1 }}
         className="dark-card p-6 rounded-2xl"
       >
-        <h3 className="font-semibold text-white mb-4">Budgetera dina kostnader</h3>
+        <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Budgetera dina kostnader</h3>
         <div className="space-y-4">
           {[
             { key: 'flight', label: 'Flyg', Icon: Plane },
@@ -109,7 +109,7 @@ export default function BasicTravelPlanner({ profile }) {
           ].map((item) => (
             <div key={item.key}>
               <Label className="flex items-center gap-2">
-                <item.Icon className="w-4 h-4 text-white/45" />
+                <item.Icon className="w-4 h-4 text-[var(--color-text-muted)]" />
                 {item.label}
               </Label>
               <div className="relative mt-1">
@@ -119,7 +119,7 @@ export default function BasicTravelPlanner({ profile }) {
                   placeholder="0"
                   className="pr-12"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/45 text-sm">kr</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] text-sm">kr</span>
               </div>
             </div>
           ))}
@@ -132,34 +132,34 @@ export default function BasicTravelPlanner({ profile }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className={`p-6 rounded-3xl-2 ${
-          isOverBudget 
-            ? 'border-rose-500 bg-rose-500/10' 
-            : 'border-emerald-500 bg-[#4fae82]/10'
+          isOverBudget
+            ? 'border-rose-500 bg-rose-500/10'
+            : 'border-[var(--color-success)] bg-[var(--color-success-soft)]'
         }`}
       >
         <div className="flex items-start gap-4">
           {isOverBudget ? (
-            <AlertTriangle className="w-6 h-6 text-rose-400 flex-shrink-0 mt-1" />
+            <AlertTriangle className="w-6 h-6 text-[var(--color-danger)] flex-shrink-0 mt-1" />
           ) : (
-            <CheckCircle className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
+            <CheckCircle className="w-6 h-6 text-[var(--color-success)] flex-shrink-0 mt-1" />
           )}
           <div className="flex-1">
-            <h3 className="font-semibold text-white mb-2">Total kostnad</h3>
-            <p className="text-3xl font-bold text-white mb-3">{formatNumber(totalCost)} kr</p>
+            <h3 className="font-semibold text-[var(--color-text-primary)] mb-2">Total kostnad</h3>
+            <p className="text-3xl font-bold text-[var(--color-text-primary)] mb-3">{formatNumber(totalCost)} kr</p>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-white/45">Tillgängligt efter fasta kostnader:</span>
-                <span className="text-white font-medium">{formatNumber(availableBalance)} kr</span>
+                <span className="text-[var(--color-text-muted)]">Tillgängligt efter fasta kostnader:</span>
+                <span className="text-[var(--color-text-primary)] font-medium">{formatNumber(availableBalance)} kr</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-white/45">Kvar efter resan:</span>
-                <span className={`font-medium ${isOverBudget ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <span className="text-[var(--color-text-muted)]">Kvar efter resan:</span>
+                <span className={`font-medium ${isOverBudget ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>
                   {formatNumber(availableBalance - totalCost)} kr
                 </span>
               </div>
             </div>
             {isOverBudget && (
-              <p className="text-rose-400 text-sm mt-3 font-medium">
+              <p className="text-[var(--color-danger)] text-sm mt-3 font-medium">
                 <span className="inline-flex items-center gap-1"><AlertTriangle className="w-4 h-4" /> Varning: Du överskrider din budget med {formatNumber(totalCost - availableBalance)} kr</span>
               </p>
             )}
@@ -173,16 +173,16 @@ export default function BasicTravelPlanner({ profile }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="glass-effect p-5 rounded-3xl border-[#4fae82]/20"
+          className="glass-effect p-5 rounded-3xl border-[rgba(22,163,74,0.2)]"
         >
-          <h3 className="font-semibold text-white mb-2 flex items-center gap-2"><Calendar className="w-4 h-4" /> Din sparplan</h3>
-          <p className="text-white/70 text-sm">
+          <h3 className="font-semibold text-[var(--color-text-primary)] mb-2 flex items-center gap-2"><Calendar className="w-4 h-4" /> Din sparplan</h3>
+          <p className="text-[var(--color-text-secondary)] text-sm">
             Med din nuvarande marginal kan du spara ca{' '}
-            <span className="text-[#4fae82] font-semibold">{formatNumber(Math.round(monthlySavings))} kr/mån</span>.
+            <span className="text-[var(--color-success)] font-semibold">{formatNumber(Math.round(monthlySavings))} kr/mån</span>.
           </p>
-          <p className="text-white/70 text-sm mt-1">
+          <p className="text-[var(--color-text-secondary)] text-sm mt-1">
             Du når {destination || 'ditt resmål'} på ungefär{' '}
-            <span className="text-emerald-400 font-bold">
+            <span className="text-[var(--color-success)] font-bold">
               {Math.ceil(totalCost / monthlySavings)} månader
             </span>.
           </p>
@@ -195,7 +195,7 @@ export default function BasicTravelPlanner({ profile }) {
           href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(destination)}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-[#4fae82]/15 hover:bg-[#4fae82]/25 border border-blue-500/30 text-[#4fae82] text-sm font-medium transition-colors"
+          className="flex items-center justify-center gap-2 w-full h-12 rounded-xl bg-[var(--color-accent-soft)] hover:bg-[rgba(37,99,235,0.15)] border border-[rgba(37,99,235,0.3)] text-[var(--color-accent)] text-sm font-medium transition-colors"
         >
           <Search className="w-4 h-4" /> Sök boende i {destination} på Booking.com
         </a>
@@ -205,9 +205,9 @@ export default function BasicTravelPlanner({ profile }) {
         onClick={handleSave}
         disabled={!destination || totalCost === 0}
         className={`w-full h-12 rounded-xl ${
-          isOverBudget 
-            ? 'bg-rose-500 hover:bg-rose-600' 
-            : 'bg-[#4fae82] hover:opacity-90'
+          isOverBudget
+            ? 'bg-rose-500 hover:bg-rose-600'
+            : 'bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)]'
         }`}
       >
         {saved ? <><Check className="w-4 h-4 mr-1" /> Budget sparad!</> : 'Spara resebudget'}
@@ -219,7 +219,7 @@ export default function BasicTravelPlanner({ profile }) {
           animate={{ opacity: 1, y: 0 }}
           className="glass-effect p-4 rounded-xl text-center space-y-3"
         >
-          <p className="text-sm text-white/70">
+          <p className="text-sm text-[var(--color-text-secondary)]">
             Din {destination}-budget är nu sparad och dras från ditt kvarvarande saldo för {month || 'den valda månaden'}.
           </p>
           {destination && (

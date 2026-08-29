@@ -51,10 +51,10 @@ export default function PriceComparison({
         className="w-full glass-effect rounded-t-3xl shadow-2xl max-h-[90vh] flex flex-col"
       >
         {/* Header */}
-        <div className="p-5 pb-4 border-b border-white/10">
+        <div className="p-5 pb-4 border-b border-[var(--color-border)]">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
-              <h2 className="font-bold text-white text-lg pr-8">{productName}</h2>
+              <h2 className="font-bold text-[var(--color-text-primary)] text-lg pr-8">{productName}</h2>
               <div className="flex items-center gap-2 mt-2">
                 <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
                   {prices.length} butiker
@@ -104,7 +104,7 @@ export default function PriceComparison({
         </div>
 
         {/* Filters */}
-        <div className="px-5 py-3 border-b border-white/10 flex gap-2 overflow-x-auto">
+        <div className="px-5 py-3 border-b border-[var(--color-border)] flex gap-2 overflow-x-auto">
           <Button
             size="sm"
             variant={filter === 'lowest' ? 'default' : 'outline'}
@@ -142,7 +142,7 @@ export default function PriceComparison({
                 className={`block p-4 rounded-2xl-2 transition-all ${
                   isLowest
                     ? 'border-emerald-500 bg-emerald-500/10'
-                    : 'border-white/10 dark-card hover:border-emerald-500/30'
+                    : 'border-[var(--color-border)] dark-card hover:border-emerald-500/30'
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -154,7 +154,7 @@ export default function PriceComparison({
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-white">{store.name}</h3>
+                        <h3 className="font-semibold text-[var(--color-text-primary)]">{store.name}</h3>
                         {isLowest && (
                           <Badge className="bg-emerald-500 text-white text-xs">
                             Bäst pris
@@ -177,7 +177,7 @@ export default function PriceComparison({
                     </div>
                   </div>
                   <div className="text-right ml-3">
-                    <p className={`text-xl font-bold ${isLowest ? 'text-emerald-400' : 'text-white'}`}>
+                    <p className={`text-xl font-bold ${isLowest ? 'text-emerald-400' : 'text-[var(--color-text-primary)]'}`}>
                       {formatNumber(store.price)} kr
                     </p>
                     <div className="flex items-center gap-1 justify-end mt-1">
@@ -192,7 +192,7 @@ export default function PriceComparison({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-white/10">
+        <div className="p-5 border-t border-[var(--color-border)]">
           <div className="grid grid-cols-2 gap-3 mb-3">
             <div className="p-3 dark-card rounded-xl">
               <p className="text-xs text-slate-500">Lägsta pris</p>

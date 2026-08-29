@@ -66,13 +66,12 @@ export default function UpcomingThings({ profile }) {
 
   return (
     <div
-      className="rounded-[20px] overflow-hidden"
-      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+      className="rounded-[20px] overflow-hidden bg-white border border-[var(--color-border)]"
     >
       <div className="px-4 pt-4 pb-2">
         <h2 className="anchor-card-title">Kommande betalningar</h2>
       </div>
-      <div className="divide-y divide-white/[0.05]">
+      <div className="divide-y divide-[var(--color-border)]">
         {items.map((item, i) => {
           const Icon = item.icon;
           return (
@@ -83,11 +82,11 @@ export default function UpcomingThings({ profile }) {
               transition={{ delay: i * 0.05 }}
               className="flex items-center gap-3 px-4 py-3"
             >
-              <Icon size={15} className="text-white/35 shrink-0" />
+              <Icon size={15} className="text-[var(--color-text-muted)] shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-[14px] text-white/80">{item.text}</p>
+                <p className="text-[14px] text-[var(--color-text-secondary)]">{item.text}</p>
               </div>
-              <span className="text-[12px] text-white/35 shrink-0">{item.sub}</span>
+              <span className="text-[12px] text-[var(--color-text-muted)] shrink-0">{item.sub}</span>
             </motion.div>
           );
         })}

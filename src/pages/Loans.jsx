@@ -104,7 +104,7 @@ Kort svar svenska, max 3 meningar.`,
       {loans.length === 0 ? (
         <div className="py-16 text-center">
           <CheckCircle className="w-10 h-10 mx-auto mb-4 text-emerald-400/80" />
-          <p className="text-[20px] font-bold text-white mb-1">Du är redan på rätt spår</p>
+          <p className="text-[20px] font-bold text-[var(--color-text-primary)] mb-1">Du är redan på rätt spår</p>
           <p className="text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed">
             Inga lån registrerade — lägg till under inställningar om du vill bygga en skuldfrihetsplan.
           </p>
@@ -125,7 +125,7 @@ Kort svar svenska, max 3 meningar.`,
             <div className="grid grid-cols-2 gap-3 mb-6">
               <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
                 <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Mot frihet</p>
-                <p className="text-[20px] font-bold text-white tabular-nums mt-1">
+                <p className="text-[20px] font-bold text-[var(--color-text-primary)] tabular-nums mt-1">
                   {monthsLeft > 0 ? `${monthsLeft} mån` : 'På väg'}
                 </p>
               </div>
@@ -147,7 +147,7 @@ Kort svar svenska, max 3 meningar.`,
               <p className="text-[15px] text-[var(--copilot-text-secondary)] leading-relaxed mb-3">
                 {principalMonthly > 0 ? (
                   <>
-                    <span className="text-white font-semibold tabular-nums">{fmt(principalMonthly)} kr</span>
+                    <span className="text-[var(--color-text-primary)] font-semibold tabular-nums">{fmt(principalMonthly)} kr</span>
                     {' '}av din månadsbetalning minskar skulden direkt.
                   </>
                 ) : (
@@ -160,18 +160,18 @@ Kort svar svenska, max 3 meningar.`,
                   role="img"
                   aria-label={`${Math.round(principalPct)}% av betalningen går till amortering, resten till ränta`}
                 >
-                  <div style={{ width: `${principalPct}%`, background: '#4fae82' }} />
-                  <div style={{ width: `${100 - principalPct}%`, background: 'rgba(255,255,255,0.12)' }} />
+                  <div style={{ width: `${principalPct}%`, background: 'var(--copilot-accent-green)' }} />
+                  <div style={{ width: `${100 - principalPct}%`, background: 'var(--color-text-muted)' }} />
                 </div>
               )}
               <div className="flex items-center gap-4 text-[12px] text-[var(--copilot-text-muted)]">
                 <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#4fae82' }} />
+                  <span className="w-2 h-2 rounded-full shrink-0" style={{ background: 'var(--copilot-accent-green)' }} />
                   Amortering {Math.round(principalPct)}%
                 </span>
                 {totalInterestMonthly > 0 && (
                   <span className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full shrink-0 bg-white/20" />
+                    <span className="w-2 h-2 rounded-full shrink-0 bg-[var(--color-text-muted)]" />
                     Ränta {Math.round(100 - principalPct)}%
                   </span>
                 )}
@@ -197,15 +197,21 @@ Kort svar svenska, max 3 meningar.`,
                   <div key={i} className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
-                          <p className="text-[15px] font-medium text-white flex items-center gap-2 flex-wrap">
+                          <p className="text-[15px] font-medium text-[var(--color-text-primary)] flex items-center gap-2 flex-wrap">
                             {loan.name}
                             {isHighestPrio && (
-                              <span className="text-[11px] text-[var(--copilot-accent-blue)] font-medium px-2 py-0.5 rounded-full bg-[rgba(79, 174, 130, 0.15)] border border-[rgba(79, 174, 130, 0.25)]">
+                              <span
+                                className="text-[11px] text-[var(--copilot-accent-blue)] font-medium px-2 py-0.5 rounded-full"
+                                style={{ background: 'var(--color-accent-soft)', border: '1px solid rgba(37,99,235,0.25)' }}
+                              >
                                 Fokus nu
                               </span>
                             )}
                             {isZeroInterest && (
-                              <span className="text-[11px] text-[var(--copilot-accent-green)] font-medium px-2 py-0.5 rounded-full bg-[rgba(79, 174, 130, 0.12)] border border-[rgba(79, 174, 130, 0.25)]">
+                              <span
+                                className="text-[11px] text-[var(--copilot-accent-green)] font-medium px-2 py-0.5 rounded-full"
+                                style={{ background: 'var(--color-success-soft)', border: '1px solid rgba(22,163,74,0.25)' }}
+                              >
                                 Räntefritt
                               </span>
                             )}
@@ -257,9 +263,9 @@ Kort svar svenska, max 3 meningar.`,
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="pt-4 mt-3 border-t border-white/[0.08]">
+                            <div className="pt-4 mt-3 border-t border-[var(--color-border)]">
                               <div className="flex justify-between items-center mb-2">
-                                <span className="text-[14px] font-medium text-white/80 flex items-center gap-1.5">
+                                <span className="text-[14px] font-medium text-[var(--color-text-secondary)] flex items-center gap-1.5">
                                   <Zap className="w-4 h-4 text-[var(--color-accent)]" /> Analys
                                 </span>
                                 <AnchorPressable
@@ -268,19 +274,19 @@ Kort svar svenska, max 3 meningar.`,
                                   onClick={() => setDebtEraserResult(null)}
                                   className="w-10 h-10 rounded-full flex items-center justify-center"
                                 >
-                                  <X className="w-4 h-4 text-white/40" />
+                                  <X className="w-4 h-4 text-[var(--color-text-muted)]" />
                                 </AnchorPressable>
                               </div>
                               {debtEraserResult.monthsNow > 0 && debtEraserResult.monthsNow !== Infinity && (
-                                <div className="flex flex-wrap gap-4 mb-2 text-[13px] text-white/55">
+                                <div className="flex flex-wrap gap-4 mb-2 text-[13px] text-[var(--color-text-secondary)]">
                                   <span>Nu: {debtEraserResult.monthsNow} mån</span>
                                   <span>Med extra: {debtEraserResult.monthsWithExtra} mån</span>
-                                  <span className="text-emerald-300">−{debtEraserResult.monthsFaster} mån</span>
+                                  <span className="text-[var(--color-success)]">−{debtEraserResult.monthsFaster} mån</span>
                                 </div>
                               )}
-                              <p className="text-[14px] text-white/70 leading-relaxed">{debtEraserResult.message}</p>
+                              <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed">{debtEraserResult.message}</p>
                               {debtEraserResult.interestSaved > 0 && (
-                                <p className="text-[14px] text-emerald-300 mt-2 tabular-nums">
+                                <p className="text-[14px] text-[var(--color-success)] mt-2 tabular-nums">
                                   Sparar {fmt(debtEraserResult.interestSaved)} kr i ränta
                                 </p>
                               )}
@@ -297,19 +303,19 @@ Kort svar svenska, max 3 meningar.`,
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="pt-4 mt-3 border-t border-white/[0.08]">
+                            <div className="pt-4 mt-3 border-t border-[var(--color-border)]">
                               <div className="flex justify-between items-center mb-2">
-                                <span className="text-[14px] font-medium text-white/80">Förhandlingsmanus</span>
+                                <span className="text-[14px] font-medium text-[var(--color-text-secondary)]">Förhandlingsmanus</span>
                                 <AnchorPressable
                                   type="button"
                                   minTouch={false}
                                   onClick={() => setNegotiationScript(null)}
                                   className="w-10 h-10 rounded-full flex items-center justify-center"
                                 >
-                                  <X className="w-4 h-4 text-white/40" />
+                                  <X className="w-4 h-4 text-[var(--color-text-muted)]" />
                                 </AnchorPressable>
                               </div>
-                              <p className="text-[14px] text-white/70 leading-relaxed whitespace-pre-wrap">
+                              <p className="text-[14px] text-[var(--color-text-secondary)] leading-relaxed whitespace-pre-wrap">
                                 {negotiationScript.script}
                               </p>
                               <AnchorPressable

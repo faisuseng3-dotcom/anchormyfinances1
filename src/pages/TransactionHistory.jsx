@@ -169,14 +169,16 @@ function TransactionRow({ tx, onDelete, onEdit }) {
             <AnchorPressable
               type="button"
               onClick={() => { onEdit(tx); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold min-h-10 bg-[rgba(79, 174, 130, 0.15)] text-[var(--copilot-accent-cyan)] border border-[rgba(79, 174, 130, 0.25)]"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold min-h-10 text-[var(--copilot-accent-cyan)]"
+              style={{ background: 'var(--color-accent-soft)', border: '1px solid rgba(37,99,235,0.25)' }}
             >
               <Edit2 className="w-3.5 h-3.5" /> Redigera
             </AnchorPressable>
             <AnchorPressable
               type="button"
               onClick={() => { onDelete(tx.id); setShowActions(false); }}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold bg-rose-500/15 text-rose-200 border border-rose-400/30 min-h-10"
+              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-2xl text-xs font-semibold min-h-10 text-[var(--color-danger)]"
+              style={{ background: 'var(--color-danger-soft)', border: '1px solid rgba(220,38,38,0.3)' }}
             >
               <Trash2 className="w-3.5 h-3.5" /> Ta bort
             </AnchorPressable>
@@ -221,13 +223,13 @@ function MonthGroup({ group, onDelete, onEdit, defaultOpen }) {
           </div>
         </div>
         <div className="text-right">
-          <p className={`text-[15px] font-semibold tabular-nums ${net >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+          <p className={`text-[15px] font-semibold tabular-nums ${net >= 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}>
             {net >= 0 ? '+' : ''}{net.toLocaleString('sv-SE')} kr
           </p>
           <p className="text-[12px] text-[var(--color-text-tertiary)] tabular-nums">
-            <span className="text-emerald-300/80">+{totalIn.toLocaleString('sv-SE')}</span>
+            <span className="text-[var(--color-success)]">+{totalIn.toLocaleString('sv-SE')}</span>
             {' · '}
-            <span className="text-rose-300/80">-{totalOut.toLocaleString('sv-SE')}</span>
+            <span className="text-[var(--color-danger)]">-{totalOut.toLocaleString('sv-SE')}</span>
           </p>
         </div>
       </AnchorPressable>
@@ -438,7 +440,7 @@ export default function TransactionHistory() {
             'relative w-12 h-12 rounded-[var(--anchor-radius-md)] flex items-center justify-center shrink-0',
             showFilters
               ? 'bg-[var(--color-text-primary)] text-[var(--color-background-primary)] anchor-elev-2'
-              : 'bg-white/[0.08] text-[var(--color-text-secondary)] anchor-elev-1',
+              : 'bg-white border border-[var(--color-border)] text-[var(--color-text-secondary)] anchor-elev-1',
           )}
         >
           <Filter className="w-4 h-4" />

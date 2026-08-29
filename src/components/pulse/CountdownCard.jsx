@@ -34,23 +34,23 @@ export default function CountdownCard({ nextEvent, currentBalance }) {
 
       <div className="relative">
         <div className="flex items-center gap-2 mb-3">
-          <Clock className={`w-4 h-4 ${isSafe ? 'text-emerald-400' : 'text-rose-400'}`} />
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Nästa utgift</span>
+          <Clock className={`w-4 h-4 ${isSafe ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`} />
+          <span className="text-xs font-bold text-[var(--color-text-secondary)] uppercase tracking-widest">Nästa utgift</span>
         </div>
 
         <div className="flex items-end justify-between mb-3">
           <div>
-            <p className="text-white font-bold text-lg leading-none flex items-center gap-2">
-              <EventCategoryIcon event={nextEvent} size={18} className="text-white/80" />
+            <p className="text-[var(--color-text-primary)] font-bold text-lg leading-none flex items-center gap-2">
+              <EventCategoryIcon event={nextEvent} size={18} className="text-[var(--color-text-secondary)]" />
               {nextEvent.name}
             </p>
-            <p className="text-slate-400 text-sm mt-1">{formatNumber(nextEvent.amount)} kr</p>
+            <p className="text-[var(--color-text-secondary)] text-sm mt-1">{formatNumber(nextEvent.amount)} kr</p>
           </div>
           <div className="text-right">
-            <p className={`text-3xl font-black ${isSafe ? 'text-emerald-300' : 'text-rose-300'}`}>
+            <p className={`text-3xl font-black ${isSafe ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}>
               {nextEvent.dayOffset}
             </p>
-            <p className="text-xs text-slate-500">dagar kvar</p>
+            <p className="text-xs text-[var(--color-text-secondary)]">dagar kvar</p>
           </div>
         </div>
 
@@ -59,18 +59,18 @@ export default function CountdownCard({ nextEvent, currentBalance }) {
           isSafe ? 'bg-emerald-500/15' : 'bg-rose-500/15'
         }`}>
           <div>
-            <p className="text-xs text-slate-400">Saldo efter betalning</p>
-            <p className={`text-base font-bold ${balanceAfter >= 0 ? 'text-emerald-300' : 'text-rose-300'}`}>
+            <p className="text-xs text-[var(--color-text-secondary)]">Saldo efter betalning</p>
+            <p className={`text-base font-bold ${balanceAfter >= 0 ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}>
               {formatNumber(Math.abs(balanceAfter))} kr {balanceAfter < 0 ? '(underskott)' : ''}
             </p>
           </div>
           {isSafe
-            ? <CheckCircle2 className="w-6 h-6 text-emerald-400" />
-            : <AlertTriangle className="w-6 h-6 text-rose-400" />}
+            ? <CheckCircle2 className="w-6 h-6 text-[var(--color-success)]" />
+            : <AlertTriangle className="w-6 h-6 text-[var(--color-danger)]" />}
         </div>
 
         {/* Verdict text */}
-        <p className={`text-sm mt-3 font-medium ${isSafe ? 'text-emerald-300' : 'text-rose-300'}`}>
+        <p className={`text-sm mt-3 font-medium ${isSafe ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]'}`}>
           {isSafe
             ? `Du är safe! Du har ${formatNumber(currentBalance)} kr och betalar ${formatNumber(nextEvent.amount)} kr om ${nextEvent.dayOffset} dagar.`
             : `Varning! Du behöver ${formatNumber(nextEvent.amount - currentBalance)} kr mer för att täcka ${nextEvent.name}.`}

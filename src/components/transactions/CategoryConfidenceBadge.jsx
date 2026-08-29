@@ -15,7 +15,7 @@ export default function CategoryConfidenceBadge({ vendor, label, amount, classNa
   if (level === 'high') {
     return (
       <span
-        className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 ${className}`}
+        className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[var(--color-success-soft)] text-[var(--color-success)] ${className}`}
         title="Säker kategori"
       >
         <Check className="w-2.5 h-2.5" />
@@ -27,7 +27,7 @@ export default function CategoryConfidenceBadge({ vendor, label, amount, classNa
   if (level === 'medium') {
     return (
       <span
-        className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-white/10 text-white/55 ${className}`}
+        className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-white border border-[var(--color-border)] text-[var(--color-text-secondary)] ${className}`}
         title="Kategori baserad på mönster"
       >
         Uppskattad
@@ -37,7 +37,7 @@ export default function CategoryConfidenceBadge({ vendor, label, amount, classNa
 
   return (
     <span
-      className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-500/15 text-amber-200 ${className}`}
+      className={`inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-[var(--color-warning-soft)] text-[var(--color-warning)] ${className}`}
       title="Granska kategorin"
     >
       <AlertCircle className="w-2.5 h-2.5" />

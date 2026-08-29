@@ -38,14 +38,14 @@ export default function BudgetCategoryCard({ category, spent, limit, onEdit, ind
           />
         )}
       </div>
-      <p className="text-[14px] font-semibold text-white">{meta.label}</p>
+      <p className="text-[14px] font-semibold text-[var(--color-text-primary)]">{meta.label}</p>
       <p className="text-[12px] text-[var(--copilot-text-muted)] mt-1 tabular-nums">
         {spent.toLocaleString('sv-SE')} / {limit > 0 ? `${limit.toLocaleString('sv-SE')} kr` : 'sätt gräns'}
       </p>
       {limit > 0 && (
         <p
           className="text-[11px] mt-2 font-medium"
-          style={{ color: over ? '#e2857a' : 'var(--copilot-accent-green)' }}
+          style={{ color: over ? 'var(--color-danger)' : 'var(--copilot-accent-green)' }}
         >
           {over
             ? `${Math.abs(remaining).toLocaleString('sv-SE')} kr över`

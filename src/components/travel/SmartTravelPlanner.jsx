@@ -104,7 +104,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
         animate={{ opacity: 1, y: 0 }}
         className="dark-card p-6 rounded-2xl"
       >
-        <h3 className="font-semibold text-white mb-4">Reseinformation</h3>
+        <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Reseinformation</h3>
         <div className="space-y-4">
           <div>
             <Label>Destination</Label>
@@ -146,7 +146,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
         transition={{ delay: 0.1 }}
         className="dark-card p-6 rounded-2xl"
       >
-        <h3 className="font-semibold text-white mb-4">Din budget (valfritt)</h3>
+        <h3 className="font-semibold text-[var(--color-text-primary)] mb-4">Din budget (valfritt)</h3>
         <div className="space-y-4">
           {[
             { key: 'flight', label: 'Flyg', Icon: Plane },
@@ -155,7 +155,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
           ].map((item) => (
             <div key={item.key}>
               <Label className="flex items-center gap-2">
-                <item.Icon className="w-4 h-4 text-white/45" />
+                <item.Icon className="w-4 h-4 text-[var(--color-text-muted)]" />
                 {item.label}
               </Label>
               <div className="relative mt-1">
@@ -165,7 +165,7 @@ Var specifik med hotellnamn, flygbolag eller aktiviteter.`;
                   placeholder="0"
                   className="pr-12"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/45 text-sm">kr</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] text-sm">kr</span>
               </div>
             </div>
           ))}

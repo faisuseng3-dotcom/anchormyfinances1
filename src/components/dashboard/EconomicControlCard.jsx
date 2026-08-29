@@ -17,17 +17,16 @@ export default function EconomicControlCard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex items-center gap-3 px-4 py-3 rounded-2xl"
-      style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}
+      className="flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-[var(--color-border)]"
     >
-      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(79, 174, 130, 0.12)' }}>
-        <Shield size={16} className="text-[#4fae82]" />
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'var(--color-success-soft)' }}>
+        <Shield size={16} className="text-[var(--color-success)]" />
       </div>
       <div>
         <h2 className="anchor-card-title mb-1">Ekonomisk kontroll</h2>
-        <p className="text-[14px] text-white/75 mt-0.5">
+        <p className="text-[14px] text-[var(--color-text-secondary)] mt-0.5">
           Du har haft koll på din ekonomi{' '}
-          <span className="text-white font-semibold">{weeks} veck{weeks === 1 ? 'a' : 'or'}</span>
+          <span className="text-[var(--color-text-primary)] font-semibold">{weeks} veck{weeks === 1 ? 'a' : 'or'}</span>
           {' '}i rad.
         </p>
       </div>

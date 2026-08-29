@@ -39,12 +39,12 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
   if (!transactions?.length) {
     return (
       <DashboardSection nested={nested} title="Dolda flöden" subtitle="Hitta återkommande utgifter" className={className}>
-        <p className="text-[14px] text-white/45 font-light">
+        <p className="text-[14px] text-[var(--color-text-muted)] font-light">
           Importera transaktioner så skannar vi mönster.
         </p>
         <Link
           to="/Import"
-          className="inline-flex mt-4 h-10 px-5 rounded-full text-[14px] font-medium text-white/85 bg-white/[0.07] shadow-[var(--anchor-shadow-1)] no-underline items-center"
+          className="inline-flex mt-4 h-10 px-5 rounded-full text-[14px] font-medium text-[var(--color-text-secondary)] bg-white border border-[var(--color-border)] shadow-[var(--anchor-shadow-1)] no-underline items-center"
         >
           Importera
         </Link>
@@ -57,7 +57,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
       <DashboardSection nested={nested} title="Dolda flöden" className={className}>
         <div className="flex items-center gap-3 py-1">
           <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-          <p className="text-[15px] text-white/75 font-light">Inga uppenbara läckage just nu.</p>
+          <p className="text-[15px] text-[var(--color-text-secondary)] font-light">Inga uppenbara läckage just nu.</p>
         </div>
       </DashboardSection>
     );
@@ -120,7 +120,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
               {variant === 'full' && (
                 <div className="pb-2 pl-14">
                   {note && (
-                    <p className="text-[13px] text-white/45 font-light leading-relaxed">{note}</p>
+                    <p className="text-[13px] text-[var(--color-text-muted)] font-light leading-relaxed">{note}</p>
                   )}
                   <InsightWhyButton why={leak.why} className="mt-1" />
                 </div>
@@ -131,7 +131,7 @@ export default function LeakageDetector({ profile, transactions, variant = 'dash
       </div>
 
       {variant === 'full' && (
-        <p className="text-[12px] text-white/35 mt-4 pt-3 border-t border-white/[0.08] tabular-nums">
+        <p className="text-[12px] text-[var(--color-text-muted)] mt-4 pt-3 border-t border-[var(--color-border)] tabular-nums">
           {fmtLeakageSek(totalMonthlyLeak)} kr/mån · {fmtLeakageSek(totalMonthlyLeak * 12)} kr/år
         </p>
       )}

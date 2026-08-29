@@ -32,12 +32,12 @@ function Timeline({ tidslinje }) {
   return (
     <div className="max-h-64 overflow-y-auto space-y-1">
       {rows.map((d) => (
-        <div key={d.dag} className="flex items-center justify-between py-2 border-b border-white/[0.06] last:border-0">
+        <div key={d.dag} className="flex items-center justify-between py-2 border-b border-[var(--color-border)] last:border-0">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-[12px] text-white/35 w-8 tabular-nums">+{d.dag}d</span>
-            <span className="text-[14px] text-white/75 truncate">{d.händelse || 'Vardagsköp'}</span>
+            <span className="text-[12px] text-[var(--color-text-muted)] w-8 tabular-nums">+{d.dag}d</span>
+            <span className="text-[14px] text-[var(--color-text-secondary)] truncate">{d.händelse || 'Vardagsköp'}</span>
           </div>
-          <span className={`text-[14px] font-semibold tabular-nums ${d.saldo < 0 ? 'text-rose-300' : 'text-white'}`}>
+          <span className={`text-[14px] font-semibold tabular-nums ${d.saldo < 0 ? 'text-[var(--color-danger)]' : 'text-[var(--color-text-primary)]'}`}>
             {fmt(d.saldo)}
           </span>
         </div>
@@ -102,7 +102,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
       <motion.div {...staggerItem(0)} className="rounded-2xl px-4 py-4 organic-surface bg-[var(--copilot-bg-card)]">
         <p className="anchor-card-title mb-2">Läget nu</p>
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-[14px] text-[var(--copilot-text-secondary)]">
-          <span><strong className="text-white tabular-nums">{fmt(pulseNow?.remainingWeek)}</strong> kvar den här veckan</span>
+          <span><strong className="text-[var(--color-text-primary)] tabular-nums">{fmt(pulseNow?.remainingWeek)}</strong> kvar den här veckan</span>
           <span><strong className="text-[var(--copilot-accent-green)] tabular-nums">{fmt(pulseNow?.safe)}</strong> säkert att spendera</span>
           {pulseNow?.next && (
             <span className="text-[var(--copilot-accent-blue)]">Kommande: {pulseNow.next.name}</span>
@@ -112,7 +112,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
 
       {/* Scenario-väljare */}
       <div>
-        <p className="text-[15px] font-semibold text-white mb-1">Din Framtid</p>
+        <p className="text-[15px] font-semibold text-[var(--color-text-primary)] mb-1">Din Framtid</p>
         <p className="text-[14px] text-[var(--copilot-text-secondary)] mb-4">{activeMode.blurb}</p>
         <div className="grid grid-cols-3 gap-2">
           {SCENARIO_MODES.map((m) => (
@@ -124,7 +124,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
               className={cn(
                 'rounded-2xl px-2 py-3 min-h-[4.5rem] text-center border',
                 mode === m.id
-                  ? 'bg-[var(--copilot-accent-blue)] text-white border-[rgba(79, 174, 130, 0.4)]'
+                  ? 'bg-[var(--copilot-accent-blue)] text-white border-[rgba(37,99,235,0.4)]'
                   : 'bg-[var(--copilot-bg-card)] text-[var(--copilot-text-secondary)] ',
               )}
             >
@@ -141,7 +141,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
           <div>
             <div className="flex justify-between text-[13px] mb-2">
               <span className="text-[var(--copilot-text-secondary)]">Inkomstförändring</span>
-              <span className="text-white tabular-nums">{incomePct > 0 ? '+' : ''}{incomePct}%</span>
+              <span className="text-[var(--color-text-primary)] tabular-nums">{incomePct > 0 ? '+' : ''}{incomePct}%</span>
             </div>
             <input
               type="range"
@@ -156,7 +156,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
           <div>
             <div className="flex justify-between text-[13px] mb-2">
               <span className="text-[var(--copilot-text-secondary)]">Vardagsutgifter</span>
-              <span className="text-white tabular-nums">{spendPct > 0 ? '+' : ''}{spendPct}%</span>
+              <span className="text-[var(--color-text-primary)] tabular-nums">{spendPct > 0 ? '+' : ''}{spendPct}%</span>
             </div>
             <input
               type="range"
@@ -171,7 +171,7 @@ export default function DinFramtidPanel({ profile, transactions }) {
           <div>
             <div className="flex justify-between text-[13px] mb-2">
               <span className="text-[var(--copilot-text-secondary)]">Extra sparande / mån</span>
-              <span className="text-white tabular-nums">{saveKr} kr</span>
+              <span className="text-[var(--color-text-primary)] tabular-nums">{saveKr} kr</span>
             </div>
             <input
               type="range"
@@ -190,8 +190,8 @@ export default function DinFramtidPanel({ profile, transactions }) {
       {forecast && (
         <motion.div key={mode + incomePct + spendPct + saveKr} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="rounded-2xl p-4 mb-4 border" style={{ borderColor: `${accent}40`, background: `${accent}12` }}>
-            <p className="text-[17px] font-semibold text-white">{forecast.status_label}</p>
-            <p className="text-[22px] font-bold text-white mt-2 tabular-nums">{forecast.prognos_30_dagar}</p>
+            <p className="text-[17px] font-semibold text-[var(--color-text-primary)]">{forecast.status_label}</p>
+            <p className="text-[22px] font-bold text-[var(--color-text-primary)] mt-2 tabular-nums">{forecast.prognos_30_dagar}</p>
             {forecast.coach_detaljer && (
               <p className="text-[14px] text-[var(--copilot-text-secondary)] mt-3 leading-relaxed">{forecast.coach_detaljer}</p>
             )}
@@ -200,11 +200,11 @@ export default function DinFramtidPanel({ profile, transactions }) {
           <div className="grid grid-cols-2 gap-3 mb-6">
             <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
               <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">60 dagar min</p>
-              <p className="text-[18px] font-bold text-white tabular-nums mt-1">{fmt(forecast._meta?.minBalance)}</p>
+              <p className="text-[18px] font-bold text-[var(--color-text-primary)] tabular-nums mt-1">{fmt(forecast._meta?.minBalance)}</p>
             </div>
             <div className="rounded-2xl organic-surface p-4 bg-[var(--copilot-bg-card)]">
               <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Snitt/dag</p>
-              <p className="text-[18px] font-bold text-white tabular-nums mt-1">{fmt(forecast._meta?.dailySpend)}</p>
+              <p className="text-[18px] font-bold text-[var(--color-text-primary)] tabular-nums mt-1">{fmt(forecast._meta?.dailySpend)}</p>
             </div>
           </div>
 

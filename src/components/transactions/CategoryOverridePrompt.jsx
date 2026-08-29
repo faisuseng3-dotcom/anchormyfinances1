@@ -30,14 +30,14 @@ export default function CategoryOverridePrompt({ vendor, newCategory, categoryLa
         <div className="flex items-start gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(79, 174, 130, 0.15)', boxShadow: 'var(--anchor-shadow-1)' }}
+            style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <ScanLine className="w-4 h-4 text-[var(--copilot-accent-blue)]" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold mb-1 text-white">Lär sig av din korrigering</p>
+            <p className="text-sm font-bold mb-1 text-[var(--color-text-primary)]">Lär sig av din korrigering</p>
             <p className="text-xs leading-relaxed text-[var(--copilot-text-secondary)]">
-              Ska alla framtida köp från <strong className="text-white">&quot;{vendor}&quot;</strong> kategoriseras som <strong className="text-white">{categoryLabel}</strong>?
+              Ska alla framtida köp från <strong className="text-[var(--color-text-primary)]">&quot;{vendor}&quot;</strong> kategoriseras som <strong className="text-[var(--color-text-primary)]">{categoryLabel}</strong>?
             </p>
           </div>
         </div>

@@ -86,9 +86,9 @@ function buildAlerts(profile, transactions) {
 }
 
 const TONE_STYLES = {
-  amber: { bg: 'rgba(251,191,36,0.1)', border: 'rgba(251,191,36,0.2)', color: '#fbbf24' },
-  green: { bg: 'rgba(79, 174, 130, 0.1)', border: 'rgba(79, 174, 130, 0.2)', color: '#4fae82' },
-  blue: { bg: 'rgba(79, 174, 130, 0.1)', border: 'rgba(79, 174, 130, 0.2)', color: '#4fae82' },
+  amber: { bg: 'var(--color-warning-soft)', border: 'rgba(217, 119, 6, 0.2)', color: 'var(--color-warning)' },
+  green: { bg: 'var(--color-success-soft)', border: 'rgba(22, 163, 74, 0.2)', color: 'var(--color-success)' },
+  blue: { bg: 'var(--color-accent-soft)', border: 'rgba(37, 99, 235, 0.2)', color: 'var(--color-accent)' },
 };
 
 export default function RetentionAlerts({ profile, transactions }) {
@@ -112,7 +112,7 @@ export default function RetentionAlerts({ profile, transactions }) {
               style={{ background: style.bg, border: `1px solid ${style.border}` }}
             >
               <Icon size={16} style={{ color: style.color }} className="shrink-0" />
-              <p className="text-[13px] text-white/80 leading-snug">{alert.text}</p>
+              <p className="text-[13px] text-[var(--color-text-secondary)] leading-snug">{alert.text}</p>
             </motion.div>
           );
         })}

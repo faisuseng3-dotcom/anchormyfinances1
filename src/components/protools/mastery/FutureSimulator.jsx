@@ -76,7 +76,7 @@ export default function FutureSimulator({ profile }) {
             title={m.label}
             subtitle={formatMonths(m.months)}
             trailing={
-              <span className="text-[14px] font-medium text-white/70 tabular-nums">
+              <span className="text-[14px] font-medium text-[var(--color-text-secondary)] tabular-nums">
                 {m.reached ? 'Klart' : formatDate(m.date)}
               </span>
             }
@@ -84,7 +84,7 @@ export default function FutureSimulator({ profile }) {
         </React.Fragment>
       ))}
 
-      <p className="text-[13px] text-white/40 leading-relaxed pt-2">
+      <p className="text-[13px] text-[var(--color-text-muted)] leading-relaxed pt-2">
         Beräkningarna bygger på din nuvarande profil. Höj sparandet i inställningar för att nå målen
         snabbare.
       </p>

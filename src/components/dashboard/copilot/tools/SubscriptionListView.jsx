@@ -27,7 +27,7 @@ const BRAND_TINTS = {
   hbo: { bg: 'rgba(116,80,162,0.18)', accent: '#7450a2' },
   disney: { bg: 'rgba(17,60,115,0.2)', accent: '#4a9fd4' },
   viaplay: { bg: 'rgba(255,193,7,0.14)', accent: '#ffc107' },
-  apple: { bg: 'rgba(255,255,255,0.12)', accent: '#f5f5f7' },
+  apple: { bg: 'rgba(11, 18, 32, 0.88)', accent: '#f5f5f7' },
 };
 
 function brandTintFor(name = '') {
@@ -74,7 +74,7 @@ function SubscriptionRow({
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-[16px] font-semibold text-white truncate">{sub.name}</p>
+          <p className="text-[16px] font-semibold text-[var(--color-text-primary)] truncate">{sub.name}</p>
           <p className="text-[12px] text-[var(--copilot-text-muted)] mt-0.5">
             Nästa dragning · {nextCharge}
           </p>
@@ -83,7 +83,7 @@ function SubscriptionRow({
             {paused ? ' · Pausad' : ''}
           </p>
         </div>
-        <p className="text-[17px] font-bold text-white tabular-nums shrink-0">
+        <p className="text-[17px] font-bold text-[var(--color-text-primary)] tabular-nums shrink-0">
           {fmtKr(sub.amount || 0)}
         </p>
       </div>
@@ -94,7 +94,7 @@ function SubscriptionRow({
             type="button"
             onClick={() => { triggerHaptic('light'); onPause(index); }}
             disabled={saving}
-            className="h-12 px-4 rounded-full bg-white/[0.07] text-[13px] font-semibold text-white/80 hover:text-white active:scale-[0.97] disabled:opacity-40"
+            className="h-12 px-4 rounded-full bg-white border border-[var(--color-border)] text-[13px] font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] active:scale-[0.97] disabled:opacity-40"
           >
             <Pause className="w-4 h-4 mr-1.5 inline" />
             Pausa
@@ -113,7 +113,7 @@ function SubscriptionRow({
           type="button"
           onClick={() => { triggerHaptic('light'); onEdit(index); }}
           disabled={saving}
-          className="h-12 w-12 rounded-full bg-white/[0.06] text-white/70 hover:text-white active:scale-[0.97] disabled:opacity-40"
+          className="h-12 w-12 rounded-full bg-white border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] active:scale-[0.97] disabled:opacity-40"
           aria-label={`Redigera ${sub.name}`}
         >
           <Pencil className="w-4 h-4" />
@@ -220,7 +220,7 @@ export default function SubscriptionListView({ profile, updateProfile }) {
         <AnchorPressable
           type="button"
           onClick={() => { triggerHaptic('light'); setShowAdd(true); setEditIndex(null); setForm(EMPTY_FORM); }}
-          className="h-12 px-5 rounded-full bg-gradient-to-r from-[#4fae82] to-[#4fae82] text-white text-[14px] font-semibold shadow-[0_8px_32px_rgba(79, 174, 130, 0.35)] active:scale-[0.97]"
+          className="h-12 px-5 rounded-full bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent)] text-white text-[14px] font-semibold shadow-[0_8px_32px_rgba(37,99,235,0.35)] active:scale-[0.97]"
         >
           <Plus className="w-4 h-4 mr-1.5 inline" />
           Lägg till

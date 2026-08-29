@@ -58,9 +58,9 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
       }
     >
       {profile?.income > 0 && (
-        <div className="anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white/[0.04] shadow-[var(--anchor-shadow-1)] px-4 py-4 mb-5">
+        <div className="anchor-elev-1 rounded-[var(--anchor-radius-lg)] bg-white border border-[var(--color-border)] shadow-[var(--anchor-shadow-1)] px-4 py-4 mb-5">
           <p className={sectionMetaClass}>Kvar den här månaden</p>
-          <p className="text-[26px] font-light text-white tabular-nums mt-1 tracking-tight">
+          <p className="text-[26px] font-light text-[var(--color-text-primary)] tabular-nums mt-1 tracking-tight">
             {fmt(safeToSpend)} kr
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function KalkylatornSheet({ isOpen, onClose, profile }) {
               onChange={(e) => setQuickAmount(e.target.value)}
               className={`${anchorInputClass} flex-1`}
             />
-            <span className="flex items-center text-[15px] text-white/40 pr-1">kr</span>
+            <span className="flex items-center text-[15px] text-[var(--color-text-muted)] pr-1">kr</span>
           </div>
           {quickInsight && (
             <p className="anchor-type-body-sm mt-3">{quickInsight}</p>

@@ -60,7 +60,7 @@ export default function LifePuzzle({ profile }) {
 
       {sharedGoals.length > 0 && (
         <div>
-          <p className="text-[13px] font-medium text-white/45 mb-2">Gemensamma mål</p>
+          <p className="text-[13px] font-medium text-[var(--color-text-muted)] mb-2">Gemensamma mål</p>
           {sharedGoals.map((goal, i) => {
             const pct =
               goal.amount > 0 ? Math.min(100, Math.round((goal.progress / goal.amount) * 100)) : 0;
@@ -70,7 +70,7 @@ export default function LifePuzzle({ profile }) {
                 <DashboardListRow
                   title={goal.label}
                   subtitle={`${goal.progress.toLocaleString('sv-SE')} / ${goal.amount.toLocaleString('sv-SE')} kr`}
-                  trailing={<span className="text-[15px] font-semibold text-white/80">{pct}%</span>}
+                  trailing={<span className="text-[15px] font-semibold text-[var(--color-text-secondary)]">{pct}%</span>}
                 />
               </React.Fragment>
             );
@@ -79,7 +79,7 @@ export default function LifePuzzle({ profile }) {
       )}
 
       <div>
-        <p className="text-[13px] font-medium text-white/45 mb-2">Bjud in</p>
+        <p className="text-[13px] font-medium text-[var(--color-text-muted)] mb-2">Bjud in</p>
         <div className="flex gap-2">
           <input
             type="email"

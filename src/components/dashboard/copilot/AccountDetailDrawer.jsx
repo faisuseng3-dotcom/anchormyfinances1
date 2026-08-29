@@ -19,23 +19,25 @@ import {
   fmtKr,
 } from './accountDrawerUtils';
 
+/* accent kept as a literal hex (matches var(--color-success)) so the `${meta.accent}NN`
+   alpha-suffix concatenation below keeps working — a var() reference can't be aliased. */
 const ACCOUNT_META = {
   buffer: {
     icon: Shield,
-    accent: '#4fae82',
-    gradient: 'linear-gradient(135deg, rgba(79, 174, 130, 0.18) 0%, rgba(79, 174, 130, 0.1) 100%)',
+    accent: '#16A34A',
+    gradient: 'linear-gradient(135deg, rgba(22, 163, 74, 0.18) 0%, rgba(22, 163, 74, 0.1) 100%)',
     subtitle: 'Din trygghetsreserv',
   },
   savings: {
     icon: PiggyBank,
-    accent: '#4fae82',
-    gradient: 'linear-gradient(135deg, rgba(79, 174, 130, 0.18) 0%, rgba(79, 174, 130, 0.08) 100%)',
+    accent: '#16A34A',
+    gradient: 'linear-gradient(135deg, rgba(22, 163, 74, 0.18) 0%, rgba(22, 163, 74, 0.08) 100%)',
     subtitle: 'Mot ditt sparmål',
   },
   margin: {
     icon: Wallet,
-    accent: '#4fae82',
-    gradient: 'linear-gradient(135deg, rgba(79, 174, 130, 0.2) 0%, rgba(79, 174, 130, 0.1) 100%)',
+    accent: '#16A34A',
+    gradient: 'linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%)',
     subtitle: 'Kvar efter fasta kostnader',
   },
 };
@@ -47,27 +49,26 @@ function TransferRow({ item, index }) {
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: index * 0.05, duration: 0.25 }}
       className="flex items-center gap-3 p-3.5 rounded-2xl organic-surface"
-      style={{ background: `rgba(255,255,255,${0.04 + (index % 3) * 0.02})` }}
     >
       <div
         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
         style={{
-          background: item.incoming ? 'rgba(79, 174, 130, 0.12)' : 'rgba(255, 255, 255, 0.1)',
+          background: item.incoming ? 'var(--color-success-soft)' : 'var(--color-background-secondary)',
           boxShadow: 'var(--anchor-shadow-1)',
         }}
       >
         <ArrowLeftRight
           className="w-4 h-4"
-          style={{ color: item.incoming ? '#4fae82' : 'rgba(255,255,255,0.75)' }}
+          style={{ color: item.incoming ? 'var(--color-success)' : 'var(--color-text-secondary)' }}
         />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-[14px] font-medium text-white truncate">{item.label}</p>
+        <p className="text-[14px] font-medium text-[var(--color-text-primary)] truncate">{item.label}</p>
         <p className="text-[12px] text-[var(--copilot-text-muted)]">{item.dateLabel}</p>
       </div>
       <p
         className="text-[14px] font-semibold tabular-nums shrink-0"
-        style={{ color: item.incoming ? '#4fae82' : 'var(--copilot-text-secondary)' }}
+        style={{ color: item.incoming ? 'var(--color-success)' : 'var(--copilot-text-secondary)' }}
       >
         {item.signed}{fmtKr(item.amount)}
       </p>
@@ -91,24 +92,24 @@ function MarginBreakdown({ profile }) {
               <span
                 className="text-[11px] font-bold w-6 h-6 rounded-lg flex items-center justify-center shrink-0"
                 style={{
-                  background: row.sign === '+' ? 'rgba(79, 174, 130, 0.15)' : 'rgba(255, 255, 255, 0.12)',
-                  color: row.sign === '+' ? '#4fae82' : 'rgba(255,255,255,0.75)',
+                  background: row.sign === '+' ? 'var(--color-success-soft)' : 'var(--color-background-secondary)',
+                  color: row.sign === '+' ? 'var(--color-success)' : 'var(--color-text-secondary)',
                 }}
               >
                 {row.sign}
               </span>
               <span className="text-[14px] text-[var(--copilot-text-secondary)]">{row.label}</span>
             </div>
-            <span className="text-[14px] font-semibold text-white tabular-nums">
+            <span className="text-[14px] font-semibold text-[var(--color-text-primary)] tabular-nums">
               {fmtKr(row.amount)}
             </span>
           </div>
         ))}
         <div
-          className="flex items-center justify-between gap-3 p-4 rounded-3xl border-[rgba(79, 174, 130, 0.35)]"
-          style={{ background: 'rgba(79, 174, 130, 0.12)' }}
+          className="flex items-center justify-between gap-3 p-4 rounded-3xl border-[rgba(22,163,74,0.35)]"
+          style={{ background: 'var(--color-success-soft)' }}
         >
-          <span className="text-[14px] font-semibold text-white flex items-center gap-2">
+          <span className="text-[14px] font-semibold text-[var(--color-text-primary)] flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-[var(--copilot-accent-green)]" />
             Kvar att leva på
           </span>
@@ -119,14 +120,14 @@ function MarginBreakdown({ profile }) {
       </div>
 
       <div
-        className="mt-5 p-4 rounded-3xl border-[rgba(79, 174, 130, 0.25)]"
-        style={{ background: 'rgba(79, 174, 130, 0.08)' }}
+        className="mt-5 p-4 rounded-3xl border-[rgba(22,163,74,0.25)]"
+        style={{ background: 'rgba(22, 163, 74, 0.08)' }}
       >
         <p className="text-[14px] text-[var(--copilot-text-secondary)] leading-relaxed flex items-start gap-2">
           <Sparkles className="w-4 h-4 text-[var(--copilot-accent-green)] shrink-0 mt-0.5" />
           <span>
             Du sparar mer än{' '}
-            <strong className="text-white">{peerPct}%</strong>
+            <strong className="text-[var(--color-text-primary)]">{peerPct}%</strong>
             {' '}av liknande användare denna månad. Snyggt jobbat!
           </span>
         </p>
@@ -170,7 +171,7 @@ function SavingsAccountPanel({ account, profile, transactions, onOpenSwipe }) {
             <p className="anchor-card-eyebrow">
               {meta.subtitle}
             </p>
-            <p className="text-[32px] font-bold text-white tabular-nums leading-none mt-1">
+            <p className="text-[32px] font-bold text-[var(--color-text-primary)] tabular-nums leading-none mt-1">
               {fmtKr(account.amount)}
             </p>
             <p className="text-[13px] text-[var(--copilot-text-secondary)] mt-2">{account.name}</p>
@@ -191,7 +192,7 @@ function SavingsAccountPanel({ account, profile, transactions, onOpenSwipe }) {
           />
           <div>
             <p className="text-[13px] text-[var(--copilot-text-muted)]">Mål</p>
-            <p className="text-[18px] font-bold text-white tabular-nums">{fmtKr(account.goalTarget)}</p>
+            <p className="text-[18px] font-bold text-[var(--color-text-primary)] tabular-nums">{fmtKr(account.goalTarget)}</p>
             <p className="text-[12px] text-[var(--copilot-text-secondary)] mt-1">
               {fmtKr(Math.max(0, account.goalTarget - account.amount))} kvar
             </p>
@@ -249,7 +250,7 @@ export default function AccountDetailDrawer({
             type="button"
             key="account-drawer-backdrop"
             aria-label="Stäng panel"
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 anchor-overlay"
             style={{ zIndex: zIndex.sheet }}
             {...sheetBackdrop}
             onClick={onClose}
@@ -259,22 +260,22 @@ export default function AccountDetailDrawer({
             role="dialog"
             aria-modal="true"
             aria-labelledby="account-drawer-title"
-            className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col border-l  shadow-2xl overflow-hidden"
+            className="fixed inset-y-0 right-0 w-full max-w-md flex flex-col border-l border-[var(--color-border)] shadow-2xl overflow-hidden"
             style={{
               zIndex: zIndex.sheet + 1,
-              background: 'linear-gradient(180deg, #0b0f0d 0%, #0d1a9e 55%, #0b0f0d 100%)',
+              background: 'var(--color-surface-raised)',
             }}
             {...panelMotion}
             {...(reduceMotion ? {} : drawerPanelExit)}
           >
             <div className="flex items-center justify-between px-5 pt-5 pb-3 shrink-0">
-              <h2 id="account-drawer-title" className="text-[18px] font-bold text-white">
+              <h2 id="account-drawer-title" className="text-[18px] font-bold text-[var(--color-text-primary)]">
                 {account.name}
               </h2>
               <button
                 type="button"
                 onClick={onClose}
-                className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)] hover:text-white transition-colors"
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-[var(--copilot-bg-card)] organic-surface text-[var(--copilot-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
                 aria-label="Stäng"
               >
                 <X className="w-4 h-4" />

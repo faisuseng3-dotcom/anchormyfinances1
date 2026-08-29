@@ -33,25 +33,26 @@ function AIFeedback({ amount, profile, direction, onAccept, onDismiss }) {
       initial={{ opacity: 0, y: 16, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 8 }}
-      className="rounded-3xl border-[rgba(79, 174, 130, 0.35)] bg-[rgba(79, 174, 130, 0.1)] p-4"
+      className="rounded-3xl p-4"
+      style={{ background: 'var(--color-warning-soft)', border: '1px solid rgba(217,119,6,0.3)' }}
     >
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-          <Zap className="w-4 h-4 text-amber-400" />
+        <div className="w-9 h-9 rounded-xl bg-[var(--color-warning-soft)] flex items-center justify-center flex-shrink-0">
+          <Zap className="w-4 h-4 text-[var(--color-warning)]" />
         </div>
         <div className="flex-1">
-          <p className="text-amber-200 text-sm font-semibold mb-1">Rådgivare</p>
-          <p className="text-slate-300 text-xs leading-relaxed">{message}</p>
+          <p className="text-[var(--color-warning)] text-sm font-semibold mb-1">Rådgivare</p>
+          <p className="text-[var(--color-text-secondary)] text-xs leading-relaxed">{message}</p>
           <div className="flex gap-2 mt-3">
             <button
               onClick={onAccept}
-              className="flex-1 py-2 rounded-xl bg-amber-500/30 hover:bg-amber-500/50 text-amber-200 text-xs font-semibold transition-all"
+              className="flex-1 py-2 rounded-xl bg-[var(--color-warning-soft)] hover:opacity-80 text-[var(--color-warning)] text-xs font-semibold transition-all"
             >
               <span className="inline-flex items-center gap-1">Ja, flytta dem <Check className="w-3.5 h-3.5" /></span>
             </button>
             <button
               onClick={onDismiss}
-              className="flex-1 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 text-xs font-semibold transition-all"
+              className="flex-1 py-2 rounded-xl bg-white border border-[var(--color-border)] hover:bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] text-xs font-semibold transition-all"
             >
               Avbryt
             </button>
@@ -88,10 +89,10 @@ function CircleVisual({ direction, amount, profile }) {
           }}
         >
           <PiggyBank className="w-6 h-6 text-emerald-400" />
-          <p className="text-white font-bold text-sm">{fmt(savingsBalance)}</p>
+          <p className="text-[var(--color-text-primary)] font-bold text-sm">{fmt(savingsBalance)}</p>
           <p className="text-emerald-400 text-[10px] font-semibold">kr</p>
         </div>
-        <p className="text-slate-400 text-xs font-medium">Sparkonto</p>
+        <p className="text-[var(--color-text-secondary)] text-xs font-medium">Sparkonto</p>
       </motion.div>
 
       {/* Arrow indicator */}
@@ -104,11 +105,11 @@ function CircleVisual({ direction, amount, profile }) {
           transition={{ duration: 1.2, repeat: Infinity }}
         >
           <ArrowDown
-            className="w-5 h-5 text-slate-400"
+            className="w-5 h-5 text-[var(--color-text-secondary)]"
             style={{ transform: direction === 'to_spending' ? 'rotate(-90deg)' : 'rotate(90deg)' }}
           />
         </motion.div>
-        <p className="text-slate-500 text-[10px]">{fmt(amount)} kr</p>
+        <p className="text-[var(--color-text-muted)] text-[10px]">{fmt(amount)} kr</p>
       </div>
 
       {/* Spending Circle */}
@@ -119,17 +120,17 @@ function CircleVisual({ direction, amount, profile }) {
         <div
           className="w-28 h-28 rounded-full flex flex-col items-center justify-center gap-1"
           style={{
-            background: 'linear-gradient(135deg, rgba(79, 174, 130, 0.25), rgba(79,70,229,0.15))',
-            border: dragTarget === 'spending' ? '2px solid rgba(79, 174, 130, 0.8)' : '2px solid rgba(79, 174, 130, 0.4)',
-            boxShadow: dragTarget === 'spending' ? '0 0 24px rgba(79, 174, 130, 0.5)' : '0 0 12px rgba(79, 174, 130, 0.2)',
+            background: 'linear-gradient(135deg, rgba(37,99,235,0.25), rgba(79,70,229,0.15))',
+            border: dragTarget === 'spending' ? '2px solid rgba(37,99,235,0.8)' : '2px solid rgba(37,99,235,0.4)',
+            boxShadow: dragTarget === 'spending' ? '0 0 24px rgba(37,99,235,0.5)' : '0 0 12px rgba(37,99,235,0.2)',
             transition: 'all 0.2s ease',
           }}
         >
-          <Wallet className="w-6 h-6 text-[#4fae82]" />
-          <p className="text-white font-bold text-sm">{fmt(availableBalance)}</p>
-          <p className="text-[#4fae82] text-[10px] font-semibold">kr</p>
+          <Wallet className="w-6 h-6 text-[var(--color-accent)]" />
+          <p className="text-[var(--color-text-primary)] font-bold text-sm">{fmt(availableBalance)}</p>
+          <p className="text-[var(--color-accent)] text-[10px] font-semibold">kr</p>
         </div>
-        <p className="text-slate-400 text-xs font-medium">Tillgängligt</p>
+        <p className="text-[var(--color-text-secondary)] text-xs font-medium">Tillgängligt</p>
       </motion.div>
     </div>
   );
@@ -207,7 +208,7 @@ export default function TheSwipe({ profile, onTransfer }) {
           className={`${copilotInputClass} text-center text-lg font-bold`}
           placeholder="Eget belopp"
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] text-sm">kr</span>
       </div>
 
       {/* AI Feedback */}
@@ -230,10 +231,10 @@ export default function TheSwipe({ profile, onTransfer }) {
             key="confirmed"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-full h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center gap-2"
+            className="w-full h-14 rounded-2xl bg-[var(--color-success-soft)] border border-emerald-500/40 flex items-center justify-center gap-2"
           >
-            <Check className="w-5 h-5 text-emerald-400" />
-            <span className="text-emerald-300 font-bold text-sm">Överföring registrerad!</span>
+            <Check className="w-5 h-5 text-[var(--color-success)]" />
+            <span className="text-[var(--color-success)] font-bold text-sm">Överföring registrerad!</span>
           </motion.div>
         ) : (
           <motion.button
