@@ -24,17 +24,17 @@ function MemoryRow({ memory, onEdit, onDelete }) {
   const date = new Date(memory.createdAt || memory.updatedAt || Date.now()).toLocaleDateString('sv-SE');
 
   return (
-    <div className="flex items-start gap-3 py-3 border-b border-white/[0.06] last:border-0">
+    <div className="flex items-start gap-3 py-3 border-b border-[var(--color-border)] last:border-0">
       <div className="flex-1 min-w-0">
-        <p className="text-[11px] text-white/40 uppercase tracking-wide">{label}</p>
-        <p className="text-[14px] text-white/85 mt-0.5 leading-relaxed">{memory.value}</p>
-        <p className="text-[11px] text-white/30 mt-1">{date}</p>
+        <p className="text-[11px] text-[var(--color-text-muted)] uppercase tracking-wide">{label}</p>
+        <p className="text-[14px] text-[var(--color-text-primary)] mt-0.5 leading-relaxed">{memory.value}</p>
+        <p className="text-[11px] text-[var(--color-text-muted)] mt-1">{date}</p>
       </div>
       <div className="flex gap-1 shrink-0">
         <button
           type="button"
           onClick={() => onEdit(memory)}
-          className="w-9 h-9 rounded-full flex items-center justify-center bg-white/[0.06] text-white/60"
+          className="w-9 h-9 rounded-full flex items-center justify-center bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)]"
           aria-label="Redigera minne"
         >
           <Pencil size={14} />
@@ -121,7 +121,7 @@ export default function AIMemoryProfile() {
   if (isLoading || !profile) {
     return (
       <PageShell title="Min AI-profil" backHref={createPageUrl('Settings')}>
-        <p className="text-white/50 text-sm">Laddar…</p>
+        <p className="text-[var(--color-text-secondary)] text-sm">Laddar…</p>
       </PageShell>
     );
   }
@@ -143,14 +143,14 @@ export default function AIMemoryProfile() {
           </div>
         </div>
 
-        <label className="flex items-center justify-between mt-5 py-3 border-t border-white/[0.06] cursor-pointer">
-          <span className="text-[15px] text-white/80">Kom ihåg tidigare diskussioner</span>
+        <label className="flex items-center justify-between mt-5 py-3 border-t border-[var(--color-border)] cursor-pointer">
+          <span className="text-[15px] text-[var(--color-text-secondary)]">Kom ihåg tidigare diskussioner</span>
           <button
             type="button"
             role="switch"
             aria-checked={memoryOn}
             onClick={handleToggle}
-            className={`relative w-12 h-7 rounded-full transition-colors ${memoryOn ? 'bg-[var(--color-accent)]' : 'bg-white/15'}`}
+            className={`relative w-12 h-7 rounded-full transition-colors ${memoryOn ? 'bg-[var(--color-accent)]' : 'bg-[var(--color-background-secondary)]'}`}
           >
             <span
               className={`absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform ${memoryOn ? 'translate-x-5' : 'translate-x-0.5'}`}
@@ -168,9 +168,9 @@ export default function AIMemoryProfile() {
             </p>
 
             {loading ? (
-              <p className="text-white/40 text-sm">Laddar minnen…</p>
+              <p className="text-[var(--color-text-muted)] text-sm">Laddar minnen…</p>
             ) : memories.length === 0 ? (
-              <p className="text-white/40 text-sm py-4">
+              <p className="text-[var(--color-text-muted)] text-sm py-4">
                 Inga minnen ännu. Prata med Coach, analysera köp eller planera resor — Lago sparar det viktigaste automatiskt.
               </p>
             ) : (
@@ -188,13 +188,13 @@ export default function AIMemoryProfile() {
           </GlassSection>
 
           {editing && (
-            <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50">
-              <div className="w-full max-w-md rounded-2xl bg-[#0a1028] p-5 ring-1 ring-white/10">
+            <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4" style={{ background: 'rgba(11,18,32,0.45)' }}>
+              <div className="w-full max-w-md rounded-2xl bg-white p-5 ring-1 ring-[var(--color-border)]">
                 <p className="anchor-card-title mb-3">Redigera minne</p>
                 <textarea
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
-                  className="w-full min-h-[100px] rounded-xl bg-white/[0.06] border-0 text-white text-[14px] p-3 resize-none"
+                  className="w-full min-h-[100px] rounded-xl bg-[var(--color-background-secondary)] border-0 text-[var(--color-text-primary)] text-[14px] p-3 resize-none"
                 />
                 <div className="flex gap-2 mt-4">
                   <button type="button" onClick={() => setEditing(null)} className={`flex-1 ${anchorSecondaryButtonClass}`}>
@@ -232,8 +232,8 @@ export default function AIMemoryProfile() {
       )}
 
       {confirmClear && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="w-full max-w-sm rounded-2xl bg-[#0a1028] p-5 ring-1 ring-white/10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(11,18,32,0.45)' }}>
+          <div className="w-full max-w-sm rounded-2xl bg-white p-5 ring-1 ring-[var(--color-border)]">
             <p className="anchor-card-title">Rensa allt?</p>
             <p className="anchor-type-body-sm mt-2">
               All konversationshistorik och alla sparade minnen tas bort permanent.
@@ -252,7 +252,7 @@ export default function AIMemoryProfile() {
 
       <Link
         to={createPageUrl('Settings')}
-        className="inline-flex items-center gap-1 text-[13px] text-white/45 hover:text-white/70 mt-8 no-underline"
+        className="inline-flex items-center gap-1 text-[13px] text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] mt-8 no-underline"
       >
         <ChevronLeft size={14} />
         Tillbaka till Inställningar

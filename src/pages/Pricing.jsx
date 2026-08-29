@@ -153,7 +153,7 @@ export default function Pricing() {
                     'mt-6 flex items-center justify-center gap-2 w-full min-h-12 rounded-[var(--anchor-radius-lg)] font-semibold text-[15px] touch-manipulation disabled:opacity-60',
                     isPopular
                       ? 'bg-[var(--color-text-primary)] text-[var(--color-background-primary)] anchor-elev-1'
-                      : 'bg-white/[0.08] text-[var(--color-text-primary)] ring-1 ring-white/[0.12] hover:bg-white/[0.12]',
+                      : 'bg-[var(--color-background-secondary)] text-[var(--color-text-primary)] ring-1 ring-[var(--color-border)] hover:bg-[var(--color-border)]',
                   )}
                   whileTap={{ scale: 0.96 }}
                 >

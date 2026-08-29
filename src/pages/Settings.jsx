@@ -57,7 +57,7 @@ function FieldRow({ label, icon: Icon, children }) {
     <div className="space-y-1.5">
       <div className="flex items-center gap-2">
         {Icon && <Icon className="w-3.5 h-3.5 text-[var(--color-accent)]" />}
-        <Label className="anchor-type-body-sm text-white/50">{label}</Label>
+        <Label className="anchor-type-body-sm text-[var(--color-text-secondary)]">{label}</Label>
       </div>
       {children}
     </div>
@@ -73,11 +73,11 @@ function SettingsHero({ formData, formatNumber }) {
     <div className="anchor-premium-hero">
       <div className="relative z-10 anchor-hero-asymmetric">
         <div className="min-w-0">
-          <p className="anchor-type-body-sm text-white/45">Din profil</p>
+          <p className="anchor-type-body-sm text-[var(--color-text-muted)]">Din profil</p>
           <div className="relative inline-block">
             <div
               className="absolute inset-[-10px_-16px] rounded-full pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at center, rgba(79,174,130,0.22), transparent 70%)', filter: 'blur(6px)' }}
+              style={{ background: 'radial-gradient(ellipse at center, var(--color-accent-soft), transparent 70%)', filter: 'blur(6px)' }}
               aria-hidden="true"
             />
             <p className="relative anchor-type-headline text-[20px] mt-1 tabular-nums">
@@ -209,7 +209,7 @@ export default function Settings() {
           <Link
             to={createPageUrl('Onboarding')}
             className="inline-flex px-6 py-3 rounded-full text-sm font-semibold"
-            style={{ background: 'var(--color-accent)', color: '#08110c' }}
+            style={{ background: 'var(--color-accent)', color: '#fff' }}
           >
             Kom igång
           </Link>
@@ -218,7 +218,7 @@ export default function Settings() {
     );
   }
 
-  const krSuffix = <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-white/40">kr</span>;
+  const krSuffix = <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-[var(--color-text-muted)]">kr</span>;
 
   return (
     <PageShell
@@ -230,7 +230,7 @@ export default function Settings() {
           minTouch={false}
           onClick={handleSave}
           disabled={saving}
-          className="h-10 px-5 rounded-full bg-[var(--color-text-primary)] text-[#050d28] text-sm font-semibold disabled:opacity-40 anchor-elev-2 whitespace-nowrap"
+          className="h-10 px-5 rounded-full bg-[var(--color-text-primary)] text-white text-sm font-semibold disabled:opacity-40 anchor-elev-2 whitespace-nowrap"
         >
           {saving ? 'Sparar…' : 'Spara'}
         </AnchorPressable>
@@ -339,13 +339,13 @@ export default function Settings() {
                 {i > 0 && <DashboardDivider />}
                 <div className="flex items-center gap-3 py-3 min-h-12">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-medium text-white">{sub.name}</p>
+                    <p className="text-[15px] font-medium text-[var(--color-text-primary)]">{sub.name}</p>
                     <p className="anchor-type-body-sm mt-0.5">
                       {categories.find((c) => c.id === sub.category)?.label || 'Övrigt'}
                       {sub.billingDay ? ` · dag ${sub.billingDay}` : ''}
                     </p>
                   </div>
-                  <span className="text-[15px] font-semibold text-white tabular-nums">{sub.amount} kr</span>
+                  <span className="text-[15px] font-semibold text-[var(--color-text-primary)] tabular-nums">{sub.amount} kr</span>
                   <AnchorPressable
                     type="button"
                     minTouch={false}
@@ -359,7 +359,7 @@ export default function Settings() {
             ))}
 
             {showAddSub ? (
-              <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
+              <div className="py-4 space-y-3 border-t border-[var(--color-border)] mt-2">
                 <Input placeholder="Namn" value={newSub.name} onChange={(e) => setNewSub({ ...newSub, name: e.target.value })} className={copilotInputClass} />
                 <Input type="number" placeholder="Belopp (kr)" value={newSub.amount} onChange={(e) => setNewSub({ ...newSub, amount: e.target.value })} className={copilotInputClass} />
                 <DayPicker value={parseInt(newSub.billingDay, 10) || 15} onChange={(d) => setNewSub({ ...newSub, billingDay: String(d) })} label="Dragningsdag" hint="Standard: 15" />
@@ -378,10 +378,10 @@ export default function Settings() {
                   </Select>
                 </div>
                 <div className="flex gap-2">
-                  <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddSub(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]">
+                  <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddSub(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)]">
                     Avbryt
                   </AnchorPressable>
-                  <AnchorPressable type="button" minTouch={false} onClick={addSubscription} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-text-primary)] text-[#050d28] anchor-elev-1">
+                  <AnchorPressable type="button" minTouch={false} onClick={addSubscription} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-text-primary)] text-white anchor-elev-1">
                     Lägg till
                   </AnchorPressable>
                 </div>
@@ -390,7 +390,7 @@ export default function Settings() {
               <AnchorPressable
                 type="button"
                 onClick={() => setShowAddSub(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 min-h-12 text-[14px] font-medium text-white/55"
+                className="w-full flex items-center justify-center gap-2 py-3 min-h-12 text-[14px] font-medium text-[var(--color-text-secondary)]"
               >
                 <Plus className="w-4 h-4" /> Lägg till abonnemang
               </AnchorPressable>
@@ -410,12 +410,12 @@ export default function Settings() {
                 {i > 0 && <DashboardDivider />}
                 <div className="flex items-center gap-3 py-3 min-h-12">
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-medium text-white">{loan.name}</p>
+                    <p className="text-[15px] font-medium text-[var(--color-text-primary)]">{loan.name}</p>
                     <p className="anchor-type-body-sm">
                       {loan.interestRate}% ränta · {formatNumber(loan.monthlyPayment)} kr/mån
                     </p>
                   </div>
-                  <span className="text-[15px] font-semibold text-white tabular-nums">{formatNumber(loan.totalAmount)} kr</span>
+                  <span className="text-[15px] font-semibold text-[var(--color-text-primary)] tabular-nums">{formatNumber(loan.totalAmount)} kr</span>
                   <AnchorPressable
                     type="button"
                     minTouch={false}
@@ -429,7 +429,7 @@ export default function Settings() {
             ))}
 
             {showAddLoan ? (
-              <div className="py-4 space-y-3 border-t border-white/[0.08] mt-2">
+              <div className="py-4 space-y-3 border-t border-[var(--color-border)] mt-2">
                 <Input placeholder="Namn på lån" value={newLoan.name} onChange={(e) => setNewLoan({ ...newLoan, name: e.target.value })} className={copilotInputClass} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <Input placeholder="Totalt (kr)" value={newLoan.totalAmount} onChange={(e) => setNewLoan({ ...newLoan, totalAmount: e.target.value })} className={copilotInputClass} />
@@ -437,10 +437,10 @@ export default function Settings() {
                 </div>
                 <Input placeholder="Månadskostnad (kr)" value={newLoan.monthlyPayment} onChange={(e) => setNewLoan({ ...newLoan, monthlyPayment: e.target.value })} className={copilotInputClass} />
                 <div className="flex gap-2">
-                  <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddLoan(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-white/[0.06] text-white/70 ring-1 ring-white/[0.1]">
+                  <AnchorPressable type="button" minTouch={false} onClick={() => setShowAddLoan(false)} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border)]">
                     Avbryt
                   </AnchorPressable>
-                  <AnchorPressable type="button" minTouch={false} onClick={addLoan} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-warning)] text-[#050d28]">
+                  <AnchorPressable type="button" minTouch={false} onClick={addLoan} className="flex-1 h-11 rounded-full text-sm font-semibold bg-[var(--color-warning)] text-[var(--color-text-primary)]">
                     Lägg till
                   </AnchorPressable>
                 </div>
@@ -449,7 +449,7 @@ export default function Settings() {
               <AnchorPressable
                 type="button"
                 onClick={() => setShowAddLoan(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 min-h-12 text-[14px] font-medium text-white/55"
+                className="w-full flex items-center justify-center gap-2 py-3 min-h-12 text-[14px] font-medium text-[var(--color-text-secondary)]"
               >
                 <Plus className="w-4 h-4" /> Lägg till lån
               </AnchorPressable>
@@ -527,7 +527,7 @@ export default function Settings() {
               <p className={`${sectionSubtitleClass} leading-relaxed`}>{ANCHOR_COACH_DISCLAIMER}</p>
               <Link
                 to="/TermsOfService"
-                className="inline-flex items-center gap-1 min-h-11 text-[13px] text-white/55 hover:text-white/80 mt-2 no-underline anchor-pressable"
+                className="inline-flex items-center gap-1 min-h-11 text-[13px] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] mt-2 no-underline anchor-pressable"
               >
                 Läs användarvillkor
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -538,8 +538,8 @@ export default function Settings() {
       </StaggerBlock>
 
       <div className="flex justify-center gap-4 sm:gap-6 py-2 flex-wrap">
-        <Link to="/TermsOfService" className="text-xs text-white/45 hover:text-white/70 anchor-pressable px-2 py-1">Användarvillkor</Link>
-        <Link to="/PrivacyPolicy" className="text-xs text-white/45 hover:text-white/70 anchor-pressable px-2 py-1">Integritetspolicy</Link>
+        <Link to="/TermsOfService" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] anchor-pressable px-2 py-1">Användarvillkor</Link>
+        <Link to="/PrivacyPolicy" className="text-xs text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)] anchor-pressable px-2 py-1">Integritetspolicy</Link>
       </div>
 
       {isBusiness && (

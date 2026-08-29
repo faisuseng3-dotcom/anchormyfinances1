@@ -53,7 +53,7 @@ function ModeCard({ mode, selected, onSelect }) {
         style={{
           background: isSelected
             ? `color-mix(in srgb, ${mode.accent} 22%, transparent)`
-            : 'rgba(255, 255, 255, 0.06)',
+            : 'var(--color-background-secondary)',
           border: `1px solid color-mix(in srgb, ${mode.accent} 30%, transparent)`,
         }}
       >
@@ -158,8 +158,8 @@ export default function AppEntry() {
                 onClick={goSignup}
                 className="w-full min-h-12 rounded-[var(--anchor-radius-xl)] font-medium text-sm flex items-center justify-center gap-2 border"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  borderColor: 'rgba(255, 255, 255, 0.12)',
+                  background: 'var(--color-surface)',
+                  borderColor: 'var(--color-border)',
                   color: 'var(--color-text-primary)',
                 }}
               >

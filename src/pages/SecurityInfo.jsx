@@ -8,7 +8,7 @@ import { createPageUrl } from '@/utils';
 const sections = [
   {
     icon: Shield,
-    color: '#4fae82',
+    color: 'var(--color-accent)',
     title: 'Ingen bankdata krävs',
     points: [
       'Vi begär aldrig ditt BankID, kortnummer eller inloggningsuppgifter till din bank.',
@@ -18,7 +18,7 @@ const sections = [
   },
   {
     icon: Lock,
-    color: '#4fae82',
+    color: 'var(--color-accent)',
     title: 'Krypterad & säker datalagring',
     points: [
       'All data krypteras i transit (TLS) och i vila (AES-256).',
@@ -28,7 +28,7 @@ const sections = [
   },
   {
     icon: Eye,
-    color: '#4fae82',
+    color: 'var(--color-accent)',
     title: 'Du äger din data',
     points: [
       'Du har alltid tillgång till all data du registrerat.',
@@ -38,7 +38,7 @@ const sections = [
   },
   {
     icon: Trash2,
-    color: '#4fae82',
+    color: 'var(--color-accent)',
     title: 'Permanent radering',
     points: [
       'Du kan begära permanent radering av ditt konto och all data.',
@@ -52,22 +52,22 @@ export default function SecurityInfo() {
   return (
     <div className="h-full anchor-scroll-panel pb-24">
       <div className="px-6 pt-8 pb-4">
-        <Link to={createPageUrl('Settings')} className="flex items-center gap-2 text-white/45 mb-6">
+        <Link to={createPageUrl('Settings')} className="flex items-center gap-2 text-[var(--color-text-muted)] mb-6">
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm">Tillbaka till Inställningar</span>
         </Link>
 
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-2xl bg-[#4fae82]/20 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-[var(--color-accent)]/20 flex items-center justify-center">
               <Shield className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
-              <p className="text-white/40 text-xs uppercase tracking-widest font-semibold">Trust Center</p>
-              <h1 className="text-2xl font-bold text-white">Säkerhet & Data</h1>
+              <p className="text-[var(--color-text-muted)] text-xs uppercase tracking-widest font-semibold">Trust Center</p>
+              <h1 className="text-2xl font-bold text-[var(--color-text-primary)]">Säkerhet & Data</h1>
             </div>
           </div>
-          <p className="text-white/45 text-sm mt-3 leading-relaxed">
+          <p className="text-[var(--color-text-muted)] text-sm mt-3 leading-relaxed">
             LAGO är byggt på tillit. Här är exakt hur din data hanteras – transparent och ärligt.
           </p>
         </motion.div>
@@ -81,19 +81,19 @@ export default function SecurityInfo() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
             className="rounded-2xl p-5"
-            style={{ background: 'rgba(17,24,39,0.6)', boxShadow: 'var(--anchor-shadow-1)' }}
+            style={{ background: 'var(--color-surface-raised)', border: '1px solid var(--color-border)', boxShadow: 'var(--anchor-shadow-1)' }}
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'rgba(79,174,130,0.15)' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg" style={{ background: 'var(--color-accent-soft)' }}>
                 <Icon className="w-5 h-5" style={{ color: color }} />
               </div>
-              <h2 className="text-base font-bold text-white">{title}</h2>
+              <h2 className="text-base font-bold text-[var(--color-text-primary)]">{title}</h2>
             </div>
             <div className="space-y-3">
               {points.map((point, j) => (
                 <div key={j} className="flex items-start gap-2.5">
                   <CheckCircle className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-white/70 leading-relaxed">{point}</p>
+                  <p className="text-sm text-[var(--color-text-secondary)] leading-relaxed">{point}</p>
                 </div>
               ))}
             </div>
@@ -105,11 +105,11 @@ export default function SecurityInfo() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
           className="rounded-2xl p-5 text-center"
-          style={{ background: 'rgba(16,185,129,0.08)', boxShadow: 'var(--anchor-shadow-1)' }}
+          style={{ background: 'var(--color-success-soft)', boxShadow: 'var(--anchor-shadow-1)' }}
         >
           <Database className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
-          <p className="text-sm font-semibold text-white mb-1">Frågor om din data?</p>
-          <p className="text-xs text-white/45 leading-relaxed">
+          <p className="text-sm font-semibold text-[var(--color-text-primary)] mb-1">Frågor om din data?</p>
+          <p className="text-xs text-[var(--color-text-muted)] leading-relaxed">
             Vi följer GDPR och EU:s dataskyddslagar fullt ut.
             Din integritet är en grundrättighet – inte en bonus.
           </p>

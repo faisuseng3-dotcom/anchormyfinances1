@@ -15,11 +15,11 @@ export default function PageNotFound() {
   return (
     <div className={`${anchorPageClass} flex flex-col items-center justify-center px-6 py-16`}>
       <div className="w-full max-w-md text-center space-y-6">
-        <p className="text-[72px] font-light text-white/20 tabular-nums leading-none">404</p>
+        <p className="text-[72px] font-light text-[var(--color-text-muted)] tabular-nums leading-none">404</p>
         <div className="space-y-2">
-          <h1 className="text-[24px] font-light tracking-tight text-white">Sidan finns inte</h1>
-          <p className="text-[15px] text-white/50 leading-relaxed">
-            <span className="text-white/70">{pageName}</span> kunde inte hittas i Lago.
+          <h1 className="text-[24px] font-light tracking-tight text-[var(--color-text-primary)]">Sidan finns inte</h1>
+          <p className="text-[15px] text-[var(--color-text-secondary)] leading-relaxed">
+            <span className="text-[var(--color-text-primary)]">{pageName}</span> kunde inte hittas i Lago.
           </p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
