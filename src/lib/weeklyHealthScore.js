@@ -87,24 +87,24 @@ export function calculateWeeklyHealthScore(profile, transactions = []) {
 
   let label = 'Stabil';
   let hint = 'Du har överblick — fortsätt i samma takt.';
-  let color = '#7fc4a3';
+  let color = 'var(--color-success)';
 
   if (rounded >= 75) {
     label = 'Bra koll';
     hint = 'Buffert, vecka och sparande hänger ihop.';
-    color = '#4fae82';
+    color = 'var(--color-success)';
   } else if (rounded >= 50) {
     label = 'På rätt spår';
     hint = 'Några justeringar kan lyfta dig ytterligare.';
-    color = '#7fc4a3';
+    color = 'var(--color-success)';
   } else if (rounded >= 30) {
     label = 'Spänd vecka';
     hint = 'Fokusera på det som dras snart och veckosaldot.';
-    color = '#d9b25c';
+    color = 'var(--color-warning)';
   } else {
     label = 'Tight läge';
     hint = 'Ta det steg för steg — vi visar vad som hjälper mest.';
-    color = '#e2857a';
+    color = 'var(--color-danger)';
   }
 
   return { score: rounded, label, hint, color, factors };

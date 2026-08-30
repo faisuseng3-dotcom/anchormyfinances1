@@ -10,7 +10,7 @@ export function getEconomicHealth(mli = 0) {
       score,
       label: 'Bra koll',
       hint: 'Du har överblick över inkomst, utgifter och buffert.',
-      color: '#34D399',
+      color: 'var(--color-success)',
     };
   }
   if (score >= 50) {
@@ -18,7 +18,7 @@ export function getEconomicHealth(mli = 0) {
       score,
       label: 'Stabil',
       hint: 'Några saker kan optimeras — vi visar vad som hjälper mest.',
-      color: '#4fae82',
+      color: 'var(--color-success)',
     };
   }
   if (score >= 30) {
@@ -26,14 +26,14 @@ export function getEconomicHealth(mli = 0) {
       score,
       label: 'Spänd',
       hint: 'Fokusera på det viktigaste den närmaste veckan.',
-      color: 'rgba(255,255,255,0.75)',
+      color: 'var(--color-warning)',
     };
   }
   return {
     score,
     label: 'Tight läge',
     hint: 'Ta det lugnt — små steg ger kontroll snabbt.',
-    color: '#FF8A9A',
+    color: 'var(--color-danger)',
   };
 }
 

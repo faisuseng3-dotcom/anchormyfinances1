@@ -22,7 +22,7 @@ export const TRACKED_BUDGET_CATEGORIES = [
 
 // Kategorier särskiljs via ikonform + etikett, inte färg — en enda neutral
 // ikonton och accentfärgen reserveras för budgetstatus (under/nära/över).
-const NEUTRAL_ICON = 'rgba(255,255,255,0.75)';
+const NEUTRAL_ICON = 'var(--color-text-secondary)';
 
 export const BUDGET_CATEGORY_META = {
   food: { label: 'Mat', Icon: ShoppingCart, color: NEUTRAL_ICON },
@@ -36,9 +36,9 @@ export const BUDGET_CATEGORY_META = {
 };
 
 export function getBudgetBarColor(pct) {
-  if (pct >= 1) return '#e2857a';
-  if (pct >= 0.8) return '#d9b25c';
-  return '#4fae82';
+  if (pct >= 1) return 'var(--color-danger)';
+  if (pct >= 0.8) return 'var(--color-warning)';
+  return 'var(--color-success)';
 }
 
 export function getBudgetStatusText(pct, remaining) {
