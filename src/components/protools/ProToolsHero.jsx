@@ -15,7 +15,7 @@ export default function ProToolsHero({ profile }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl organic-surface overflow-hidden mb-6"
-      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+      style={{ background: '#FFFFFF', border: '1px solid var(--color-border)' }}
     >
       <div className="p-5 flex items-start gap-4">
         <div
@@ -28,11 +28,11 @@ export default function ProToolsHero({ profile }) {
           <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[var(--copilot-text-muted)]">
             Verktyg
           </p>
-          <p className="text-[17px] font-bold text-white mt-1 leading-snug">
+          <p className="text-[17px] font-bold text-[var(--color-text-primary)] mt-1 leading-snug">
             Räkna och simulera utifrån din profil
           </p>
           {income > 0 ? (
-            <div className="flex gap-6 mt-4 pt-3 border-t ">
+            <div className="flex gap-6 mt-4 pt-3 border-t border-[var(--color-border)]">
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Marginal</p>
                 <p className="text-[18px] font-bold text-[var(--copilot-accent-green)] tabular-nums">
@@ -41,7 +41,7 @@ export default function ProToolsHero({ profile }) {
               </div>
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-[var(--copilot-text-muted)]">Fasta</p>
-                <p className="text-[18px] font-bold text-white tabular-nums">
+                <p className="text-[18px] font-bold text-[var(--color-text-primary)] tabular-nums">
                   {fmt(fixed)} kr
                 </p>
               </div>

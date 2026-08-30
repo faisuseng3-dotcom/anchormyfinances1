@@ -17,7 +17,7 @@ export default function GuestBanner() {
         className="fixed top-0 left-0 right-0 z-[100] border-b"
         style={{
           background: 'var(--color-background-secondary)',
-          borderColor: 'rgba(255,255,255,0.08)',
+          borderColor: 'var(--color-border)',
           backdropFilter: 'blur(10px)',
         }}
       >

@@ -102,13 +102,13 @@ export default function PushNotificationManager() {
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           className="fixed bottom-24 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl p-4 flex items-center gap-3 border"
           style={{
-            background: '#10140f',
-            borderColor: 'rgba(255,255,255,0.08)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.35)'
+            background: '#FFFFFF',
+            borderColor: 'var(--color-border)',
+            boxShadow: 'var(--anchor-shadow-3)'
           }}
         >
           <div className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ background: 'rgba(75,124,243,0.15)', boxShadow: 'var(--anchor-shadow-1)' }}>
+            style={{ background: 'var(--color-accent-soft)', boxShadow: 'var(--anchor-shadow-1)' }}>
             <Bell className="w-5 h-5" style={{ color: 'var(--color-accent)' }} />
           </div>
           <div className="flex-1 min-w-0">
@@ -144,10 +144,10 @@ export default function PushNotificationManager() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="fixed bottom-24 left-4 right-4 z-50 mx-auto max-w-md rounded-2xl p-4 flex items-center gap-3"
-          style={{ background: '#10140f', boxShadow: 'var(--anchor-shadow-1)' }}
+          style={{ background: '#FFFFFF', boxShadow: 'var(--anchor-shadow-3)', border: '1px solid var(--color-border)' }}
         >
           <div className="w-5 h-5 rounded-full border-2 animate-spin flex-shrink-0"
-            style={{ borderColor: 'var(--color-surface)', borderTopColor: 'var(--color-accent)' }} />
+            style={{ borderColor: 'var(--color-border)', borderTopColor: 'var(--color-accent)' }} />
           <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Aktiverar notiser...</p>
         </motion.div>
       )}

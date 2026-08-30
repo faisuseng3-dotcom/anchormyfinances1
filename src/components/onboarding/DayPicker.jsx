@@ -6,7 +6,7 @@ export default function DayPicker({ value, onChange, label, hint }) {
 
   return (
     <div className="space-y-2">
-      {label && <p className="text-sm text-slate-300">{label}</p>}
+      {label && <p className="text-sm text-[var(--color-text-secondary)]">{label}</p>}
       <div
         ref={scrollRef}
         className="flex gap-2 overflow-x-auto pb-1"
@@ -21,8 +21,8 @@ export default function DayPicker({ value, onChange, label, hint }) {
               onClick={() => onChange(d)}
               className="flex-shrink-0 w-10 h-10 rounded-xl text-sm font-semibold transition-all"
               style={isSelected
-                ? { background: 'var(--color-accent)', color: '#08110c' }
-                : { background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.55)', boxShadow: 'var(--anchor-shadow-1)' }
+                ? { background: 'var(--color-accent)', color: '#fff' }
+                : { background: '#FFFFFF', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border)' }
               }
             >
               {d}
@@ -30,7 +30,7 @@ export default function DayPicker({ value, onChange, label, hint }) {
           );
         })}
       </div>
-      {hint && <p className="text-xs text-slate-500">{hint}</p>}
+      {hint && <p className="text-xs text-[var(--color-text-muted)]">{hint}</p>}
     </div>
   );
 }

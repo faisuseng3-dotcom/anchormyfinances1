@@ -129,7 +129,7 @@ export default function PrivacyPolicy() {
 
       </div>
 
-      <footer className="mt-16 pt-8 border-t text-xs" style={{ borderColor: 'rgba(255,255,255,0.07)', color: 'var(--color-text-muted)' }}>
+      <footer className="mt-16 pt-8 border-t text-xs" style={{ borderColor: 'var(--color-border)', color: 'var(--color-text-muted)' }}>
         <Link to="/TermsOfService" className="hover:opacity-80 transition-opacity mr-6" style={{ color: 'var(--color-text-muted)' }}>
           Användarvillkor
         </Link>
