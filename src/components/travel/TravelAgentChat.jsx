@@ -711,12 +711,12 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
     if (msg.type === 'text') {
       return (
         <div key={i} className="flex gap-3">
-          <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <Plane className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-xl bg-[var(--color-accent-soft)] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Plane className="w-4 h-4 text-[var(--color-accent)]" />
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-slate-200 leading-relaxed">
+          <div className="bg-white border border-[var(--color-border)] rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] text-sm text-[var(--color-text-primary)] leading-relaxed">
             {msg.content.split('**').map((part, j) =>
-              j % 2 === 1 ? <strong key={j} className="text-white">{part}</strong> : part
+              j % 2 === 1 ? <strong key={j} className="text-[var(--color-text-primary)]">{part}</strong> : part
             )}
           </div>
         </div>
@@ -727,19 +727,19 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       const a = msg.analysis;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3">
-          <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <Plane className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-xl bg-[var(--color-accent-soft)] flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Plane className="w-4 h-4 text-[var(--color-accent)]" />
           </div>
           <div className="flex-1">
-            <div className="text-[10px] text-[#4fae82] font-medium mb-1.5 tracking-wide">Steg 1 · Reseanalys</div>
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 space-y-2">
+            <div className="text-[10px] text-[var(--color-accent)] font-medium mb-1.5 tracking-wide">Steg 1 · Reseanalys</div>
+            <div className="bg-white border border-[var(--color-border)] rounded-2xl p-4 space-y-2">
               <div className="grid grid-cols-2 gap-2">
-                {a?.destination && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Destination</div><div className="text-white font-semibold">{a.destination}</div></div>}
-                {a?.dates && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Datum</div><div className="text-white font-semibold">{a.dates}</div></div>}
-                {a?.totalBudget && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Total budget</div><div className="text-white font-semibold">{formatNumber(a.totalBudget)} kr</div></div>}
-                {a?.activityBudget && <div className="bg-white/5 rounded-xl p-2.5 text-xs"><div className="text-white/40 mb-0.5">Aktivitetsbudget</div><div className="text-white font-semibold">{formatNumber(a.activityBudget)} kr</div></div>}
+                {a?.destination && <div className="bg-[var(--color-background-secondary)] rounded-xl p-2.5 text-xs"><div className="text-[var(--color-text-muted)] mb-0.5">Destination</div><div className="text-[var(--color-text-primary)] font-semibold">{a.destination}</div></div>}
+                {a?.dates && <div className="bg-[var(--color-background-secondary)] rounded-xl p-2.5 text-xs"><div className="text-[var(--color-text-muted)] mb-0.5">Datum</div><div className="text-[var(--color-text-primary)] font-semibold">{a.dates}</div></div>}
+                {a?.totalBudget && <div className="bg-[var(--color-background-secondary)] rounded-xl p-2.5 text-xs"><div className="text-[var(--color-text-muted)] mb-0.5">Total budget</div><div className="text-[var(--color-text-primary)] font-semibold">{formatNumber(a.totalBudget)} kr</div></div>}
+                {a?.activityBudget && <div className="bg-[var(--color-background-secondary)] rounded-xl p-2.5 text-xs"><div className="text-[var(--color-text-muted)] mb-0.5">Aktivitetsbudget</div><div className="text-[var(--color-text-primary)] font-semibold">{formatNumber(a.activityBudget)} kr</div></div>}
               </div>
-              {msg.content && <p className="text-sm text-white/70 pt-1 border-t border-white/5">{msg.content}</p>}
+              {msg.content && <p className="text-sm text-[var(--color-text-secondary)] pt-1 border-t border-[var(--color-border)]">{msg.content}</p>}
             </div>
           </div>
         </motion.div>
@@ -750,22 +750,22 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       if (!msg.timeline?.dates?.length) return null;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11">
-          <div className="text-[10px] text-[#4fae82] font-medium mb-1.5 tracking-wide">Steg 2 · Reseplan</div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4">
+          <div className="text-[10px] text-[var(--color-accent)] font-medium mb-1.5 tracking-wide">Steg 2 · Reseplan</div>
+          <div className="bg-white border border-[var(--color-border)] rounded-2xl p-4">
             <div className="flex items-center gap-2 mb-3">
-              <Calendar className="w-3.5 h-3.5 text-[#4fae82]" />
-              <span className="text-sm font-semibold text-white">{msg.timeline.destination}</span>
+              <Calendar className="w-3.5 h-3.5 text-[var(--color-accent)]" />
+              <span className="text-sm font-semibold text-[var(--color-text-primary)]">{msg.timeline.destination}</span>
             </div>
             <div className="flex gap-1.5 overflow-x-auto pb-1">
               {msg.timeline.dates.map((d, di) => (
                 <div key={di} className={`flex-shrink-0 rounded-xl px-3 py-2.5 text-center min-w-[72px] ${
                   d.highlight
-                    ? 'bg-[#4fae82]/30 border border-[#4fae82]/50 shadow-sm'
-                    : 'bg-white/5 border border-white/8'
+                    ? 'bg-[#2563EB]/30 border border-[#2563EB]/50 shadow-sm'
+                    : 'bg-[var(--color-background-secondary)] border border-[var(--color-border)]'
                 }`}>
-                  <div className="text-white/45 text-[10px]">{d.label}</div>
-                  <div className="text-white font-medium text-xs mt-0.5">{d.event}</div>
-                  {d.highlight && <Star className="w-3 h-3 mt-1 text-[#4fae82] fill-[#4fae82]" />}
+                  <div className="text-[var(--color-text-muted)] text-[10px]">{d.label}</div>
+                  <div className="text-[var(--color-text-primary)] font-medium text-xs mt-0.5">{d.event}</div>
+                  {d.highlight && <Star className="w-3 h-3 mt-1 text-[var(--color-accent)] fill-[var(--color-accent)]" />}
                 </div>
               ))}
             </div>
@@ -777,7 +777,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
     if (msg.type === 'packages') {
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11 space-y-3">
-          <div className="text-[10px] text-[#4fae82] font-medium tracking-wide">Dina 3 resvägar</div>
+          <div className="text-[10px] text-[var(--color-accent)] font-medium tracking-wide">Dina 3 resvägar</div>
           <DiscoveryCarousel
             packages={msg.packages || []}
             selectedPkg={selectedPkg}
@@ -794,7 +794,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
               >
                 <Button
                   onClick={handleSaveGoal}
-                  className="w-full h-12 rounded-xl bg-[#4fae82] hover:opacity-90 font-bold text-sm"
+                  className="w-full h-12 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] font-bold text-sm"
                 >
                   <Sparkles className="w-4 h-4" /> Skapa sparmål — {selectedPkg.name} · {formatNumber(selectedPkg.totalCost)} kr
                 </Button>
@@ -810,23 +810,23 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       const tight = msg.budgetCheck.marginPerDay < 200;
       return (
         <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="ml-11">
-          <div className="text-[10px] text-[#4fae82] font-medium mb-1.5 tracking-wide">Steg 3 · Budget-koll</div>
-          <div className={`rounded-2xl p-4 border ${tight ? 'bg-rose-500/8 border-rose-500/25' : 'bg-[#4fae82]/8 border-emerald-500/25'}`}>
+          <div className="text-[10px] text-[var(--color-accent)] font-medium mb-1.5 tracking-wide">Steg 3 · Budget-koll</div>
+          <div className={`rounded-2xl p-4 border ${tight ? 'bg-rose-500/8 border-rose-500/25' : 'bg-[var(--color-success-soft)] border-[rgba(22,163,74,0.25)]'}`}>
             <div className="flex items-center gap-2 mb-3">
               <div className={`w-2 h-2 rounded-full ${tight ? 'bg-rose-400' : 'bg-emerald-400'}`}
                 style={{ boxShadow: tight ? '0 0 6px rgba(239,68,68,0.8)' : '0 0 6px rgba(16,185,129,0.8)' }}
               />
-              <span className="text-sm font-bold text-white">CFO-koll</span>
+              <span className="text-sm font-bold text-[var(--color-text-primary)]">CFO-koll</span>
             </div>
             <div className="grid grid-cols-3 gap-2 mb-3">
               {msg.budgetCheck.breakdown?.map((item, bi) => (
-                <div key={bi} className="bg-white/8 rounded-xl p-2 text-center">
-                  <div className="text-[10px] text-white/45">{item.label}</div>
-                  <div className="text-white font-bold text-sm">{formatNumber(item.amount)} kr</div>
+                <div key={bi} className="bg-[var(--color-background-secondary)] rounded-xl p-2 text-center">
+                  <div className="text-[10px] text-[var(--color-text-muted)]">{item.label}</div>
+                  <div className="text-[var(--color-text-primary)] font-bold text-sm">{formatNumber(item.amount)} kr</div>
                 </div>
               ))}
             </div>
-            <p className={`text-xs font-medium ${tight ? 'text-rose-300' : 'text-emerald-300'}`}>
+            <p className={`text-xs font-medium ${tight ? 'text-[var(--color-danger)]' : 'text-[var(--color-success)]'}`}>
               {msg.budgetCheck.verdict}
             </p>
           </div>
@@ -857,7 +857,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
       </div>
 
       {/* Glassmorphism input */}
-      <div className="pt-3 border-t border-white/8">
+      <div className="pt-3 border-t border-[var(--color-border)]">
         <div className="relative flex gap-2 items-end">
           <div className="flex-1 relative">
             {/* Floating icons when loading */}
@@ -871,7 +871,7 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
                       animate={{ opacity: [0, 1, 0], scale: [0.5, 1, 0.5], y: [-4, 0, -4] }}
                       transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.3 }}
                     >
-                      <FloatIcon className="w-4 h-4 text-[#4fae82]" />
+                      <FloatIcon className="w-4 h-4 text-[var(--color-accent)]" />
                     </motion.div>
                   ))}
                 </div>
@@ -883,19 +883,19 @@ KRITISKT: totalCost ska ALDRIG vara 0. Beräkna verkliga priser för destination
               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), handleSend())}
               placeholder="Beskriv din resa... t.ex. 'Solsemester i Spanien i juli, 7 nätter, ca 8 000 kr' eller 'Städresa till Berlin i maj'"
               rows={2}
-              className="w-full resize-none bg-white/8 backdrop-blur-xl border border-white/15 rounded-2xl px-4 py-3 text-sm text-white placeholder-white/30 focus:outline-none focus:border-[#4fae82]/70 focus:ring-1 focus:ring-[#4fae82]/20 transition-all"
+              className="w-full resize-none bg-white border border-[var(--color-border)] rounded-2xl px-4 py-3 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[#2563EB]/70 focus:ring-1 focus:ring-[#2563EB]/20 transition-all"
               style={{ backdropFilter: 'blur(20px)' }}
             />
           </div>
           <Button
             onClick={handleSend}
             disabled={!input.trim() || loading}
-            className="h-12 w-12 rounded-xl bg-[#4fae82] hover:opacity-90 flex-shrink-0 disabled:opacity-40"
+            className="h-12 w-12 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-hover)] flex-shrink-0 disabled:opacity-40"
           >
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-[10px] text-white/30 mt-1.5 px-1">↵ Enter för att skicka · Shift+Enter för ny rad</p>
+        <p className="text-[10px] text-[var(--color-text-muted)] mt-1.5 px-1">↵ Enter för att skicka · Shift+Enter för ny rad</p>
       </div>
     </div>
   );

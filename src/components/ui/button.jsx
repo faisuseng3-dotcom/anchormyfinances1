@@ -6,20 +6,20 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "anchor-btn inline-flex items-center justify-center whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/20 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "anchor-btn inline-flex items-center justify-center whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(37,99,235,0.35)] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-white text-slate-900 shadow-[0_14px_32px_rgba(0,0,0,0.22)] hover:bg-white/95",
+          "bg-white text-[var(--color-text-primary)] shadow-[0_14px_32px_rgba(0,0,0,0.22)] hover:bg-white/95",
         destructive:
-          "bg-red-500/20 text-red-200 border border-red-400/30 hover:bg-red-500/30",
+          "bg-[var(--color-danger-soft)] text-[var(--color-danger)] border border-[rgba(220,38,38,0.3)] hover:bg-[rgba(220,38,38,0.15)]",
         outline:
-          "border border-white/16 bg-white/8 text-white/90 hover:bg-white/12",
+          "border border-[var(--color-border)] bg-white text-[var(--color-text-primary)] hover:bg-[var(--color-background-secondary)]",
         secondary:
-          "bg-white/10 text-white/90 border border-white/14 hover:bg-white/15",
-        ghost: "hover:bg-white/10 text-white/80",
-        link: "text-[#9FB5FF] underline-offset-4 hover:underline anchor-btn--compact !min-h-0 !px-0",
+          "bg-[var(--color-background-secondary)] text-[var(--color-text-primary)] border border-[var(--color-border)] hover:bg-[#e2e8f0]",
+        ghost: "hover:bg-[var(--color-background-secondary)] text-[var(--color-text-secondary)]",
+        link: "text-[var(--color-accent)] underline-offset-4 hover:underline anchor-btn--compact !min-h-0 !px-0",
       },
       size: {
         default: "anchor-btn--default anchor-btn--rounded",
