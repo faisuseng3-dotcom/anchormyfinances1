@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>QueueBar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #131F1E;
+    --bg-secondary: #1A2B29;
+    --bg-tertiary: #223330;
+    --accent-orange: #FF6B2C;
+    --accent-orange-dim: #FF6B2C22;
+    --text-primary: #FFFFFF;
+    --text-secondary: #8A9E9C;
+    --text-muted: #4A6360;
+    --status-green: #2ECC71;
+    --status-green-bg: #2ECC7120;
+    --status-yellow: #F39C12;
+    --status-yellow-bg: #F39C1220;
+    --status-red: #E74C3C;
+    --status-red-bg: #E74C3C20;
+    --border: #2A3F3D;
+    --shadow: 0 4px 20px rgba(0,0,0,0.4);
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-full: 999px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    background: #050a09;
+    height: 100%;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  ::-webkit-scrollbar { display: none; }
+  * { scrollbar-width: none; -ms-overflow-style: none; }
+
+  .phone-frame {
+    width: 430px;
+    height: 884px;
+    background: #0a0a0a;
+    border-radius: 54px;
+    padding: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 2px #1a1a1a inset;
+    position: relative;
+  }
+
+  .app-screen {
+    width: 100%;
+    height: 100%;
+    max-width: 390px;
+    max-height: 844px;
+    margin: 0 auto;
+    background: var(--bg-primary);
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-primary);
+    line-height: 1.4;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    z-index: 50;
+    position: relative;
+  }
+  .status-bar .icons { display: flex; align-items: center; gap: 5px; }
+  .status-bar svg { display: block; }
+
+  /* Main content area between status bar and bottom nav */
+  .content-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.2s ease;
+  }
+  .screen.active { display: flex; }
+
+  button, .clickable {
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    background: none;
+    color: inherit;
+  }
+  button:active, .clickable:active {
+    transform: scale(0.97);
+    opacity: 0.85;
+  }
+
+  /* ===== Bottom Nav ===== */
+  .bottom-nav {
+    height: 64px;
+    flex-shrink: 0;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: stretch;
+    z-index: 40;
+    position: relative;
+  }
+  .nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    color: var(--text-muted);
+    position: relative;
+  }
+  .nav-tab .nav-icon { font-size: 22px; line-height: 1; }
+  .nav-tab .nav-label { font-size: 10px; font-weight: 500; }
+  .nav-tab.active { color: var(--accent-orange); }
+  .nav-tab .nav-dot {
+    position: absolute;
+    bottom: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent-orange);
+    opacity: 0;
+  }
+  .nav-tab.active .nav-dot { opacity: 1; }
+
+  /* ===== Shared components ===== */
+  .search-bar {
+    height: 44px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    padding: 0 6px 0 16px;
+    gap: 8px;
+  }
+  .search-bar .search-icon { color: var(--text-muted); font-size: 15px; }
+  .search-bar .search-placeholder { color: var(--text-muted); font-size: 14px; flex: 1; }
+  .filter-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-orange-dim);
+    color: var(--accent-orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .pill-scroll {
+    display: flex;
+    gap: 8px;
+    padding: 12px 16px;
+    overflow-x: auto;
+  }
+  .pill {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .pill.active {
+    background: var(--accent-orange);
+    color: #fff;
+    border-color: var(--accent-orange);
+  }
+
+  .status-badge {
+    border-radius: var(--radius-full);
+    padding: 3px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .status-badge.green { background: var(--status-green-bg); color: var(--status-green); }
+  .status-badge.yellow { background: var(--status-yellow-bg); color: var(--status-yellow); }
+  .status-badge.red { background: var(--status-red-bg); color: var(--status-red); }
+
+  .info-chip {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 4px 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  /* ===== Screen 1: Map ===== */
+  #screen-map { }
+  .map-header {
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+  .map-header .logo { font-size: 20px; font-weight: 700; color: var(--accent-orange); line-height: 1.2; }
+  .map-header .subtitle { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+  .notif-icon {
+    position: relative;
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .notif-icon .dot {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent-orange);
+    border: 1.5px solid var(--bg-primary);
+  }
+
+  .map-section {
+    height: 42%;
+    min-height: 220px;
+    flex-shrink: 0;
+    margin: 0 16px;
+    border-radius: var(--radius-lg);
+    background: #1C3330;
+    position: relative;
+    overflow: hidden;
+  }
+  .map-grid {
+    position: absolute;
+    inset: 0;
+  }
+  .map-grid .h-line, .map-grid .v-line {
+    position: absolute;
+    background: #2A4440;
+  }
+  .map-marker {
+    position: absolute;
+    border-radius: var(--radius-full);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+  .map-marker .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .map-marker.green { background: var(--status-green-bg); color: var(--status-green); border: 1px solid var(--status-green); }
+  .map-marker.green .dot { background: var(--status-green); animation: pulse 2s infinite; }
+  .map-marker.yellow { background: var(--status-yellow-bg); color: var(--status-yellow); border: 1px solid var(--status-yellow); }
+  .map-marker.yellow .dot { background: var(--status-yellow); }
+  .map-marker.red { background: var(--status-red-bg); color: var(--status-red); border: 1px solid var(--status-red); }
+  .map-marker.red .dot { background: var(--status-red); }
+
+  .locate-btn {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: var(--shadow);
+  }
+
+  .live-ticker {
+    flex-shrink: 0;
+    background: var(--bg-secondary);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 16px;
+    margin-top: 10px;
+    border-radius: var(--radius-md);
+  }
+  .live-ticker .pulse-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--status-green);
+    animation: pulse 2s infinite;
+    flex-shrink: 0;
+  }
+  .live-ticker .ticker-text { font-size: 12px; color: var(--text-secondary); flex: 1; }
+  .live-badge {
+    background: var(--status-red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 4px;
+    padding: 2px 6px;
+    animation: blink 1.5s infinite;
+    flex-shrink: 0;
+  }
+
+  .section-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 8px;
+  }
+  .section-label-row .label { font-size: 16px; font-weight: 700; color: #fff; }
+  .section-label-row .see-all { font-size: 13px; color: var(--accent-orange); font-weight: 600; }
+
+  .venue-card-scroll {
+    display: flex;
+    gap: 12px;
+    padding: 0 16px 16px;
+    overflow-x: auto;
+  }
+  .venue-card {
+    flex-shrink: 0;
+    width: 200px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 14px;
+    overflow: hidden;
+  }
+  .venue-card .vc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+  .venue-card .vc-name { font-size: 15px; font-weight: 700; color: #fff; }
+  .venue-card .vc-address { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .venue-card .vc-chips { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .venue-card .vc-divider { height: 1px; background: var(--border); margin-top: 10px; }
+  .venue-card .vc-report-btn {
+    margin-top: 10px;
+    width: 100%;
+    background: var(--accent-orange-dim);
+    color: var(--accent-orange);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #FF6B2C4D;
+    border-radius: var(--radius-md);
+    padding: 7px;
+  }
+  .venue-card .vc-report-btn:hover { background: var(--accent-orange); color: #fff; }
+
+  /* ===== List row (Explore) ===== */
+  .venue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 16px 20px;
+  }
+  .venue-row {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .venue-row .avatar {
+    width: 52px; height: 52px; flex-shrink: 0;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #1A3B38, #0F2422);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+  }
+  .venue-row .vr-mid { flex: 1; min-width: 0; }
+  .venue-row .vr-name { font-size: 15px; font-weight: 700; color: #fff; }
+  .venue-row .vr-address { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .venue-row .vr-chips { display: flex; gap: 6px; margin-top: 8px; }
+  .venue-row .chip-open { background: var(--status-green-bg); color: var(--status-green); }
+  .venue-row .vr-right { text-align: right; flex-shrink: 0; }
+  .venue-row .vr-time { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+  /* ===== Bottom Sheet ===== */
+  .sheet-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 60;
+    display: none;
+  }
+  .sheet-overlay.active { display: block; }
+  .bottom-sheet {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 70%;
+    background: var(--bg-secondary);
+    border-radius: 24px 24px 0 0;
+    z-index: 61;
+    display: none;
+    flex-direction: column;
+    animation: slideUp 0.3s ease;
+    overflow: hidden;
+  }
+  .bottom-sheet.active { display: flex; }
+  .sheet-handle {
+    width: 36px; height: 4px;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    margin: 12px auto 0;
+    flex-shrink: 0;
+  }
+  .sheet-content { flex: 1; overflow-y: auto; padding: 16px 20px 24px; }
+
+  .sheet-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .sheet-header .sh-name { font-size: 24px; font-weight: 700; color: #fff; }
+  .sheet-header .sh-sub { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+  .sheet-header .sh-badge {
+    font-size: 14px; font-weight: 700;
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .sheet-label {
+    font-size: 11px; font-weight: 700; color: var(--text-muted);
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+
+  .queue-progress-wrap { margin-top: 20px; }
+  .queue-progress-bar {
+    height: 8px;
+    border-radius: var(--radius-full);
+    background: var(--bg-tertiary);
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .queue-progress-fill {
+    height: 100%;
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+  }
+  .queue-progress-labels {
+    display: flex; justify-content: space-between;
+    margin-top: 6px;
+    font-size: 12px; color: var(--text-secondary);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .info-box {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    padding: 12px;
+  }
+  .info-box .ib-emoji { font-size: 20px; }
+  .info-box .ib-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .info-box .ib-value { font-size: 16px; font-weight: 700; color: #fff; margin-top: 4px; }
+
+  .report-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .report-row .ravatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+  .report-row .rtext { font-size: 14px; font-weight: 700; color: #fff; }
+  .report-row .rsub { font-size: 12px; color: var(--text-secondary); margin-top: 1px; }
+  .report-row .rthumbs { margin-left: auto; font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+  .btn-primary {
+    background: var(--accent-orange);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    height: 50px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 4px 15px #FF6B2C40;
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 14px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* ===== Explore ===== */
+  .explore-header { padding: 20px 16px 16px; font-size: 24px; font-weight: 700; color: #fff; }
+  .category-scroll {
+    display: flex; gap: 10px;
+    padding: 0 16px 16px;
+    overflow-x: auto;
+  }
+  .category-card {
+    flex-shrink: 0;
+    width: 80px; height: 90px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .category-card .cat-emoji { font-size: 28px; }
+  .category-card .cat-text { font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
+  .category-card.active {
+    border: 2px solid var(--accent-orange);
+    background: var(--accent-orange-dim);
+  }
+  .category-card.active .cat-text { color: var(--accent-orange); }
+  .explore-section-title { font-size: 17px; font-weight: 700; color: #fff; padding: 4px 16px 12px; }
+
+  /* ===== Report flow ===== */
+  .report-header { padding: 20px 16px 0; }
+  .report-header .rh-title { font-size: 24px; font-weight: 700; color: #fff; }
+  .report-header .rh-sub { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    padding: 20px 16px 0;
+  }
+  .step-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    transition: all 0.2s ease;
+  }
+  .step-item.active .step-circle { background: var(--accent-orange); color: #fff; }
+  .step-item.done .step-circle { background: var(--accent-orange); color: #fff; }
+  .step-item .step-text { font-size: 11px; color: var(--text-muted); }
+  .step-item.active .step-text, .step-item.done .step-text { color: var(--accent-orange); }
+  .step-line { flex: 1; height: 2px; background: var(--bg-tertiary); margin: 0 8px; align-self: center; margin-bottom: 18px; transition: background 0.2s ease; }
+  .step-line.done { background: var(--accent-orange); }
+
+  .report-step-content { padding: 24px 16px; }
+  .field-label {
+    font-size: 13px; font-weight: 700; color: var(--text-secondary);
+    letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .report-search {
+    height: 48px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 16px;
+    font-size: 14px; color: var(--text-muted);
+  }
+  .or-divider {
+    display: flex; align-items: center;
+    margin-top: 16px;
+  }
+  .or-divider .line { flex: 1; height: 1px; background: var(--border); }
+  .or-divider .or-text {
+    font-size: 11px; color: var(--text-muted);
+    padding: 0 12px; letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  .nearby-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .nearby-row {
+    height: 56px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 0 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .nearby-row.selected { border: 2px solid var(--accent-orange); background: var(--accent-orange-dim); }
+  .nearby-row .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .nearby-row .nr-mid { flex: 1; min-width: 0; }
+  .nearby-row .nr-name { font-size: 14px; font-weight: 700; color: #fff; }
+  .nearby-row .nr-address { font-size: 12px; color: var(--text-secondary); }
+  .nearby-row .nr-dist { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+
+  .selected-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg-tertiary);
+    color: var(--accent-orange);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: var(--radius-full);
+  }
+
+  .queue-option {
+    width: 100%;
+    height: 64px;
+    border-radius: var(--radius-lg);
+    padding: 0 20px;
+    display: flex; align-items: center; gap: 14px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .queue-option.selected { border: 2px solid var(--accent-orange); background: var(--accent-orange-dim); }
+  .queue-option .qo-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .queue-option .qo-icon.green { background: var(--status-green-bg); border: 1px solid var(--status-green); }
+  .queue-option .qo-icon.yellow { background: var(--status-yellow-bg); border: 1px solid var(--status-yellow); }
+  .queue-option .qo-icon.red { background: var(--status-red-bg); border: 1px solid var(--status-red); }
+  .queue-option .qo-text { flex: 1; }
+  .queue-option .qo-title { font-size: 16px; font-weight: 700; color: #fff; }
+  .queue-option .qo-desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .queue-option .qo-check {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: #fff;
+  }
+  .queue-option.selected .qo-check { background: var(--accent-orange); border-color: var(--accent-orange); }
+
+  .confirm-wrap {
+    padding: 40px 16px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .confirm-check {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: var(--status-green-bg);
+    border: 3px solid var(--status-green);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 50px;
+    animation: scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .confirm-title { font-size: 28px; font-weight: 700; color: #fff; margin-top: 24px; }
+  .confirm-sub { font-size: 15px; color: var(--text-secondary); margin-top: 8px; line-height: 1.5; max-width: 280px; }
+  .points-badge {
+    margin-top: 24px;
+    background: var(--accent-orange-dim);
+    color: var(--accent-orange);
+    border: 1px solid var(--accent-orange);
+    border-radius: var(--radius-full);
+    padding: 8px 20px;
+    font-size: 15px; font-weight: 700;
+    width: fit-content;
+  }
+
+  /* ===== Profile ===== */
+  .profile-header {
+    padding: 24px 16px 20px;
+    background: linear-gradient(180deg, var(--bg-secondary), var(--bg-primary));
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, #2A4A47, #1A3330);
+    border: 3px solid var(--accent-orange);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .profile-name { font-size: 18px; font-weight: 700; color: #fff; margin-top: 12px; }
+  .profile-since { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+  .profile-stats { display: flex; width: 100%; margin-top: 20px; }
+  .profile-stat { flex: 1; text-align: center; }
+  .profile-stat .ps-num { font-size: 22px; font-weight: 700; color: #fff; }
+  .profile-stat .ps-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .profile-divider { width: 1px; height: 36px; background: var(--border); align-self: center; }
+
+  .badge-section { padding: 20px 16px 0; }
+  .badge-scroll { display: flex; gap: 10px; padding-top: 12px; overflow-x: auto; }
+  .badge-card {
+    flex-shrink: 0;
+    width: 70px; height: 80px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--accent-orange);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .badge-card.locked { border: 1px solid var(--border); background: var(--bg-tertiary); }
+  .badge-card .b-emoji { font-size: 28px; }
+  .badge-card .b-text { font-size: 10px; color: var(--text-secondary); margin-top: 6px; text-align: center; padding: 0 4px; }
+  .badge-card.locked .b-text { color: var(--text-muted); }
+
+  .activity-section { padding: 20px 16px 0; }
+  .activity-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+  .activity-row .a-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
+  .activity-row .a-mid { flex: 1; min-width: 0; }
+  .activity-row .a-title { font-size: 14px; color: #fff; }
+  .activity-row .a-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .activity-row .a-points { font-size: 13px; font-weight: 700; color: var(--accent-orange); flex-shrink: 0; }
+
+  .settings-section { margin-top: 20px; padding: 0 16px 24px; }
+  .settings-row {
+    display: flex; align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .settings-row .s-emoji { font-size: 20px; }
+  .settings-row .s-text { font-size: 14px; color: #fff; }
+  .settings-row .s-arrow { margin-left: auto; font-size: 16px; color: var(--text-muted); }
+
+  /* ===== Animations ===== */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.95); }
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes scaleIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+  <div class="app-screen">
+
+    <!-- Status bar -->
+    <div class="status-bar">
+      <span>9:41</span>
+      <div class="icons">
+        <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="white"/><rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="white"/><rect x="9" y="3" width="3" height="9" rx="0.5" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="white"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C10.7 2 13.1 3.1 14.8 4.9L13.4 6.3C12 4.9 10.1 4 8 4C5.9 4 4 4.9 2.6 6.3L1.2 4.9C2.9 3.1 5.3 2 8 2Z" fill="white"/><path d="M8 6C9.5 6 10.9 6.6 11.9 7.6L10.5 9C9.9 8.4 9 8 8 8C7 8 6.1 8.4 5.5 9L4.1 7.6C5.1 6.6 6.5 6 8 6Z" fill="white"/><circle cx="8" cy="10.5" r="1.3" fill="white"/></svg>
+        <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="white"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="white"/><rect x="23" y="4" width="1.5" height="4" rx="0.7" fill="white"/></svg>
+      </div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ===================== SCREEN 1: MAP ===================== -->
+      <div id="screen-map" class="screen active">
+        <div class="map-header">
+          <div>
+            <div class="logo">QueueBar</div>
+            <div class="subtitle">Stockholm • Fredag 22:34</div>
+          </div>
+          <div class="notif-icon clickable">🔔<span class="dot"></span></div>
+        </div>
+
+        <div style="padding: 0 16px;">
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <span class="search-placeholder">Sök bar eller klubb...</span>
+            <div class="filter-btn clickable">≡</div>
+          </div>
+        </div>
+
+        <div class="pill-scroll" id="filter-pills">
+          <div class="pill active" data-pill="alla">Alla</div>
+          <div class="pill" data-pill="ingen">Ingen kö 🟢</div>
+          <div class="pill" data-pill="happy">Happy Hour ⚡</div>
+          <div class="pill" data-pill="oppet">Öppet nu 🕐</div>
+        </div>
+
+        <div class="map-section" id="map-canvas">
+          <div class="map-grid" id="map-grid"></div>
+
+          <div class="map-marker green clickable" style="top:20%; left:25%;" data-venue="soap"><span class="dot"></span>Ingen kö</div>
+          <div class="map-marker red clickable" style="top:35%; left:55%;" data-venue="berns"><span class="dot"></span>45 min</div>
+          <div class="map-marker red clickable" style="top:55%; left:70%;" data-venue="spy"><span class="dot"></span>60 min</div>
+          <div class="map-marker green clickable" style="top:65%; left:20%;" data-venue="tradgarden"><span class="dot"></span>5 min</div>
+          <div class="map-marker yellow clickable" style="top:30%; left:75%;" data-venue="sturehof"><span class="dot"></span>20 min</div>
+          <div class="map-marker yellow clickable" style="top:75%; left:50%;" data-venue="underbron"><span class="dot"></span>15 min</div>
+
+          <div class="locate-btn clickable">📍</div>
+        </div>
+
+        <div class="live-ticker">
+          <span class="pulse-dot"></span>
+          <span class="ticker-text">23 rapporter senaste timmen • Uppdaterat 2 min sedan</span>
+          <span class="live-badge">LIVE</span>
+        </div>
+
+        <div class="section-label-row">
+          <span class="label">Nära dig</span>
+          <span class="see-all clickable">Se alla →</span>
+        </div>
+
+        <div class="venue-card-scroll">
+          <div class="venue-card clickable" data-venue="soap">
+            <div class="vc-top">
+              <span class="vc-name">Soap Bar</span>
+              <span class="status-badge green">Ingen kö</span>
+            </div>
+            <div class="vc-address">Ringvägen 24, Södermalm</div>
+            <div class="vc-chips">
+              <span class="info-chip">📍 350m</span>
+              <span class="info-chip">🕐 03:00</span>
+              <span class="info-chip">👤 4 rapporter</span>
+            </div>
+            <div class="vc-divider"></div>
+            <button class="vc-report-btn" data-goreport="soap">Rapportera kö</button>
+          </div>
+
+          <div class="venue-card clickable" data-venue="tradgarden">
+            <div class="vc-top">
+              <span class="vc-name">Trädgården</span>
+              <span class="status-badge yellow">15 min</span>
+            </div>
+            <div class="vc-address">Hammarby Slussväg 2, Södermalm</div>
+            <div class="vc-chips">
+              <span class="info-chip">📍 800m</span>
+              <span class="info-chip">🕐 05:00</span>
+              <span class="info-chip">👤 7 rapporter</span>
+            </div>
+            <div class="vc-divider"></div>
+            <button class="vc-report-btn" data-goreport="tradgarden">Rapportera kö</button>
+          </div>
+
+          <div class="venue-card clickable" data-venue="sturehof">
+            <div class="vc-top">
+              <span class="vc-name">Sturehof</span>
+              <span class="status-badge yellow">20 min</span>
+            </div>
+            <div class="vc-address">Stureplan 2, Östermalm</div>
+            <div class="vc-chips">
+              <span class="info-chip">📍 1.2km</span>
+              <span class="info-chip">🕐 01:00</span>
+              <span class="info-chip">👤 3 rapporter</span>
+            </div>
+            <div class="vc-divider"></div>
+            <button class="vc-report-btn" data-goreport="sturehof">Rapportera kö</button>
+          </div>
+
+          <div class="venue-card clickable" data-venue="underbron">
+            <div class="vc-top">
+              <span class="vc-name">Under Bron</span>
+              <span class="status-badge yellow">15 min</span>
+            </div>
+            <div class="vc-address">Skansbron 4, Södermalm</div>
+            <div class="vc-chips">
+              <span class="info-chip">📍 950m</span>
+              <span class="info-chip">🕐 05:00</span>
+              <span class="info-chip">👤 5 rapporter</span>
+            </div>
+            <div class="vc-divider"></div>
+            <button class="vc-report-btn" data-goreport="underbron">Rapportera kö</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== SCREEN 2: EXPLORE ===================== -->
+      <div id="screen-explore" class="screen">
+        <div class="explore-header">Utforska</div>
+        <div style="padding: 0 16px 16px;">
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <span class="search-placeholder">Sök bar eller klubb...</span>
+            <div class="filter-btn clickable">≡</div>
+          </div>
+        </div>
+
+        <div class="category-scroll" id="category-scroll">
+          <div class="category-card active clickable" data-cat="barer">
+            <span class="cat-emoji">🍺</span><span class="cat-text">Barer</span>
+          </div>
+          <div class="category-card clickable" data-cat="klubbar">
+            <span class="cat-emoji">🎵</span><span class="cat-text">Klubbar</span>
+          </div>
+          <div class="category-card clickable" data-cat="happy">
+            <span class="cat-emoji">⚡</span><span class="cat-text">Happy Hour</span>
+          </div>
+          <div class="category-card clickable" data-cat="aktiviteter">
+            <span class="cat-emoji">🎯</span><span class="cat-text">Aktiviteter</span>
+          </div>
+          <div class="category-card clickable" data-cat="sent">
+            <span class="cat-emoji">🌙</span><span class="cat-text">Sent öppet</span>
+          </div>
+        </div>
+
+        <div class="explore-section-title">Populärt ikväll</div>
+
+        <div class="venue-list">
+          <div class="venue-row clickable" data-venue="soap">
+            <div class="avatar">🍺</div>
+            <div class="vr-mid">
+              <div class="vr-name">Soap Bar</div>
+              <div class="vr-address">Ringvägen 24</div>
+              <div class="vr-chips">
+                <span class="info-chip">📍 450m</span>
+                <span class="info-chip chip-open">🕐 Öppet</span>
+              </div>
+            </div>
+            <div class="vr-right">
+              <span class="status-badge green">Ingen kö</span>
+              <div class="vr-time">5 min sedan</div>
+            </div>
+          </div>
+
+          <div class="venue-row clickable" data-venue="spy">
+            <div class="avatar">🎵</div>
+            <div class="vr-mid">
+              <div class="vr-name">Spy Bar</div>
+              <div class="vr-address">Birger Jarlsgatan 20</div>
+              <div class="vr-chips">
+                <span class="info-chip">📍 1.1km</span>
+                <span class="info-chip chip-open">🕐 Öppet</span>
+              </div>
+            </div>
+            <div class="vr-right">
+              <span class="status-badge red">60 min</span>
+              <div class="vr-time">3 min sedan</div>
+            </div>
+          </div>
+
+          <div class="venue-row clickable" data-venue="sturehof">
+            <div class="avatar">🍺</div>
+            <div class="vr-mid">
+              <div class="vr-name">Sturehof</div>
+              <div class="vr-address">Stureplan 2</div>
+              <div class="vr-chips">
+                <span class="info-chip">📍 1.4km</span>
+                <span class="info-chip chip-open">🕐 Öppet</span>
+              </div>
+            </div>
+            <div class="vr-right">
+              <span class="status-badge yellow">20 min</span>
+              <div class="vr-time">18 min sedan</div>
+            </div>
+          </div>
+
+          <div class="venue-row clickable" data-venue="berns">
+            <div class="avatar">🎵</div>
+            <div class="vr-mid">
+              <div class="vr-name">Berns</div>
+              <div class="vr-address">Berzelii Park</div>
+              <div class="vr-chips">
+                <span class="info-chip">📍 1.8km</span>
+                <span class="info-chip chip-open">🕐 Öppet</span>
+              </div>
+            </div>
+            <div class="vr-right">
+              <span class="status-badge red">45 min</span>
+              <div class="vr-time">5 min sedan</div>
+            </div>
+          </div>
+
+          <div class="venue-row clickable" data-venue="underbron">
+            <div class="avatar">🌙</div>
+            <div class="vr-mid">
+              <div class="vr-name">Under Bron</div>
+              <div class="vr-address">Skansbron</div>
+              <div class="vr-chips">
+                <span class="info-chip">📍 950m</span>
+                <span class="info-chip chip-open">🕐 Öppet</span>
+              </div>
+            </div>
+            <div class="vr-right">
+              <span class="status-badge yellow">15 min</span>
+              <div class="vr-time">6 min sedan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== SCREEN 3: REPORT ===================== -->
+      <div id="screen-report" class="screen">
+        <div class="report-header">
+          <div class="rh-title">Rapportera kö</div>
+          <div class="rh-sub">Hjälp andra – tar 5 sekunder</div>
+        </div>
+
+        <div class="step-indicator">
+          <div class="step-item active" id="step-ind-1">
+            <div class="step-circle">1</div>
+            <div class="step-text">Välj bar</div>
+          </div>
+          <div class="step-line" id="step-line-1"></div>
+          <div class="step-item" id="step-ind-2">
+            <div class="step-circle">2</div>
+            <div class="step-text">Kölängd</div>
+          </div>
+          <div class="step-line" id="step-line-2"></div>
+          <div class="step-item" id="step-ind-3">
+            <div class="step-circle">3</div>
+            <div class="step-text">Bekräfta</div>
+          </div>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="report-step-content" id="report-step-1">
+          <div class="field-label">VAR ÄR DU NU?</div>
+          <div class="report-search">
+            <span>🔍</span><span>Sök bar eller klubb...</span>
+          </div>
+
+          <div class="or-divider">
+            <div class="line"></div>
+            <div class="or-text">ELLER NÄRA DIG</div>
+            <div class="line"></div>
+          </div>
+
+          <div class="nearby-list" id="nearby-list">
+            <div class="nearby-row clickable" data-bar="Soap Bar" data-status="green">
+              <span class="status-dot" style="background: var(--status-green);"></span>
+              <div class="nr-mid"><div class="nr-name">Soap Bar</div><div class="nr-address">Ringvägen</div></div>
+              <div class="nr-dist">350m</div>
+            </div>
+            <div class="nearby-row clickable" data-bar="Sturehof" data-status="yellow">
+              <span class="status-dot" style="background: var(--status-yellow);"></span>
+              <div class="nr-mid"><div class="nr-name">Sturehof</div><div class="nr-address">Stureplan</div></div>
+              <div class="nr-dist">1.2km</div>
+            </div>
+            <div class="nearby-row clickable" data-bar="Spy Bar" data-status="red">
+              <span class="status-dot" style="background: var(--status-red);"></span>
+              <div class="nr-mid"><div class="nr-name">Spy Bar</div><div class="nr-address">Birger Jarlsgatan</div></div>
+              <div class="nr-dist">1.4km</div>
+            </div>
+            <div class="nearby-row clickable" data-bar="Under Bron" data-status="yellow">
+              <span class="status-dot" style="background: var(--status-yellow);"></span>
+              <div class="nr-mid"><div class="nr-name">Under Bron</div><div class="nr-address">Skansbron</div></div>
+              <div class="nr-dist">950m</div>
+            </div>
+          </div>
+
+          <button class="btn-primary clickable" id="btn-next-step1" style="margin-top:20px; display:none;">Nästa steg →</button>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="report-step-content" id="report-step-2" style="display:none;">
+          <span class="selected-chip">📍 <span id="chip-bar-name">Soap Bar</span></span>
+
+          <div style="font-size:16px; font-weight:700; color:#fff; margin-top:20px;">Hur lång är kön?</div>
+          <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Välj det alternativ som stämmer bäst</div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;" id="queue-options">
+            <button class="queue-option clickable" data-q="none">
+              <span class="qo-icon green">✅</span>
+              <span class="qo-text"><div class="qo-title">Ingen kö</div><div class="qo-desc">Gå rakt in nu</div></span>
+              <span class="qo-check"></span>
+            </button>
+            <button class="queue-option clickable" data-q="short">
+              <span class="qo-icon yellow">⏱️</span>
+              <span class="qo-text"><div class="qo-title">Under 15 min</div><div class="qo-desc">Kort väntan</div></span>
+              <span class="qo-check"></span>
+            </button>
+            <button class="queue-option clickable" data-q="medium">
+              <span class="qo-icon yellow">⏳</span>
+              <span class="qo-text"><div class="qo-title">15–30 min</div><div class="qo-desc">Lite att vänta</div></span>
+              <span class="qo-check"></span>
+            </button>
+            <button class="queue-option clickable" data-q="long">
+              <span class="qo-icon red">🚫</span>
+              <span class="qo-text"><div class="qo-title">30+ min</div><div class="qo-desc">Lång kö, välj annat</div></span>
+              <span class="qo-check"></span>
+            </button>
+          </div>
+
+          <button class="btn-primary clickable" id="btn-submit-report" style="margin-top:20px; box-shadow: 0 4px 20px #FF6B2C50;" disabled>Skicka rapport ✓</button>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="confirm-wrap" id="report-step-3" style="display:none;">
+          <div class="confirm-check">✓</div>
+          <div class="confirm-title">Tack!</div>
+          <div class="confirm-sub">Din rapport hjälper andra att planera sin kväll</div>
+          <div class="points-badge">+10 poäng! 🎯</div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:32px; width:100%;">
+            <button class="btn-secondary clickable" id="btn-report-again" style="background:var(--bg-secondary); color:var(--text-primary); height:50px;">Rapportera en till</button>
+            <button class="btn-primary clickable" id="btn-back-to-map-report">← Tillbaka till kartan</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================== SCREEN 4: PROFILE ===================== -->
+      <div id="screen-profile" class="screen">
+        <div class="profile-header">
+          <div class="profile-avatar">👤</div>
+          <div class="profile-name">Anonym Användare</div>
+          <div class="profile-since">Aktiv sedan Oktober 2026</div>
+
+          <div class="profile-stats">
+            <div class="profile-stat"><div class="ps-num">47</div><div class="ps-label">Rapporter</div></div>
+            <div class="profile-divider"></div>
+            <div class="profile-stat"><div class="ps-num">380</div><div class="ps-label">Poäng</div></div>
+            <div class="profile-divider"></div>
+            <div class="profile-stat"><div class="ps-num">12</div><div class="ps-label">Dagar aktiv</div></div>
+          </div>
+        </div>
+
+        <div class="badge-section">
+          <div class="sheet-label">DINA BADGES</div>
+          <div class="badge-scroll">
+            <div class="badge-card"><span class="b-emoji">🥇</span><span class="b-text">Tidiga Fågeln</span></div>
+            <div class="badge-card"><span class="b-emoji">📢</span><span class="b-text">Reporter</span></div>
+            <div class="badge-card"><span class="b-emoji">🌙</span><span class="b-text">Nattuggla</span></div>
+            <div class="badge-card locked"><span class="b-emoji">🔒</span><span class="b-text">???</span></div>
+            <div class="badge-card locked"><span class="b-emoji">🔒</span><span class="b-text">???</span></div>
+          </div>
+        </div>
+
+        <div class="activity-section">
+          <div class="sheet-label">SENASTE AKTIVITET</div>
+          <div class="activity-row">
+            <div class="a-icon">📢</div>
+            <div class="a-mid"><div class="a-title">Rapporterade Soap Bar</div><div class="a-sub">Ingen kö • Idag 22:15</div></div>
+            <div class="a-points">+10p</div>
+          </div>
+          <div class="activity-row">
+            <div class="a-icon">📢</div>
+            <div class="a-mid"><div class="a-title">Rapporterade Trädgården</div><div class="a-sub">15 min • Igår 23:40</div></div>
+            <div class="a-points">+10p</div>
+          </div>
+          <div class="activity-row">
+            <div class="a-icon">🎯</div>
+            <div class="a-mid"><div class="a-title">Badge upplåst: Reporter</div><div class="a-sub">Idag • 5 rapporter totalt</div></div>
+            <div class="a-points">+50p</div>
+          </div>
+        </div>
+
+        <div class="settings-section">
+          <div class="sheet-label">INSTÄLLNINGAR</div>
+          <div class="settings-row clickable"><span class="s-emoji">🔔</span><span class="s-text">Notifikationer</span><span class="s-arrow">→</span></div>
+          <div class="settings-row clickable"><span class="s-emoji">📍</span><span class="s-text">Plats-inställningar</span><span class="s-arrow">→</span></div>
+          <div class="settings-row clickable"><span class="s-emoji">🏙️</span><span class="s-text">Min stad: Stockholm</span><span class="s-arrow">→</span></div>
+          <div class="settings-row clickable"><span class="s-emoji">ℹ️</span><span class="s-text">Om QueueBar</span><span class="s-arrow">→</span></div>
+        </div>
+      </div>
+
+      <!-- ===================== BOTTOM SHEET ===================== -->
+      <div class="sheet-overlay" id="sheet-overlay"></div>
+      <div class="bottom-sheet" id="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-content" id="sheet-content"></div>
+      </div>
+
+    </div>
+
+    <!-- ===================== BOTTOM NAV ===================== -->
+    <div class="bottom-nav">
+      <div class="nav-tab active clickable" data-screen="map">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Karta</span>
+        <span class="nav-dot"></span>
+      </div>
+      <div class="nav-tab clickable" data-screen="explore">
+        <span class="nav-icon">🔍</span>
+        <span class="nav-label">Utforska</span>
+        <span class="nav-dot"></span>
+      </div>
+      <div class="nav-tab clickable" data-screen="report">
+        <span class="nav-icon">📢</span>
+        <span class="nav-label">Rapportera</span>
+        <span class="nav-dot"></span>
+      </div>
+      <div class="nav-tab clickable" data-screen="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profil</span>
+        <span class="nav-dot"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function() {
+  // ========== DATA ==========
+  var VENUES = {
+    soap: {
+      name: "Soap Bar", area: "Södermalm", distance: "350m", address: "Ringvägen 24, Södermalm",
+      status: "green", statusLabel: "Ingen kö", queuePct: 10,
+      closes: "03:00", reports: "4 st", avgQueue: "5 min", popularity: "Hög",
+      recentReports: [
+        {t:"Ingen kö", time:"8 min sedan", thumbs:3},
+        {t:"Ingen kö", time:"23 min sedan", thumbs:7},
+        {t:"~5 min", time:"41 min sedan", thumbs:2}
+      ]
+    },
+    spy: {
+      name: "Spy Bar", area: "Östermalm", distance: "1.4km", address: "Birger Jarlsgatan 20, Östermalm",
+      status: "red", statusLabel: "60+ min", queuePct: 100,
+      closes: "03:00", reports: "11 st", avgQueue: "45 min", popularity: "Mycket hög",
+      recentReports: [
+        {t:"60+ min", time:"3 min sedan", thumbs:9},
+        {t:"55 min", time:"20 min sedan", thumbs:5},
+        {t:"50 min", time:"38 min sedan", thumbs:4}
+      ]
+    },
+    berns: {
+      name: "Berns", area: "City", distance: "1.8km", address: "Berzelii Park, City",
+      status: "red", statusLabel: "45 min", queuePct: 78,
+      closes: "03:00", reports: "8 st", avgQueue: "40 min", popularity: "Hög",
+      recentReports: [
+        {t:"45 min", time:"5 min sedan", thumbs:6},
+        {t:"40 min", time:"22 min sedan", thumbs:4},
+        {t:"35 min", time:"50 min sedan", thumbs:3}
+      ]
+    },
+    tradgarden: {
+      name: "Trädgården", area: "Södermalm", distance: "800m", address: "Hammarby Slussväg 2, Södermalm",
+      status: "green", statusLabel: "5 min", queuePct: 18,
+      closes: "05:00", reports: "6 st", avgQueue: "8 min", popularity: "Medel",
+      recentReports: [
+        {t:"5 min", time:"12 min sedan", thumbs:5},
+        {t:"Ingen kö", time:"30 min sedan", thumbs:2},
+        {t:"10 min", time:"55 min sedan", thumbs:1}
+      ]
+    },
+    sturehof: {
+      name: "Sturehof", area: "Östermalm", distance: "1.2km", address: "Stureplan 2, Östermalm",
+      status: "yellow", statusLabel: "20 min", queuePct: 45,
+      closes: "01:00", reports: "3 st", avgQueue: "18 min", popularity: "Medel",
+      recentReports: [
+        {t:"20 min", time:"18 min sedan", thumbs:2},
+        {t:"15 min", time:"40 min sedan", thumbs:1},
+        {t:"25 min", time:"1 tim sedan", thumbs:3}
+      ]
+    },
+    underbron: {
+      name: "Under Bron", area: "Södermalm", distance: "950m", address: "Skansbron 4, Södermalm",
+      status: "yellow", statusLabel: "15 min", queuePct: 35,
+      closes: "05:00", reports: "5 st", avgQueue: "12 min", popularity: "Medel",
+      recentReports: [
+        {t:"15 min", time:"6 min sedan", thumbs:4},
+        {t:"10 min", time:"25 min sedan", thumbs:2},
+        {t:"Ingen kö", time:"1 tim sedan", thumbs:1}
+      ]
+    }
+  };
+
+  var STATUS_COLOR = {
+    green: {text: "var(--status-green)", bg: "var(--status-green-bg)"},
+    yellow: {text: "var(--status-yellow)", bg: "var(--status-yellow-bg)"},
+    red: {text: "var(--status-red)", bg: "var(--status-red-bg)"}
+  };
+
+  // ========== MAP GRID GENERATION ==========
+  var mapGrid = document.getElementById('map-grid');
+  for (var i = 1; i <= 5; i++) {
+    var h = document.createElement('div');
+    h.className = 'h-line';
+    h.style.cssText = 'left:0; right:0; top:' + (i * 16.5) + '%; height:1px;';
+    mapGrid.appendChild(h);
+    var v = document.createElement('div');
+    v.className = 'v-line';
+    v.style.cssText = 'top:0; bottom:0; left:' + (i * 16.5) + '%; width:1px;';
+    mapGrid.appendChild(v);
+  }
+
+  // ========== BOTTOM NAV ==========
+  var navTabs = document.querySelectorAll('.nav-tab');
+  var screens = document.querySelectorAll('.screen');
+
+  function showScreen(name) {
+    screens.forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('screen-' + name).classList.add('active');
+    navTabs.forEach(function(t) {
+      t.classList.toggle('active', t.dataset.screen === name);
+    });
+    closeSheet();
+  }
+
+  navTabs.forEach(function(tab) {
+    tab.addEventListener('click', function() {
+      showScreen(tab.dataset.screen);
+    });
+  });
+
+  // ========== FILTER PILLS (Map) ==========
+  document.querySelectorAll('#filter-pills .pill').forEach(function(p) {
+    p.addEventListener('click', function() {
+      document.querySelectorAll('#filter-pills .pill').forEach(function(x){ x.classList.remove('active'); });
+      p.classList.add('active');
+    });
+  });
+
+  // ========== CATEGORY CARDS (Explore) ==========
+  document.querySelectorAll('#category-scroll .category-card').forEach(function(c) {
+    c.addEventListener('click', function() {
+      document.querySelectorAll('#category-scroll .category-card').forEach(function(x){ x.classList.remove('active'); });
+      c.classList.add('active');
+    });
+  });
+
+  // ========== BOTTOM SHEET ==========
+  var sheetOverlay = document.getElementById('sheet-overlay');
+  var bottomSheet = document.getElementById('bottom-sheet');
+  var sheetContent = document.getElementById('sheet-content');
+
+  function openSheet(venueKey) {
+    var v = VENUES[venueKey];
+    if (!v) return;
+    var col = STATUS_COLOR[v.status];
+
+    var reportsHtml = v.recentReports.map(function(r) {
+      return '<div class="report-row" style="margin-top:12px;">' +
+        '<div class="ravatar">👤</div>' +
+        '<div><div class="rtext">' + r.t + '</div><div class="rsub">av Anonym • ' + r.time + '</div></div>' +
+        '<div class="rthumbs">👍 ' + r.thumbs + '</div>' +
+      '</div>';
+    }).join('');
+
+    sheetContent.innerHTML =
+      '<div class="sheet-header">' +
+        '<div><div class="sh-name">' + v.name + '</div><div class="sh-sub">' + v.area + ' • ' + v.distance + ' bort</div></div>' +
+        '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';">● ' + (v.status === 'green' ? 'Ingen kö just nu' : v.statusLabel) + '</div>' +
+      '</div>' +
+
+      '<div class="queue-progress-wrap">' +
+        '<div class="sheet-label">KÖLÄGE</div>' +
+        '<div class="queue-progress-bar"><div class="queue-progress-fill" style="width:' + v.queuePct + '%; background:' + col.text + ';"></div></div>' +
+        '<div class="queue-progress-labels"><span>Ingen kö</span><span>60+ min</span></div>' +
+      '</div>' +
+
+      '<div class="info-grid">' +
+        '<div class="info-box"><div class="ib-emoji">🕐</div><div class="ib-label">Stänger</div><div class="ib-value">' + v.closes + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">👤</div><div class="ib-label">Rapporter</div><div class="ib-value">' + v.reports + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">📊</div><div class="ib-label">Snitt-kö ikväll</div><div class="ib-value">' + v.avgQueue + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">⭐</div><div class="ib-label">Popularitet</div><div class="ib-value">' + v.popularity + '</div></div>' +
+      '</div>' +
+
+      '<div style="margin-top:20px;">' +
+        '<div class="sheet-label">SENASTE RAPPORTER</div>' +
+        reportsHtml +
+      '</div>' +
+
+      '<div style="margin-top:20px;">' +
+        '<button class="btn-primary clickable" id="sheet-report-btn">📢 Rapportera köläge nu</button>' +
+        '<button class="btn-secondary clickable" id="sheet-back-btn" style="margin-top:10px;">← Tillbaka till kartan</button>' +
+      '</div>';
+
+    document.getElementById('sheet-report-btn').addEventListener('click', function() {
+      closeSheet();
+      goToReportFor(v.name);
+    });
+    document.getElementById('sheet-back-btn').addEventListener('click', closeSheet);
+
+    sheetOverlay.classList.add('active');
+    bottomSheet.classList.add('active');
+  }
+
+  function closeSheet() {
+    sheetOverlay.classList.remove('active');
+    bottomSheet.classList.remove('active');
+  }
+
+  sheetOverlay.addEventListener('click', closeSheet);
+
+  document.querySelectorAll('[data-venue]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      if (e.target.closest('[data-goreport]')) return;
+      openSheet(el.dataset.venue);
+    });
+  });
+
+  document.querySelectorAll('[data-goreport]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var v = VENUES[el.dataset.goreport];
+      goToReportFor(v ? v.name : null);
+    });
+  });
+
+  // ========== REPORT FLOW ==========
+  var reportState = { bar: null, queue: null };
+
+  var step1 = document.getElementById('report-step-1');
+  var step2 = document.getElementById('report-step-2');
+  var step3 = document.getElementById('report-step-3');
+  var indicators = [document.getElementById('step-ind-1'), document.getElementById('step-ind-2'), document.getElementById('step-ind-3')];
+  var lines = [document.getElementById('step-line-1'), document.getElementById('step-line-2')];
+
+  function setReportStep(n) {
+    step1.style.display = n === 1 ? 'block' : 'none';
+    step2.style.display = n === 2 ? 'block' : 'none';
+    step3.style.display = n === 3 ? 'flex' : 'none';
+
+    indicators.forEach(function(ind, i) {
+      ind.classList.remove('active', 'done');
+      if (i + 1 < n) ind.classList.add('done');
+      else if (i + 1 === n) ind.classList.add('active');
+    });
+    lines.forEach(function(line, i) {
+      line.classList.toggle('done', i + 1 < n);
+    });
+  }
+
+  function goToReportFor(barName) {
+    showScreen('report');
+    reportState.bar = barName || null;
+    reportState.queue = null;
+    document.querySelectorAll('#nearby-list .nearby-row').forEach(function(r) { r.classList.remove('selected'); });
+    document.querySelectorAll('.queue-option').forEach(function(o) { o.classList.remove('selected'); });
+    document.getElementById('btn-submit-report').disabled = true;
+
+    if (barName) {
+      document.getElementById('chip-bar-name').textContent = barName;
+      var match = document.querySelector('#nearby-list .nearby-row[data-bar="' + barName + '"]');
+      if (match) match.classList.add('selected');
+      document.getElementById('btn-next-step1').style.display = 'flex';
+      setReportStep(1);
+    } else {
+      document.getElementById('btn-next-step1').style.display = 'none';
+      setReportStep(1);
+    }
+  }
+
+  document.querySelectorAll('#nearby-list .nearby-row').forEach(function(row) {
+    row.addEventListener('click', function() {
+      document.querySelectorAll('#nearby-list .nearby-row').forEach(function(r) { r.classList.remove('selected'); });
+      row.classList.add('selected');
+      reportState.bar = row.dataset.bar;
+      document.getElementById('btn-next-step1').style.display = 'flex';
+    });
+  });
+
+  document.getElementById('btn-next-step1').addEventListener('click', function() {
+    document.getElementById('chip-bar-name').textContent = reportState.bar || 'Vald bar';
+    setReportStep(2);
+  });
+
+  document.querySelectorAll('.queue-option').forEach(function(opt) {
+    opt.addEventListener('click', function() {
+      document.querySelectorAll('.queue-option').forEach(function(o) { o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      reportState.queue = opt.dataset.q;
+      document.getElementById('btn-submit-report').disabled = false;
+    });
+  });
+
+  document.getElementById('btn-submit-report').addEventListener('click', function() {
+    if (!reportState.queue) return;
+    setReportStep(3);
+  });
+
+  document.getElementById('btn-report-again').addEventListener('click', function() {
+    goToReportFor(null);
+  });
+
+  document.getElementById('btn-back-to-map-report').addEventListener('click', function() {
+    showScreen('map');
+  });
+
+  // nav tab "Rapportera" should reset to step 1 fresh (unless a bar was just chosen)
+  document.querySelector('.nav-tab[data-screen="report"]').addEventListener('click', function() {
+    if (!document.getElementById('report-step-1').style.display || document.getElementById('report-step-1').style.display === 'block') {
+      // keep as-is if mid-flow already on step1 via nav; otherwise fine
+    }
+  });
+
+  // Init report flow to step 1
+  setReportStep(1);
+})();
+</script>
+
+</body>
+</html>
