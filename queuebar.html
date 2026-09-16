@@ -776,6 +776,178 @@
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
   }
+  @keyframes sonarPing {
+    0% { transform: translate(-50%,-50%) scale(1); opacity: 0.8; }
+    100% { transform: translate(-50%,-50%) scale(2.5); opacity: 0; }
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes toastFadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(10px); }
+  }
+
+  /* ===== Additive: search inputs ===== */
+  .search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    min-width: 0;
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  .empty-msg {
+    padding: 24px 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    width: 100%;
+  }
+
+  .status-badge.gray { background: var(--bg-tertiary); color: var(--text-muted); }
+  .map-marker.gray { background: #2A2A2A; color: var(--text-muted); border: 1px solid #444; }
+  .map-marker.gray .dot { background: #666; }
+  .map-marker .dot { position: relative; }
+  .map-marker.green .dot::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 8px; height: 8px;
+    border: 2px solid var(--status-green);
+    border-radius: 50%;
+    transform: translate(-50%,-50%);
+    animation: sonarPing 2s ease-out infinite;
+  }
+
+  /* ===== Additive: favorite heart ===== */
+  .fav-heart-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--bg-tertiary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: var(--text-muted);
+    flex-shrink: 0;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  .fav-heart-btn.active { color: var(--status-red); }
+  .fav-heart-btn.bounce { transform: scale(1.3); }
+
+  /* ===== Additive: loading screen ===== */
+  .loading-screen {
+    position: absolute; inset: 0; z-index: 200;
+    background: var(--bg-primary);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+    transition: opacity 0.3s ease;
+    border-radius: 40px;
+  }
+  .loading-screen.hide { opacity: 0; pointer-events: none; }
+  .loading-logo { font-size: 24px; font-weight: 700; color: var(--accent-orange); }
+  .loading-spinner {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 3px solid var(--bg-tertiary);
+    border-top-color: var(--accent-orange);
+    animation: spin 0.8s linear infinite;
+  }
+
+  /* ===== Additive: toast system ===== */
+  .toast-container {
+    position: absolute;
+    left: 0; right: 0; bottom: 80px;
+    z-index: 9999;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    pointer-events: none;
+    padding: 0 16px;
+  }
+  .toast {
+    width: 100%; max-width: 358px;
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    font-size: 14px;
+    color: var(--text-primary);
+    animation: slideUp 0.3s ease;
+    pointer-events: auto;
+  }
+  .toast.hide { animation: toastFadeOut 0.3s ease forwards; }
+  .toast.success { background: var(--status-green-bg); border: 1px solid var(--status-green); }
+  .toast.error { background: var(--status-red-bg); border: 1px solid var(--status-red); }
+  .toast.info { background: var(--bg-secondary); border: 1px solid var(--border); }
+  .toast.points { background: var(--accent-orange-dim); border: 1px solid var(--accent-orange); }
+
+  /* ===== Additive: Live feed screen ===== */
+  .live-ticker-banner {
+    background: #E74C3C20;
+    border: 1px solid #E74C3C40;
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    margin: 0 16px 12px;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+  .feed-list { display: flex; flex-direction: column; gap: 10px; padding: 0 16px 20px; }
+  .feed-row {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 14px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .feed-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .feed-mid { flex: 1; min-width: 0; }
+  .feed-title { font-size: 14px; font-weight: 700; color: #fff; }
+  .feed-sub { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+  .feed-time { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+  .feed-thumbs {
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-full);
+    padding: 4px 10px;
+    font-size: 12px; color: var(--text-secondary);
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .feed-thumbs.active { background: var(--accent-orange); color: #fff; }
+  .live-empty { text-align: center; padding: 40px 20px; }
+  .live-empty .le-emoji { font-size: 48px; }
+  .live-empty .le-title { font-size: 16px; font-weight: 700; color: #fff; margin-top: 16px; }
+  .live-empty .le-sub { font-size: 14px; color: var(--text-secondary); margin-top: 8px; }
+  .live-empty .le-btn {
+    margin-top: 20px; background: var(--accent-orange); color: #fff;
+    height: 44px; border-radius: var(--radius-lg); padding: 0 24px;
+    font-weight: 700; font-size: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  /* ===== Additive: Profile enhancements ===== */
+  .level-badge-pill {
+    display: inline-flex; align-items: center;
+    background: var(--accent-orange-dim);
+    color: var(--accent-orange);
+    border-radius: var(--radius-full);
+    padding: 3px 10px;
+    font-size: 12px; font-weight: 700;
+    margin-left: 8px;
+  }
+  .points-progress-wrap { padding: 0 16px; margin-top: 16px; width: 100%; }
+  .points-progress-text { font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; text-align: center; }
+  .points-progress-bar { height: 6px; border-radius: var(--radius-full); background: var(--bg-tertiary); overflow: hidden; }
+  .points-progress-fill { height: 100%; background: var(--accent-orange); border-radius: var(--radius-full); transition: width 0.4s ease; }
+  .mini-fav-card {
+    flex-shrink: 0; width: 160px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    padding: 12px;
+  }
+  .mini-fav-card .mfc-name { font-size: 13px; font-weight: 700; color: #fff; }
+  .mini-fav-card .mfc-status { margin-top: 6px; }
 </style>
 </head>
 <body>
@@ -785,13 +957,20 @@
 
     <!-- Status bar -->
     <div class="status-bar">
-      <span>9:41</span>
+      <span id="status-clock">9:41</span>
       <div class="icons">
         <svg width="18" height="12" viewBox="0 0 18 12" fill="none"><rect x="0" y="7" width="3" height="5" rx="0.5" fill="white"/><rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="white"/><rect x="9" y="3" width="3" height="9" rx="0.5" fill="white"/><rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="white"/></svg>
         <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M8 2C10.7 2 13.1 3.1 14.8 4.9L13.4 6.3C12 4.9 10.1 4 8 4C5.9 4 4 4.9 2.6 6.3L1.2 4.9C2.9 3.1 5.3 2 8 2Z" fill="white"/><path d="M8 6C9.5 6 10.9 6.6 11.9 7.6L10.5 9C9.9 8.4 9 8 8 8C7 8 6.1 8.4 5.5 9L4.1 7.6C5.1 6.6 6.5 6 8 6Z" fill="white"/><circle cx="8" cy="10.5" r="1.3" fill="white"/></svg>
         <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="2.5" stroke="white"/><rect x="2" y="2" width="16" height="8" rx="1.5" fill="white"/><rect x="23" y="4" width="1.5" height="4" rx="0.7" fill="white"/></svg>
       </div>
     </div>
+
+    <div class="loading-screen" id="loading-screen">
+      <div class="loading-logo">QueueBar</div>
+      <div class="loading-spinner"></div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
 
     <div class="content-area">
 
@@ -808,7 +987,7 @@
         <div style="padding: 0 16px;">
           <div class="search-bar">
             <span class="search-icon">🔍</span>
-            <span class="search-placeholder">Sök bar eller klubb...</span>
+            <input class="search-input" id="map-search-input" type="text" placeholder="Sök bar eller klubb...">
             <div class="filter-btn clickable">≡</div>
           </div>
         </div>
@@ -818,17 +997,18 @@
           <div class="pill" data-pill="ingen">Ingen kö 🟢</div>
           <div class="pill" data-pill="happy">Happy Hour ⚡</div>
           <div class="pill" data-pill="oppet">Öppet nu 🕐</div>
+          <div class="pill" data-pill="favoriter">❤️ Favoriter</div>
         </div>
 
         <div class="map-section" id="map-canvas">
           <div class="map-grid" id="map-grid"></div>
 
-          <div class="map-marker green clickable" style="top:20%; left:25%;" data-venue="soap"><span class="dot"></span>Ingen kö</div>
-          <div class="map-marker red clickable" style="top:35%; left:55%;" data-venue="berns"><span class="dot"></span>45 min</div>
-          <div class="map-marker red clickable" style="top:55%; left:70%;" data-venue="spy"><span class="dot"></span>60 min</div>
-          <div class="map-marker green clickable" style="top:65%; left:20%;" data-venue="tradgarden"><span class="dot"></span>5 min</div>
-          <div class="map-marker yellow clickable" style="top:30%; left:75%;" data-venue="sturehof"><span class="dot"></span>20 min</div>
-          <div class="map-marker yellow clickable" style="top:75%; left:50%;" data-venue="underbron"><span class="dot"></span>15 min</div>
+          <div class="map-marker green clickable" style="top:20%; left:25%;" data-venue="soap"><span class="dot"></span><span class="marker-text">Ingen kö</span></div>
+          <div class="map-marker red clickable" style="top:35%; left:55%;" data-venue="berns"><span class="dot"></span><span class="marker-text">45 min</span></div>
+          <div class="map-marker red clickable" style="top:55%; left:70%;" data-venue="spy"><span class="dot"></span><span class="marker-text">60 min</span></div>
+          <div class="map-marker green clickable" style="top:65%; left:20%;" data-venue="tradgarden"><span class="dot"></span><span class="marker-text">5 min</span></div>
+          <div class="map-marker yellow clickable" style="top:30%; left:75%;" data-venue="sturehof"><span class="dot"></span><span class="marker-text">20 min</span></div>
+          <div class="map-marker yellow clickable" style="top:75%; left:50%;" data-venue="underbron"><span class="dot"></span><span class="marker-text">15 min</span></div>
 
           <div class="locate-btn clickable">📍</div>
         </div>
@@ -848,13 +1028,16 @@
           <div class="venue-card clickable" data-venue="soap">
             <div class="vc-top">
               <span class="vc-name">Soap Bar</span>
-              <span class="status-badge green">Ingen kö</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="soap">♡</button>
+                <span class="status-badge green" data-role="status-badge">Ingen kö</span>
+              </div>
             </div>
             <div class="vc-address">Ringvägen 24, Södermalm</div>
             <div class="vc-chips">
               <span class="info-chip">📍 350m</span>
               <span class="info-chip">🕐 03:00</span>
-              <span class="info-chip">👤 4 rapporter</span>
+              <span class="info-chip" data-role="reports-chip">👤 4 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="soap">Rapportera kö</button>
@@ -863,13 +1046,16 @@
           <div class="venue-card clickable" data-venue="tradgarden">
             <div class="vc-top">
               <span class="vc-name">Trädgården</span>
-              <span class="status-badge yellow">15 min</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="tradgarden">♡</button>
+                <span class="status-badge yellow" data-role="status-badge">15 min</span>
+              </div>
             </div>
             <div class="vc-address">Hammarby Slussväg 2, Södermalm</div>
             <div class="vc-chips">
               <span class="info-chip">📍 800m</span>
               <span class="info-chip">🕐 05:00</span>
-              <span class="info-chip">👤 7 rapporter</span>
+              <span class="info-chip" data-role="reports-chip">👤 7 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="tradgarden">Rapportera kö</button>
@@ -878,13 +1064,16 @@
           <div class="venue-card clickable" data-venue="sturehof">
             <div class="vc-top">
               <span class="vc-name">Sturehof</span>
-              <span class="status-badge yellow">20 min</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="sturehof">♡</button>
+                <span class="status-badge yellow" data-role="status-badge">20 min</span>
+              </div>
             </div>
             <div class="vc-address">Stureplan 2, Östermalm</div>
             <div class="vc-chips">
               <span class="info-chip">📍 1.2km</span>
               <span class="info-chip">🕐 01:00</span>
-              <span class="info-chip">👤 3 rapporter</span>
+              <span class="info-chip" data-role="reports-chip">👤 3 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="sturehof">Rapportera kö</button>
@@ -893,18 +1082,22 @@
           <div class="venue-card clickable" data-venue="underbron">
             <div class="vc-top">
               <span class="vc-name">Under Bron</span>
-              <span class="status-badge yellow">15 min</span>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="underbron">♡</button>
+                <span class="status-badge yellow" data-role="status-badge">15 min</span>
+              </div>
             </div>
             <div class="vc-address">Skansbron 4, Södermalm</div>
             <div class="vc-chips">
               <span class="info-chip">📍 950m</span>
               <span class="info-chip">🕐 05:00</span>
-              <span class="info-chip">👤 5 rapporter</span>
+              <span class="info-chip" data-role="reports-chip">👤 5 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="underbron">Rapportera kö</button>
           </div>
         </div>
+        <div class="empty-msg" id="map-empty-msg" style="display:none;"></div>
       </div>
 
       <!-- ===================== SCREEN 2: EXPLORE ===================== -->
@@ -913,7 +1106,7 @@
         <div style="padding: 0 16px 16px;">
           <div class="search-bar">
             <span class="search-icon">🔍</span>
-            <span class="search-placeholder">Sök bar eller klubb...</span>
+            <input class="search-input" id="explore-search-input" type="text" placeholder="Sök bar eller klubb...">
             <div class="filter-btn clickable">≡</div>
           </div>
         </div>
@@ -950,8 +1143,11 @@
               </div>
             </div>
             <div class="vr-right">
-              <span class="status-badge green">Ingen kö</span>
-              <div class="vr-time">5 min sedan</div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="soap">♡</button>
+                <span class="status-badge green" data-role="status-badge">Ingen kö</span>
+              </div>
+              <div class="vr-time" data-role="last-time">5 min sedan</div>
             </div>
           </div>
 
@@ -966,8 +1162,11 @@
               </div>
             </div>
             <div class="vr-right">
-              <span class="status-badge red">60 min</span>
-              <div class="vr-time">3 min sedan</div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="spy">♡</button>
+                <span class="status-badge red" data-role="status-badge">60 min</span>
+              </div>
+              <div class="vr-time" data-role="last-time">3 min sedan</div>
             </div>
           </div>
 
@@ -982,8 +1181,11 @@
               </div>
             </div>
             <div class="vr-right">
-              <span class="status-badge yellow">20 min</span>
-              <div class="vr-time">18 min sedan</div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="sturehof">♡</button>
+                <span class="status-badge yellow" data-role="status-badge">20 min</span>
+              </div>
+              <div class="vr-time" data-role="last-time">18 min sedan</div>
             </div>
           </div>
 
@@ -998,8 +1200,11 @@
               </div>
             </div>
             <div class="vr-right">
-              <span class="status-badge red">45 min</span>
-              <div class="vr-time">5 min sedan</div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="berns">♡</button>
+                <span class="status-badge red" data-role="status-badge">45 min</span>
+              </div>
+              <div class="vr-time" data-role="last-time">5 min sedan</div>
             </div>
           </div>
 
@@ -1014,10 +1219,31 @@
               </div>
             </div>
             <div class="vr-right">
-              <span class="status-badge yellow">15 min</span>
-              <div class="vr-time">6 min sedan</div>
+              <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
+                <button class="fav-heart-btn clickable" data-venue="underbron">♡</button>
+                <span class="status-badge yellow" data-role="status-badge">15 min</span>
+              </div>
+              <div class="vr-time" data-role="last-time">6 min sedan</div>
             </div>
           </div>
+        </div>
+        <div class="empty-msg" id="explore-empty-msg" style="display:none;"></div>
+      </div>
+
+      <!-- ===================== SCREEN: LIVE FEED ===================== -->
+      <div id="screen-live" class="screen">
+        <div class="explore-header">Live Feed</div>
+        <div style="padding: 0 16px 16px; margin-top:-16px; font-size:14px; color:var(--text-secondary);">Vad händer i Stockholm just nu</div>
+
+        <div class="live-ticker-banner">🔴 LIVE — <span id="live-active-count">0</span> aktiva rapporter senaste timmen</div>
+
+        <div class="feed-list" id="feed-list"></div>
+
+        <div class="live-empty" id="live-empty" style="display:none;">
+          <div class="le-emoji">📡</div>
+          <div class="le-title">Inga rapporter än ikväll</div>
+          <div class="le-sub">Bli den första att rapportera!</div>
+          <button class="le-btn clickable" id="live-empty-report-btn">Rapportera nu →</button>
         </div>
       </div>
 
@@ -1122,7 +1348,7 @@
           <div class="confirm-check">✓</div>
           <div class="confirm-title">Tack!</div>
           <div class="confirm-sub">Din rapport hjälper andra att planera sin kväll</div>
-          <div class="points-badge">+10 poäng! 🎯</div>
+          <div class="points-badge" id="confirm-points-text">+10 poäng! 🎯</div>
 
           <div style="display:flex; flex-direction:column; gap:10px; margin-top:32px; width:100%;">
             <button class="btn-secondary clickable" id="btn-report-again" style="background:var(--bg-secondary); color:var(--text-primary); height:50px;">Rapportera en till</button>
@@ -1135,46 +1361,36 @@
       <div id="screen-profile" class="screen">
         <div class="profile-header">
           <div class="profile-avatar">👤</div>
-          <div class="profile-name">Anonym Användare</div>
+          <div class="profile-name">Anonym Användare<span class="level-badge-pill" id="level-badge">Ny</span></div>
           <div class="profile-since">Aktiv sedan Oktober 2026</div>
 
           <div class="profile-stats">
-            <div class="profile-stat"><div class="ps-num">47</div><div class="ps-label">Rapporter</div></div>
+            <div class="profile-stat"><div class="ps-num" id="ps-num-reports">0</div><div class="ps-label">Rapporter</div></div>
             <div class="profile-divider"></div>
-            <div class="profile-stat"><div class="ps-num">380</div><div class="ps-label">Poäng</div></div>
+            <div class="profile-stat"><div class="ps-num" id="ps-num-points">0</div><div class="ps-label">Poäng</div></div>
             <div class="profile-divider"></div>
-            <div class="profile-stat"><div class="ps-num">12</div><div class="ps-label">Dagar aktiv</div></div>
+            <div class="profile-stat"><div class="ps-num" id="ps-num-days">0</div><div class="ps-label">Dagar aktiv</div></div>
+          </div>
+
+          <div class="points-progress-wrap">
+            <div class="points-progress-text" id="points-progress-text">0 / 100 poäng till nästa nivå</div>
+            <div class="points-progress-bar"><div class="points-progress-fill" id="points-progress-fill" style="width:0%"></div></div>
           </div>
         </div>
 
         <div class="badge-section">
           <div class="sheet-label">DINA BADGES</div>
-          <div class="badge-scroll">
-            <div class="badge-card"><span class="b-emoji">🥇</span><span class="b-text">Tidiga Fågeln</span></div>
-            <div class="badge-card"><span class="b-emoji">📢</span><span class="b-text">Reporter</span></div>
-            <div class="badge-card"><span class="b-emoji">🌙</span><span class="b-text">Nattuggla</span></div>
-            <div class="badge-card locked"><span class="b-emoji">🔒</span><span class="b-text">???</span></div>
-            <div class="badge-card locked"><span class="b-emoji">🔒</span><span class="b-text">???</span></div>
-          </div>
+          <div class="badge-scroll" id="badge-list"></div>
+        </div>
+
+        <div class="favorites-section" id="favorites-section" style="padding:20px 16px 0; display:none;">
+          <div class="sheet-label">MINA FAVORITER</div>
+          <div class="badge-scroll" id="favorites-scroll" style="gap:10px;"></div>
         </div>
 
         <div class="activity-section">
           <div class="sheet-label">SENASTE AKTIVITET</div>
-          <div class="activity-row">
-            <div class="a-icon">📢</div>
-            <div class="a-mid"><div class="a-title">Rapporterade Soap Bar</div><div class="a-sub">Ingen kö • Idag 22:15</div></div>
-            <div class="a-points">+10p</div>
-          </div>
-          <div class="activity-row">
-            <div class="a-icon">📢</div>
-            <div class="a-mid"><div class="a-title">Rapporterade Trädgården</div><div class="a-sub">15 min • Igår 23:40</div></div>
-            <div class="a-points">+10p</div>
-          </div>
-          <div class="activity-row">
-            <div class="a-icon">🎯</div>
-            <div class="a-mid"><div class="a-title">Badge upplåst: Reporter</div><div class="a-sub">Idag • 5 rapporter totalt</div></div>
-            <div class="a-points">+50p</div>
-          </div>
+          <div id="activity-list"></div>
         </div>
 
         <div class="settings-section">
@@ -1207,6 +1423,11 @@
         <span class="nav-label">Utforska</span>
         <span class="nav-dot"></span>
       </div>
+      <div class="nav-tab clickable" data-screen="live">
+        <span class="nav-icon">📡</span>
+        <span class="nav-label">Live</span>
+        <span class="nav-dot"></span>
+      </div>
       <div class="nav-tab clickable" data-screen="report">
         <span class="nav-icon">📢</span>
         <span class="nav-label">Rapportera</span>
@@ -1228,62 +1449,56 @@
   var VENUES = {
     soap: {
       name: "Soap Bar", area: "Södermalm", distance: "350m", address: "Ringvägen 24, Södermalm",
-      status: "green", statusLabel: "Ingen kö", queuePct: 10,
-      closes: "03:00", reports: "4 st", avgQueue: "5 min", popularity: "Hög",
-      recentReports: [
-        {t:"Ingen kö", time:"8 min sedan", thumbs:3},
-        {t:"Ingen kö", time:"23 min sedan", thumbs:7},
-        {t:"~5 min", time:"41 min sedan", thumbs:2}
+      closesHour: 3, happyHour: [16, 18],
+      seeds: [
+        {type:"none", minsAgo:8, thumbs:3},
+        {type:"none", minsAgo:23, thumbs:7},
+        {type:"short", minsAgo:41, thumbs:2}
       ]
     },
     spy: {
       name: "Spy Bar", area: "Östermalm", distance: "1.4km", address: "Birger Jarlsgatan 20, Östermalm",
-      status: "red", statusLabel: "60+ min", queuePct: 100,
-      closes: "03:00", reports: "11 st", avgQueue: "45 min", popularity: "Mycket hög",
-      recentReports: [
-        {t:"60+ min", time:"3 min sedan", thumbs:9},
-        {t:"55 min", time:"20 min sedan", thumbs:5},
-        {t:"50 min", time:"38 min sedan", thumbs:4}
+      closesHour: 3, happyHour: null,
+      seeds: [
+        {type:"long", minsAgo:3, thumbs:9},
+        {type:"long", minsAgo:20, thumbs:5},
+        {type:"long", minsAgo:38, thumbs:4}
       ]
     },
     berns: {
       name: "Berns", area: "City", distance: "1.8km", address: "Berzelii Park, City",
-      status: "red", statusLabel: "45 min", queuePct: 78,
-      closes: "03:00", reports: "8 st", avgQueue: "40 min", popularity: "Hög",
-      recentReports: [
-        {t:"45 min", time:"5 min sedan", thumbs:6},
-        {t:"40 min", time:"22 min sedan", thumbs:4},
-        {t:"35 min", time:"50 min sedan", thumbs:3}
+      closesHour: 3, happyHour: null,
+      seeds: [
+        {type:"long", minsAgo:5, thumbs:6},
+        {type:"long", minsAgo:22, thumbs:4},
+        {type:"medium", minsAgo:50, thumbs:3}
       ]
     },
     tradgarden: {
       name: "Trädgården", area: "Södermalm", distance: "800m", address: "Hammarby Slussväg 2, Södermalm",
-      status: "green", statusLabel: "5 min", queuePct: 18,
-      closes: "05:00", reports: "6 st", avgQueue: "8 min", popularity: "Medel",
-      recentReports: [
-        {t:"5 min", time:"12 min sedan", thumbs:5},
-        {t:"Ingen kö", time:"30 min sedan", thumbs:2},
-        {t:"10 min", time:"55 min sedan", thumbs:1}
+      closesHour: 5, happyHour: null,
+      seeds: [
+        {type:"short", minsAgo:12, thumbs:5},
+        {type:"none", minsAgo:30, thumbs:2},
+        {type:"short", minsAgo:55, thumbs:1}
       ]
     },
     sturehof: {
       name: "Sturehof", area: "Östermalm", distance: "1.2km", address: "Stureplan 2, Östermalm",
-      status: "yellow", statusLabel: "20 min", queuePct: 45,
-      closes: "01:00", reports: "3 st", avgQueue: "18 min", popularity: "Medel",
-      recentReports: [
-        {t:"20 min", time:"18 min sedan", thumbs:2},
-        {t:"15 min", time:"40 min sedan", thumbs:1},
-        {t:"25 min", time:"1 tim sedan", thumbs:3}
+      closesHour: 1, happyHour: [17, 19],
+      seeds: [
+        {type:"medium", minsAgo:18, thumbs:2},
+        {type:"short", minsAgo:40, thumbs:1},
+        {type:"medium", minsAgo:70, thumbs:3}
       ]
     },
     underbron: {
       name: "Under Bron", area: "Södermalm", distance: "950m", address: "Skansbron 4, Södermalm",
-      status: "yellow", statusLabel: "15 min", queuePct: 35,
-      closes: "05:00", reports: "5 st", avgQueue: "12 min", popularity: "Medel",
-      recentReports: [
-        {t:"15 min", time:"6 min sedan", thumbs:4},
-        {t:"10 min", time:"25 min sedan", thumbs:2},
-        {t:"Ingen kö", time:"1 tim sedan", thumbs:1}
+      closesHour: 5, happyHour: null,
+      seeds: [
+        {type:"short", minsAgo:6, thumbs:4},
+        {type:"short", minsAgo:25, thumbs:2},
+        {type:"none", minsAgo:70, thumbs:1}
       ]
     }
   };
@@ -1291,8 +1506,223 @@
   var STATUS_COLOR = {
     green: {text: "var(--status-green)", bg: "var(--status-green-bg)"},
     yellow: {text: "var(--status-yellow)", bg: "var(--status-yellow-bg)"},
-    red: {text: "var(--status-red)", bg: "var(--status-red-bg)"}
+    red: {text: "var(--status-red)", bg: "var(--status-red-bg)"},
+    unknown: {text: "var(--text-muted)", bg: "var(--bg-tertiary)"}
   };
+
+  var STATUS_TYPE_META = {
+    none:   {colorClass:"green",  badgeLabel:"Ingen kö", shortLabel:"Ingen kö", queuePct:10},
+    short:  {colorClass:"yellow", badgeLabel:"~15 min",  shortLabel:"~15 min",  queuePct:35},
+    medium: {colorClass:"yellow", badgeLabel:"~25 min",  shortLabel:"~25 min",  queuePct:60},
+    long:   {colorClass:"red",    badgeLabel:"30+ min",  shortLabel:"30+ min",  queuePct:95}
+  };
+
+  var BADGE_DEFS = {
+    early:      {emoji:"🥇", name:"Tidiga Fågeln"},
+    reporter:   {emoji:"📢", name:"Reporter"},
+    owl:        {emoji:"🌙", name:"Nattuggla"},
+    truth:      {emoji:"✅", name:"Sanningssägare"},
+    veteran:    {emoji:"🏆", name:"Veteran"},
+    stureplan:  {emoji:"👑", name:"Stureplan-kungen"}
+  };
+  var BADGE_ORDER = ["early", "reporter", "owl", "truth", "veteran", "stureplan"];
+
+  var LEVELS = [
+    {min:0, max:99, name:"Ny"},
+    {min:100, max:299, name:"Lokal"},
+    {min:300, max:599, name:"Stammis"},
+    {min:600, max:Infinity, name:"Legend"}
+  ];
+
+  // ========== STORAGE / STATE ==========
+  var myUserId = localStorage.getItem('qb_userId');
+  if (!myUserId) {
+    myUserId = 'anon-' + Math.floor(100000 + Math.random() * 900000);
+    localStorage.setItem('qb_userId', myUserId);
+  }
+
+  function loadJSON(key, fallback) {
+    try {
+      var v = JSON.parse(localStorage.getItem(key));
+      return v === null || v === undefined ? fallback : v;
+    } catch (e) { return fallback; }
+  }
+  function saveJSON(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
+
+  var favorites = loadJSON('qb_favorites', []);
+  function saveFavorites() { saveJSON('qb_favorites', favorites); }
+  function isFavorite(key) { return favorites.indexOf(key) !== -1; }
+
+  var profile = Object.assign({ totalPoints: 0, badges: [], firstReportAt: null, lastActiveDate: null }, loadJSON('qb_profile', {}));
+  function saveProfile() { saveJSON('qb_profile', profile); }
+
+  var qbThumbs = loadJSON('qb_thumbs', {});
+  function saveThumbs() { saveJSON('qb_thumbs', qbThumbs); }
+
+  function loadStoredReports() { return loadJSON('qb_reports', []); }
+  function saveStoredReports(arr) { saveJSON('qb_reports', arr); }
+
+  var loadTimestamp = Date.now();
+  var SEED_REPORTS = [];
+  Object.keys(VENUES).forEach(function(key) {
+    VENUES[key].seeds.forEach(function(s) {
+      SEED_REPORTS.push({
+        venueKey: key, venueName: VENUES[key].name, queueStatus: s.type,
+        timestamp: loadTimestamp - s.minsAgo * 60000,
+        userId: 'seed', pointsAwarded: 0, confirmed: false, seedThumbs: s.thumbs
+      });
+    });
+  });
+
+  function getAllReports() { return SEED_REPORTS.concat(loadStoredReports()); }
+
+  function getReportsInWindow(key, minutes) {
+    var cutoff = Date.now() - minutes * 60000;
+    return getAllReports()
+      .filter(function(r) { return r.venueKey === key && r.timestamp >= cutoff; })
+      .sort(function(a, b) { return b.timestamp - a.timestamp; });
+  }
+
+  function getTotalReportsCount(key) {
+    return getAllReports().filter(function(r) { return r.venueKey === key; }).length;
+  }
+
+  function relativeTime(ts) {
+    var diffMin = Math.floor((Date.now() - ts) / 60000);
+    if (diffMin < 1) return 'Just nu';
+    if (diffMin < 60) return diffMin + ' min sedan';
+    return Math.floor(diffMin / 60) + ' tim sedan';
+  }
+
+  function getLastReportedText(key) {
+    var all = getAllReports().filter(function(r) { return r.venueKey === key; })
+      .sort(function(a, b) { return b.timestamp - a.timestamp; });
+    if (!all.length) return 'Inga rapporter än';
+    return relativeTime(all[0].timestamp);
+  }
+
+  function computeStatus(key) {
+    var reports45 = getReportsInWindow(key, 45);
+    if (!reports45.length) {
+      return { status: 'unknown', colorClass: 'gray', shortLabel: '?', badgeLabel: 'Okänt 🤷', queuePct: 0, confidence: 'none', type: null };
+    }
+    var tally = {};
+    reports45.forEach(function(r) { tally[r.queueStatus] = (tally[r.queueStatus] || 0) + 1; });
+    var maxCount = -1, winners = [];
+    Object.keys(tally).forEach(function(t) {
+      if (tally[t] > maxCount) { maxCount = tally[t]; winners = [t]; }
+      else if (tally[t] === maxCount) { winners.push(t); }
+    });
+    var winnerType = winners.length === 1 ? winners[0] : reports45[0].queueStatus;
+    var meta = STATUS_TYPE_META[winnerType];
+    return {
+      status: meta.colorClass, colorClass: meta.colorClass,
+      shortLabel: meta.shortLabel, badgeLabel: meta.badgeLabel,
+      queuePct: meta.queuePct,
+      confidence: reports45.length >= 3 ? 'confirmed' : 'few',
+      type: winnerType
+    };
+  }
+
+  function findKeyByName(name) {
+    var found = null;
+    Object.keys(VENUES).forEach(function(k) { if (VENUES[k].name === name) found = k; });
+    return found;
+  }
+
+  function formatClosesHour(h) { return (h < 10 ? '0' + h : h) + ':00'; }
+
+  function isHappyHourNow(key) {
+    var v = VENUES[key];
+    if (!v.happyHour) return false;
+    var h = new Date().getHours();
+    return h >= v.happyHour[0] && h < v.happyHour[1];
+  }
+  function isOpenNow(key) {
+    var v = VENUES[key];
+    var h = new Date().getHours();
+    return h >= 16 || h < v.closesHour;
+  }
+
+  function getThumbsFor(r) {
+    var tk = r.venueKey + '|' + r.timestamp;
+    return qbThumbs[tk] !== undefined ? qbThumbs[tk] : (r.seedThumbs || 0);
+  }
+
+  // ========== TOAST SYSTEM ==========
+  var toastContainer = document.getElementById('toast-container');
+  var toastQueue = [];
+  var toastBusy = false;
+  var TOAST_PREFIX = { success: '✓ ', error: '✕ ', info: 'ℹ️ ', points: '⭐ ' };
+
+  function showToast(message, type, duration) {
+    type = type || 'info';
+    duration = duration || 3000;
+    toastQueue.push({ message: message, type: type, duration: duration });
+    processToastQueue();
+  }
+  function processToastQueue() {
+    if (toastBusy || !toastQueue.length) return;
+    toastBusy = true;
+    var item = toastQueue.shift();
+    var el = document.createElement('div');
+    el.className = 'toast ' + item.type;
+    el.textContent = (TOAST_PREFIX[item.type] || '') + item.message;
+    toastContainer.appendChild(el);
+    setTimeout(function() {
+      el.classList.add('hide');
+      setTimeout(function() { el.remove(); toastBusy = false; processToastQueue(); }, 300);
+    }, item.duration);
+  }
+
+  function tapFeedback(el) {
+    el.style.transition = 'transform 0.1s ease';
+    el.style.transform = 'scale(0.95)';
+    setTimeout(function() { el.style.transform = 'scale(1)'; }, 100);
+  }
+
+  // ========== LOADING SCREEN ==========
+  setTimeout(function() {
+    var ls = document.getElementById('loading-screen');
+    ls.classList.add('hide');
+    setTimeout(function() { ls.style.display = 'none'; }, 300);
+  }, 800);
+
+  // ========== STATUS BAR CLOCK ==========
+  function updateClock() {
+    var now = new Date();
+    var hh = String(now.getHours()).padStart(2, '0');
+    var mm = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('status-clock').textContent = hh + ':' + mm;
+  }
+
+  // ========== FAVORITES ==========
+  function refreshFavoriteButtons() {
+    document.querySelectorAll('.fav-heart-btn[data-venue]').forEach(function(btn) {
+      var active = isFavorite(btn.dataset.venue);
+      btn.classList.toggle('active', active);
+      btn.textContent = active ? '❤️' : '♡';
+    });
+  }
+  function toggleFavorite(key, btnEl) {
+    var idx = favorites.indexOf(key);
+    var venueName = VENUES[key] ? VENUES[key].name : key;
+    if (idx === -1) {
+      favorites.push(key);
+      showToast(venueName + ' sparad som favorit', 'info');
+    } else {
+      favorites.splice(idx, 1);
+    }
+    saveFavorites();
+    refreshFavoriteButtons();
+    renderProfileFavorites();
+    if (currentMapPill === 'favoriter') applyMapFilters();
+    if (btnEl) {
+      tapFeedback(btnEl);
+      btnEl.classList.add('bounce');
+      setTimeout(function() { btnEl.classList.remove('bounce'); }, 200);
+    }
+  }
 
   // ========== MAP GRID GENERATION ==========
   var mapGrid = document.getElementById('map-grid');
@@ -1307,17 +1737,27 @@
     mapGrid.appendChild(v);
   }
 
-  // ========== BOTTOM NAV ==========
+  // ========== BOTTOM NAV + SCROLL MEMORY ==========
   var navTabs = document.querySelectorAll('.nav-tab');
   var screens = document.querySelectorAll('.screen');
+  var scrollPositions = {};
 
   function showScreen(name) {
+    var current = document.querySelector('.screen.active');
+    if (current) scrollPositions[current.id] = current.scrollTop;
+
     screens.forEach(function(s) { s.classList.remove('active'); });
-    document.getElementById('screen-' + name).classList.add('active');
+    var next = document.getElementById('screen-' + name);
+    next.classList.add('active');
     navTabs.forEach(function(t) {
       t.classList.toggle('active', t.dataset.screen === name);
     });
     closeSheet();
+
+    if (name === 'profile') renderProfile();
+    if (name === 'live') renderLiveFeed();
+
+    requestAnimationFrame(function() { next.scrollTop = scrollPositions[next.id] || 0; });
   }
 
   navTabs.forEach(function(tab) {
@@ -1326,13 +1766,75 @@
     });
   });
 
-  // ========== FILTER PILLS (Map) ==========
+  // ========== SEARCH & FILTER (Map) ==========
+  var currentMapPill = 'alla';
+  var mapSearchInput = document.getElementById('map-search-input');
+
+  function matchesPill(key, pill) {
+    if (pill === 'alla') return true;
+    if (pill === 'favoriter') return isFavorite(key);
+    if (pill === 'ingen') return computeStatus(key).type === 'none';
+    if (pill === 'happy') return isHappyHourNow(key);
+    if (pill === 'oppet') return isOpenNow(key);
+    return true;
+  }
+
+  function applyMapFilters() {
+    var term = (mapSearchInput.value || '').trim().toLowerCase();
+    var visibleCount = 0;
+    var visibleMap = {};
+    Object.keys(VENUES).forEach(function(key) {
+      var nameMatch = !term || VENUES[key].name.toLowerCase().indexOf(term) !== -1;
+      var pillMatch = matchesPill(key, currentMapPill);
+      visibleMap[key] = nameMatch && pillMatch;
+      if (visibleMap[key]) visibleCount++;
+    });
+    document.querySelectorAll('.venue-card-scroll .venue-card[data-venue]').forEach(function(card) {
+      card.style.display = visibleMap[card.dataset.venue] ? '' : 'none';
+    });
+    document.querySelectorAll('.map-marker[data-venue]').forEach(function(m) {
+      m.style.display = visibleMap[m.dataset.venue] ? '' : 'none';
+    });
+    var emptyMsg = document.getElementById('map-empty-msg');
+    if (visibleCount === 0) {
+      emptyMsg.style.display = 'block';
+      emptyMsg.textContent = term ? ('Inga resultat för "' + term + '"') : 'Inga barer matchar filtret just nu 🙁';
+    } else {
+      emptyMsg.style.display = 'none';
+    }
+  }
+
+  mapSearchInput.addEventListener('input', applyMapFilters);
+
   document.querySelectorAll('#filter-pills .pill').forEach(function(p) {
     p.addEventListener('click', function() {
       document.querySelectorAll('#filter-pills .pill').forEach(function(x){ x.classList.remove('active'); });
       p.classList.add('active');
+      currentMapPill = p.dataset.pill;
+      applyMapFilters();
     });
   });
+
+  // ========== SEARCH (Explore) ==========
+  var exploreSearchInput = document.getElementById('explore-search-input');
+  function applyExploreFilters() {
+    var term = (exploreSearchInput.value || '').trim().toLowerCase();
+    var visibleCount = 0;
+    document.querySelectorAll('.venue-list .venue-row[data-venue]').forEach(function(row) {
+      var v = VENUES[row.dataset.venue];
+      var visible = !v || !term || v.name.toLowerCase().indexOf(term) !== -1;
+      row.style.display = visible ? '' : 'none';
+      if (visible) visibleCount++;
+    });
+    var emptyMsg = document.getElementById('explore-empty-msg');
+    if (visibleCount === 0) {
+      emptyMsg.style.display = 'block';
+      emptyMsg.textContent = 'Inga resultat för "' + term + '"';
+    } else {
+      emptyMsg.style.display = 'none';
+    }
+  }
+  exploreSearchInput.addEventListener('input', applyExploreFilters);
 
   // ========== CATEGORY CARDS (Explore) ==========
   document.querySelectorAll('#category-scroll .category-card').forEach(function(c) {
@@ -1342,6 +1844,38 @@
     });
   });
 
+  // ========== VENUE DISPLAY REFRESH ==========
+  function refreshVenueDisplays() {
+    Object.keys(VENUES).forEach(function(key) {
+      var info = computeStatus(key);
+      var count = getTotalReportsCount(key);
+      var lastTxt = getLastReportedText(key);
+
+      document.querySelectorAll('.map-marker[data-venue="' + key + '"]').forEach(function(m) {
+        m.classList.remove('green', 'yellow', 'red', 'gray');
+        m.classList.add(info.status === 'unknown' ? 'gray' : info.colorClass);
+        var txt = m.querySelector('.marker-text');
+        if (txt) txt.textContent = info.status === 'unknown' ? '?' : info.shortLabel;
+      });
+
+      document.querySelectorAll('[data-venue="' + key + '"] [data-role="status-badge"]').forEach(function(b) {
+        b.classList.remove('green', 'yellow', 'red', 'gray');
+        b.classList.add(info.status === 'unknown' ? 'gray' : info.colorClass);
+        b.textContent = info.status === 'unknown' ? 'Okänt 🤷' : info.badgeLabel;
+      });
+
+      document.querySelectorAll('[data-venue="' + key + '"] [data-role="reports-chip"]').forEach(function(c) {
+        c.textContent = '👤 ' + count + ' rapport' + (count === 1 ? '' : 'er');
+      });
+
+      document.querySelectorAll('[data-venue="' + key + '"] [data-role="last-time"]').forEach(function(el) {
+        el.textContent = lastTxt;
+      });
+    });
+    applyMapFilters();
+    applyExploreFilters();
+  }
+
   // ========== BOTTOM SHEET ==========
   var sheetOverlay = document.getElementById('sheet-overlay');
   var bottomSheet = document.getElementById('bottom-sheet');
@@ -1350,33 +1884,42 @@
   function openSheet(venueKey) {
     var v = VENUES[venueKey];
     if (!v) return;
-    var col = STATUS_COLOR[v.status];
+    var info = computeStatus(venueKey);
+    var col = STATUS_COLOR[info.status] || STATUS_COLOR.unknown;
+    var count = getTotalReportsCount(venueKey);
+    var closesText = formatClosesHour(v.closesHour);
+    var favActive = isFavorite(venueKey);
 
-    var reportsHtml = v.recentReports.map(function(r) {
+    var recent = getReportsInWindow(venueKey, 24 * 60).slice(0, 3);
+    var reportsHtml = recent.length ? recent.map(function(r) {
+      var meta = STATUS_TYPE_META[r.queueStatus];
       return '<div class="report-row" style="margin-top:12px;">' +
         '<div class="ravatar">👤</div>' +
-        '<div><div class="rtext">' + r.t + '</div><div class="rsub">av Anonym • ' + r.time + '</div></div>' +
-        '<div class="rthumbs">👍 ' + r.thumbs + '</div>' +
+        '<div><div class="rtext">' + meta.badgeLabel + '</div><div class="rsub">av Anonym • ' + relativeTime(r.timestamp) + '</div></div>' +
+        '<div class="rthumbs">👍 ' + getThumbsFor(r) + '</div>' +
       '</div>';
-    }).join('');
+    }).join('') : '<div style="color:var(--text-muted); font-size:13px; margin-top:12px;">Inga rapporter än</div>';
 
     sheetContent.innerHTML =
       '<div class="sheet-header">' +
         '<div><div class="sh-name">' + v.name + '</div><div class="sh-sub">' + v.area + ' • ' + v.distance + ' bort</div></div>' +
-        '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';">● ' + (v.status === 'green' ? 'Ingen kö just nu' : v.statusLabel) + '</div>' +
+        '<div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">' +
+          '<button class="fav-heart-btn clickable' + (favActive ? ' active' : '') + '" data-venue="' + venueKey + '">' + (favActive ? '❤️' : '♡') + '</button>' +
+          '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';">● ' + (info.status === 'unknown' ? 'Okänt 🤷' : info.badgeLabel) + '</div>' +
+        '</div>' +
       '</div>' +
 
       '<div class="queue-progress-wrap">' +
         '<div class="sheet-label">KÖLÄGE</div>' +
-        '<div class="queue-progress-bar"><div class="queue-progress-fill" style="width:' + v.queuePct + '%; background:' + col.text + ';"></div></div>' +
+        '<div class="queue-progress-bar"><div class="queue-progress-fill" style="width:' + info.queuePct + '%; background:' + col.text + ';"></div></div>' +
         '<div class="queue-progress-labels"><span>Ingen kö</span><span>60+ min</span></div>' +
       '</div>' +
 
       '<div class="info-grid">' +
-        '<div class="info-box"><div class="ib-emoji">🕐</div><div class="ib-label">Stänger</div><div class="ib-value">' + v.closes + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji">👤</div><div class="ib-label">Rapporter</div><div class="ib-value">' + v.reports + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji">📊</div><div class="ib-label">Snitt-kö ikväll</div><div class="ib-value">' + v.avgQueue + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji">⭐</div><div class="ib-label">Popularitet</div><div class="ib-value">' + v.popularity + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">🕐</div><div class="ib-label">Stänger</div><div class="ib-value">' + closesText + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">👤</div><div class="ib-label">Rapporter</div><div class="ib-value">' + count + ' st</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">📊</div><div class="ib-label">Senast rapporterat</div><div class="ib-value">' + getLastReportedText(venueKey) + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji">⭐</div><div class="ib-label">Tillförlitlighet</div><div class="ib-value">' + (info.confidence === 'confirmed' ? 'Bekräftad' : (info.confidence === 'few' ? 'Få rapporter' : 'Okänt')) + '</div></div>' +
       '</div>' +
 
       '<div style="margin-top:20px;">' +
@@ -1394,6 +1937,7 @@
       goToReportFor(v.name);
     });
     document.getElementById('sheet-back-btn').addEventListener('click', closeSheet);
+    refreshFavoriteButtons();
 
     sheetOverlay.classList.add('active');
     bottomSheet.classList.add('active');
@@ -1406,20 +1950,199 @@
 
   sheetOverlay.addEventListener('click', closeSheet);
 
-  document.querySelectorAll('[data-venue]').forEach(function(el) {
-    el.addEventListener('click', function(e) {
-      if (e.target.closest('[data-goreport]')) return;
-      openSheet(el.dataset.venue);
+  // Swipe-down on the drag handle to close
+  (function() {
+    var handle = document.querySelector('.sheet-handle');
+    var startY = null;
+    handle.addEventListener('touchstart', function(e) { startY = e.touches[0].clientY; }, { passive: true });
+    handle.addEventListener('touchmove', function(e) {
+      if (startY === null) return;
+      var delta = e.touches[0].clientY - startY;
+      if (delta > 60) { closeSheet(); startY = null; }
+    }, { passive: true });
+    handle.addEventListener('touchend', function() { startY = null; });
+  })();
+
+  // Zoom "pop" animation on marker click
+  document.querySelectorAll('.map-marker').forEach(function(m) {
+    m.addEventListener('click', function() {
+      m.style.transition = 'transform 0.2s ease';
+      m.style.transform = 'translate(-50%, -50%) scale(1.2)';
+      setTimeout(function() { m.style.transform = 'translate(-50%, -50%) scale(1)'; }, 200);
     });
   });
 
-  document.querySelectorAll('[data-goreport]').forEach(function(el) {
-    el.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var v = VENUES[el.dataset.goreport];
-      goToReportFor(v ? v.name : null);
-    });
+  // ========== GLOBAL CLICK DELEGATION ==========
+  document.body.addEventListener('click', function(e) {
+    var favBtn = e.target.closest('.fav-heart-btn');
+    if (favBtn) { e.stopPropagation(); toggleFavorite(favBtn.dataset.venue, favBtn); return; }
+
+    var reportBtn = e.target.closest('[data-goreport]');
+    if (reportBtn) { e.stopPropagation(); var rv = VENUES[reportBtn.dataset.goreport]; goToReportFor(rv ? rv.name : null); return; }
+
+    var thumbBtn = e.target.closest('.feed-thumbs');
+    if (thumbBtn) { e.stopPropagation(); handleThumbClick(thumbBtn); return; }
+
+    var venueEl = e.target.closest('[data-venue]');
+    if (venueEl && venueEl.dataset.venue && VENUES[venueEl.dataset.venue]) {
+      openSheet(venueEl.dataset.venue);
+    }
   });
+
+  function handleThumbClick(btn) {
+    var key = btn.dataset.thumbkey;
+    var current = parseInt(btn.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+    var next = current + 1;
+    qbThumbs[key] = next;
+    saveThumbs();
+    btn.textContent = '👍 ' + next;
+    tapFeedback(btn);
+    btn.classList.add('active');
+    setTimeout(function() { btn.classList.remove('active'); }, 500);
+  }
+
+  // ========== LIVE FEED ==========
+  function renderLiveFeed() {
+    var all = getAllReports().sort(function(a, b) { return b.timestamp - a.timestamp; });
+    var oneHourAgo = Date.now() - 3600000;
+    document.getElementById('live-active-count').textContent = all.filter(function(r) { return r.timestamp >= oneHourAgo; }).length;
+
+    var top20 = all.slice(0, 20);
+    var listEl = document.getElementById('feed-list');
+    var emptyEl = document.getElementById('live-empty');
+    if (!top20.length) {
+      listEl.style.display = 'none';
+      emptyEl.style.display = 'block';
+      return;
+    }
+    listEl.style.display = 'flex';
+    emptyEl.style.display = 'none';
+    listEl.innerHTML = top20.map(renderFeedRow).join('');
+  }
+
+  function renderFeedRow(r) {
+    var venue = VENUES[r.venueKey];
+    var meta = STATUS_TYPE_META[r.queueStatus];
+    var iconEmoji = meta.colorClass === 'green' ? '🟢' : (meta.colorClass === 'yellow' ? '🟡' : '🔴');
+    var bgVar = meta.colorClass === 'green' ? 'var(--status-green-bg)' : (meta.colorClass === 'yellow' ? 'var(--status-yellow-bg)' : 'var(--status-red-bg)');
+    var thumbKey = r.venueKey + '|' + r.timestamp;
+    return '<div class="feed-row">' +
+      '<div class="feed-icon" style="background:' + bgVar + ';">' + iconEmoji + '</div>' +
+      '<div class="feed-mid">' +
+        '<div class="feed-title">' + meta.badgeLabel + ' på ' + venue.name + '</div>' +
+        '<div class="feed-sub">' + venue.area + ' • ' + venue.distance + ' bort</div>' +
+        '<div class="feed-time">' + relativeTime(r.timestamp) + '</div>' +
+      '</div>' +
+      '<button class="feed-thumbs clickable" data-thumbkey="' + thumbKey + '">👍 ' + getThumbsFor(r) + '</button>' +
+    '</div>';
+  }
+
+  document.getElementById('live-empty-report-btn').addEventListener('click', function() {
+    goToReportFor(null);
+  });
+
+  // ========== PROFILE ==========
+  function getLevel(points) {
+    for (var i = 0; i < LEVELS.length; i++) { if (points >= LEVELS[i].min && points <= LEVELS[i].max) return LEVELS[i]; }
+    return LEVELS[LEVELS.length - 1];
+  }
+
+  function formatDateTime(ts) {
+    var d = new Date(ts);
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mm = String(d.getMinutes()).padStart(2, '0');
+    var isToday = d.toDateString() === new Date().toDateString();
+    return (isToday ? 'Idag ' : '') + hh + ':' + mm;
+  }
+
+  function renderProfileFavorites() {
+    var section = document.getElementById('favorites-section');
+    var scroll = document.getElementById('favorites-scroll');
+    if (!favorites.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    scroll.innerHTML = favorites.map(function(key) {
+      var v = VENUES[key];
+      if (!v) return '';
+      var info = computeStatus(key);
+      return '<div class="mini-fav-card clickable" data-venue="' + key + '">' +
+        '<div class="mfc-name">' + v.name + '</div>' +
+        '<div class="mfc-status"><span class="status-badge ' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '">' + (info.status === 'unknown' ? 'Okänt 🤷' : info.badgeLabel) + '</span></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderProfile() {
+    var myReports = getAllReports().filter(function(r) { return r.userId === myUserId; })
+      .sort(function(a, b) { return b.timestamp - a.timestamp; });
+
+    document.getElementById('ps-num-reports').textContent = myReports.length;
+    document.getElementById('ps-num-points').textContent = profile.totalPoints;
+
+    var daysActive = profile.firstReportAt ? Math.max(1, Math.floor((Date.now() - profile.firstReportAt) / 86400000) + 1) : 0;
+    document.getElementById('ps-num-days').textContent = daysActive;
+
+    var level = getLevel(profile.totalPoints);
+    document.getElementById('level-badge').textContent = level.name;
+
+    var progressPct = level.max === Infinity ? 100 : Math.min(100, Math.round(((profile.totalPoints - level.min) / ((level.max + 1) - level.min)) * 100));
+    document.getElementById('points-progress-fill').style.width = progressPct + '%';
+    document.getElementById('points-progress-text').textContent = level.max === Infinity ?
+      (profile.totalPoints + ' poäng — Legend uppnådd! 🏆') :
+      (profile.totalPoints + ' / ' + (level.max + 1) + ' poäng till nästa nivå');
+
+    document.getElementById('badge-list').innerHTML = BADGE_ORDER.map(function(id) {
+      var def = BADGE_DEFS[id];
+      var unlocked = profile.badges.indexOf(id) !== -1;
+      return unlocked ?
+        '<div class="badge-card"><span class="b-emoji">' + def.emoji + '</span><span class="b-text">' + def.name + '</span></div>' :
+        '<div class="badge-card locked"><span class="b-emoji">🔒</span><span class="b-text">???</span></div>';
+    }).join('');
+
+    var activityListEl = document.getElementById('activity-list');
+    if (!myReports.length) {
+      activityListEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">Du har inte rapporterat än.<br>Gå ut och hjälp andra! 🍺</div>';
+    } else {
+      activityListEl.innerHTML = myReports.slice(0, 10).map(function(r) {
+        var meta = STATUS_TYPE_META[r.queueStatus];
+        return '<div class="activity-row">' +
+          '<div class="a-icon">📢</div>' +
+          '<div class="a-mid"><div class="a-title">Rapporterade ' + r.venueName + '</div>' +
+          '<div class="a-sub">' + meta.badgeLabel + ' • ' + formatDateTime(r.timestamp) + '</div></div>' +
+          '<div class="a-points">+' + r.pointsAwarded + 'p</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    renderProfileFavorites();
+  }
+
+  // ========== BADGE CHECKS ==========
+  function checkAndUnlockBadges(report) {
+    var myReports = getAllReports().filter(function(r) { return r.userId === myUserId; });
+    var total = myReports.length;
+    var confirmedCount = myReports.filter(function(r) { return r.confirmed; }).length;
+    var venueCounts = {};
+    myReports.forEach(function(r) { venueCounts[r.venueKey] = (venueCounts[r.venueKey] || 0) + 1; });
+    var hour = new Date(report.timestamp).getHours();
+
+    var toUnlock = [];
+    function tryUnlock(id, cond) {
+      if (profile.badges.indexOf(id) === -1 && cond) toUnlock.push(id);
+    }
+    tryUnlock('early', hour < 22);
+    tryUnlock('owl', hour >= 2 && hour < 10);
+    tryUnlock('reporter', total >= 5);
+    tryUnlock('veteran', total >= 20);
+    tryUnlock('truth', confirmedCount >= 3);
+    tryUnlock('stureplan', (venueCounts.spy || 0) + (venueCounts.berns || 0) >= 3);
+
+    toUnlock.forEach(function(id) {
+      profile.badges.push(id);
+      profile.totalPoints += 50;
+      showToast('🏅 Badge upplåst: ' + BADGE_DEFS[id].name + '! +50p', 'points', 3500);
+    });
+    if (toUnlock.length) saveProfile();
+  }
 
   // ========== REPORT FLOW ==========
   var reportState = { bar: null, queue: null };
@@ -1436,9 +2159,15 @@
     step3.style.display = n === 3 ? 'flex' : 'none';
 
     indicators.forEach(function(ind, i) {
+      var circle = ind.querySelector('.step-circle');
       ind.classList.remove('active', 'done');
-      if (i + 1 < n) ind.classList.add('done');
-      else if (i + 1 === n) ind.classList.add('active');
+      if (i + 1 < n) {
+        ind.classList.add('done');
+        circle.textContent = '✓';
+      } else {
+        circle.textContent = String(i + 1);
+        if (i + 1 === n) ind.classList.add('active');
+      }
     });
     lines.forEach(function(line, i) {
       line.classList.toggle('done', i + 1 < n);
@@ -1488,9 +2217,45 @@
     });
   });
 
-  document.getElementById('btn-submit-report').addEventListener('click', function() {
-    if (!reportState.queue) return;
+  document.getElementById('btn-submit-report').addEventListener('click', function(e) {
+    if (!reportState.queue || !reportState.bar) return;
+    tapFeedback(e.currentTarget);
+
+    var key = findKeyByName(reportState.bar);
+    if (!key) { setReportStep(3); return; }
+
+    var last20 = getReportsInWindow(key, 20).filter(function(r) { return r.userId === myUserId; });
+    if (last20.length) {
+      var remain = Math.max(1, Math.ceil((20 * 60000 - (Date.now() - last20[0].timestamp)) / 60000));
+      showToast('Du har redan rapporterat ' + VENUES[key].name + ' nyligen. Vänta ' + remain + ' minuter.', 'error');
+      return;
+    }
+
+    var now = Date.now();
+    var confirmMatches = getReportsInWindow(key, 30).filter(function(r) { return r.queueStatus === reportState.queue; });
+    var confirmed = confirmMatches.length >= 2;
+    var firstTonight = getReportsInWindow(key, 360).length === 0;
+    var award = 10 + (confirmed ? 5 : 0) + (firstTonight ? 25 : 0);
+
+    var report = {
+      venueKey: key, venueName: VENUES[key].name, queueStatus: reportState.queue,
+      timestamp: now, userId: myUserId, pointsAwarded: award, confirmed: confirmed
+    };
+    var stored = loadStoredReports();
+    stored.push(report);
+    saveStoredReports(stored);
+
+    profile.totalPoints += award;
+    if (!profile.firstReportAt) profile.firstReportAt = now;
+    profile.lastActiveDate = new Date(now).toDateString();
+    saveProfile();
+
+    checkAndUnlockBadges(report);
+    refreshVenueDisplays();
+
     setReportStep(3);
+    document.getElementById('confirm-points-text').textContent = '+' + award + ' poäng! 🎯';
+    showToast('Rapport skickad! +' + award + ' poäng', 'success');
   });
 
   document.getElementById('btn-report-again').addEventListener('click', function() {
@@ -1501,15 +2266,18 @@
     showScreen('map');
   });
 
-  // nav tab "Rapportera" should reset to step 1 fresh (unless a bar was just chosen)
-  document.querySelector('.nav-tab[data-screen="report"]').addEventListener('click', function() {
-    if (!document.getElementById('report-step-1').style.display || document.getElementById('report-step-1').style.display === 'block') {
-      // keep as-is if mid-flow already on step1 via nav; otherwise fine
-    }
-  });
+  // ========== MASTER TICK (every 60s): clock, venue statuses, live feed ==========
+  function tick() {
+    updateClock();
+    refreshVenueDisplays();
+    if (document.getElementById('screen-live').classList.contains('active')) renderLiveFeed();
+  }
 
-  // Init report flow to step 1
+  // Init
   setReportStep(1);
+  refreshFavoriteButtons();
+  tick();
+  setInterval(tick, 60000);
 })();
 </script>
 
