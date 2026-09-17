@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
 <style>
   :root {
     --bg-primary: #131F1E;
@@ -948,6 +949,46 @@
   }
   .mini-fav-card .mfc-name { font-size: 13px; font-weight: 700; color: #fff; }
   .mini-fav-card .mfc-status { margin-top: 6px; }
+
+  /* ===== Additive: Phosphor icons ===== */
+  ph-icon, [class^="ph-"], ph-map-pin-area, ph-magnifying-glass, ph-broadcast, ph-paper-plane-tilt,
+  ph-user, ph-beer-bottle, ph-music-notes, ph-map-pin, ph-clock, ph-heart, ph-bell, ph-thumbs-up,
+  ph-check, ph-arrow-left, ph-x, ph-sliders-horizontal, ph-plus, ph-lightning, ph-megaphone,
+  ph-prohibit, ph-timer, ph-hourglass, ph-star, ph-trophy, ph-medal, ph-chart-bar, ph-target,
+  ph-crown, ph-lock, ph-user-circle, ph-buildings, ph-info, ph-caret-right, ph-moon-stars,
+  ph-check-circle, ph-x-circle, ph-question, ph-smiley-sad {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    line-height: 1;
+  }
+
+  .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green  { background: var(--status-green); }
+  .dot-yellow { background: var(--status-yellow); }
+  .dot-red    { background: var(--status-red); }
+  .dot-gray   { background: var(--text-muted); }
+
+  .live-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--status-red);
+    animation: livePulse 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+    50% { opacity: 0.8; box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); }
+  }
 </style>
 </head>
 <body>
@@ -981,23 +1022,23 @@
             <div class="logo">QueueBar</div>
             <div class="subtitle">Stockholm • Fredag 22:34</div>
           </div>
-          <div class="notif-icon clickable">🔔<span class="dot"></span></div>
+          <div class="notif-icon clickable"><ph-bell size="22" weight="regular"></ph-bell><span class="dot"></span></div>
         </div>
 
         <div style="padding: 0 16px;">
           <div class="search-bar">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><ph-magnifying-glass size="16" weight="regular" style="color:var(--text-muted)"></ph-magnifying-glass></span>
             <input class="search-input" id="map-search-input" type="text" placeholder="Sök bar eller klubb...">
-            <div class="filter-btn clickable">≡</div>
+            <div class="filter-btn clickable"><ph-sliders-horizontal size="18" weight="regular" style="color:var(--accent-orange)"></ph-sliders-horizontal></div>
           </div>
         </div>
 
         <div class="pill-scroll" id="filter-pills">
           <div class="pill active" data-pill="alla">Alla</div>
-          <div class="pill" data-pill="ingen">Ingen kö 🟢</div>
-          <div class="pill" data-pill="happy">Happy Hour ⚡</div>
-          <div class="pill" data-pill="oppet">Öppet nu 🕐</div>
-          <div class="pill" data-pill="favoriter">❤️ Favoriter</div>
+          <div class="pill" data-pill="ingen">Ingen kö <span class="dot dot-green"></span></div>
+          <div class="pill" data-pill="happy">Happy Hour <ph-lightning size="14" weight="regular"></ph-lightning></div>
+          <div class="pill" data-pill="oppet">Öppet nu <ph-clock size="14" weight="regular"></ph-clock></div>
+          <div class="pill" data-pill="favoriter"><ph-heart size="14" weight="fill" style="color:#E74C3C"></ph-heart> Favoriter</div>
         </div>
 
         <div class="map-section" id="map-canvas">
@@ -1010,7 +1051,7 @@
           <div class="map-marker yellow clickable" style="top:30%; left:75%;" data-venue="sturehof"><span class="dot"></span><span class="marker-text">20 min</span></div>
           <div class="map-marker yellow clickable" style="top:75%; left:50%;" data-venue="underbron"><span class="dot"></span><span class="marker-text">15 min</span></div>
 
-          <div class="locate-btn clickable">📍</div>
+          <div class="locate-btn clickable"><ph-map-pin size="18" weight="fill" style="color:var(--accent-orange)"></ph-map-pin></div>
         </div>
 
         <div class="live-ticker">
@@ -1021,7 +1062,7 @@
 
         <div class="section-label-row">
           <span class="label">Nära dig</span>
-          <span class="see-all clickable">Se alla →</span>
+          <span class="see-all clickable">Se alla <ph-caret-right size="14" weight="regular"></ph-caret-right></span>
         </div>
 
         <div class="venue-card-scroll">
@@ -1029,15 +1070,15 @@
             <div class="vc-top">
               <span class="vc-name">Soap Bar</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="soap">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="soap"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge green" data-role="status-badge">Ingen kö</span>
               </div>
             </div>
             <div class="vc-address">Ringvägen 24, Södermalm</div>
             <div class="vc-chips">
-              <span class="info-chip">📍 350m</span>
-              <span class="info-chip">🕐 03:00</span>
-              <span class="info-chip" data-role="reports-chip">👤 4 rapporter</span>
+              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 350m</span>
+              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 03:00</span>
+              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 4 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="soap">Rapportera kö</button>
@@ -1047,15 +1088,15 @@
             <div class="vc-top">
               <span class="vc-name">Trädgården</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="tradgarden">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="tradgarden"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge yellow" data-role="status-badge">15 min</span>
               </div>
             </div>
             <div class="vc-address">Hammarby Slussväg 2, Södermalm</div>
             <div class="vc-chips">
-              <span class="info-chip">📍 800m</span>
-              <span class="info-chip">🕐 05:00</span>
-              <span class="info-chip" data-role="reports-chip">👤 7 rapporter</span>
+              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 800m</span>
+              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 05:00</span>
+              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 7 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="tradgarden">Rapportera kö</button>
@@ -1065,15 +1106,15 @@
             <div class="vc-top">
               <span class="vc-name">Sturehof</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="sturehof">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="sturehof"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge yellow" data-role="status-badge">20 min</span>
               </div>
             </div>
             <div class="vc-address">Stureplan 2, Östermalm</div>
             <div class="vc-chips">
-              <span class="info-chip">📍 1.2km</span>
-              <span class="info-chip">🕐 01:00</span>
-              <span class="info-chip" data-role="reports-chip">👤 3 rapporter</span>
+              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.2km</span>
+              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 01:00</span>
+              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 3 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="sturehof">Rapportera kö</button>
@@ -1083,15 +1124,15 @@
             <div class="vc-top">
               <span class="vc-name">Under Bron</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="underbron">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="underbron"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge yellow" data-role="status-badge">15 min</span>
               </div>
             </div>
             <div class="vc-address">Skansbron 4, Södermalm</div>
             <div class="vc-chips">
-              <span class="info-chip">📍 950m</span>
-              <span class="info-chip">🕐 05:00</span>
-              <span class="info-chip" data-role="reports-chip">👤 5 rapporter</span>
+              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 950m</span>
+              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 05:00</span>
+              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 5 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="underbron">Rapportera kö</button>
@@ -1105,27 +1146,27 @@
         <div class="explore-header">Utforska</div>
         <div style="padding: 0 16px 16px;">
           <div class="search-bar">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon"><ph-magnifying-glass size="16" weight="regular" style="color:var(--text-muted)"></ph-magnifying-glass></span>
             <input class="search-input" id="explore-search-input" type="text" placeholder="Sök bar eller klubb...">
-            <div class="filter-btn clickable">≡</div>
+            <div class="filter-btn clickable"><ph-sliders-horizontal size="18" weight="regular" style="color:var(--accent-orange)"></ph-sliders-horizontal></div>
           </div>
         </div>
 
         <div class="category-scroll" id="category-scroll">
           <div class="category-card active clickable" data-cat="barer">
-            <span class="cat-emoji">🍺</span><span class="cat-text">Barer</span>
+            <span class="cat-emoji"><ph-beer-bottle size="26" weight="duotone" style="color:var(--accent-orange)"></ph-beer-bottle></span><span class="cat-text">Barer</span>
           </div>
           <div class="category-card clickable" data-cat="klubbar">
-            <span class="cat-emoji">🎵</span><span class="cat-text">Klubbar</span>
+            <span class="cat-emoji"><ph-music-notes size="26" weight="duotone" style="color:var(--accent-orange)"></ph-music-notes></span><span class="cat-text">Klubbar</span>
           </div>
           <div class="category-card clickable" data-cat="happy">
-            <span class="cat-emoji">⚡</span><span class="cat-text">Happy Hour</span>
+            <span class="cat-emoji"><ph-lightning size="26" weight="duotone" style="color:var(--accent-orange)"></ph-lightning></span><span class="cat-text">Happy Hour</span>
           </div>
           <div class="category-card clickable" data-cat="aktiviteter">
-            <span class="cat-emoji">🎯</span><span class="cat-text">Aktiviteter</span>
+            <span class="cat-emoji"><ph-target size="26" weight="duotone" style="color:var(--accent-orange)"></ph-target></span><span class="cat-text">Aktiviteter</span>
           </div>
           <div class="category-card clickable" data-cat="sent">
-            <span class="cat-emoji">🌙</span><span class="cat-text">Sent öppet</span>
+            <span class="cat-emoji"><ph-moon-stars size="26" weight="duotone" style="color:var(--accent-orange)"></ph-moon-stars></span><span class="cat-text">Sent öppet</span>
           </div>
         </div>
 
@@ -1133,18 +1174,18 @@
 
         <div class="venue-list">
           <div class="venue-row clickable" data-venue="soap">
-            <div class="avatar">🍺</div>
+            <div class="avatar"><ph-beer-bottle size="26" weight="duotone" style="color:var(--accent-orange)"></ph-beer-bottle></div>
             <div class="vr-mid">
               <div class="vr-name">Soap Bar</div>
               <div class="vr-address">Ringvägen 24</div>
               <div class="vr-chips">
-                <span class="info-chip">📍 450m</span>
-                <span class="info-chip chip-open">🕐 Öppet</span>
+                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 450m</span>
+                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="soap">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="soap"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge green" data-role="status-badge">Ingen kö</span>
               </div>
               <div class="vr-time" data-role="last-time">5 min sedan</div>
@@ -1152,18 +1193,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="spy">
-            <div class="avatar">🎵</div>
+            <div class="avatar"><ph-music-notes size="26" weight="duotone" style="color:var(--accent-orange)"></ph-music-notes></div>
             <div class="vr-mid">
               <div class="vr-name">Spy Bar</div>
               <div class="vr-address">Birger Jarlsgatan 20</div>
               <div class="vr-chips">
-                <span class="info-chip">📍 1.1km</span>
-                <span class="info-chip chip-open">🕐 Öppet</span>
+                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.1km</span>
+                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="spy">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="spy"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge red" data-role="status-badge">60 min</span>
               </div>
               <div class="vr-time" data-role="last-time">3 min sedan</div>
@@ -1171,18 +1212,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="sturehof">
-            <div class="avatar">🍺</div>
+            <div class="avatar"><ph-beer-bottle size="26" weight="duotone" style="color:var(--accent-orange)"></ph-beer-bottle></div>
             <div class="vr-mid">
               <div class="vr-name">Sturehof</div>
               <div class="vr-address">Stureplan 2</div>
               <div class="vr-chips">
-                <span class="info-chip">📍 1.4km</span>
-                <span class="info-chip chip-open">🕐 Öppet</span>
+                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.4km</span>
+                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="sturehof">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="sturehof"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge yellow" data-role="status-badge">20 min</span>
               </div>
               <div class="vr-time" data-role="last-time">18 min sedan</div>
@@ -1190,18 +1231,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="berns">
-            <div class="avatar">🎵</div>
+            <div class="avatar"><ph-music-notes size="26" weight="duotone" style="color:var(--accent-orange)"></ph-music-notes></div>
             <div class="vr-mid">
               <div class="vr-name">Berns</div>
               <div class="vr-address">Berzelii Park</div>
               <div class="vr-chips">
-                <span class="info-chip">📍 1.8km</span>
-                <span class="info-chip chip-open">🕐 Öppet</span>
+                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.8km</span>
+                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="berns">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="berns"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge red" data-role="status-badge">45 min</span>
               </div>
               <div class="vr-time" data-role="last-time">5 min sedan</div>
@@ -1209,18 +1250,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="underbron">
-            <div class="avatar">🌙</div>
+            <div class="avatar"><ph-moon-stars size="26" weight="duotone" style="color:var(--accent-orange)"></ph-moon-stars></div>
             <div class="vr-mid">
               <div class="vr-name">Under Bron</div>
               <div class="vr-address">Skansbron</div>
               <div class="vr-chips">
-                <span class="info-chip">📍 950m</span>
-                <span class="info-chip chip-open">🕐 Öppet</span>
+                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 950m</span>
+                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="underbron">♡</button>
+                <button class="fav-heart-btn clickable" data-venue="underbron"><ph-heart size="16" weight="regular"></ph-heart></button>
                 <span class="status-badge yellow" data-role="status-badge">15 min</span>
               </div>
               <div class="vr-time" data-role="last-time">6 min sedan</div>
@@ -1235,15 +1276,15 @@
         <div class="explore-header">Live Feed</div>
         <div style="padding: 0 16px 16px; margin-top:-16px; font-size:14px; color:var(--text-secondary);">Vad händer i Stockholm just nu</div>
 
-        <div class="live-ticker-banner">🔴 LIVE — <span id="live-active-count">0</span> aktiva rapporter senaste timmen</div>
+        <div class="live-ticker-banner"><span class="live-dot"></span> LIVE — <span id="live-active-count">0</span> aktiva rapporter senaste timmen</div>
 
         <div class="feed-list" id="feed-list"></div>
 
         <div class="live-empty" id="live-empty" style="display:none;">
-          <div class="le-emoji">📡</div>
+          <div class="le-emoji"><ph-broadcast size="48" weight="regular" style="color:var(--text-muted)"></ph-broadcast></div>
           <div class="le-title">Inga rapporter än ikväll</div>
           <div class="le-sub">Bli den första att rapportera!</div>
-          <button class="le-btn clickable" id="live-empty-report-btn">Rapportera nu →</button>
+          <button class="le-btn clickable" id="live-empty-report-btn">Rapportera nu <ph-caret-right size="16" weight="fill" style="color:#fff"></ph-caret-right></button>
         </div>
       </div>
 
@@ -1275,7 +1316,7 @@
         <div class="report-step-content" id="report-step-1">
           <div class="field-label">VAR ÄR DU NU?</div>
           <div class="report-search">
-            <span>🔍</span><span>Sök bar eller klubb...</span>
+            <span><ph-magnifying-glass size="16" weight="regular" style="color:var(--text-muted)"></ph-magnifying-glass></span><span>Sök bar eller klubb...</span>
           </div>
 
           <div class="or-divider">
@@ -1307,52 +1348,52 @@
             </div>
           </div>
 
-          <button class="btn-primary clickable" id="btn-next-step1" style="margin-top:20px; display:none;">Nästa steg →</button>
+          <button class="btn-primary clickable" id="btn-next-step1" style="margin-top:20px; display:none;">Nästa steg <ph-caret-right size="20" weight="fill" style="color:#fff"></ph-caret-right></button>
         </div>
 
         <!-- Step 2 -->
         <div class="report-step-content" id="report-step-2" style="display:none;">
-          <span class="selected-chip">📍 <span id="chip-bar-name">Soap Bar</span></span>
+          <span class="selected-chip"><ph-map-pin size="14" weight="regular"></ph-map-pin> <span id="chip-bar-name">Soap Bar</span></span>
 
           <div style="font-size:16px; font-weight:700; color:#fff; margin-top:20px;">Hur lång är kön?</div>
           <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Välj det alternativ som stämmer bäst</div>
 
           <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;" id="queue-options">
             <button class="queue-option clickable" data-q="none">
-              <span class="qo-icon green">✅</span>
+              <span class="qo-icon green"><ph-check-circle size="20" weight="duotone" style="color:var(--status-green)"></ph-check-circle></span>
               <span class="qo-text"><div class="qo-title">Ingen kö</div><div class="qo-desc">Gå rakt in nu</div></span>
               <span class="qo-check"></span>
             </button>
             <button class="queue-option clickable" data-q="short">
-              <span class="qo-icon yellow">⏱️</span>
+              <span class="qo-icon yellow"><ph-timer size="20" weight="duotone" style="color:var(--status-yellow)"></ph-timer></span>
               <span class="qo-text"><div class="qo-title">Under 15 min</div><div class="qo-desc">Kort väntan</div></span>
               <span class="qo-check"></span>
             </button>
             <button class="queue-option clickable" data-q="medium">
-              <span class="qo-icon yellow">⏳</span>
+              <span class="qo-icon yellow"><ph-hourglass size="20" weight="duotone" style="color:var(--status-yellow)"></ph-hourglass></span>
               <span class="qo-text"><div class="qo-title">15–30 min</div><div class="qo-desc">Lite att vänta</div></span>
               <span class="qo-check"></span>
             </button>
             <button class="queue-option clickable" data-q="long">
-              <span class="qo-icon red">🚫</span>
+              <span class="qo-icon red"><ph-prohibit size="20" weight="duotone" style="color:var(--status-red)"></ph-prohibit></span>
               <span class="qo-text"><div class="qo-title">30+ min</div><div class="qo-desc">Lång kö, välj annat</div></span>
               <span class="qo-check"></span>
             </button>
           </div>
 
-          <button class="btn-primary clickable" id="btn-submit-report" style="margin-top:20px; box-shadow: 0 4px 20px #FF6B2C50;" disabled>Skicka rapport ✓</button>
+          <button class="btn-primary clickable" id="btn-submit-report" style="margin-top:20px; box-shadow: 0 4px 20px #FF6B2C50;" disabled>Skicka rapport <ph-check size="16" weight="bold" style="color:#fff"></ph-check></button>
         </div>
 
         <!-- Step 3 -->
         <div class="confirm-wrap" id="report-step-3" style="display:none;">
-          <div class="confirm-check">✓</div>
+          <div class="confirm-check"><ph-check size="48" weight="bold" style="color:var(--status-green)"></ph-check></div>
           <div class="confirm-title">Tack!</div>
           <div class="confirm-sub">Din rapport hjälper andra att planera sin kväll</div>
-          <div class="points-badge" id="confirm-points-text">+10 poäng! 🎯</div>
+          <div class="points-badge" id="confirm-points-text">+10 poäng! <ph-target size="16" weight="fill" style="color:var(--accent-orange)"></ph-target></div>
 
           <div style="display:flex; flex-direction:column; gap:10px; margin-top:32px; width:100%;">
             <button class="btn-secondary clickable" id="btn-report-again" style="background:var(--bg-secondary); color:var(--text-primary); height:50px;">Rapportera en till</button>
-            <button class="btn-primary clickable" id="btn-back-to-map-report">← Tillbaka till kartan</button>
+            <button class="btn-primary clickable" id="btn-back-to-map-report"><ph-arrow-left size="20" weight="fill" style="color:var(--accent-orange)"></ph-arrow-left> Tillbaka till kartan</button>
           </div>
         </div>
       </div>
@@ -1360,7 +1401,7 @@
       <!-- ===================== SCREEN 4: PROFILE ===================== -->
       <div id="screen-profile" class="screen">
         <div class="profile-header">
-          <div class="profile-avatar">👤</div>
+          <div class="profile-avatar"><ph-user size="32" weight="regular" style="color:var(--text-primary)"></ph-user></div>
           <div class="profile-name">Anonym Användare<span class="level-badge-pill" id="level-badge">Ny</span></div>
           <div class="profile-since">Aktiv sedan Oktober 2026</div>
 
@@ -1395,10 +1436,10 @@
 
         <div class="settings-section">
           <div class="sheet-label">INSTÄLLNINGAR</div>
-          <div class="settings-row clickable"><span class="s-emoji">🔔</span><span class="s-text">Notifikationer</span><span class="s-arrow">→</span></div>
-          <div class="settings-row clickable"><span class="s-emoji">📍</span><span class="s-text">Plats-inställningar</span><span class="s-arrow">→</span></div>
-          <div class="settings-row clickable"><span class="s-emoji">🏙️</span><span class="s-text">Min stad: Stockholm</span><span class="s-arrow">→</span></div>
-          <div class="settings-row clickable"><span class="s-emoji">ℹ️</span><span class="s-text">Om QueueBar</span><span class="s-arrow">→</span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><ph-bell size="20" weight="regular"></ph-bell></span><span class="s-text">Notifikationer</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><ph-map-pin size="20" weight="regular"></ph-map-pin></span><span class="s-text">Plats-inställningar</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><ph-buildings size="20" weight="regular"></ph-buildings></span><span class="s-text">Min stad: Stockholm</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><ph-info size="20" weight="regular"></ph-info></span><span class="s-text">Om QueueBar</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
         </div>
       </div>
 
@@ -1414,27 +1455,27 @@
     <!-- ===================== BOTTOM NAV ===================== -->
     <div class="bottom-nav">
       <div class="nav-tab active clickable" data-screen="map">
-        <span class="nav-icon">🗺️</span>
+        <span class="nav-icon"><ph-map-pin-area size="24"></ph-map-pin-area></span>
         <span class="nav-label">Karta</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="explore">
-        <span class="nav-icon">🔍</span>
+        <span class="nav-icon"><ph-magnifying-glass size="24"></ph-magnifying-glass></span>
         <span class="nav-label">Utforska</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="live">
-        <span class="nav-icon">📡</span>
+        <span class="nav-icon"><ph-broadcast size="24"></ph-broadcast></span>
         <span class="nav-label">Live</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="report">
-        <span class="nav-icon">📢</span>
+        <span class="nav-icon"><ph-paper-plane-tilt size="24"></ph-paper-plane-tilt></span>
         <span class="nav-label">Rapportera</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="profile">
-        <span class="nav-icon">👤</span>
+        <span class="nav-icon"><ph-user size="24"></ph-user></span>
         <span class="nav-label">Profil</span>
         <span class="nav-dot"></span>
       </div>
@@ -1518,12 +1559,12 @@
   };
 
   var BADGE_DEFS = {
-    early:      {emoji:"🥇", name:"Tidiga Fågeln"},
-    reporter:   {emoji:"📢", name:"Reporter"},
-    owl:        {emoji:"🌙", name:"Nattuggla"},
-    truth:      {emoji:"✅", name:"Sanningssägare"},
-    veteran:    {emoji:"🏆", name:"Veteran"},
-    stureplan:  {emoji:"👑", name:"Stureplan-kungen"}
+    early:      {emoji:'<ph-medal size="28" weight="duotone" style="color:var(--accent-orange)"></ph-medal>', name:"Tidiga Fågeln"},
+    reporter:   {emoji:'<ph-megaphone size="28" weight="duotone" style="color:var(--accent-orange)"></ph-megaphone>', name:"Reporter"},
+    owl:        {emoji:'<ph-moon-stars size="28" weight="duotone" style="color:var(--accent-orange)"></ph-moon-stars>', name:"Nattuggla"},
+    truth:      {emoji:'<ph-check-circle size="28" weight="duotone" style="color:var(--accent-orange)"></ph-check-circle>', name:"Sanningssägare"},
+    veteran:    {emoji:'<ph-trophy size="28" weight="duotone" style="color:var(--accent-orange)"></ph-trophy>', name:"Veteran"},
+    stureplan:  {emoji:'<ph-crown size="28" weight="duotone" style="color:var(--accent-orange)"></ph-crown>', name:"Stureplan-kungen"}
   };
   var BADGE_ORDER = ["early", "reporter", "owl", "truth", "veteran", "stureplan"];
 
@@ -1604,7 +1645,7 @@
   function computeStatus(key) {
     var reports45 = getReportsInWindow(key, 45);
     if (!reports45.length) {
-      return { status: 'unknown', colorClass: 'gray', shortLabel: '?', badgeLabel: 'Okänt 🤷', queuePct: 0, confidence: 'none', type: null };
+      return { status: 'unknown', colorClass: 'gray', shortLabel: '?', badgeLabel: 'Okänt', queuePct: 0, confidence: 'none', type: null };
     }
     var tally = {};
     reports45.forEach(function(r) { tally[r.queueStatus] = (tally[r.queueStatus] || 0) + 1; });
@@ -1653,7 +1694,12 @@
   var toastContainer = document.getElementById('toast-container');
   var toastQueue = [];
   var toastBusy = false;
-  var TOAST_PREFIX = { success: '✓ ', error: '✕ ', info: 'ℹ️ ', points: '⭐ ' };
+  var TOAST_PREFIX = {
+    success: '<ph-check-circle size="16" weight="fill" style="color:var(--status-green)"></ph-check-circle> ',
+    error: '<ph-x-circle size="16" weight="fill" style="color:var(--status-red)"></ph-x-circle> ',
+    info: '<ph-info size="16" weight="regular" style="color:var(--text-secondary)"></ph-info> ',
+    points: '<ph-star size="16" weight="fill" style="color:var(--accent-orange)"></ph-star> '
+  };
 
   function showToast(message, type, duration) {
     type = type || 'info';
@@ -1667,12 +1713,20 @@
     var item = toastQueue.shift();
     var el = document.createElement('div');
     el.className = 'toast ' + item.type;
-    el.textContent = (TOAST_PREFIX[item.type] || '') + item.message;
+    el.innerHTML = (TOAST_PREFIX[item.type] || '') + item.message;
     toastContainer.appendChild(el);
     setTimeout(function() {
       el.classList.add('hide');
       setTimeout(function() { el.remove(); toastBusy = false; processToastQueue(); }, 300);
     }, item.duration);
+  }
+
+  function setIconMessage(el, iconHtml, text) {
+    el.innerHTML = '';
+    var wrap = document.createElement('span');
+    wrap.innerHTML = iconHtml;
+    if (wrap.firstChild) el.appendChild(wrap.firstChild);
+    el.appendChild(document.createTextNode(' ' + text));
   }
 
   function tapFeedback(el) {
@@ -1701,7 +1755,9 @@
     document.querySelectorAll('.fav-heart-btn[data-venue]').forEach(function(btn) {
       var active = isFavorite(btn.dataset.venue);
       btn.classList.toggle('active', active);
-      btn.textContent = active ? '❤️' : '♡';
+      btn.innerHTML = active ?
+        '<ph-heart size="16" weight="fill" style="color:#E74C3C"></ph-heart>' :
+        '<ph-heart size="16" weight="regular"></ph-heart>';
     });
   }
   function toggleFavorite(key, btnEl) {
@@ -1752,12 +1808,23 @@
     navTabs.forEach(function(t) {
       t.classList.toggle('active', t.dataset.screen === name);
     });
+    updateNavIconStates();
     closeSheet();
 
     if (name === 'profile') renderProfile();
     if (name === 'live') renderLiveFeed();
 
     requestAnimationFrame(function() { next.scrollTop = scrollPositions[next.id] || 0; });
+  }
+
+  function updateNavIconStates() {
+    navTabs.forEach(function(tab) {
+      var icon = tab.querySelector('.nav-icon *');
+      if (!icon) return;
+      var active = tab.classList.contains('active');
+      icon.setAttribute('weight', active ? 'duotone' : 'regular');
+      icon.style.color = active ? 'var(--accent-orange)' : 'var(--text-muted)';
+    });
   }
 
   navTabs.forEach(function(tab) {
@@ -1798,7 +1865,11 @@
     var emptyMsg = document.getElementById('map-empty-msg');
     if (visibleCount === 0) {
       emptyMsg.style.display = 'block';
-      emptyMsg.textContent = term ? ('Inga resultat för "' + term + '"') : 'Inga barer matchar filtret just nu 🙁';
+      if (term) {
+        setIconMessage(emptyMsg, '<ph-magnifying-glass size="14" weight="regular"></ph-magnifying-glass>', 'Inga resultat för "' + term + '"');
+      } else {
+        setIconMessage(emptyMsg, '<ph-smiley-sad size="14" weight="regular"></ph-smiley-sad>', 'Inga barer matchar filtret just nu');
+      }
     } else {
       emptyMsg.style.display = 'none';
     }
@@ -1829,7 +1900,7 @@
     var emptyMsg = document.getElementById('explore-empty-msg');
     if (visibleCount === 0) {
       emptyMsg.style.display = 'block';
-      emptyMsg.textContent = 'Inga resultat för "' + term + '"';
+      setIconMessage(emptyMsg, '<ph-magnifying-glass size="14" weight="regular"></ph-magnifying-glass>', 'Inga resultat för "' + term + '"');
     } else {
       emptyMsg.style.display = 'none';
     }
@@ -1861,11 +1932,13 @@
       document.querySelectorAll('[data-venue="' + key + '"] [data-role="status-badge"]').forEach(function(b) {
         b.classList.remove('green', 'yellow', 'red', 'gray');
         b.classList.add(info.status === 'unknown' ? 'gray' : info.colorClass);
-        b.textContent = info.status === 'unknown' ? 'Okänt 🤷' : info.badgeLabel;
+        b.innerHTML = info.status === 'unknown' ?
+          '<ph-question size="10" weight="regular"></ph-question> ' + info.badgeLabel :
+          info.badgeLabel;
       });
 
       document.querySelectorAll('[data-venue="' + key + '"] [data-role="reports-chip"]').forEach(function(c) {
-        c.textContent = '👤 ' + count + ' rapport' + (count === 1 ? '' : 'er');
+        c.innerHTML = '<ph-user size="12" weight="regular"></ph-user> ' + count + ' rapport' + (count === 1 ? '' : 'er');
       });
 
       document.querySelectorAll('[data-venue="' + key + '"] [data-role="last-time"]').forEach(function(el) {
@@ -1894,9 +1967,9 @@
     var reportsHtml = recent.length ? recent.map(function(r) {
       var meta = STATUS_TYPE_META[r.queueStatus];
       return '<div class="report-row" style="margin-top:12px;">' +
-        '<div class="ravatar">👤</div>' +
+        '<div class="ravatar"><ph-user-circle size="18" weight="regular" style="color:var(--text-secondary)"></ph-user-circle></div>' +
         '<div><div class="rtext">' + meta.badgeLabel + '</div><div class="rsub">av Anonym • ' + relativeTime(r.timestamp) + '</div></div>' +
-        '<div class="rthumbs">👍 ' + getThumbsFor(r) + '</div>' +
+        '<div class="rthumbs"><ph-thumbs-up size="12" weight="regular"></ph-thumbs-up> ' + getThumbsFor(r) + '</div>' +
       '</div>';
     }).join('') : '<div style="color:var(--text-muted); font-size:13px; margin-top:12px;">Inga rapporter än</div>';
 
@@ -1904,8 +1977,10 @@
       '<div class="sheet-header">' +
         '<div><div class="sh-name">' + v.name + '</div><div class="sh-sub">' + v.area + ' • ' + v.distance + ' bort</div></div>' +
         '<div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">' +
-          '<button class="fav-heart-btn clickable' + (favActive ? ' active' : '') + '" data-venue="' + venueKey + '">' + (favActive ? '❤️' : '♡') + '</button>' +
-          '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';">● ' + (info.status === 'unknown' ? 'Okänt 🤷' : info.badgeLabel) + '</div>' +
+          '<button class="fav-heart-btn clickable' + (favActive ? ' active' : '') + '" data-venue="' + venueKey + '">' +
+            (favActive ? '<ph-heart size="16" weight="fill" style="color:#E74C3C"></ph-heart>' : '<ph-heart size="16" weight="regular"></ph-heart>') +
+          '</button>' +
+          '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';"><span class="dot dot-' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '" style="margin-right:4px;"></span>' + (info.status === 'unknown' ? '<ph-question size="12" weight="regular"></ph-question> ' + info.badgeLabel : info.badgeLabel) + '</div>' +
         '</div>' +
       '</div>' +
 
@@ -1916,10 +1991,10 @@
       '</div>' +
 
       '<div class="info-grid">' +
-        '<div class="info-box"><div class="ib-emoji">🕐</div><div class="ib-label">Stänger</div><div class="ib-value">' + closesText + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji">👤</div><div class="ib-label">Rapporter</div><div class="ib-value">' + count + ' st</div></div>' +
-        '<div class="info-box"><div class="ib-emoji">📊</div><div class="ib-label">Senast rapporterat</div><div class="ib-value">' + getLastReportedText(venueKey) + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji">⭐</div><div class="ib-label">Tillförlitlighet</div><div class="ib-value">' + (info.confidence === 'confirmed' ? 'Bekräftad' : (info.confidence === 'few' ? 'Få rapporter' : 'Okänt')) + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><ph-clock size="20" weight="duotone" style="color:var(--accent-orange)"></ph-clock></div><div class="ib-label">Stänger</div><div class="ib-value">' + closesText + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><ph-user size="20" weight="duotone" style="color:var(--accent-orange)"></ph-user></div><div class="ib-label">Rapporter</div><div class="ib-value">' + count + ' st</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><ph-chart-bar size="20" weight="duotone" style="color:var(--accent-orange)"></ph-chart-bar></div><div class="ib-label">Senast rapporterat</div><div class="ib-value">' + getLastReportedText(venueKey) + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><ph-star size="20" weight="duotone" style="color:var(--accent-orange)"></ph-star></div><div class="ib-label">Tillförlitlighet</div><div class="ib-value">' + (info.confidence === 'confirmed' ? 'Bekräftad' : (info.confidence === 'few' ? 'Få rapporter' : 'Okänt')) + '</div></div>' +
       '</div>' +
 
       '<div style="margin-top:20px;">' +
@@ -1928,8 +2003,8 @@
       '</div>' +
 
       '<div style="margin-top:20px;">' +
-        '<button class="btn-primary clickable" id="sheet-report-btn">📢 Rapportera köläge nu</button>' +
-        '<button class="btn-secondary clickable" id="sheet-back-btn" style="margin-top:10px;">← Tillbaka till kartan</button>' +
+        '<button class="btn-primary clickable" id="sheet-report-btn"><ph-megaphone size="20" weight="fill" style="color:#fff"></ph-megaphone> Rapportera köläge nu</button>' +
+        '<button class="btn-secondary clickable" id="sheet-back-btn" style="margin-top:10px;"><ph-arrow-left size="20" weight="fill" style="color:var(--accent-orange)"></ph-arrow-left> Tillbaka till kartan</button>' +
       '</div>';
 
     document.getElementById('sheet-report-btn').addEventListener('click', function() {
@@ -1991,11 +2066,12 @@
 
   function handleThumbClick(btn) {
     var key = btn.dataset.thumbkey;
-    var current = parseInt(btn.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+    var current = parseInt(btn.dataset.count, 10) || 0;
     var next = current + 1;
     qbThumbs[key] = next;
     saveThumbs();
-    btn.textContent = '👍 ' + next;
+    btn.dataset.count = String(next);
+    btn.innerHTML = '<ph-thumbs-up size="12" weight="regular"></ph-thumbs-up> ' + next;
     tapFeedback(btn);
     btn.classList.add('active');
     setTimeout(function() { btn.classList.remove('active'); }, 500);
@@ -2023,17 +2099,18 @@
   function renderFeedRow(r) {
     var venue = VENUES[r.venueKey];
     var meta = STATUS_TYPE_META[r.queueStatus];
-    var iconEmoji = meta.colorClass === 'green' ? '🟢' : (meta.colorClass === 'yellow' ? '🟡' : '🔴');
+    var dotClass = 'dot-' + meta.colorClass;
     var bgVar = meta.colorClass === 'green' ? 'var(--status-green-bg)' : (meta.colorClass === 'yellow' ? 'var(--status-yellow-bg)' : 'var(--status-red-bg)');
     var thumbKey = r.venueKey + '|' + r.timestamp;
+    var thumbCount = getThumbsFor(r);
     return '<div class="feed-row">' +
-      '<div class="feed-icon" style="background:' + bgVar + ';">' + iconEmoji + '</div>' +
+      '<div class="feed-icon" style="background:' + bgVar + ';"><span class="dot ' + dotClass + '" style="width:14px;height:14px;"></span></div>' +
       '<div class="feed-mid">' +
         '<div class="feed-title">' + meta.badgeLabel + ' på ' + venue.name + '</div>' +
         '<div class="feed-sub">' + venue.area + ' • ' + venue.distance + ' bort</div>' +
         '<div class="feed-time">' + relativeTime(r.timestamp) + '</div>' +
       '</div>' +
-      '<button class="feed-thumbs clickable" data-thumbkey="' + thumbKey + '">👍 ' + getThumbsFor(r) + '</button>' +
+      '<button class="feed-thumbs clickable" data-thumbkey="' + thumbKey + '" data-count="' + thumbCount + '"><ph-thumbs-up size="12" weight="regular"></ph-thumbs-up> ' + thumbCount + '</button>' +
     '</div>';
   }
 
@@ -2066,7 +2143,7 @@
       var info = computeStatus(key);
       return '<div class="mini-fav-card clickable" data-venue="' + key + '">' +
         '<div class="mfc-name">' + v.name + '</div>' +
-        '<div class="mfc-status"><span class="status-badge ' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '">' + (info.status === 'unknown' ? 'Okänt 🤷' : info.badgeLabel) + '</span></div>' +
+        '<div class="mfc-status"><span class="status-badge ' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '">' + (info.status === 'unknown' ? '<ph-question size="10" weight="regular"></ph-question> ' + info.badgeLabel : info.badgeLabel) + '</span></div>' +
       '</div>';
     }).join('');
   }
@@ -2086,8 +2163,8 @@
 
     var progressPct = level.max === Infinity ? 100 : Math.min(100, Math.round(((profile.totalPoints - level.min) / ((level.max + 1) - level.min)) * 100));
     document.getElementById('points-progress-fill').style.width = progressPct + '%';
-    document.getElementById('points-progress-text').textContent = level.max === Infinity ?
-      (profile.totalPoints + ' poäng — Legend uppnådd! 🏆') :
+    document.getElementById('points-progress-text').innerHTML = level.max === Infinity ?
+      (profile.totalPoints + ' poäng — Legend uppnådd! <ph-trophy size="14" weight="fill" style="color:var(--accent-orange)"></ph-trophy>') :
       (profile.totalPoints + ' / ' + (level.max + 1) + ' poäng till nästa nivå');
 
     document.getElementById('badge-list').innerHTML = BADGE_ORDER.map(function(id) {
@@ -2095,17 +2172,17 @@
       var unlocked = profile.badges.indexOf(id) !== -1;
       return unlocked ?
         '<div class="badge-card"><span class="b-emoji">' + def.emoji + '</span><span class="b-text">' + def.name + '</span></div>' :
-        '<div class="badge-card locked"><span class="b-emoji">🔒</span><span class="b-text">???</span></div>';
+        '<div class="badge-card locked"><span class="b-emoji"><ph-lock size="28" weight="regular" style="color:var(--text-muted)"></ph-lock></span><span class="b-text">???</span></div>';
     }).join('');
 
     var activityListEl = document.getElementById('activity-list');
     if (!myReports.length) {
-      activityListEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">Du har inte rapporterat än.<br>Gå ut och hjälp andra! 🍺</div>';
+      activityListEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">Du har inte rapporterat än.<br>Gå ut och hjälp andra! <ph-beer-bottle size="14" weight="regular"></ph-beer-bottle></div>';
     } else {
       activityListEl.innerHTML = myReports.slice(0, 10).map(function(r) {
         var meta = STATUS_TYPE_META[r.queueStatus];
         return '<div class="activity-row">' +
-          '<div class="a-icon">📢</div>' +
+          '<div class="a-icon"><ph-megaphone size="18" weight="duotone" style="color:var(--accent-orange)"></ph-megaphone></div>' +
           '<div class="a-mid"><div class="a-title">Rapporterade ' + r.venueName + '</div>' +
           '<div class="a-sub">' + meta.badgeLabel + ' • ' + formatDateTime(r.timestamp) + '</div></div>' +
           '<div class="a-points">+' + r.pointsAwarded + 'p</div>' +
@@ -2139,7 +2216,7 @@
     toUnlock.forEach(function(id) {
       profile.badges.push(id);
       profile.totalPoints += 50;
-      showToast('🏅 Badge upplåst: ' + BADGE_DEFS[id].name + '! +50p', 'points', 3500);
+      showToast('<ph-medal size="16" weight="fill" style="color:var(--accent-orange)"></ph-medal> Badge upplåst: ' + BADGE_DEFS[id].name + '! +50p', 'points', 3500);
     });
     if (toUnlock.length) saveProfile();
   }
@@ -2163,7 +2240,7 @@
       ind.classList.remove('active', 'done');
       if (i + 1 < n) {
         ind.classList.add('done');
-        circle.textContent = '✓';
+        circle.innerHTML = '<ph-check size="14" weight="bold" style="color:#fff"></ph-check>';
       } else {
         circle.textContent = String(i + 1);
         if (i + 1 === n) ind.classList.add('active');
@@ -2254,7 +2331,7 @@
     refreshVenueDisplays();
 
     setReportStep(3);
-    document.getElementById('confirm-points-text').textContent = '+' + award + ' poäng! 🎯';
+    document.getElementById('confirm-points-text').innerHTML = '+' + award + ' poäng! <ph-target size="16" weight="fill" style="color:var(--accent-orange)"></ph-target>';
     showToast('Rapport skickad! +' + award + ' poäng', 'success');
   });
 
@@ -2276,6 +2353,7 @@
   // Init
   setReportStep(1);
   refreshFavoriteButtons();
+  updateNavIconStates();
   tick();
   setInterval(tick, 60000);
 })();
