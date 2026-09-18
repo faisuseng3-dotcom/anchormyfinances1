@@ -6,8 +6,8 @@
 <title>QueueBar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/iconoir/6.11.0/css/iconoir.min.css">
 <style>
   :root {
     --bg-primary: #131F1E;
@@ -31,11 +31,16 @@
     --radius-lg: 16px;
     --radius-xl: 20px;
     --radius-full: 999px;
-    --font: 'Unbounded', sans-serif;
+    --font: 'Space Grotesk', sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  * { font-family: 'Unbounded', sans-serif !important; }
+  * {
+    font-family: 'Space Grotesk', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
 
   html, body {
     background: #050a09;
@@ -89,7 +94,7 @@
     justify-content: space-between;
     padding: 0 28px;
     color: #fff;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0px;
     z-index: 50;
@@ -151,7 +156,7 @@
     position: relative;
   }
   .nav-tab .nav-icon { font-size: 22px; line-height: 1; }
-  .nav-tab .nav-label { font-size: 9px; font-weight: 500; letter-spacing: 0.5px; }
+  .nav-tab .nav-label { font-size: 10px; font-weight: 500; letter-spacing: 0.3px; }
   .nav-tab.active { color: var(--accent-orange); }
   .nav-tab .nav-dot {
     position: absolute;
@@ -201,9 +206,9 @@
     flex-shrink: 0;
     padding: 5px 10px;
     border-radius: var(--radius-full);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0px;
     background: var(--bg-tertiary);
     color: var(--text-secondary);
     border: 1px solid var(--border);
@@ -218,9 +223,9 @@
   .status-badge {
     border-radius: var(--radius-full);
     padding: 3px 8px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 0px;
     white-space: nowrap;
   }
   .status-badge.green { background: var(--status-green-bg); color: var(--status-green); }
@@ -231,9 +236,9 @@
     background: var(--bg-tertiary);
     border-radius: var(--radius-sm);
     padding: 4px 8px;
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.3px;
+    letter-spacing: 0px;
     color: var(--text-secondary);
     white-space: nowrap;
   }
@@ -248,8 +253,8 @@
     justify-content: space-between;
     padding: 0 16px;
   }
-  .map-header .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: var(--accent-orange); line-height: 1.2; }
-  .map-header .subtitle { font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 1px; }
+  .map-header .logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: var(--accent-orange); line-height: 1.2; }
+  .map-header .subtitle { font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 1px; }
   .notif-icon {
     position: relative;
     font-size: 20px;
@@ -341,12 +346,12 @@
     animation: pulse 2s infinite;
     flex-shrink: 0;
   }
-  .live-ticker .ticker-text { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-secondary); flex: 1; }
+  .live-ticker .ticker-text { font-size: 12px; font-weight: 500; letter-spacing: 0px; color: var(--text-secondary); flex: 1; }
   .live-badge {
     background: var(--status-red);
     color: #fff;
-    font-size: 8px;
-    font-weight: 800;
+    font-size: 9px;
+    font-weight: 700;
     letter-spacing: 1.5px;
     border-radius: 4px;
     padding: 2px 6px;
@@ -360,7 +365,7 @@
     justify-content: space-between;
     padding: 16px 16px 8px;
   }
-  .section-label-row .label { font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
+  .section-label-row .label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #fff; }
   .section-label-row .see-all { font-size: 13px; color: var(--accent-orange); font-weight: 600; }
 
   .venue-card-scroll {
@@ -381,11 +386,11 @@
   }
   .venue-card .vc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
   .venue-card .vc-name {
-    font-size: 13px; font-weight: 600; letter-spacing: -0.3px; color: #fff;
+    font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: #fff;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px;
   }
   .venue-card .vc-address {
-    font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px;
+    font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .venue-card .vc-chips { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
@@ -429,11 +434,11 @@
   }
   .venue-row .vr-mid { flex: 1; min-width: 0; }
   .venue-row .vr-name {
-    font-size: 13px; font-weight: 600; letter-spacing: -0.3px; color: #fff;
+    font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: #fff;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px;
   }
   .venue-row .vr-address {
-    font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 2px;
+    font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 2px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .venue-row .vr-chips { display: flex; gap: 6px; margin-top: 8px; }
@@ -473,8 +478,8 @@
   .sheet-content { flex: 1; overflow-y: auto; padding: 16px 20px 24px; }
 
   .sheet-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-  .sheet-header .sh-name { font-size: 18px; font-weight: 700; letter-spacing: -0.5px; color: #fff; word-break: break-word; line-height: 1.2; }
-  .sheet-header .sh-sub { font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px; }
+  .sheet-header .sh-name { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #fff; word-break: break-word; line-height: 1.2; }
+  .sheet-header .sh-sub { font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px; }
   .sheet-header .sh-badge {
     font-size: 14px; font-weight: 700;
     padding: 6px 14px;
@@ -484,7 +489,7 @@
   }
 
   .sheet-label {
-    font-size: 9px; font-weight: 600; color: var(--text-muted);
+    font-size: 10px; font-weight: 600; color: var(--text-muted);
     letter-spacing: 2px; text-transform: uppercase;
   }
 
@@ -541,9 +546,9 @@
   .btn-primary {
     background: var(--accent-orange);
     color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0px;
     height: 50px;
     border-radius: var(--radius-lg);
     box-shadow: 0 4px 15px #FF6B2C40;
@@ -553,9 +558,9 @@
   .btn-secondary {
     background: var(--bg-tertiary);
     color: var(--text-secondary);
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
-    letter-spacing: 0.3px;
+    letter-spacing: 0px;
     height: 44px;
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
@@ -564,7 +569,7 @@
   }
 
   /* ===== Explore ===== */
-  .explore-header { padding: 20px 16px 16px; font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
+  .explore-header { padding: 20px 16px 16px; font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
   .category-scroll {
     display: flex; flex-shrink: 0; gap: 10px;
     padding: 0 16px 16px;
@@ -586,12 +591,12 @@
     background: var(--accent-orange-dim);
   }
   .category-card.active .cat-text { color: var(--accent-orange); }
-  .explore-section-title { font-size: 9px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #fff; padding: 4px 16px 12px; }
+  .explore-section-title { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #fff; padding: 4px 16px 12px; }
 
   /* ===== Report flow ===== */
   .report-header { padding: 20px 16px 0; }
-  .report-header .rh-title { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
-  .report-header .rh-sub { font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px; }
+  .report-header .rh-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: #fff; }
+  .report-header .rh-sub { font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px; }
 
   .step-indicator {
     display: flex;
@@ -616,7 +621,7 @@
 
   .report-step-content { padding: 24px 16px; }
   .field-label {
-    font-size: 9px; font-weight: 600; color: var(--text-secondary);
+    font-size: 10px; font-weight: 600; color: var(--text-secondary);
     letter-spacing: 2px; margin-bottom: 10px;
   }
   .report-search {
@@ -634,7 +639,7 @@
   }
   .or-divider .line { flex: 1; height: 1px; background: var(--border); }
   .or-divider .or-text {
-    font-size: 9px; font-weight: 600; color: var(--text-muted);
+    font-size: 10px; font-weight: 600; color: var(--text-muted);
     padding: 0 12px; letter-spacing: 2px;
     white-space: nowrap;
   }
@@ -652,11 +657,11 @@
   .nearby-row .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
   .nearby-row .nr-mid { flex: 1; min-width: 0; }
   .nearby-row .nr-name {
-    font-size: 13px; font-weight: 600; letter-spacing: -0.3px; color: #fff;
+    font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: #fff;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .nearby-row .nr-address {
-    font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary);
+    font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
   .nearby-row .nr-dist { font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-muted); flex-shrink: 0; }
@@ -692,8 +697,8 @@
   .queue-option .qo-icon.yellow { background: var(--status-yellow-bg); border: 1px solid var(--status-yellow); }
   .queue-option .qo-icon.red { background: var(--status-red-bg); border: 1px solid var(--status-red); }
   .queue-option .qo-text { flex: 1; }
-  .queue-option .qo-title { font-size: 13px; font-weight: 600; letter-spacing: -0.3px; color: #fff; }
-  .queue-option .qo-desc { font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 2px; }
+  .queue-option .qo-title { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: #fff; }
+  .queue-option .qo-desc { font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 2px; }
   .queue-option .qo-check {
     width: 22px; height: 22px; border-radius: 50%;
     border: 2px solid var(--border);
@@ -742,12 +747,12 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 32px;
   }
-  .profile-name { font-size: 15px; font-weight: 700; letter-spacing: -0.5px; color: #fff; margin-top: 12px; }
-  .profile-since { font-size: 10px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px; }
+  .profile-name { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #fff; margin-top: 12px; }
+  .profile-since { font-size: 12px; font-weight: 400; letter-spacing: 0px; color: var(--text-secondary); margin-top: 4px; }
   .profile-stats { display: flex; width: 100%; margin-top: 20px; }
   .profile-stat { flex: 1; text-align: center; }
-  .profile-stat .ps-num { font-size: 18px; font-weight: 700; letter-spacing: -1px; color: #fff; }
-  .profile-stat .ps-label { font-size: 9px; font-weight: 400; letter-spacing: 1px; color: var(--text-muted); margin-top: 2px; }
+  .profile-stat .ps-num { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #fff; }
+  .profile-stat .ps-label { font-size: 10px; font-weight: 400; letter-spacing: 1px; color: var(--text-muted); margin-top: 2px; }
   .profile-divider { width: 1px; height: 36px; background: var(--border); align-self: center; }
 
   .badge-section { padding: 20px 16px 0; }
@@ -919,7 +924,7 @@
     border-radius: var(--radius-md);
     padding: 10px 14px;
     margin: 0 16px 12px;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
+    font-size: 12px; font-weight: 500; letter-spacing: 0px;
     color: var(--text-primary);
     font-weight: 600;
   }
@@ -982,7 +987,7 @@
     padding: 12px;
   }
   .mini-fav-card .mfc-name {
-    font-size: 13px; font-weight: 600; letter-spacing: -0.3px; color: #fff;
+    font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: #fff;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 120px;
   }
   .mini-fav-card .mfc-status { margin-top: 6px; }
@@ -1059,23 +1064,23 @@
             <div class="logo">QueueBar</div>
             <div class="subtitle">Stockholm • Fredag 22:34</div>
           </div>
-          <div class="notif-icon clickable"><ph-bell size="22" weight="regular"></ph-bell><span class="dot"></span></div>
+          <div class="notif-icon clickable"><i class="iconoir-bell" style="font-size:22px"></i><span class="dot"></span></div>
         </div>
 
         <div style="padding: 0 16px;">
           <div class="search-bar">
-            <span class="search-icon"><ph-magnifying-glass size="16" weight="regular" style="color:var(--text-muted)"></ph-magnifying-glass></span>
+            <span class="search-icon"><i class="iconoir-search" style="font-size:16px;color:var(--text-muted)"></i></span>
             <input class="search-input" id="map-search-input" type="text" placeholder="Sök bar eller klubb...">
-            <div class="filter-btn clickable"><ph-sliders-horizontal size="18" weight="regular" style="color:var(--accent-orange)"></ph-sliders-horizontal></div>
+            <div class="filter-btn clickable"><i class="iconoir-filter-list" style="font-size:18px;color:var(--accent-orange)"></i></div>
           </div>
         </div>
 
         <div class="pill-scroll" id="filter-pills">
           <div class="pill active" data-pill="alla">Alla</div>
           <div class="pill" data-pill="ingen">Ingen kö <span class="dot dot-green"></span></div>
-          <div class="pill" data-pill="happy">Happy Hour <ph-lightning size="14" weight="regular"></ph-lightning></div>
-          <div class="pill" data-pill="oppet">Öppet nu <ph-clock size="14" weight="regular"></ph-clock></div>
-          <div class="pill" data-pill="favoriter"><ph-heart size="14" weight="fill" style="color:#E74C3C"></ph-heart> Favoriter</div>
+          <div class="pill" data-pill="happy">Happy Hour <i class="iconoir-flash" style="font-size:14px"></i></div>
+          <div class="pill" data-pill="oppet">Öppet nu <i class="iconoir-clock" style="font-size:14px"></i></div>
+          <div class="pill" data-pill="favoriter"><i class="iconoir-heart-solid" style="font-size:14px;color:#E74C3C"></i> Favoriter</div>
         </div>
 
         <div class="map-section" id="map-canvas">
@@ -1088,7 +1093,7 @@
           <div class="map-marker yellow clickable" style="top:30%; left:75%;" data-venue="sturehof"><span class="dot"></span><span class="marker-text">20 min</span></div>
           <div class="map-marker yellow clickable" style="top:75%; left:50%;" data-venue="underbron"><span class="dot"></span><span class="marker-text">15 min</span></div>
 
-          <div class="locate-btn clickable"><ph-map-pin size="18" weight="fill" style="color:var(--accent-orange)"></ph-map-pin></div>
+          <div class="locate-btn clickable"><i class="iconoir-map-pin" style="font-size:18px;color:var(--accent-orange)"></i></div>
         </div>
 
         <div class="live-ticker">
@@ -1099,7 +1104,7 @@
 
         <div class="section-label-row">
           <span class="label">Nära dig</span>
-          <span class="see-all clickable">Se alla <ph-caret-right size="14" weight="regular"></ph-caret-right></span>
+          <span class="see-all clickable">Se alla <i class="iconoir-nav-arrow-right" style="font-size:14px"></i></span>
         </div>
 
         <div class="venue-card-scroll">
@@ -1107,15 +1112,15 @@
             <div class="vc-top">
               <span class="vc-name">Soap Bar</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="soap"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="soap"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge green" data-role="status-badge">Ingen kö</span>
               </div>
             </div>
             <div class="vc-address">Ringvägen 24, Södermalm</div>
             <div class="vc-chips">
-              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 350m</span>
-              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 03:00</span>
-              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 4 rapporter</span>
+              <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 350m</span>
+              <span class="info-chip"><i class="iconoir-clock" style="font-size:12px"></i> 03:00</span>
+              <span class="info-chip" data-role="reports-chip"><i class="iconoir-user" style="font-size:12px"></i> 4 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="soap">Rapportera kö</button>
@@ -1125,15 +1130,15 @@
             <div class="vc-top">
               <span class="vc-name">Trädgården</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="tradgarden"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="tradgarden"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge yellow" data-role="status-badge">15 min</span>
               </div>
             </div>
             <div class="vc-address">Hammarby Slussväg 2, Södermalm</div>
             <div class="vc-chips">
-              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 800m</span>
-              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 05:00</span>
-              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 7 rapporter</span>
+              <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 800m</span>
+              <span class="info-chip"><i class="iconoir-clock" style="font-size:12px"></i> 05:00</span>
+              <span class="info-chip" data-role="reports-chip"><i class="iconoir-user" style="font-size:12px"></i> 7 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="tradgarden">Rapportera kö</button>
@@ -1143,15 +1148,15 @@
             <div class="vc-top">
               <span class="vc-name">Sturehof</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="sturehof"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="sturehof"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge yellow" data-role="status-badge">20 min</span>
               </div>
             </div>
             <div class="vc-address">Stureplan 2, Östermalm</div>
             <div class="vc-chips">
-              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.2km</span>
-              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 01:00</span>
-              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 3 rapporter</span>
+              <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 1.2km</span>
+              <span class="info-chip"><i class="iconoir-clock" style="font-size:12px"></i> 01:00</span>
+              <span class="info-chip" data-role="reports-chip"><i class="iconoir-user" style="font-size:12px"></i> 3 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="sturehof">Rapportera kö</button>
@@ -1161,15 +1166,15 @@
             <div class="vc-top">
               <span class="vc-name">Under Bron</span>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="underbron"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="underbron"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge yellow" data-role="status-badge">15 min</span>
               </div>
             </div>
             <div class="vc-address">Skansbron 4, Södermalm</div>
             <div class="vc-chips">
-              <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 950m</span>
-              <span class="info-chip"><ph-clock size="12" weight="regular"></ph-clock> 05:00</span>
-              <span class="info-chip" data-role="reports-chip"><ph-user size="12" weight="regular"></ph-user> 5 rapporter</span>
+              <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 950m</span>
+              <span class="info-chip"><i class="iconoir-clock" style="font-size:12px"></i> 05:00</span>
+              <span class="info-chip" data-role="reports-chip"><i class="iconoir-user" style="font-size:12px"></i> 5 rapporter</span>
             </div>
             <div class="vc-divider"></div>
             <button class="vc-report-btn" data-goreport="underbron">Rapportera kö</button>
@@ -1183,27 +1188,27 @@
         <div class="explore-header">Utforska</div>
         <div style="padding: 0 16px 16px;">
           <div class="search-bar">
-            <span class="search-icon"><ph-magnifying-glass size="16" weight="regular" style="color:var(--text-muted)"></ph-magnifying-glass></span>
+            <span class="search-icon"><i class="iconoir-search" style="font-size:16px;color:var(--text-muted)"></i></span>
             <input class="search-input" id="explore-search-input" type="text" placeholder="Sök bar eller klubb...">
-            <div class="filter-btn clickable"><ph-sliders-horizontal size="18" weight="regular" style="color:var(--accent-orange)"></ph-sliders-horizontal></div>
+            <div class="filter-btn clickable"><i class="iconoir-filter-list" style="font-size:18px;color:var(--accent-orange)"></i></div>
           </div>
         </div>
 
         <div class="category-scroll" id="category-scroll">
           <div class="category-card active clickable" data-cat="barer">
-            <span class="cat-emoji"><ph-beer-bottle size="26" weight="duotone" style="color:var(--accent-orange)"></ph-beer-bottle></span><span class="cat-text">Barer</span>
+            <span class="cat-emoji"><i class="iconoir-beer" style="font-size:26px;color:var(--accent-orange)"></i></span><span class="cat-text">Barer</span>
           </div>
           <div class="category-card clickable" data-cat="klubbar">
-            <span class="cat-emoji"><ph-music-notes size="26" weight="duotone" style="color:var(--accent-orange)"></ph-music-notes></span><span class="cat-text">Klubbar</span>
+            <span class="cat-emoji"><i class="iconoir-music-1" style="font-size:26px;color:var(--accent-orange)"></i></span><span class="cat-text">Klubbar</span>
           </div>
           <div class="category-card clickable" data-cat="happy">
-            <span class="cat-emoji"><ph-lightning size="26" weight="duotone" style="color:var(--accent-orange)"></ph-lightning></span><span class="cat-text">Happy Hour</span>
+            <span class="cat-emoji"><i class="iconoir-flash" style="font-size:26px;color:var(--accent-orange)"></i></span><span class="cat-text">Happy Hour</span>
           </div>
           <div class="category-card clickable" data-cat="aktiviteter">
-            <span class="cat-emoji"><ph-target size="26" weight="duotone" style="color:var(--accent-orange)"></ph-target></span><span class="cat-text">Aktiviteter</span>
+            <span class="cat-emoji"><i class="iconoir-archery" style="font-size:26px;color:var(--accent-orange)"></i></span><span class="cat-text">Aktiviteter</span>
           </div>
           <div class="category-card clickable" data-cat="sent">
-            <span class="cat-emoji"><ph-moon-stars size="26" weight="duotone" style="color:var(--accent-orange)"></ph-moon-stars></span><span class="cat-text">Sent öppet</span>
+            <span class="cat-emoji"><i class="iconoir-half-moon" style="font-size:26px;color:var(--accent-orange)"></i></span><span class="cat-text">Sent öppet</span>
           </div>
         </div>
 
@@ -1211,18 +1216,18 @@
 
         <div class="venue-list">
           <div class="venue-row clickable" data-venue="soap">
-            <div class="avatar"><ph-beer-bottle size="26" weight="duotone" style="color:var(--accent-orange)"></ph-beer-bottle></div>
+            <div class="avatar"><i class="iconoir-beer" style="font-size:26px;color:var(--accent-orange)"></i></div>
             <div class="vr-mid">
               <div class="vr-name">Soap Bar</div>
               <div class="vr-address">Ringvägen 24</div>
               <div class="vr-chips">
-                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 450m</span>
-                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
+                <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 450m</span>
+                <span class="info-chip chip-open"><i class="iconoir-clock" style="font-size:12px"></i> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="soap"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="soap"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge green" data-role="status-badge">Ingen kö</span>
               </div>
               <div class="vr-time" data-role="last-time">5 min sedan</div>
@@ -1230,18 +1235,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="spy">
-            <div class="avatar"><ph-music-notes size="26" weight="duotone" style="color:var(--accent-orange)"></ph-music-notes></div>
+            <div class="avatar"><i class="iconoir-music-1" style="font-size:26px;color:var(--accent-orange)"></i></div>
             <div class="vr-mid">
               <div class="vr-name">Spy Bar</div>
               <div class="vr-address">Birger Jarlsgatan 20</div>
               <div class="vr-chips">
-                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.1km</span>
-                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
+                <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 1.1km</span>
+                <span class="info-chip chip-open"><i class="iconoir-clock" style="font-size:12px"></i> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="spy"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="spy"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge red" data-role="status-badge">60 min</span>
               </div>
               <div class="vr-time" data-role="last-time">3 min sedan</div>
@@ -1249,18 +1254,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="sturehof">
-            <div class="avatar"><ph-beer-bottle size="26" weight="duotone" style="color:var(--accent-orange)"></ph-beer-bottle></div>
+            <div class="avatar"><i class="iconoir-beer" style="font-size:26px;color:var(--accent-orange)"></i></div>
             <div class="vr-mid">
               <div class="vr-name">Sturehof</div>
               <div class="vr-address">Stureplan 2</div>
               <div class="vr-chips">
-                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.4km</span>
-                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
+                <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 1.4km</span>
+                <span class="info-chip chip-open"><i class="iconoir-clock" style="font-size:12px"></i> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="sturehof"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="sturehof"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge yellow" data-role="status-badge">20 min</span>
               </div>
               <div class="vr-time" data-role="last-time">18 min sedan</div>
@@ -1268,18 +1273,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="berns">
-            <div class="avatar"><ph-music-notes size="26" weight="duotone" style="color:var(--accent-orange)"></ph-music-notes></div>
+            <div class="avatar"><i class="iconoir-music-1" style="font-size:26px;color:var(--accent-orange)"></i></div>
             <div class="vr-mid">
               <div class="vr-name">Berns</div>
               <div class="vr-address">Berzelii Park</div>
               <div class="vr-chips">
-                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 1.8km</span>
-                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
+                <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 1.8km</span>
+                <span class="info-chip chip-open"><i class="iconoir-clock" style="font-size:12px"></i> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="berns"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="berns"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge red" data-role="status-badge">45 min</span>
               </div>
               <div class="vr-time" data-role="last-time">5 min sedan</div>
@@ -1287,18 +1292,18 @@
           </div>
 
           <div class="venue-row clickable" data-venue="underbron">
-            <div class="avatar"><ph-moon-stars size="26" weight="duotone" style="color:var(--accent-orange)"></ph-moon-stars></div>
+            <div class="avatar"><i class="iconoir-half-moon" style="font-size:26px;color:var(--accent-orange)"></i></div>
             <div class="vr-mid">
               <div class="vr-name">Under Bron</div>
               <div class="vr-address">Skansbron</div>
               <div class="vr-chips">
-                <span class="info-chip"><ph-map-pin size="12" weight="regular"></ph-map-pin> 950m</span>
-                <span class="info-chip chip-open"><ph-clock size="12" weight="regular"></ph-clock> Öppet</span>
+                <span class="info-chip"><i class="iconoir-map-pin" style="font-size:12px"></i> 950m</span>
+                <span class="info-chip chip-open"><i class="iconoir-clock" style="font-size:12px"></i> Öppet</span>
               </div>
             </div>
             <div class="vr-right">
               <div style="display:flex; align-items:center; justify-content:flex-end; gap:6px;">
-                <button class="fav-heart-btn clickable" data-venue="underbron"><ph-heart size="16" weight="regular"></ph-heart></button>
+                <button class="fav-heart-btn clickable" data-venue="underbron"><i class="iconoir-heart" style="font-size:16px"></i></button>
                 <span class="status-badge yellow" data-role="status-badge">15 min</span>
               </div>
               <div class="vr-time" data-role="last-time">6 min sedan</div>
@@ -1318,10 +1323,10 @@
         <div class="feed-list" id="feed-list"></div>
 
         <div class="live-empty" id="live-empty" style="display:none;">
-          <div class="le-emoji"><ph-broadcast size="48" weight="regular" style="color:var(--text-muted)"></ph-broadcast></div>
+          <div class="le-emoji"><i class="iconoir-wifi" style="font-size:48px;color:var(--text-muted)"></i></div>
           <div class="le-title">Inga rapporter än ikväll</div>
           <div class="le-sub">Bli den första att rapportera!</div>
-          <button class="le-btn clickable" id="live-empty-report-btn">Rapportera nu <ph-caret-right size="16" weight="fill" style="color:#fff"></ph-caret-right></button>
+          <button class="le-btn clickable" id="live-empty-report-btn">Rapportera nu <i class="iconoir-nav-arrow-right" style="font-size:16px;color:#fff"></i></button>
         </div>
       </div>
 
@@ -1353,7 +1358,7 @@
         <div class="report-step-content" id="report-step-1">
           <div class="field-label">VAR ÄR DU NU?</div>
           <div class="report-search">
-            <span><ph-magnifying-glass size="16" weight="regular" style="color:var(--text-muted)"></ph-magnifying-glass></span><span>Sök bar eller klubb...</span>
+            <span><i class="iconoir-search" style="font-size:16px;color:var(--text-muted)"></i></span><span>Sök bar eller klubb...</span>
           </div>
 
           <div class="or-divider">
@@ -1385,52 +1390,52 @@
             </div>
           </div>
 
-          <button class="btn-primary clickable" id="btn-next-step1" style="margin-top:20px; display:none;">Nästa steg <ph-caret-right size="20" weight="fill" style="color:#fff"></ph-caret-right></button>
+          <button class="btn-primary clickable" id="btn-next-step1" style="margin-top:20px; display:none;">Nästa steg <i class="iconoir-nav-arrow-right" style="font-size:20px;color:#fff"></i></button>
         </div>
 
         <!-- Step 2 -->
         <div class="report-step-content" id="report-step-2" style="display:none;">
-          <span class="selected-chip"><ph-map-pin size="14" weight="regular"></ph-map-pin> <span id="chip-bar-name">Soap Bar</span></span>
+          <span class="selected-chip"><i class="iconoir-map-pin" style="font-size:14px"></i> <span id="chip-bar-name">Soap Bar</span></span>
 
           <div style="font-size:16px; font-weight:700; letter-spacing:-0.5px; color:#fff; margin-top:20px;">Hur lång är kön?</div>
           <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">Välj det alternativ som stämmer bäst</div>
 
           <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;" id="queue-options">
             <button class="queue-option clickable" data-q="none">
-              <span class="qo-icon green"><ph-check-circle size="20" weight="duotone" style="color:var(--status-green)"></ph-check-circle></span>
+              <span class="qo-icon green"><i class="iconoir-check-circle" style="font-size:20px;color:var(--status-green)"></i></span>
               <span class="qo-text"><div class="qo-title">Ingen kö</div><div class="qo-desc">Gå rakt in nu</div></span>
               <span class="qo-check"></span>
             </button>
             <button class="queue-option clickable" data-q="short">
-              <span class="qo-icon yellow"><ph-timer size="20" weight="duotone" style="color:var(--status-yellow)"></ph-timer></span>
+              <span class="qo-icon yellow"><i class="iconoir-timer" style="font-size:20px;color:var(--status-yellow)"></i></span>
               <span class="qo-text"><div class="qo-title">Under 15 min</div><div class="qo-desc">Kort väntan</div></span>
               <span class="qo-check"></span>
             </button>
             <button class="queue-option clickable" data-q="medium">
-              <span class="qo-icon yellow"><ph-hourglass size="20" weight="duotone" style="color:var(--status-yellow)"></ph-hourglass></span>
+              <span class="qo-icon yellow"><i class="iconoir-hourglass" style="font-size:20px;color:var(--status-yellow)"></i></span>
               <span class="qo-text"><div class="qo-title">15–30 min</div><div class="qo-desc">Lite att vänta</div></span>
               <span class="qo-check"></span>
             </button>
             <button class="queue-option clickable" data-q="long">
-              <span class="qo-icon red"><ph-prohibit size="20" weight="duotone" style="color:var(--status-red)"></ph-prohibit></span>
+              <span class="qo-icon red"><i class="iconoir-warning-circle" style="font-size:20px;color:var(--status-red)"></i></span>
               <span class="qo-text"><div class="qo-title">30+ min</div><div class="qo-desc">Lång kö, välj annat</div></span>
               <span class="qo-check"></span>
             </button>
           </div>
 
-          <button class="btn-primary clickable" id="btn-submit-report" style="margin-top:20px; box-shadow: 0 4px 20px #FF6B2C50;" disabled>Skicka rapport <ph-check size="16" weight="bold" style="color:#fff"></ph-check></button>
+          <button class="btn-primary clickable" id="btn-submit-report" style="margin-top:20px; box-shadow: 0 4px 20px #FF6B2C50;" disabled>Skicka rapport <i class="iconoir-check" style="font-size:16px;color:#fff"></i></button>
         </div>
 
         <!-- Step 3 -->
         <div class="confirm-wrap" id="report-step-3" style="display:none;">
-          <div class="confirm-check"><ph-check size="48" weight="bold" style="color:var(--status-green)"></ph-check></div>
+          <div class="confirm-check"><i class="iconoir-check" style="font-size:48px;color:var(--status-green)"></i></div>
           <div class="confirm-title">Tack!</div>
           <div class="confirm-sub">Din rapport hjälper andra att planera sin kväll</div>
-          <div class="points-badge" id="confirm-points-text">+10 poäng! <ph-target size="16" weight="fill" style="color:var(--accent-orange)"></ph-target></div>
+          <div class="points-badge" id="confirm-points-text">+10 poäng! <i class="iconoir-archery" style="font-size:16px;color:var(--accent-orange)"></i></div>
 
           <div style="display:flex; flex-direction:column; gap:10px; margin-top:32px; width:100%;">
             <button class="btn-secondary clickable" id="btn-report-again" style="background:var(--bg-secondary); color:var(--text-primary); height:50px;">Rapportera en till</button>
-            <button class="btn-primary clickable" id="btn-back-to-map-report"><ph-arrow-left size="20" weight="fill" style="color:var(--accent-orange)"></ph-arrow-left> Tillbaka till kartan</button>
+            <button class="btn-primary clickable" id="btn-back-to-map-report"><i class="iconoir-arrow-left" style="font-size:20px;color:var(--accent-orange)"></i> Tillbaka till kartan</button>
           </div>
         </div>
       </div>
@@ -1438,7 +1443,7 @@
       <!-- ===================== SCREEN 4: PROFILE ===================== -->
       <div id="screen-profile" class="screen">
         <div class="profile-header">
-          <div class="profile-avatar"><ph-user size="32" weight="regular" style="color:var(--text-primary)"></ph-user></div>
+          <div class="profile-avatar"><i class="iconoir-user" style="font-size:32px;color:var(--text-primary)"></i></div>
           <div class="profile-name">Anonym Användare<span class="level-badge-pill" id="level-badge">Ny</span></div>
           <div class="profile-since">Aktiv sedan Oktober 2026</div>
 
@@ -1473,10 +1478,10 @@
 
         <div class="settings-section">
           <div class="sheet-label">INSTÄLLNINGAR</div>
-          <div class="settings-row clickable"><span class="s-emoji"><ph-bell size="20" weight="regular"></ph-bell></span><span class="s-text">Notifikationer</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
-          <div class="settings-row clickable"><span class="s-emoji"><ph-map-pin size="20" weight="regular"></ph-map-pin></span><span class="s-text">Plats-inställningar</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
-          <div class="settings-row clickable"><span class="s-emoji"><ph-buildings size="20" weight="regular"></ph-buildings></span><span class="s-text">Min stad: Stockholm</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
-          <div class="settings-row clickable"><span class="s-emoji"><ph-info size="20" weight="regular"></ph-info></span><span class="s-text">Om QueueBar</span><span class="s-arrow"><ph-caret-right size="16" weight="regular"></ph-caret-right></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><i class="iconoir-bell" style="font-size:20px"></i></span><span class="s-text">Notifikationer</span><span class="s-arrow"><i class="iconoir-nav-arrow-right" style="font-size:16px"></i></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><i class="iconoir-map-pin" style="font-size:20px"></i></span><span class="s-text">Plats-inställningar</span><span class="s-arrow"><i class="iconoir-nav-arrow-right" style="font-size:16px"></i></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><i class="iconoir-city" style="font-size:20px"></i></span><span class="s-text">Min stad: Stockholm</span><span class="s-arrow"><i class="iconoir-nav-arrow-right" style="font-size:16px"></i></span></div>
+          <div class="settings-row clickable"><span class="s-emoji"><i class="iconoir-info-circle" style="font-size:20px"></i></span><span class="s-text">Om QueueBar</span><span class="s-arrow"><i class="iconoir-nav-arrow-right" style="font-size:16px"></i></span></div>
         </div>
       </div>
 
@@ -1492,27 +1497,27 @@
     <!-- ===================== BOTTOM NAV ===================== -->
     <div class="bottom-nav">
       <div class="nav-tab active clickable" data-screen="map">
-        <span class="nav-icon"><ph-map-pin-area size="24"></ph-map-pin-area></span>
+        <span class="nav-icon"><i class="iconoir-map" style="font-size:24px"></i></span>
         <span class="nav-label">Karta</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="explore">
-        <span class="nav-icon"><ph-magnifying-glass size="24"></ph-magnifying-glass></span>
+        <span class="nav-icon"><i class="iconoir-search" style="font-size:24px"></i></span>
         <span class="nav-label">Utforska</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="live">
-        <span class="nav-icon"><ph-broadcast size="24"></ph-broadcast></span>
+        <span class="nav-icon"><i class="iconoir-wifi" style="font-size:24px"></i></span>
         <span class="nav-label">Live</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="report">
-        <span class="nav-icon"><ph-paper-plane-tilt size="24"></ph-paper-plane-tilt></span>
+        <span class="nav-icon"><i class="iconoir-send-diagonal" style="font-size:24px"></i></span>
         <span class="nav-label">Rapportera</span>
         <span class="nav-dot"></span>
       </div>
       <div class="nav-tab clickable" data-screen="profile">
-        <span class="nav-icon"><ph-user size="24"></ph-user></span>
+        <span class="nav-icon"><i class="iconoir-user" style="font-size:24px"></i></span>
         <span class="nav-label">Profil</span>
         <span class="nav-dot"></span>
       </div>
@@ -1596,12 +1601,12 @@
   };
 
   var BADGE_DEFS = {
-    early:      {emoji:'<ph-medal size="28" weight="duotone" style="color:var(--accent-orange)"></ph-medal>', name:"Tidiga Fågeln"},
-    reporter:   {emoji:'<ph-megaphone size="28" weight="duotone" style="color:var(--accent-orange)"></ph-megaphone>', name:"Reporter"},
-    owl:        {emoji:'<ph-moon-stars size="28" weight="duotone" style="color:var(--accent-orange)"></ph-moon-stars>', name:"Nattuggla"},
-    truth:      {emoji:'<ph-check-circle size="28" weight="duotone" style="color:var(--accent-orange)"></ph-check-circle>', name:"Sanningssägare"},
-    veteran:    {emoji:'<ph-trophy size="28" weight="duotone" style="color:var(--accent-orange)"></ph-trophy>', name:"Veteran"},
-    stureplan:  {emoji:'<ph-crown size="28" weight="duotone" style="color:var(--accent-orange)"></ph-crown>', name:"Stureplan-kungen"}
+    early:      {emoji:'<i class="iconoir-medal-1st-place" style="font-size:28px;color:var(--accent-orange)"></i>', name:"Tidiga Fågeln"},
+    reporter:   {emoji:'<i class="iconoir-megaphone" style="font-size:28px;color:var(--accent-orange)"></i>', name:"Reporter"},
+    owl:        {emoji:'<i class="iconoir-half-moon" style="font-size:28px;color:var(--accent-orange)"></i>', name:"Nattuggla"},
+    truth:      {emoji:'<i class="iconoir-check-circle" style="font-size:28px;color:var(--accent-orange)"></i>', name:"Sanningssägare"},
+    veteran:    {emoji:'<i class="iconoir-trophy" style="font-size:28px;color:var(--accent-orange)"></i>', name:"Veteran"},
+    stureplan:  {emoji:'<i class="iconoir-crown" style="font-size:28px;color:var(--accent-orange)"></i>', name:"Stureplan-kungen"}
   };
   var BADGE_ORDER = ["early", "reporter", "owl", "truth", "veteran", "stureplan"];
 
@@ -1732,10 +1737,10 @@
   var toastQueue = [];
   var toastBusy = false;
   var TOAST_PREFIX = {
-    success: '<ph-check-circle size="16" weight="fill" style="color:var(--status-green)"></ph-check-circle> ',
-    error: '<ph-x-circle size="16" weight="fill" style="color:var(--status-red)"></ph-x-circle> ',
-    info: '<ph-info size="16" weight="regular" style="color:var(--text-secondary)"></ph-info> ',
-    points: '<ph-star size="16" weight="fill" style="color:var(--accent-orange)"></ph-star> '
+    success: '<i class="iconoir-check-circle" style="font-size:16px;color:var(--status-green)"></i> ',
+    error: '<i class="iconoir-xmark-circle" style="font-size:16px;color:var(--status-red)"></i> ',
+    info: '<i class="iconoir-info-circle" style="font-size:16px;color:var(--text-secondary)"></i> ',
+    points: '<i class="iconoir-star" style="font-size:16px;color:var(--accent-orange)"></i> '
   };
 
   function showToast(message, type, duration) {
@@ -1793,8 +1798,8 @@
       var active = isFavorite(btn.dataset.venue);
       btn.classList.toggle('active', active);
       btn.innerHTML = active ?
-        '<ph-heart size="16" weight="fill" style="color:#E74C3C"></ph-heart>' :
-        '<ph-heart size="16" weight="regular"></ph-heart>';
+        '<i class="iconoir-heart-solid" style="font-size:16px;color:#E74C3C"></i>' :
+        '<i class="iconoir-heart" style="font-size:16px"></i>';
     });
   }
   function toggleFavorite(key, btnEl) {
@@ -1859,7 +1864,6 @@
       var icon = tab.querySelector('.nav-icon *');
       if (!icon) return;
       var active = tab.classList.contains('active');
-      icon.setAttribute('weight', active ? 'duotone' : 'regular');
       icon.style.color = active ? 'var(--accent-orange)' : 'var(--text-muted)';
     });
   }
@@ -1903,9 +1907,9 @@
     if (visibleCount === 0) {
       emptyMsg.style.display = 'block';
       if (term) {
-        setIconMessage(emptyMsg, '<ph-magnifying-glass size="14" weight="regular"></ph-magnifying-glass>', 'Inga resultat för "' + term + '"');
+        setIconMessage(emptyMsg, '<i class="iconoir-search" style="font-size:14px"></i>', 'Inga resultat för "' + term + '"');
       } else {
-        setIconMessage(emptyMsg, '<ph-smiley-sad size="14" weight="regular"></ph-smiley-sad>', 'Inga barer matchar filtret just nu');
+        setIconMessage(emptyMsg, '<i class="iconoir-emoji-sad" style="font-size:14px"></i>', 'Inga barer matchar filtret just nu');
       }
     } else {
       emptyMsg.style.display = 'none';
@@ -1937,7 +1941,7 @@
     var emptyMsg = document.getElementById('explore-empty-msg');
     if (visibleCount === 0) {
       emptyMsg.style.display = 'block';
-      setIconMessage(emptyMsg, '<ph-magnifying-glass size="14" weight="regular"></ph-magnifying-glass>', 'Inga resultat för "' + term + '"');
+      setIconMessage(emptyMsg, '<i class="iconoir-search" style="font-size:14px"></i>', 'Inga resultat för "' + term + '"');
     } else {
       emptyMsg.style.display = 'none';
     }
@@ -1970,12 +1974,12 @@
         b.classList.remove('green', 'yellow', 'red', 'gray');
         b.classList.add(info.status === 'unknown' ? 'gray' : info.colorClass);
         b.innerHTML = info.status === 'unknown' ?
-          '<ph-question size="10" weight="regular"></ph-question> ' + info.badgeLabel :
+          '<i class="iconoir-question-mark" style="font-size:10px"></i> ' + info.badgeLabel :
           info.badgeLabel;
       });
 
       document.querySelectorAll('[data-venue="' + key + '"] [data-role="reports-chip"]').forEach(function(c) {
-        c.innerHTML = '<ph-user size="12" weight="regular"></ph-user> ' + count + ' rapport' + (count === 1 ? '' : 'er');
+        c.innerHTML = '<i class="iconoir-user" style="font-size:12px"></i> ' + count + ' rapport' + (count === 1 ? '' : 'er');
       });
 
       document.querySelectorAll('[data-venue="' + key + '"] [data-role="last-time"]').forEach(function(el) {
@@ -2004,9 +2008,9 @@
     var reportsHtml = recent.length ? recent.map(function(r) {
       var meta = STATUS_TYPE_META[r.queueStatus];
       return '<div class="report-row" style="margin-top:12px;">' +
-        '<div class="ravatar"><ph-user-circle size="18" weight="regular" style="color:var(--text-secondary)"></ph-user-circle></div>' +
+        '<div class="ravatar"><i class="iconoir-user-circle" style="font-size:18px;color:var(--text-secondary)"></i></div>' +
         '<div><div class="rtext">' + meta.badgeLabel + '</div><div class="rsub">av Anonym • ' + relativeTime(r.timestamp) + '</div></div>' +
-        '<div class="rthumbs"><ph-thumbs-up size="12" weight="regular"></ph-thumbs-up> ' + getThumbsFor(r) + '</div>' +
+        '<div class="rthumbs"><i class="iconoir-thumbs-up" style="font-size:12px"></i> ' + getThumbsFor(r) + '</div>' +
       '</div>';
     }).join('') : '<div style="color:var(--text-muted); font-size:13px; margin-top:12px;">Inga rapporter än</div>';
 
@@ -2015,9 +2019,9 @@
         '<div><div class="sh-name">' + v.name + '</div><div class="sh-sub">' + v.area + ' • ' + v.distance + ' bort</div></div>' +
         '<div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">' +
           '<button class="fav-heart-btn clickable' + (favActive ? ' active' : '') + '" data-venue="' + venueKey + '">' +
-            (favActive ? '<ph-heart size="16" weight="fill" style="color:#E74C3C"></ph-heart>' : '<ph-heart size="16" weight="regular"></ph-heart>') +
+            (favActive ? '<i class="iconoir-heart-solid" style="font-size:16px;color:#E74C3C"></i>' : '<i class="iconoir-heart" style="font-size:16px"></i>') +
           '</button>' +
-          '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';"><span class="dot dot-' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '" style="margin-right:4px;"></span>' + (info.status === 'unknown' ? '<ph-question size="12" weight="regular"></ph-question> ' + info.badgeLabel : info.badgeLabel) + '</div>' +
+          '<div class="sh-badge" style="background:' + col.bg + '; color:' + col.text + '; border:1px solid ' + col.text + ';"><span class="dot dot-' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '" style="margin-right:4px;"></span>' + (info.status === 'unknown' ? '<i class="iconoir-question-mark" style="font-size:12px"></i> ' + info.badgeLabel : info.badgeLabel) + '</div>' +
         '</div>' +
       '</div>' +
 
@@ -2028,10 +2032,10 @@
       '</div>' +
 
       '<div class="info-grid">' +
-        '<div class="info-box"><div class="ib-emoji"><ph-clock size="20" weight="duotone" style="color:var(--accent-orange)"></ph-clock></div><div class="ib-label">Stänger</div><div class="ib-value">' + closesText + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji"><ph-user size="20" weight="duotone" style="color:var(--accent-orange)"></ph-user></div><div class="ib-label">Rapporter</div><div class="ib-value">' + count + ' st</div></div>' +
-        '<div class="info-box"><div class="ib-emoji"><ph-chart-bar size="20" weight="duotone" style="color:var(--accent-orange)"></ph-chart-bar></div><div class="ib-label">Senast rapporterat</div><div class="ib-value">' + getLastReportedText(venueKey) + '</div></div>' +
-        '<div class="info-box"><div class="ib-emoji"><ph-star size="20" weight="duotone" style="color:var(--accent-orange)"></ph-star></div><div class="ib-label">Tillförlitlighet</div><div class="ib-value">' + (info.confidence === 'confirmed' ? 'Bekräftad' : (info.confidence === 'few' ? 'Få rapporter' : 'Okänt')) + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><i class="iconoir-clock" style="font-size:20px;color:var(--accent-orange)"></i></div><div class="ib-label">Stänger</div><div class="ib-value">' + closesText + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><i class="iconoir-user" style="font-size:20px;color:var(--accent-orange)"></i></div><div class="ib-label">Rapporter</div><div class="ib-value">' + count + ' st</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><i class="iconoir-stats-up-square" style="font-size:20px;color:var(--accent-orange)"></i></div><div class="ib-label">Senast rapporterat</div><div class="ib-value">' + getLastReportedText(venueKey) + '</div></div>' +
+        '<div class="info-box"><div class="ib-emoji"><i class="iconoir-star" style="font-size:20px;color:var(--accent-orange)"></i></div><div class="ib-label">Tillförlitlighet</div><div class="ib-value">' + (info.confidence === 'confirmed' ? 'Bekräftad' : (info.confidence === 'few' ? 'Få rapporter' : 'Okänt')) + '</div></div>' +
       '</div>' +
 
       '<div style="margin-top:20px;">' +
@@ -2040,8 +2044,8 @@
       '</div>' +
 
       '<div style="margin-top:20px;">' +
-        '<button class="btn-primary clickable" id="sheet-report-btn"><ph-megaphone size="20" weight="fill" style="color:#fff"></ph-megaphone> Rapportera köläge nu</button>' +
-        '<button class="btn-secondary clickable" id="sheet-back-btn" style="margin-top:10px;"><ph-arrow-left size="20" weight="fill" style="color:var(--accent-orange)"></ph-arrow-left> Tillbaka till kartan</button>' +
+        '<button class="btn-primary clickable" id="sheet-report-btn"><i class="iconoir-megaphone" style="font-size:20px;color:#fff"></i> Rapportera köläge nu</button>' +
+        '<button class="btn-secondary clickable" id="sheet-back-btn" style="margin-top:10px;"><i class="iconoir-arrow-left" style="font-size:20px;color:var(--accent-orange)"></i> Tillbaka till kartan</button>' +
       '</div>';
 
     document.getElementById('sheet-report-btn').addEventListener('click', function() {
@@ -2108,7 +2112,7 @@
     qbThumbs[key] = next;
     saveThumbs();
     btn.dataset.count = String(next);
-    btn.innerHTML = '<ph-thumbs-up size="12" weight="regular"></ph-thumbs-up> ' + next;
+    btn.innerHTML = '<i class="iconoir-thumbs-up" style="font-size:12px"></i> ' + next;
     tapFeedback(btn);
     btn.classList.add('active');
     setTimeout(function() { btn.classList.remove('active'); }, 500);
@@ -2147,7 +2151,7 @@
         '<div class="feed-sub">' + venue.area + ' • ' + venue.distance + ' bort</div>' +
         '<div class="feed-time">' + relativeTime(r.timestamp) + '</div>' +
       '</div>' +
-      '<button class="feed-thumbs clickable" data-thumbkey="' + thumbKey + '" data-count="' + thumbCount + '"><ph-thumbs-up size="12" weight="regular"></ph-thumbs-up> ' + thumbCount + '</button>' +
+      '<button class="feed-thumbs clickable" data-thumbkey="' + thumbKey + '" data-count="' + thumbCount + '"><i class="iconoir-thumbs-up" style="font-size:12px"></i> ' + thumbCount + '</button>' +
     '</div>';
   }
 
@@ -2180,7 +2184,7 @@
       var info = computeStatus(key);
       return '<div class="mini-fav-card clickable" data-venue="' + key + '">' +
         '<div class="mfc-name">' + v.name + '</div>' +
-        '<div class="mfc-status"><span class="status-badge ' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '">' + (info.status === 'unknown' ? '<ph-question size="10" weight="regular"></ph-question> ' + info.badgeLabel : info.badgeLabel) + '</span></div>' +
+        '<div class="mfc-status"><span class="status-badge ' + (info.status === 'unknown' ? 'gray' : info.colorClass) + '">' + (info.status === 'unknown' ? '<i class="iconoir-question-mark" style="font-size:10px"></i> ' + info.badgeLabel : info.badgeLabel) + '</span></div>' +
       '</div>';
     }).join('');
   }
@@ -2201,7 +2205,7 @@
     var progressPct = level.max === Infinity ? 100 : Math.min(100, Math.round(((profile.totalPoints - level.min) / ((level.max + 1) - level.min)) * 100));
     document.getElementById('points-progress-fill').style.width = progressPct + '%';
     document.getElementById('points-progress-text').innerHTML = level.max === Infinity ?
-      (profile.totalPoints + ' poäng — Legend uppnådd! <ph-trophy size="14" weight="fill" style="color:var(--accent-orange)"></ph-trophy>') :
+      (profile.totalPoints + ' poäng — Legend uppnådd! <i class="iconoir-trophy" style="font-size:14px;color:var(--accent-orange)"></i>') :
       (profile.totalPoints + ' / ' + (level.max + 1) + ' poäng till nästa nivå');
 
     document.getElementById('badge-list').innerHTML = BADGE_ORDER.map(function(id) {
@@ -2209,17 +2213,17 @@
       var unlocked = profile.badges.indexOf(id) !== -1;
       return unlocked ?
         '<div class="badge-card"><span class="b-emoji">' + def.emoji + '</span><span class="b-text">' + def.name + '</span></div>' :
-        '<div class="badge-card locked"><span class="b-emoji"><ph-lock size="28" weight="regular" style="color:var(--text-muted)"></ph-lock></span><span class="b-text">???</span></div>';
+        '<div class="badge-card locked"><span class="b-emoji"><i class="iconoir-lock" style="font-size:28px;color:var(--text-muted)"></i></span><span class="b-text">???</span></div>';
     }).join('');
 
     var activityListEl = document.getElementById('activity-list');
     if (!myReports.length) {
-      activityListEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">Du har inte rapporterat än.<br>Gå ut och hjälp andra! <ph-beer-bottle size="14" weight="regular"></ph-beer-bottle></div>';
+      activityListEl.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:14px;padding:20px 0;">Du har inte rapporterat än.<br>Gå ut och hjälp andra! <i class="iconoir-beer" style="font-size:14px"></i></div>';
     } else {
       activityListEl.innerHTML = myReports.slice(0, 10).map(function(r) {
         var meta = STATUS_TYPE_META[r.queueStatus];
         return '<div class="activity-row">' +
-          '<div class="a-icon"><ph-megaphone size="18" weight="duotone" style="color:var(--accent-orange)"></ph-megaphone></div>' +
+          '<div class="a-icon"><i class="iconoir-megaphone" style="font-size:18px;color:var(--accent-orange)"></i></div>' +
           '<div class="a-mid"><div class="a-title">Rapporterade ' + r.venueName + '</div>' +
           '<div class="a-sub">' + meta.badgeLabel + ' • ' + formatDateTime(r.timestamp) + '</div></div>' +
           '<div class="a-points">+' + r.pointsAwarded + 'p</div>' +
@@ -2253,7 +2257,7 @@
     toUnlock.forEach(function(id) {
       profile.badges.push(id);
       profile.totalPoints += 50;
-      showToast('<ph-medal size="16" weight="fill" style="color:var(--accent-orange)"></ph-medal> Badge upplåst: ' + BADGE_DEFS[id].name + '! +50p', 'points', 3500);
+      showToast('<i class="iconoir-medal-1st-place" style="font-size:16px;color:var(--accent-orange)"></i> Badge upplåst: ' + BADGE_DEFS[id].name + '! +50p', 'points', 3500);
     });
     if (toUnlock.length) saveProfile();
   }
@@ -2277,7 +2281,7 @@
       ind.classList.remove('active', 'done');
       if (i + 1 < n) {
         ind.classList.add('done');
-        circle.innerHTML = '<ph-check size="14" weight="bold" style="color:#fff"></ph-check>';
+        circle.innerHTML = '<i class="iconoir-check" style="font-size:16px;color:#fff"></i>';
       } else {
         circle.textContent = String(i + 1);
         if (i + 1 === n) ind.classList.add('active');
@@ -2368,7 +2372,7 @@
     refreshVenueDisplays();
 
     setReportStep(3);
-    document.getElementById('confirm-points-text').innerHTML = '+' + award + ' poäng! <ph-target size="16" weight="fill" style="color:var(--accent-orange)"></ph-target>';
+    document.getElementById('confirm-points-text').innerHTML = '+' + award + ' poäng! <i class="iconoir-archery" style="font-size:16px;color:var(--accent-orange)"></i>';
     showToast('Rapport skickad! +' + award + ' poäng', 'success');
   });
 
